@@ -1,14 +1,34 @@
 buildscript {
+    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config.gradle'
+
+
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.2"
+        classpath "com.android.tools.build:gradle:$gradlePluginVersion"
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:$sonar_version"
     }
 
     repositories {
-        maven {
-            name 'nd nexus android-public'
-            url "http://nexus.sdp.nd/nexus/content/groups/android-public/"
-        }
-        mavenCentral()
+        maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
+        mavenLocal()
     }
+
 }
+
+allprojects {
+    repositories {
+        maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
+        maven { url 'http://nexus.sdp.nd/nexus/content/repositories/android_snapshot/' }
+
+        mavenCentral()
+
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    //buildDir = "Z:/${rootProject.name}/${project.name}"
+}
+
+

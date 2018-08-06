@@ -1,0 +1,10 @@
+dependencies {
+//    implementation("com.android.support:support-v4:$androidSupportSdkVersion")
+
+//    api project(':adhoc_basic:adhoc_basic_common')
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}

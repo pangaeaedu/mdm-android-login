@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply from: file('gradleScript/dev.gradle')
+apply from: file('gradleScript/unittest4sdk.gradle')
+
+if (!project.hasProperty('LOCAL_BUILD_ENV')) {
+    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/maven_upload.gradle'
+}
+
+
+android {
+    compileSdkVersion "$androidCompileSdkVersion".toInteger()
+    buildToolsVersion "$androidBuildToolsVersion"
+
+    defaultConfig {
+        minSdkVersion "$androidMinSdkVersion".toInteger()
+        targetSdkVersion "$androidTargetSdkVersion".toInteger()
+    }
+
+//    buildTypes {
+//        release {
+//            debuggable true
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//        }
+//        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+//            debug {
+//                debuggable true
+//                minifyEnabled true
+//                defaultPublishConfig "debug"
+//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//            }
+//        }
+//    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
