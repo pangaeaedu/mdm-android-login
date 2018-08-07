@@ -1,5 +1,7 @@
 include ':login'
 
+include ':mdm_env'
+
 
 // 可配置工程
 // 配置后如果存在该目录，工程将包含该目录模块，否则不包含

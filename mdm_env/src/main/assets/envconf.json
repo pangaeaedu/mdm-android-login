@@ -1,0 +1,33 @@
+{
+  "envs_index": 1,
+  "envs": [
+    {
+      "name": "Develop",
+      "org": "mdm",
+      "puship": "172.24.140.51",
+      "pushport": 39000,
+      "url": "http://drms.dev.web.nd"
+    },
+    {
+      "name": "Test",
+      "org": "mdm_pre",
+      "puship": "test.ndmdm.site",
+      "pushport": 59000,
+      "url": "http://drms.debug.web.nd"
+    },
+    {
+      "name": "China",
+      "org": "mdm_pre",
+      "puship": "www.ndmdm.site",
+      "pushport": 59000,
+      "url": "http://mdm.ndmdm.site"
+    },
+    {
+      "name": "WholeWorld",
+      "org": "ndtest",
+      "puship": "aws.ndmdm.site",
+      "pushport": 59000,
+      "url": "http://mdmaws.ndmdm.site"
+    }
+  ]
+}

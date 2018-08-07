@@ -1,34 +1,53 @@
 buildscript {
     apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config.gradle'
 
-
-
+    repositories {
+        maven {
+            name 'nd nexus android-public'
+            url "http://nexus.sdp.nd/nexus/content/groups/android-public/"
+        }
+        mavenCentral()
+        jcenter()
+    }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradlePluginVersion"
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:$sonar_version"
-    }
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
-    repositories {
-        maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
-        mavenLocal()
-    }
+        // ARouter 支持
+//        classpath 'com.alibaba:arouter-register:1.0.0'
+        classpath 'com.nd.android.adhoc.basic:adhoc-router-register:0.0.6-planB-SNAPSHOT'
 
+//        classpath 'com.github.eyyoung:DexFixPlugin:1.0.0'
+    }
 }
 
 allprojects {
     repositories {
-        maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
-        maven { url 'http://nexus.sdp.nd/nexus/content/repositories/android_snapshot/' }
-
+        maven {
+            name 'nd nexus android-public'
+            url "http://nexus.sdp.nd/nexus/content/groups/android-public/"
+        }
         mavenCentral()
+        jcenter()
 
         flatDir {
             dirs 'libs'
         }
     }
-
-    //buildDir = "Z:/${rootProject.name}/${project.name}"
+    if (project != rootProject) {
+        project.group = 'com.nd.android.mdm.biz'
+        project.version = VERSION_NAME
+        try {
+            project.ext.mavenUserName = NEXUS_USERNAME
+            project.ext.mavenPassword = NEXUS_PASSWORD
+        } catch (ignored) {
+            project.ext.mavenUserName = ""
+            project.ext.mavenPassword = ""
+        }
+    }
 }
 
-
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

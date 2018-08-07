@@ -1,0 +1,37 @@
+dependencies {
+    implementation("com.android.support:support-annotations:$androidSupportSdkVersion")
+
+    implementation('com.google.code.gson:gson:2.8.0')
+
+    try {
+        implementation project(':adhoc_basic:adhoc_basic_sp')
+    } catch (Exception ignored) {
+        implementation("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
+    }
+
+    try {
+        implementation project(':adhoc_basic:adhoc_util_storage')
+    } catch (Exception ignored) {
+        implementation("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
+    }
+}
+
+
+configurations {
+    all*.exclude group: 'android.support'
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+
+        }
+    }
+    compile.extendsFrom provided
+}
