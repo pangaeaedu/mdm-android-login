@@ -36,7 +36,7 @@ allprojects {
         }
     }
     if (project != rootProject) {
-        project.group = 'com.nd.android.mdm.biz'
+        project.group = POM_GROUP_ID
         project.version = VERSION_NAME
         try {
             project.ext.mavenUserName = NEXUS_USERNAME
