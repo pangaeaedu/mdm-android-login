@@ -11,6 +11,3 @@
 .idea/*
 /.idea
 .gitignore
-login/libs/
-login/src/main/java/
-login/src/main/res/drawable/

@@ -1,7 +1,18 @@
 dependencies {
-//    implementation("com.android.support:support-v4:$androidSupportSdkVersion")
+    implementation("com.android.support:support-v4:$androidSupportSdkVersion")
 
 //    api project(':adhoc_basic:adhoc_basic_common')
+    try {
+        api project(':adhoc_basic_net')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
+    }
+
+    implementation("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
+
+    compile  'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
+
+    compile  'io.reactivex:rxandroid:1.2.1'
 }
 
 configurations.all {

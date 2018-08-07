@@ -1,1 +1,42 @@
 include ':login'
+
+
+// 可配置工程
+// 配置后如果存在该目录，工程将包含该目录模块，否则不包含
+// 依赖配置采用try catch方式依赖此些工程
+def map = [:]
+
+map["adhoc-androidframework/adhoc_basic/adhoc_basic_net"] = ":adhoc_basic_net"
+map["adhoc-androidframework/adhoc_basic/adhoc_basic_common"] = ":adhoc_basic_common"
+map["adhoc-androidframework/adhoc_basic/adhoc_util_thread"] = ":adhoc_util_thread"
+
+map.each { dirPath, projectName ->
+    File file = new File('../' + dirPath)
+    if (file.isDirectory() && file.exists() && new File(file, "build.gradle").exists()) {
+        include projectName
+        project(projectName).projectDir = file
+    }
+}
+
+//File adhoc_basic_net = new File('G:\\MDM\\adhoc-androidframework\\adhoc_basic\\adhoc_basic_net')
+//if (adhoc_basic_net.isDirectory() && adhoc_basic_net.exists()
+//        && new File(adhoc_basic_net, "build.gradle").exists()) {
+//    include ":adhoc_basic_net"
+//    project(":adhoc_basic_net").projectDir = adhoc_basic_net
+//}
+//
+//File adhoc_basic_common = new File('G:\\MDM\\adhoc-androidframework\\adhoc_basic\\adhoc_basic_common')
+//if (adhoc_basic_common.isDirectory() && adhoc_basic_common.exists()
+//        && new File(adhoc_basic_common, "build.gradle").exists()) {
+//    include ":adhoc_basic_common"
+//    project(":adhoc_basic_common").projectDir = adhoc_basic_common
+//}
+//
+//File adhoc_util_thread = new File
+//        ('G:\\MDM\\adhoc-androidframework\\adhoc_basic\\adhoc_util_thread')
+//if (adhoc_util_thread.isDirectory() && adhoc_util_thread.exists()
+//        && new File(adhoc_util_thread, "build.gradle").exists()) {
+//    include ":adhoc_util_thread"
+//    project(":adhoc_util_thread").projectDir = adhoc_util_thread
+//}
+
