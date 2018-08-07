@@ -1,4 +1,4 @@
-package com.nd.android.mdm.basic.env;
+package com.nd.android.mdm.biz.env;
 
 /**
  * Created by HuangYK on 2018/6/21.

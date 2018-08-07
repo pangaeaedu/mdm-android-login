@@ -1,4 +1,4 @@
-package com.nd.android.mdm.basic.env.constant;
+package com.nd.android.mdm.biz.env.constant;
 
 /**
  * Created by HuangYK on 2018/8/7.

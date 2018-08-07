@@ -1,4 +1,4 @@
-package com.nd.android.mdm.basic.env;
+package com.nd.android.mdm.biz.env;
 
 import com.google.gson.annotations.SerializedName;
 

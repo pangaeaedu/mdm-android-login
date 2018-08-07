@@ -1,4 +1,4 @@
-package com.nd.android.mdm.basic.env;
+package com.nd.android.mdm.biz.env;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -13,7 +13,7 @@ import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.adhoc.basic.util.storage.AdhocFileReadUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocFileWriteUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
-import com.nd.android.mdm.basic.env.constant.MdmEnvConstant;
+import com.nd.android.mdm.biz.env.constant.MdmEnvConstant;
 
 import org.json.JSONArray;
 import org.json.JSONException;

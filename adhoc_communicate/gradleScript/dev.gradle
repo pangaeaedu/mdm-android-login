@@ -1,0 +1,75 @@
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    implementation("com.android.support:support-annotations:$androidSupportSdkVersion")
+    implementation("com.android.support:support-v4:$androidSupportSdkVersion")
+
+    implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'commons-net:commons-net:3.5'
+
+
+    implementation 'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
+    implementation 'com.nd.sdp.adhoc:adhoc-sdk:1.2.16.2006-develop-SNAPSHOT'
+
+//    compile  project(':mdm_event_define')
+//    compile project(':module_mdm_basic')
+
+    try {
+        implementation project(':adhoc_basic:adhoc_basic_common')
+    } catch (Exception ignored) {
+        implementation("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
+    }
+
+    try {
+        implementation project(':adhoc_basic:adhoc_basic_log')
+    } catch (Exception ignored) {
+        implementation("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
+    }
+
+    try {
+        implementation project(':adhoc_basic:adhoc_util_net')
+    } catch (Exception ignored) {
+        implementation("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
+    }
+
+    try {
+        implementation project(':adhoc_basic:adhoc_util_thread')
+    } catch (Exception ignored) {
+        implementation("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
+    }
+
+    try {
+        implementation project(':adhoc_basic:adhoc_util_storage')
+    } catch (Exception ignored) {
+        implementation("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
+    }
+
+    try {
+        implementation project(':mdm_env')
+    } catch (Exception ignored) {
+        implementation('com.nd.android.mdm.biz:mdm_env:0.0.1-develop-SNAPSHOT')
+    }
+
+    implementation project(':mdm_biz_common')
+    implementation project(':mdm_util_cmd')
+}
+
+
+configurations {
+    all*.exclude group: 'android.support'
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+
+        }
+    }
+    compile.extendsFrom provided
+}
