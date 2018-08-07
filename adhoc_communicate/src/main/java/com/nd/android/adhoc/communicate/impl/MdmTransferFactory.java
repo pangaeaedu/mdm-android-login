@@ -20,11 +20,6 @@ public class MdmTransferFactory {
         init();
     }
 
-    private MdmTransferFactory() {
-        // 防止调用的时候还没有初始化，在构造函数默认进行初始化的操作
-        init();
-    }
-
     private static void init() {
         if (mPushModel == null) {
             mPushModel = new PushModule();
