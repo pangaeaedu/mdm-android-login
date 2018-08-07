@@ -1,11 +1,21 @@
 dependencies {
     implementation("com.android.support:support-v4:$androidSupportSdkVersion")
 
-//    api project(':adhoc_basic:adhoc_basic_common')
     try {
         api project(':adhoc_basic_net')
     } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
+    }
+
+    try{
+        api project (':adhoc_communicate')
+    }catch (Exception e){
+
+    }
+
+    compile('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.7.6.ucsdk.adapter-SNAPSHOT@aar'){
+        transitive = true
+        changing = true
     }
 
     implementation("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
@@ -13,6 +23,8 @@ dependencies {
     compile  'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
 
     compile  'io.reactivex:rxandroid:1.2.1'
+
+    compile  'com.nd.sdp.im.common:utils:0.2.98.release'
 }
 
 configurations.all {

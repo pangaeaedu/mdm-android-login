@@ -2,13 +2,11 @@ package com.nd.android.adhoc.login;
 
 import android.support.annotation.NonNull;
 
+import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
 import com.nd.android.adhoc.login.exception.UnLoginException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import rx.Observable;
 import rx.Observer;
@@ -20,38 +18,38 @@ import rx.schedulers.Schedulers;
 public class LoginManager {
     private static final LoginManager ourInstance = new LoginManager();
 
-    private List<ILoginListener> mListeners = new CopyOnWriteArrayList<>();
-
     public static LoginManager getInstance() {
         return ourInstance;
     }
 
     private boolean mActivated = false;
 
+    private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
+        @Override
+        public void onConnected() {
+
+        }
+
+        @Override
+        public void onDisconnected() {
+
+        }
+    };
+
     private Subscription mSubscription = null;
     private LoginManager() {
         startPushSDK();
     }
 
-    public void addListener(@NonNull ILoginListener pListener){
-        mListeners.add(pListener);
-    }
-
-    public void removeListener(@NonNull ILoginListener pListener){
-        mListeners.remove(pListener);
-    }
-
     private void startPushSDK(){
-
+        MdmTransferFactory.getPushModel().addConnectListener(mPushConnectListener);
+        MdmTransferFactory.getPushModel().start();
     }
 
-    private void onPushSDKResult(){
-
-    }
-
-    public void login(String pUserName, String pPassword) throws Exception{
+    public void login(@NonNull String pUserName, @NonNull String pPassword,
+                      @NonNull ILoginListener pListener){
         if(!mActivated){
-            throw new UnLoginException();
+            pListener.onFailed(new UnLoginException());
         }
 
         if(mSubscription != null){
@@ -71,18 +69,18 @@ public class LoginManager {
                     public void onError(Throwable e) {
                         mSubscription = null;
 
-                        List<ILoginListener> listeners = new ArrayList<>(mListeners);
-                        for (ILoginListener listener : listeners) {
-                            listener.onFailed(e);
-                        }
+//                        List<ILoginListener> listeners = new ArrayList<>(mListeners);
+//                        for (ILoginListener listener : listeners) {
+//                            listener.onFailed(e);
+//                        }
                     }
 
                     @Override
                     public void onNext(ILoginResult pResult) {
-                        List<ILoginListener> listeners = new ArrayList<>(mListeners);
-                        for (ILoginListener listener : listeners) {
-                            listener.onSuccess(pResult);
-                        }
+//                        List<ILoginListener> listeners = new ArrayList<>(mListeners);
+//                        for (ILoginListener listener : listeners) {
+//                            listener.onSuccess(pResult);
+//                        }
                     }
                 });
     }
@@ -105,7 +103,8 @@ public class LoginManager {
         });
     }
     public void logout(){
-        mListeners.clear();
+//        mListeners.clear();
+        MdmTransferFactory.getPushModel().stop();
     }
 
     private LoginSpConfig getConfig(){
