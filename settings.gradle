@@ -15,9 +15,9 @@ include ':mdm_util_cmd'         // 通讯模块，包含 pushsdk、 自组网 co
 // 依赖配置采用try catch方式依赖此些工程
 def map = [:]
 
-map["adhoc-androidframework/adhoc_basic/adhoc_basic_net"] = ":adhoc_basic_net"
-map["adhoc-androidframework/adhoc_basic/adhoc_basic_common"] = ":adhoc_basic_common"
-map["adhoc-androidframework/adhoc_basic/adhoc_util_thread"] = ":adhoc_util_thread"
+//map["adhoc-androidframework/adhoc_basic/adhoc_basic_net"] = ":adhoc_basic_net"
+//map["adhoc-androidframework/adhoc_basic/adhoc_basic_common"] = ":adhoc_basic_common"
+//map["adhoc-androidframework/adhoc_basic/adhoc_util_thread"] = ":adhoc_util_thread"
 
 map.each { dirPath, projectName ->
     File file = new File('../' + dirPath)
