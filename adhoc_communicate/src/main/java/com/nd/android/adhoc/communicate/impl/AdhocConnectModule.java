@@ -54,6 +54,8 @@ class AdhocConnectModule implements IAdhocConnectModule {
     private IDeviceInfoEvent mDeviceInfoEvent;
     private AdhocCallbackImpl mAdhocCallback;
 
+    private final byte[] mTurnIdLock = new byte[]{};
+
 
     AdhocConnectModule() {
         mContext = AdhocBasicConfig.getInstance().getAppContext();
@@ -99,8 +101,8 @@ class AdhocConnectModule implements IAdhocConnectModule {
                 mAdhoc.setRecvFilePath(receivePath);
                 mAdhoc.setMasterName("teacher");
                 mAdhoc.startAndJoin(null, 0, 12580, logPath, "adhoc", receivePath, mAdhocCallback);
-                synchronized (mTurnId) {
-                    if (mTurnId != null && !mTurnId.isEmpty()) {
+                synchronized (mTurnIdLock) {
+                    if (!TextUtils.isEmpty(mTurnId)) {
                         Logger.d(TAG, "set turnid " + mTurnId);
                         mAdhoc.setTurnId(mTurnId);
                     }
@@ -249,7 +251,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
             }
         } else {
             Logger.d(TAG, "ignore turnid event , turnid :" + pTurnId);
-            synchronized (mTurnId) {
+            synchronized (mTurnIdLock) {
                 mTurnId = pTurnId;
             }
         }
