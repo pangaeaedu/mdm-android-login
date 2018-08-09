@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.login.basicService;
+package com.nd.android.adhoc.login.basicService.http;
 
 public class HttpServiceImpl implements IHttpService {
     @Override
@@ -14,5 +14,10 @@ public class HttpServiceImpl implements IHttpService {
     @Override
     public void bindToken() throws Exception {
 
+    }
+
+    @Override
+    public IBindResult bindDevice(String pDeviceToken, String pPushID, String pSerialNum) throws Exception {
+        return null;
     }
 }

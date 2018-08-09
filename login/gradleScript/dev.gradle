@@ -7,6 +7,8 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
     }
 
+    api("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
+
     try{
         api project (':adhoc_communicate')
     }catch (Exception e){

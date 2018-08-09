@@ -1,6 +1,8 @@
 package com.nd.android.adhoc.login.basicService;
 
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
+import com.nd.android.adhoc.login.basicService.http.HttpServiceImpl;
+import com.nd.android.adhoc.login.basicService.http.IHttpService;
 
 public class BasicServiceFactory {
     private static final BasicServiceFactory ourInstance = new BasicServiceFactory();
@@ -28,6 +30,7 @@ public class BasicServiceFactory {
     }
 
     public LoginSpConfig getConfig(){
+//        AdhocBasicConfig.getInstance().getAppContext();
         if(mSpConfig == null){
             synchronized (this){
                 if(mSpConfig == null){
