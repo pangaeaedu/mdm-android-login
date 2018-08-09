@@ -210,7 +210,7 @@ class PushModule implements IPushModule {
 
     }
 
-    private void notifyConnectStatus(boolean pIsConnected) {
+    private synchronized void notifyConnectStatus(boolean pIsConnected) {
         for (IPushConnectListener listener : mConnectListeners) {
             if (pIsConnected) {
                 listener.onConnected();
