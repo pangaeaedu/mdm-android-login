@@ -3,7 +3,6 @@ package com.nd.android.adhoc.communicate.impl;
 import android.content.Context;
 import android.os.RemoteException;
 import android.support.v4.util.ArraySet;
-import android.util.Log;
 
 import com.nd.adhoc.push.PushSdk;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
@@ -108,7 +107,7 @@ class PushModule implements IPushModule {
 
         @Override
         public void onPushStatus(final boolean isConnected) {
-            Log.e("HYK", "onPushStatus: isConnected = " + isConnected);
+            Logger.d("HYK", "onPushStatus: isConnected = " + isConnected);
 //            EventBus.getDefault().post(new PushConnectStatusEvent(isConnected));
             notifyConnectStatus(isConnected);
 
@@ -183,6 +182,17 @@ class PushModule implements IPushModule {
     @Override
     public void removeConnectListener(IPushConnectListener pListener) {
         mConnectListeners.remove(pListener);
+    }
+
+    @Override
+    public void release() {
+        if(!AdhocDataCheckUtils.isCollectionEmpty(mCmdReceivers)){
+            mCmdReceivers.clear();
+        }
+
+        if(!AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)){
+            mConnectListeners.clear();
+        }
     }
 
     private void doCmdReceived(byte[] pCmdMsgBytes) throws AdhocException {

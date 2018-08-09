@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
@@ -21,6 +20,7 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.adhoc.basic.util.storage.ZipCompressorUtil;
+import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.connect.IAdhocConnectModule;
 import com.nd.android.adhoc.communicate.connect.callback.AdhocCallbackImpl;
@@ -140,16 +140,11 @@ class AdhocConnectModule implements IAdhocConnectModule {
             json.put("cmd", "login");
             JSONObject data = new JSONObject();
             json.put("data", data);
-            try {
-                PackageManager pm = mContext.getPackageManager();
-                PackageInfo info = pm.getPackageInfo(mContext.getPackageName(), 0);
-                data.put("versioncode", info.versionCode);
-                data.put("versionname", info.versionName);
-                data.put("type", 1);
-                data.put("deviceid", pDevToken);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
+            PackageInfo info = AdhocPackageUtil.getPackageInfo(mContext);
+            data.put("versioncode", info == null ? 0 : info.versionCode);
+            data.put("versionname", info == null ? "" : info.versionName);
+            data.put("type", 1);
+            data.put("deviceid", pDevToken);
             String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
             data.put("mac", formatMac(mac));
 //            new MessageEvent(json.toString()).post();

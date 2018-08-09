@@ -27,4 +27,6 @@ public interface IPushModule {
 
     void removeConnectListener(IPushConnectListener pListener);
 
+    void release();
+
 }
