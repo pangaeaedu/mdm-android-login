@@ -7,7 +7,7 @@ public class DeviceHelper {
 
     @NonNull
     public static String generateDeviceToken(){
-        return getUniqeID();
+        return getUniqueID();
     }
 
     @NonNull
@@ -15,20 +15,7 @@ public class DeviceHelper {
         return android.os.Build.SERIAL;
     }
 
-//    private String getIMEI(Context pContext){
-//        try{
-//            TelephonyManager TelephonyMgr = (TelephonyManager)pContext
-//                    .getSystemService(TELEPHONY_SERVICE);
-//            String szImei = TelephonyMgr.getDeviceId();
-//            return szImei;
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        return "";
-//    }
-
-    private static String getUniqeID(){
+    private static String getUniqueID(){
         String m_szDevIDShort = "35" + //we make this look like a valid IMEI
                 Build.BOARD.length()%10 +
                 Build.BRAND.length()%10 +
@@ -46,10 +33,4 @@ public class DeviceHelper {
 
         return m_szDevIDShort;
     }
-
-//    private String getAndroidID(Context pContext){
-//        String m_szAndroidID = Settings.Secure.getString(pContext.getContentResolver(),
-//                Settings.Secure.ANDROID_ID);
-//    }
-
 }

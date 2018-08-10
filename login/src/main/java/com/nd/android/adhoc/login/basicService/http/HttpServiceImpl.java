@@ -12,12 +12,12 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public void bindToken() throws Exception {
-
+    public IBindResult bindDevice(String pDeviceToken, String pPushID, String pSerialNum) throws Exception {
+        return null;
     }
 
     @Override
-    public IBindResult bindDevice(String pDeviceToken, String pPushID, String pSerialNum) throws Exception {
-        return null;
+    public void activateUser(IActivateArgument pArgument) throws Exception {
+
     }
 }

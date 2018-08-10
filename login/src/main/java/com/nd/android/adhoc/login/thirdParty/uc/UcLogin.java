@@ -3,6 +3,10 @@ package com.nd.android.adhoc.login.thirdParty.uc;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.nd.android.adhoc.login.basicService.ActivateArgument;
+import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
+import com.nd.android.adhoc.login.basicService.data.ActivateCmdData;
+import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.exception.UcLoginCancelException;
 import com.nd.android.adhoc.login.exception.UcUserNullException;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
@@ -16,13 +20,18 @@ import com.nd.smartcan.accountclient.core.User;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func1;
+import rx.subjects.BehaviorSubject;
 
 public class UcLogin implements IThirdPartyLogin {
     private static final String TAG = "UcLogin";
     protected String mOrgName = "";
 
-    public UcLogin(String pOrgName){
+    private BehaviorSubject<ActivateCmdData> mActivateSubject = BehaviorSubject.create();
+
+    public UcLogin(String pOrgName) {
         mOrgName = pOrgName;
+
     }
 
     @Override
@@ -36,43 +45,46 @@ public class UcLogin implements IThirdPartyLogin {
                     return;
                 }
                 Log.e(TAG, "UCManager login: onSuccess");
+                Observable
+                        .create(new Observable.OnSubscribe<CurrentUser>() {
+                            @Override
+                            public void call(Subscriber<? super CurrentUser> subscriber) {
+                                try {
+                                    User user = currentUser.getUserInfo();
+                                    if (user == null) {
+                                        subscriber.onError(new UcUserNullException());
+                                        return;
+                                    }
 
-                Observable.create(new Observable.OnSubscribe<CurrentUser>() {
-                    @Override
-                    public void call(Subscriber<? super CurrentUser> subscriber) {
-                        //目前只支持整数格式的id
-                        try {
-                            User user = currentUser.getUserInfo();
-                            if (user == null) {
-                                subscriber.onError(new UcUserNullException());
-                                return;
+                                    ActivateArgument argument =
+                                            new ActivateArgument("", "", currentUser);
+                                    getHttpService().activateUser(argument);
+
+                                    subscriber.onNext(currentUser);
+                                    subscriber.onCompleted();
+                                } catch (Exception e) {
+                                    subscriber.onError(e);
+                                }
                             }
-
-//                            //步骤2：获取UCtoken
-//                            String mUserToken = currentUser.getMacToken().getAccessToken();
-//                            Log.e("HYK", "UCManager onSuccess: mUserToken = " + mUserToken);
-//                            if (TextUtils.isEmpty(mUserToken)) {
-//                                subscriber.onError(new UcUserNullException());
-//                                return;
-//                            }
-//
-//                            String nickname = user.getNickName();
-//                            if (!TextUtils.isEmpty(nickname)) {
-//                                mNickName = nickname;
-//                            } else {
-//                                // 保證 nickname 有值
-//                                mNickName = mAccount;
-//                            }
-                            subscriber.onNext(currentUser);
-                            subscriber.onCompleted();
-
-                        } catch (Exception e) {
-                            subscriber.onError(e);
-                        }
-                    }
-                })
-                        .compose(RxJavaUtils.<CurrentUser>applyDefaultSchedulers())
-                        .subscribe(new Subscriber<CurrentUser>() {
+                        })
+                        .flatMap(new Func1<CurrentUser, Observable<UcLoginResult>>() {
+                            @Override
+                            public Observable<UcLoginResult> call(final CurrentUser pUser) {
+                                return mActivateSubject.asObservable().first()
+                                        .flatMap(new Func1<ActivateCmdData, Observable<UcLoginResult>>() {
+                                            @Override
+                                            public Observable<UcLoginResult> call(ActivateCmdData pActivateCmdData) {
+                                                if (pActivateCmdData == null) {
+                                                    return Observable.error(new Exception("cmd " + "data null"));
+                                                }
+                                                return Observable.just(new UcLoginResult(pUser,
+                                                        pActivateCmdData));
+                                            }
+                                        });
+                            }
+                        })
+                        .compose(RxJavaUtils.<UcLoginResult>applyDefaultSchedulers())
+                        .subscribe(new Subscriber<UcLoginResult>() {
                             @Override
                             public void onCompleted() {
 
@@ -85,12 +97,8 @@ public class UcLogin implements IThirdPartyLogin {
                             }
 
                             @Override
-                            public void onNext(CurrentUser pUser) {
-                                // 这里只是回调登录成功，然后由上层去处理登录之后要做的操作。
-                                // 例如：弹出一个 设备校验的 对话框进行校验 -- HYK 20180312
-//                                pCallback.onSuccess(mAccount, mPassword);
-                                UcLoginResult result = new UcLoginResult(pUser);
-                                pCallBack.onSuccess(result);
+                            public void onNext(UcLoginResult pLoginResult) {
+                                pCallBack.onSuccess(pLoginResult);
                             }
                         });
             }
@@ -105,5 +113,9 @@ public class UcLogin implements IThirdPartyLogin {
                 pCallBack.onFailed(e);
             }
         });
+    }
+
+    private IHttpService getHttpService(){
+        return BasicServiceFactory.getInstance().getHttpService();
     }
 }

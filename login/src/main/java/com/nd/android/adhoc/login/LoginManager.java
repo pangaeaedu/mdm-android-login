@@ -16,8 +16,6 @@ import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
 import com.nd.android.adhoc.login.utils.DeviceHelper;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
-import com.nd.smartcan.accountclient.CurrentUser;
-import com.nd.smartcan.accountclient.core.AccountException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -33,8 +31,8 @@ public class LoginManager {
         return ourInstance;
     }
 
-    private BehaviorSubject<Boolean> mPushConnectSubject = BehaviorSubject.create();
-    private BehaviorSubject<Boolean> mReceiveSubject = BehaviorSubject.create();
+    private BehaviorSubject<Boolean> mConnectSubject = BehaviorSubject.create();
+    private BehaviorSubject<Boolean> mActivateSubject = BehaviorSubject.create();
 
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
@@ -49,13 +47,13 @@ public class LoginManager {
             String existPushID = getConfig().getPushID();
             if(pushID.equalsIgnoreCase(existPushID)){
                 Log.e(TAG, "device binded");
-                mPushConnectSubject.onNext(true);
+                mConnectSubject.onNext(true);
                 return;
             }
 
             try {
-                onPushIDRetrieved(pushID);
-                mPushConnectSubject.onNext(true);
+                bindDeviceAfterReceiveNewPushID(pushID);
+                mConnectSubject.onNext(true);
             } catch (Exception pE) {
                 pE.printStackTrace();
             }
@@ -77,7 +75,7 @@ public class LoginManager {
     }
 
     public Observable<Boolean> init(){
-       return mPushConnectSubject.asObservable()
+       return mConnectSubject.asObservable()
                 .first()
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
@@ -95,7 +93,7 @@ public class LoginManager {
                 });
     }
 
-    private void onPushIDRetrieved(String pPushID) throws Exception{
+    private void bindDeviceAfterReceiveNewPushID(String pPushID) throws Exception{
         String deviceToken = DeviceHelper.generateDeviceToken();
         String serialNum = DeviceHelper.generateSerialNum();
 
@@ -112,37 +110,45 @@ public class LoginManager {
         getConfig().saveSerialNum(serialNum);
     }
 
-    public Observable<Void> login(@NonNull final String pUserName, @NonNull final String pPassword) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
+    public Observable<IThirdPartyLoginResult> login(@NonNull final String pUserName, @NonNull final String pPassword) {
+        return Observable.create(new Observable.OnSubscribe<IThirdPartyLoginResult>() {
             @Override
-            public void call(final Subscriber<? super Void> pSubscriber) {
-                if (TextUtils.isEmpty(pUserName) || TextUtils.isEmpty(pPassword)) {
-                    pSubscriber.onError(new Exception("empty username or password"));
-                    return;
+            public void call(final Subscriber<? super IThirdPartyLoginResult> pSubscriber) {
+                try {
+                    if (TextUtils.isEmpty(pUserName) || TextUtils.isEmpty(pPassword)) {
+                        pSubscriber.onError(new Exception("empty username or password"));
+                        return;
+                    }
+
+                    String pushID = MdmTransferFactory.getPushModel().getDeviceId();
+                    String existPushID = getConfig().getPushID();
+
+                    if(TextUtils.isEmpty(pushID)){
+                        pSubscriber.onError(new Exception("get push id empty"));
+                        return;
+                    }
+
+                    if(!pushID.equalsIgnoreCase(existPushID)){
+                        bindDeviceAfterReceiveNewPushID(pushID);
+                    }
+
+                    getThirdPartyLogin()
+                            .login(pUserName, pPassword, new IThirdPartyLoginCallBack() {
+                                @Override
+                                public void onSuccess(IThirdPartyLoginResult pResult) {
+                                    getConfig().saveNickname(pUserName);
+                                    pSubscriber.onNext(pResult);
+                                }
+
+                                @Override
+                                public void onFailed(Throwable pThrowable) {
+                                    pSubscriber.onError(pThrowable);
+                                }
+                            });
+                }catch (Exception e){
+                    pSubscriber.onError(e);
                 }
 
-                getThirdPartyLogin()
-                        .login(pUserName, pPassword, new IThirdPartyLoginCallBack() {
-                            @Override
-                            public void onSuccess(IThirdPartyLoginResult pResult) {
-                                CurrentUser user = (CurrentUser)pResult.getData();
-                                try {
-                                    String nickname = user.getUserInfo().getNickName();
-                                    if(TextUtils.isEmpty(nickname)){
-                                        getConfig().saveNickname(pUserName);
-                                    } else {
-                                        getConfig().saveNickname(nickname);
-                                    }
-                                } catch (AccountException pE) {
-                                    pSubscriber.onError(pE);
-                                }
-                            }
-
-                            @Override
-                            public void onFailed(Throwable pThrowable) {
-                                pSubscriber.onError(pThrowable);
-                            }
-                        });
             }
         });
     }
@@ -152,26 +158,6 @@ public class LoginManager {
         return new UcLogin(orgName);
     }
 
-    private Observable<ILoginResult> getLoginObservable(){
-       return Observable.create(new Observable.OnSubscribe<ILoginResult>() {
-            @Override
-            public void call(Subscriber<? super ILoginResult> pSubscriber) {
-                try {
-                    boolean isActivated = getConfig().isActivated();
-                    if(isActivated){
-                        ILoginResult result = new LoginResultImpl();
-                        pSubscriber.onNext(result);
-                        pSubscriber.onCompleted();
-                    }
-                }catch (Exception e){
-                    pSubscriber.onError(e);
-                }
-            }
-        });
-    }
-    public void logout(){
-        MdmTransferFactory.getPushModel().stop();
-    }
 
     private LoginSpConfig getConfig(){
         return BasicServiceFactory.getInstance().getConfig();
@@ -180,4 +166,12 @@ public class LoginManager {
     private IHttpService getHttpService(){
         return BasicServiceFactory.getInstance().getHttpService();
     }
+
+    private ILoginEventListener mEventListener = new ILoginEventListener() {
+        @Override
+        public void onLogout() {
+            getConfig().clearData();
+            mActivateSubject = BehaviorSubject.create();
+        }
+    };
 }

@@ -64,4 +64,10 @@ public class LoginSpConfig extends BaseSpConfig {
         return getString(KEY_NICKNAME);
     }
 
+    public void clearData(){
+        saveNickname("");
+        saveAutoLogin(false);
+        saveActivated(false);
+        savePushID("");
+    }
 }
