@@ -10,6 +10,7 @@ import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
 import com.nd.android.adhoc.login.basicService.http.IBindResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
+import com.nd.android.adhoc.login.eventListener.ILoginEventListener;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;

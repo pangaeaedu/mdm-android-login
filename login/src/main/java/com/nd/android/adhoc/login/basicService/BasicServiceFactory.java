@@ -1,14 +1,25 @@
 package com.nd.android.adhoc.login.basicService;
 
+import com.nd.android.adhoc.login.eventListener.ILoginEventListener;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
+import com.nd.android.adhoc.login.basicService.data.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.HttpServiceImpl;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
+import com.nd.android.adhoc.login.eventListener.ILoginListener;
+import com.nd.android.adhoc.login.eventListener.IUserActivateListener;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BasicServiceFactory {
     private static final BasicServiceFactory ourInstance = new BasicServiceFactory();
 
     private IHttpService mHttpService = null;
     private LoginSpConfig mSpConfig = null;
+
+    private List<ILoginEventListener> mLoginListeners = new CopyOnWriteArrayList<>();
+
+    private List<IUserActivateListener> mActivateListeners = new CopyOnWriteArrayList<>();
 
     public static BasicServiceFactory getInstance() {
         return ourInstance;
@@ -29,6 +40,22 @@ public class BasicServiceFactory {
         return mHttpService;
     }
 
+    public void addActivateListener(IUserActivateListener pListener){
+        mActivateListeners.add(pListener);
+    }
+
+    public void removeActivateListener(IUserActivateListener pListener){
+        mActivateListeners.remove(pListener);
+    }
+
+    public void addLoginListener(ILoginEventListener pListener){
+        mLoginListeners.add(pListener);
+    }
+
+    public void removeLoginListener(ILoginListener pListener){
+        mLoginListeners.remove(pListener);
+    }
+
     public LoginSpConfig getConfig(){
 //        AdhocBasicConfig.getInstance().getAppContext();
         if(mSpConfig == null){
@@ -40,6 +67,19 @@ public class BasicServiceFactory {
         }
 
         return mSpConfig;
+    }
+
+    public void notifyActivateResponse(UserActivateResult pResult){
+        for (IUserActivateListener listener : mActivateListeners) {
+            listener.onUserActivateResult(pResult);
+        }
+    }
+
+
+    public void notifyForceLogout(){
+        for (ILoginEventListener listener : mLoginListeners) {
+            listener.onLogout();
+        }
     }
 
     public void clear(){

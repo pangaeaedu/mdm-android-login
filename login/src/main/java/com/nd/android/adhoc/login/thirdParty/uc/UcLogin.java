@@ -1,12 +1,15 @@
 package com.nd.android.adhoc.login.thirdParty.uc;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.nd.android.adhoc.login.basicService.ActivateArgument;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
-import com.nd.android.adhoc.login.basicService.data.ActivateCmdData;
+import com.nd.android.adhoc.login.basicService.data.ActivateArgument;
+import com.nd.android.adhoc.login.basicService.data.UserActivateResult;
+import com.nd.android.adhoc.login.basicService.http.IActivateResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
+import com.nd.android.adhoc.login.eventListener.IUserActivateListener;
 import com.nd.android.adhoc.login.exception.UcLoginCancelException;
 import com.nd.android.adhoc.login.exception.UcUserNullException;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
@@ -27,11 +30,26 @@ public class UcLogin implements IThirdPartyLogin {
     private static final String TAG = "UcLogin";
     protected String mOrgName = "";
 
-    private BehaviorSubject<ActivateCmdData> mActivateSubject = BehaviorSubject.create();
+    private BehaviorSubject<UserActivateResult> mActivateSubject = BehaviorSubject.create();
+
+    private String mCurSessionID = "";
+    private IUserActivateListener mActivateListener = new IUserActivateListener() {
+        @Override
+        public void onUserActivateResult(UserActivateResult pResult) {
+            if(TextUtils.isEmpty(mCurSessionID)){
+                return;
+            }
+
+            if(!mCurSessionID.equalsIgnoreCase(pResult.mSessionID)){
+                return;
+            }
+            mActivateSubject.onNext(pResult);
+        }
+    };
 
     public UcLogin(String pOrgName) {
         mOrgName = pOrgName;
-
+        BasicServiceFactory.getInstance().addActivateListener(mActivateListener);
     }
 
     @Override
@@ -58,7 +76,9 @@ public class UcLogin implements IThirdPartyLogin {
 
                                     ActivateArgument argument =
                                             new ActivateArgument("", "", currentUser);
-                                    getHttpService().activateUser(argument);
+                                    IActivateResult result = getHttpService().activateUser
+                                            (argument);
+                                    mCurSessionID = result.getSessionID();
 
                                     subscriber.onNext(currentUser);
                                     subscriber.onCompleted();
@@ -71,14 +91,16 @@ public class UcLogin implements IThirdPartyLogin {
                             @Override
                             public Observable<UcLoginResult> call(final CurrentUser pUser) {
                                 return mActivateSubject.asObservable().first()
-                                        .flatMap(new Func1<ActivateCmdData, Observable<UcLoginResult>>() {
+                                        .flatMap(new Func1<UserActivateResult, Observable<UcLoginResult>>() {
                                             @Override
-                                            public Observable<UcLoginResult> call(ActivateCmdData pActivateCmdData) {
-                                                if (pActivateCmdData == null) {
-                                                    return Observable.error(new Exception("cmd " + "data null"));
+                                            public Observable<UcLoginResult> call(UserActivateResult pResult) {
+                                                if (pResult == null) {
+                                                    return Observable.error(new Exception
+                                                            ("activate response null"));
                                                 }
+
                                                 return Observable.just(new UcLoginResult(pUser,
-                                                        pActivateCmdData));
+                                                        pResult));
                                             }
                                         });
                             }
@@ -87,13 +109,14 @@ public class UcLogin implements IThirdPartyLogin {
                         .subscribe(new Subscriber<UcLoginResult>() {
                             @Override
                             public void onCompleted() {
-
+                                BasicServiceFactory.getInstance().removeActivateListener(mActivateListener);
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 pCallBack.onFailed(e);
+                                BasicServiceFactory.getInstance().removeActivateListener(mActivateListener);
                             }
 
                             @Override

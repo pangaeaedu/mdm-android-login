@@ -9,8 +9,16 @@ dependencies {
 
     api("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
 
+    annotationProcessor ("com.nd.android.adhoc.basic:adhoc-router-compiler:$adhoc_basic_version")
+
     try{
         api project (':adhoc_communicate')
+    }catch (Exception e){
+
+    }
+
+    try{
+        api project (':loginapi')
     }catch (Exception e){
 
     }

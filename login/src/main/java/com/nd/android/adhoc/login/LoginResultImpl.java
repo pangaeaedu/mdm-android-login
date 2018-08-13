@@ -1,5 +1,7 @@
 package com.nd.android.adhoc.login;
 
+import com.nd.android.adhoc.login.eventListener.ILoginResult;
+
 public class LoginResultImpl implements ILoginResult {
 
     private String mUserID = "";

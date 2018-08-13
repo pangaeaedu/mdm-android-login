@@ -2,16 +2,16 @@ package com.nd.android.adhoc.login.thirdParty.uc;
 
 import android.support.annotation.NonNull;
 
-import com.nd.android.adhoc.login.basicService.data.ActivateCmdData;
+import com.nd.android.adhoc.login.basicService.data.UserActivateResult;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;
 import com.nd.smartcan.accountclient.CurrentUser;
 
 public class UcLoginResult implements IThirdPartyLoginResult {
 
     private CurrentUser mUser;
-    private ActivateCmdData mCmdData;
+    private UserActivateResult mCmdData;
 
-    public UcLoginResult(@NonNull CurrentUser pUser,  ActivateCmdData pArgument){
+    public UcLoginResult(@NonNull CurrentUser pUser,  UserActivateResult pArgument){
         mUser = pUser;
         mCmdData = pArgument;
     }
@@ -25,7 +25,7 @@ public class UcLoginResult implements IThirdPartyLoginResult {
         return mUser;
     }
 
-    public ActivateCmdData getCmdData(){
+    public UserActivateResult getCmdData(){
         return mCmdData;
     }
 }

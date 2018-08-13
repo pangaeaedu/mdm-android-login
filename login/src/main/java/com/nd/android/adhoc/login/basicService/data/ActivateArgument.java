@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.login.basicService;
+package com.nd.android.adhoc.login.basicService.data;
 
 import com.nd.android.adhoc.login.basicService.http.IActivateArgument;
 import com.nd.android.adhoc.login.enumConst.DeviceType;
