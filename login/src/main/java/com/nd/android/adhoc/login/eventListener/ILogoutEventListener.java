@@ -1,5 +1,5 @@
 package com.nd.android.adhoc.login.eventListener;
 
-public interface ILoginEventListener {
+public interface ILogoutEventListener {
     void onLogout();
 }

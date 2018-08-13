@@ -10,7 +10,7 @@ import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
 import com.nd.android.adhoc.login.basicService.http.IBindResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
-import com.nd.android.adhoc.login.eventListener.ILoginEventListener;
+import com.nd.android.adhoc.login.eventListener.ILogoutEventListener;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;
@@ -33,7 +33,6 @@ public class LoginManager {
     }
 
     private BehaviorSubject<Boolean> mConnectSubject = BehaviorSubject.create();
-    private BehaviorSubject<Boolean> mActivateSubject = BehaviorSubject.create();
 
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
@@ -68,6 +67,7 @@ public class LoginManager {
 
     private LoginManager() {
         startPushSDK();
+        BasicServiceFactory.getInstance().addLogoutListener(mEventListener);
     }
 
     private void startPushSDK(){
@@ -159,7 +159,6 @@ public class LoginManager {
         return new UcLogin(orgName);
     }
 
-
     private LoginSpConfig getConfig(){
         return BasicServiceFactory.getInstance().getConfig();
     }
@@ -168,11 +167,10 @@ public class LoginManager {
         return BasicServiceFactory.getInstance().getHttpService();
     }
 
-    private ILoginEventListener mEventListener = new ILoginEventListener() {
+    private ILogoutEventListener mEventListener = new ILogoutEventListener() {
         @Override
         public void onLogout() {
             getConfig().clearData();
-            mActivateSubject = BehaviorSubject.create();
         }
     };
 }

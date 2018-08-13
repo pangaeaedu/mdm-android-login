@@ -47,7 +47,11 @@ public class UcLogin implements IThirdPartyLogin {
         }
     };
 
-    public UcLogin(String pOrgName) {
+    public UcLogin(@NonNull String pOrgName) {
+        if(TextUtils.isEmpty(pOrgName)){
+            throw new RuntimeException("org name is empty");
+        }
+
         mOrgName = pOrgName;
         BasicServiceFactory.getInstance().addActivateListener(mActivateListener);
     }
