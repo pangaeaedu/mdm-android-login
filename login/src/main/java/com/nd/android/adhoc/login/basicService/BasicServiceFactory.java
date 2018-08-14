@@ -2,7 +2,7 @@ package com.nd.android.adhoc.login.basicService;
 
 import com.nd.android.adhoc.login.eventListener.ILogoutEventListener;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
-import com.nd.android.adhoc.login.basicService.data.UserActivateResult;
+import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.HttpServiceImpl;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.eventListener.ILoginListener;
@@ -84,7 +84,6 @@ public class BasicServiceFactory {
 
     public void clear(){
         if(mHttpService != null){
-            mHttpService.clear();
             mHttpService = null;
         }
 

@@ -171,6 +171,8 @@ public class LoginManager {
         @Override
         public void onLogout() {
             getConfig().clearData();
+            mConnectSubject = BehaviorSubject.create();
+            MdmTransferFactory.getPushModel().start();
         }
     };
 }

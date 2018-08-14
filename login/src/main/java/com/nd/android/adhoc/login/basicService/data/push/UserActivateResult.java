@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.login.basicService.data;
+package com.nd.android.adhoc.login.basicService.data.push;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -2,7 +2,7 @@ package com.nd.android.adhoc.login.thirdParty.uc;
 
 import android.support.annotation.NonNull;
 
-import com.nd.android.adhoc.login.basicService.data.UserActivateResult;
+import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;
 import com.nd.smartcan.accountclient.CurrentUser;
 

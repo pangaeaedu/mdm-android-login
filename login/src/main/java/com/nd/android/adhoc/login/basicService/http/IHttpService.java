@@ -1,9 +1,13 @@
 package com.nd.android.adhoc.login.basicService.http;
 
+import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
+
 public interface IHttpService {
-    void clear();
-    void requestPolicy(String pPolicyVersion) throws Exception;
+
+    void requestPolicy(String pDeviceToken) throws Exception;
 
     IBindResult bindDevice(String pDeviceToken, String pPushID, String pSerialNum) throws Exception;
-    IActivateResult activateUser(IActivateArgument pArgument) throws Exception;
+
+    ActivateHttpResult activateUser(String pUserToken, String pDeviceToken) throws
+            Exception;
 }

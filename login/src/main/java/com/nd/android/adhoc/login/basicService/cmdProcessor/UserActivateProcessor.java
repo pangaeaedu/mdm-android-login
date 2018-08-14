@@ -3,7 +3,7 @@ package com.nd.android.adhoc.login.basicService.cmdProcessor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
-import com.nd.android.adhoc.login.basicService.data.UserActivateResult;
+import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.loginapi.IUserActivateProcessor;
 
 public class UserActivateProcessor extends BaseCmdProcessor implements IUserActivateProcessor {
