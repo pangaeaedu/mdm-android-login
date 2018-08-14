@@ -16,6 +16,7 @@ import com.nd.android.adhoc.communicate.receiver.ICmdReceiver;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.android.mdm.biz.common.MsgCode;
+import com.nd.android.mdm.biz.common.util.SDKLogUtil;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.util.cmd.CmdUtil;
 import com.nd.sdp.adhoc.push.IPushSdkCallback;
@@ -203,6 +204,9 @@ class PushModule implements IPushModule {
         if (pCmdMsgBytes == null) {
             throw new AdhocException("IPushModule doCmdReceived: Cmd message bytes is null", ErrorCode.FAILED, MsgCode.ERROR_PARAMETER);
         }
+
+        String pCmdMsg = new String(pCmdMsgBytes);
+        SDKLogUtil.v("【PushModule】doCmdReceived: on cmd arrive %s", pCmdMsg);
 
         for (ICmdReceiver receiver : mCmdReceivers) {
             receiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_DRM, AdhocCmdFromTo.MDM_CMD_DRM);
