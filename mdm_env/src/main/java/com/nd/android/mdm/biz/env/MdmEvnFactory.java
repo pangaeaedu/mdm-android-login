@@ -3,6 +3,7 @@ package com.nd.android.mdm.biz.env;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -181,15 +182,15 @@ public final class MdmEvnFactory {
         return mCurIndexk;
     }
 
-    public void addEnvChangedListener(IEnvChangedListener pListener){
+    public void addEnvChangedListener(@NonNull IEnvChangedListener pListener){
         mEnvChangedListeners.add(pListener);
     }
 
-    public void removeEnvChangedListener(IEnvChangedListener pListener){
+    public void removeEnvChangedListener(@NonNull IEnvChangedListener pListener){
         mEnvChangedListeners.remove(pListener);
     }
 
-    public void notifyEnvChanged(IMdmEnvModule pOld, IMdmEnvModule pNew){
+    public void notifyEnvChanged(@Nullable IMdmEnvModule pOld, @NonNull IMdmEnvModule pNew){
         for (IEnvChangedListener listener : mEnvChangedListeners) {
             listener.onEnvironmentChanged(pOld, pNew);
         }
