@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
@@ -14,6 +15,8 @@ import com.nd.android.adhoc.basic.util.storage.AdhocFileReadUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocFileWriteUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.mdm.biz.env.constant.MdmEnvConstant;
+import com.nd.smartcan.accountclient.UCEnv;
+import com.nd.smartcan.accountclient.UCManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +45,13 @@ public final class MdmEvnFactory {
     private IMdmEnvModule mCurMdmEnvModule;
     private int mCurIndexk = MdmEnvConstant.DEFAULT_ENV_INDEX;
 
+    private ISharedPreferenceModel mPreferenceModel = null;
+
+    private List<IEnvChangedListener> mEnvChangedListeners = new CopyOnWriteArrayList<>();
+
     private MdmEvnFactory() {
+        Context context = AdhocBasicConfig.getInstance().getAppContext();
+        init(context);
     }
 
     public static MdmEvnFactory getInstance() {
@@ -56,9 +65,9 @@ public final class MdmEvnFactory {
         return sInstance;
     }
 
-    public void init(@NonNull Context context) {
-        ISharedPreferenceModel model = SharedPreferenceFactory.getInstance().getModel(context, context.getPackageName());
-        boolean envConfig = model.getBoolean(KEY_ENV_CONFIG, false);
+    private void init(@NonNull Context context) {
+        mPreferenceModel = SharedPreferenceFactory.getInstance().getModel(context, context.getPackageName());
+        boolean envConfig = mPreferenceModel.getBoolean(KEY_ENV_CONFIG, false);
         final String sdPath = AdhocStorageUtil.getSdCardPath();
         String filePath = String.format(FORMAT_CONFIG_PATH, sdPath, context.getPackageName());
         File confFile = new File(filePath);
@@ -114,8 +123,8 @@ public final class MdmEvnFactory {
             }
         }
 
-        model.applyPutBoolean(KEY_ENV_CONFIG, true);
-        int env = model.getInt("env", mCurIndexk);
+        mPreferenceModel.applyPutBoolean(KEY_ENV_CONFIG, true);
+        int env = mPreferenceModel.getInt("env", mCurIndexk);
         setCurEnvironment(env);
     }
 
@@ -128,22 +137,35 @@ public final class MdmEvnFactory {
     }
 
     public void setCurEnvironment(int index) {
-        mCurIndexk = index;
-        // TODO:先這麼寫, 代碼太醜
-//        switch (index) {
-//            case 3:
-//                UCManager.getInstance().setEnv(UCEnv.AWS);
-//                break;
-//            case 0:
-//            case 1:
-//            case 2:
-//            default:
-//                UCManager.getInstance().setEnv(UCEnv.PreProduct);
-//                break;
-//        }
-
         if (index >= 0 && index < mMdmEnvModules.size()) {
-            mCurMdmEnvModule = getMdmEnvModel(index);
+            return;
+        }
+
+        if(mCurIndexk == index){
+            return;
+        }
+
+        IMdmEnvModule old = getMdmEnvModel(mCurIndexk);
+
+        mCurIndexk = index;
+        setUcEnv(mCurIndexk);
+        mCurMdmEnvModule = getMdmEnvModel(index);
+        mPreferenceModel.putInt("env",mCurIndexk).apply();
+
+        notifyEnvChanged(old, mCurMdmEnvModule);
+    }
+
+    private void setUcEnv(int pIndex){
+        switch (pIndex) {
+            case 3:
+                UCManager.getInstance().setEnv(UCEnv.AWS);
+                break;
+            case 0:
+            case 1:
+            case 2:
+            default:
+                UCManager.getInstance().setEnv(UCEnv.PreProduct);
+                break;
         }
     }
 
@@ -159,4 +181,17 @@ public final class MdmEvnFactory {
         return mCurIndexk;
     }
 
+    public void addEnvChangedListener(IEnvChangedListener pListener){
+        mEnvChangedListeners.add(pListener);
+    }
+
+    public void removeEnvChangedListener(IEnvChangedListener pListener){
+        mEnvChangedListeners.remove(pListener);
+    }
+
+    public void notifyEnvChanged(IMdmEnvModule pOld, IMdmEnvModule pNew){
+        for (IEnvChangedListener listener : mEnvChangedListeners) {
+            listener.onEnvironmentChanged(pOld, pNew);
+        }
+    }
 }

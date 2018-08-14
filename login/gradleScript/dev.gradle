@@ -23,7 +23,7 @@ dependencies {
 
     }
 
-    compile('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.7.6.ucsdk.adapter-SNAPSHOT@aar'){
+    compile('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
         transitive = true
         changing = true
     }
