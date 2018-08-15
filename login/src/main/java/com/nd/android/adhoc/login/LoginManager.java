@@ -37,25 +37,27 @@ public class LoginManager {
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
         public void onConnected() {
-            String pushID = MdmTransferFactory.getPushModel().getDeviceId();
-            Log.e(TAG, "push sdk connected");
-            if(TextUtils.isEmpty(pushID)){
-                Log.e(TAG, "return a empty PushID");
-                return;
-            }
+            synchronized (LoginManager.getInstance()) {
+                String pushID = MdmTransferFactory.getPushModel().getDeviceId();
+                Log.e(TAG, "push sdk connected");
+                if (TextUtils.isEmpty(pushID)) {
+                    Log.e(TAG, "return a empty PushID");
+                    return;
+                }
 
-            String existPushID = getConfig().getPushID();
-            if(pushID.equalsIgnoreCase(existPushID)){
-                Log.e(TAG, "device binded");
-                mConnectSubject.onNext(true);
-                return;
-            }
+                String existPushID = getConfig().getPushID();
+                if (pushID.equalsIgnoreCase(existPushID)) {
+                    Log.e(TAG, "device binded");
+                    mConnectSubject.onNext(true);
+                    return;
+                }
 
-            try {
-                bindDeviceAfterReceiveNewPushID(pushID);
-                mConnectSubject.onNext(true);
-            } catch (Exception pE) {
-                pE.printStackTrace();
+                try {
+                    bindDeviceAfterReceiveNewPushID(pushID);
+                    mConnectSubject.onNext(true);
+                } catch (Exception pE) {
+                    pE.printStackTrace();
+                }
             }
         }
 
@@ -66,12 +68,9 @@ public class LoginManager {
     };
 
     private LoginManager() {
-        startPushSDK();
-        BasicServiceFactory.getInstance().addLogoutListener(mEventListener);
-    }
-
-    private void startPushSDK(){
         MdmTransferFactory.getPushModel().addConnectListener(mPushConnectListener);
+        BasicServiceFactory.getInstance().addLogoutListener(mEventListener);
+
         MdmTransferFactory.getPushModel().start();
     }
 

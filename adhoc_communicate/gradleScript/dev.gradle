@@ -18,19 +18,19 @@ dependencies {
     api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
 
     try {
-        api project(':mdm_env')
+        compile project(':mdm_env')
     } catch (Exception ignored) {
         api('com.nd.android.mdm.biz:mdm_env:0.0.8-develop-SNAPSHOT')
     }
 
     try {
-        api project(':mdm_biz_common')
+        compile project(':mdm_biz_common')
     } catch (Exception ignored) {
         api('com.nd.android.mdm.biz:mdm_biz_common:0.0.8-develop-SNAPSHOT')
     }
 
     try {
-        api project(':mdm_util_cmd')
+        compile project(':mdm_util_cmd')
     } catch (Exception ignored) {
         api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.8-develop-SNAPSHOT')
     }
