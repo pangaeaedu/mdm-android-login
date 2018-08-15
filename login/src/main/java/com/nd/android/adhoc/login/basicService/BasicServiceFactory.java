@@ -52,7 +52,7 @@ public class BasicServiceFactory {
         mLogoutListeners.add(pListener);
     }
 
-    public void removeLoginListener(ILoginListener pListener){
+    public void removeLogoutListener(ILoginListener pListener){
         mLogoutListeners.remove(pListener);
     }
 
