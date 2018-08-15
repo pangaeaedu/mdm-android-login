@@ -138,11 +138,11 @@ public final class MdmEvnFactory {
     }
 
     public void setCurEnvironment(int index) {
-        if (index >= 0 && index < mMdmEnvModules.size()) {
+        if (index < 0 || index >= mMdmEnvModules.size()) {
             return;
         }
 
-        if(mCurIndexk == index){
+        if (mCurIndexk == index && mCurMdmEnvModule != null) {
             return;
         }
 
