@@ -2,7 +2,6 @@ package com.nd.android.adhoc.communicate.impl;
 
 import android.content.Context;
 import android.os.RemoteException;
-import android.support.v4.util.ArraySet;
 
 import com.nd.adhoc.push.PushSdk;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
@@ -12,7 +11,7 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
-import com.nd.android.adhoc.communicate.receiver.ICmdReceiver;
+import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.android.mdm.biz.common.MsgCode;
@@ -20,12 +19,13 @@ import com.nd.android.mdm.biz.common.util.SDKLogUtil;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.util.cmd.CmdUtil;
 import com.nd.sdp.adhoc.push.IPushSdkCallback;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -39,7 +39,7 @@ class PushModule implements IPushModule {
 
     private Context mContext;
 
-    private Set<ICmdReceiver> mCmdReceivers;
+    private ICmdMsgReceiver mCmdReceiver;
 
     private List<IPushConnectListener> mConnectListeners;
 
@@ -48,7 +48,6 @@ class PushModule implements IPushModule {
 
     PushModule() {
         mContext = AdhocBasicConfig.getInstance().getAppContext();
-        mCmdReceivers = new ArraySet<>();
         mConnectListeners = new CopyOnWriteArrayList<>();
     }
 
@@ -64,6 +63,9 @@ class PushModule implements IPushModule {
 //        CmdFactory.enableFactory(true);
         PushSdk.getInstance().stop();
         PushSdk.getInstance().startPushSdk(mContext, "mdm", null, pushSrvIp, pushSrvPort, mPushSdkCallback);
+
+        Iterator<ICmdMsgReceiver> receiverIterator =  AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
+        mCmdReceiver = receiverIterator.next();
 
     }
 
@@ -168,11 +170,6 @@ class PushModule implements IPushModule {
     }
 
     @Override
-    public void addCmdReceiver(ICmdReceiver pCmdReceiver) {
-        mCmdReceivers.add(pCmdReceiver);
-    }
-
-    @Override
     public void addConnectListener(IPushConnectListener pListener) {
         if (pListener == null || mConnectListeners.contains(pListener)) {
             return;
@@ -187,9 +184,7 @@ class PushModule implements IPushModule {
 
     @Override
     public void release() {
-        if(!AdhocDataCheckUtils.isCollectionEmpty(mCmdReceivers)){
-            mCmdReceivers.clear();
-        }
+        mCmdReceiver = null;
 
         if(!AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)){
             mConnectListeners.clear();
@@ -197,20 +192,18 @@ class PushModule implements IPushModule {
     }
 
     private void doCmdReceived(byte[] pCmdMsgBytes) throws AdhocException {
-        if (AdhocDataCheckUtils.isCollectionEmpty(mCmdReceivers)) {
-            return;
+        if (pCmdMsgBytes == null || pCmdMsgBytes.length <= 0) {
+            throw new AdhocException("PushModule doCmdReceived: Cmd message bytes is null", ErrorCode.FAILED, MsgCode.ERROR_PARAMETER);
         }
 
-        if (pCmdMsgBytes == null) {
-            throw new AdhocException("IPushModule doCmdReceived: Cmd message bytes is null", ErrorCode.FAILED, MsgCode.ERROR_PARAMETER);
+        if(mCmdReceiver == null){
+            Logger.w(TAG, "mCmdReceiver is null");
+            return;
         }
 
         String pCmdMsg = new String(pCmdMsgBytes);
         SDKLogUtil.v("【PushModule】doCmdReceived: on cmd arrive %s", pCmdMsg);
-
-        for (ICmdReceiver receiver : mCmdReceivers) {
-            receiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_DRM, AdhocCmdFromTo.MDM_CMD_DRM);
-        }
+        mCmdReceiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_DRM, AdhocCmdFromTo.MDM_CMD_DRM);
 
     }
 

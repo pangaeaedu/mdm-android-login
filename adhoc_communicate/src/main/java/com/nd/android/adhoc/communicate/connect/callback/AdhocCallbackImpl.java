@@ -3,22 +3,21 @@ package com.nd.android.adhoc.communicate.connect.callback;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import android.support.v4.util.ArraySet;
 
-import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
-import com.nd.android.adhoc.communicate.receiver.ICmdReceiver;
+import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
 import com.nd.android.adhoc.communicate.utils.BroadcastUtil;
 import com.nd.eci.sdk.IAdhocCallback;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by HuangYK on 2018/5/4.
@@ -33,13 +32,16 @@ public class AdhocCallbackImpl implements IAdhocCallback {
     private IAdhocConnectListener mConnectListener;
     private boolean mAdhocConnect = false;
 
-    private Set<ICmdReceiver> mCmdReceivers = new ArraySet<>();
+    private ICmdMsgReceiver mCmdReceiver;
 
     private IAdocFileTransferListener mFileTransferListener;
 
 
     public AdhocCallbackImpl() {
         fileInfos = new HashMap<>();
+
+        Iterator<ICmdMsgReceiver> receiverIterator =  AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
+        mCmdReceiver = receiverIterator.next();
     }
 
     public void setConnectListener(@NonNull IAdhocConnectListener pConnectListener) {
@@ -102,7 +104,7 @@ public class AdhocCallbackImpl implements IAdhocCallback {
     @Override
     public void onDataArriveComplete(long l, byte[] bytes) throws RemoteException {
         if (bytes == null) {
-            Logger.w(TAG,"onDataArriveComplete, bytes is empty");
+            Logger.w(TAG, "onDataArriveComplete, bytes is empty");
             return;
         }
 
@@ -216,7 +218,9 @@ public class AdhocCallbackImpl implements IAdhocCallback {
 
 
     private void doCmdReceived(byte[] pCmdMsgBytes) {
-        if (AdhocDataCheckUtils.isCollectionEmpty(mCmdReceivers)) {
+
+        if (mCmdReceiver == null) {
+            Logger.w(TAG, "mCmdReceiver is null");
             return;
         }
 
@@ -224,12 +228,6 @@ public class AdhocCallbackImpl implements IAdhocCallback {
             return;
         }
 
-        for (ICmdReceiver receiver : mCmdReceivers) {
-            receiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_ADHOC, AdhocCmdFromTo.MDM_CMD_ADHOC);
-        }
-    }
-
-    public void addCmdReceiver(ICmdReceiver pCmdReceiver) {
-        mCmdReceivers.add(pCmdReceiver);
+        mCmdReceiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_ADHOC, AdhocCmdFromTo.MDM_CMD_ADHOC);
     }
 }

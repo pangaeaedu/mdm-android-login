@@ -20,20 +20,25 @@ dependencies {
     try {
         api project(':mdm_env')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_env:0.0.1-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_env:0.0.8-develop-SNAPSHOT')
     }
 
     try {
         api project(':mdm_biz_common')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.6-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.8-develop-SNAPSHOT')
     }
 
     try {
         api project(':mdm_util_cmd')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.6-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.8-develop-SNAPSHOT')
     }
+
+
+    annotationProcessor "com.nd.sdp.android.serviceloader:service-loader-compiler:1.0.9"
+    api "com.nd.sdp.android.serviceloader:service-loader:1.0.9"
+    api "com.nd.sdp.android.serviceloader:service-loader-annotation:1.0.9"
 
 }
 

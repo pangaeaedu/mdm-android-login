@@ -10,7 +10,7 @@ import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
  * <p>
  * Created by HuangYK on 2018/4/29.
  */
-public interface ICmdReceiver {
+public interface ICmdMsgReceiver {
 
     /**
      * Cmd 指令接收之后的处理

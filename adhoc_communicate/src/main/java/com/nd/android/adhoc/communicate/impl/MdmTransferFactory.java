@@ -1,10 +1,7 @@
 package com.nd.android.adhoc.communicate.impl;
 
-import android.support.annotation.NonNull;
-
 import com.nd.android.adhoc.communicate.connect.IAdhocConnectModule;
 import com.nd.android.adhoc.communicate.push.IPushModule;
-import com.nd.android.adhoc.communicate.receiver.ICmdReceiver;
 
 /**
  * MDM 通信传输层 工厂类
@@ -38,17 +35,8 @@ public class MdmTransferFactory {
         return mCommunicationModule;
     }
 
-    public static void addCmdReceiver(@NonNull ICmdReceiver pCmdReceiver) {
-        if (mPushModel != null) {
-            mPushModel.addCmdReceiver(pCmdReceiver);
-        }
-
-        if (mCommunicationModule != null) {
-            mCommunicationModule.addCmdReceiver(pCmdReceiver);
-        }
-    }
-
     public static void release() {
+        mPushModel.release();
         mCommunicationModule.release();
     }
 

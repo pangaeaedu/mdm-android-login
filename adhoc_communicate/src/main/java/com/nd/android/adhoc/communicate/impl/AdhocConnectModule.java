@@ -28,7 +28,6 @@ import com.nd.android.adhoc.communicate.connect.event.IDeviceInfoEvent;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
-import com.nd.android.adhoc.communicate.receiver.ICmdReceiver;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.eci.sdk.IAdhoc;
 import com.nd.eci.sdk.service.AdhocService;
@@ -59,7 +58,6 @@ class AdhocConnectModule implements IAdhocConnectModule {
 
     AdhocConnectModule() {
         mContext = AdhocBasicConfig.getInstance().getAppContext();
-
         mAdhocCallback = new AdhocCallbackImpl();
     }
 
@@ -290,12 +288,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
                 HttpUtil.post(pUrl, pContent);
                 subscriber.onCompleted();
             }
-        }).subscribeOn(Schedulers.newThread()));
-    }
-
-    @Override
-    public void addCmdReceiver(ICmdReceiver pCmdReceiver) {
-        mAdhocCallback.addCmdReceiver(pCmdReceiver);
+        }).subscribeOn(Schedulers.io()));
     }
 
     @Override
