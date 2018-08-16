@@ -1,11 +1,7 @@
 package com.nd.android.adhoc.login.basicService.data.http;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ActivateHttpResult {
-    @JsonProperty("result")
-    public String mResult = "";
+    public String result = "";
 
-    @JsonProperty("requestid")
-    public String mSessionID = "";
+    public String requestid = "";
 }

@@ -84,7 +84,7 @@ public class UcLogin implements IThirdPartyLogin {
                                             String deviceToken = DeviceHelper.generateDeviceToken();
                                             ActivateHttpResult result = getHttpService()
                                                     .activateUser(deviceToken, deviceToken);
-                                            mCurSessionID = result.mSessionID;
+                                            mCurSessionID = result.requestid;
                                             Log.e(TAG, "Sessiong ID: "+mCurSessionID);
 
                                             subscriber.onNext(currentUser);

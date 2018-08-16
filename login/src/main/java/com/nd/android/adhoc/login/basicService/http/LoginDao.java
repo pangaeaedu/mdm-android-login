@@ -1,10 +1,14 @@
 package com.nd.android.adhoc.login.basicService.http;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.nd.android.adhoc.basic.net.constant.AhdocHttpConstants;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpRequest;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.http.BindResult;
+import com.nd.android.smartcan.network.Method;
 import com.nd.smartcan.core.security.SecurityDelegate;
 
 import org.json.JSONObject;
@@ -34,24 +38,32 @@ public class LoginDao extends AdhocHttpDao {
         map.put("serial_num", pSerialNum);
         map.put("pushid", pPushID);
 
+        try {
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
 
-        return postAction().post("/v1.1/registe/pushid/", BindResult.class, map);
+            return postAction().post("/v1.1/registe/pushid/", BindResult.class, content, null);
+        } catch (RuntimeException e) {
+
+            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+        }
+
     }
 
     public ActivateHttpResult activateUser(String pUserToken, String pDeviceToken)
                             throws Exception {
         ActivateHttpRequest request = new ActivateHttpRequest();
-        request.mUserToken = pUserToken;
-        request.mDeviceToken = pDeviceToken;
+        request.user_token = pUserToken;
+        request.device_token = pDeviceToken;
 
-        String macJson = SecurityDelegate.getInstance()
-                .calculateMACContent(1, "uc.im", "/v1.1/registe/activate/", true);
+        String uctoken = SecurityDelegate.getInstance().calculateMACContent(Method.POST, "uc.mdm",
+                "/device_token=" + pDeviceToken, false);
 
         JSONObject object = null;
-        object = new JSONObject(macJson);
-        request.mParams.mAccessToken = object.optString("access_token");
-        request.mParams.mMac = object.optString("mac");
-        request.mParams.mNonce = object.optString("nonce");
+        object = new JSONObject(uctoken);
+        request.uc.access_token = object.optString("access_token");
+        request.uc.mac = object.optString("mac");
+        request.uc.nonce = object.optString("nonce");
 
         return postAction().post("/v1.1/registe/activate/", ActivateHttpResult.class, request);
     }

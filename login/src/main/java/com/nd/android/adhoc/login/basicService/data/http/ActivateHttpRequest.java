@@ -1,13 +1,10 @@
 package com.nd.android.adhoc.login.basicService.data.http;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ActivateHttpRequest {
-    public String mUserToken = "";
+    public String user_token = "";
 
-    public String mDeviceToken = "";
-    @JsonProperty("type")
-    public int mType = 1;
+    public String device_token = "";
+    public int type = 1;
 
-    public UcParams mParams = new UcParams();
+    public UcParams uc = new UcParams();
 }

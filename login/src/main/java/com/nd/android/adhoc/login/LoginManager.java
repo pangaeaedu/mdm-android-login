@@ -57,6 +57,7 @@ public class LoginManager {
                     mConnectSubject.onNext(true);
                 } catch (Exception pE) {
                     pE.printStackTrace();
+                    mConnectSubject.onNext(false);
                 }
             }
         }
@@ -80,15 +81,14 @@ public class LoginManager {
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean pBinded) {
+                        if(!pBinded){
+                            return false;
+                        }
                         if(getConfig().isAutoLogin()){
                             return true;
                         }
 
-                        if(TextUtils.isEmpty(getConfig().getNickname())){
-                            return false;
-                        }
-
-                        return true;
+                       return false;
                     }
                 });
     }
@@ -104,7 +104,11 @@ public class LoginManager {
         IBindResult result = getHttpService().bindDevice(deviceToken, pPushID, serialNum);
 
         getConfig().saveAutoLogin(result.isAutoLogin());
-        getConfig().saveNickname(result.getNickName());
+        if(!result.isAutoLogin()){
+            getConfig().saveNickname("");
+        } else {
+            getConfig().saveNickname(result.getNickName());
+        }
         getConfig().savePushID(pPushID);
         getConfig().saveDeviceToken(deviceToken);
         getConfig().saveSerialNum(serialNum);

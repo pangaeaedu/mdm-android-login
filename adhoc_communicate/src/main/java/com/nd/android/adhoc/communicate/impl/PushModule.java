@@ -2,6 +2,7 @@ package com.nd.android.adhoc.communicate.impl;
 
 import android.content.Context;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.nd.adhoc.push.PushSdk;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
@@ -9,6 +10,7 @@ import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
+import com.nd.android.adhoc.communicate.constant.AdhocPushMsgType;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
@@ -98,6 +100,9 @@ class PushModule implements IPushModule {
         @Override
         public byte[] onPushMessage(String appId, int msgtype, byte[] contenttype, long msgid, long msgTime, byte[] content, String[] extraKeys, String[] extraValues) {
             try {
+                if(msgtype == AdhocPushMsgType.Feedback.getValue()){
+                    Log.e(TAG, "feedback:"+new String(content));
+                }
 //                new PushMsgEvent(content).post();
                 doCmdReceived(content);
             } catch (Exception e) {
