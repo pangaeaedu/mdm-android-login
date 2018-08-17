@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+if (!hasProperty('configAvailable')) {
+    apply from: file('gradleScript/config.gradle')
+}
+//apply from: file('gradleScript/unittest4sdk.gradle')
+apply from: file('gradleScript/dev.gradle')
+
+android {
+    compileSdkVersion "$androidCompileSdkVersion".toInteger()
+    buildToolsVersion "$androidBuildToolsVersion"
+
+    defaultConfig {
+        minSdkVersion "$androidMinSdkVersion".toInteger()
+        targetSdkVersion "$androidTargetSdkVersion".toInteger()
+    }
+
+//    buildTypes {
+//        release {
+//            debuggable true
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//        }
+//        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+//            debug {
+//                debuggable true
+//                minifyEnabled true
+//                defaultPublishConfig "debug"
+//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//            }
+//        }
+//    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
+
+// 本地不跑 upload task
+//if (!project.hasProperty('LOCAL_BUILD_ENV')) {
+//    apply from: file('gradleScript/upload.gradle')
+//}

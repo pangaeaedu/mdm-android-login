@@ -1,0 +1,48 @@
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+//    api project(':module_cmd_basic')
+
+    try {
+        api project(':cmd_log')
+    } catch (Exception ignored) {
+        api('com.nd.android.adhoc:cmd_log:0.0.8-develop-SNAPSHOT') {
+            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
+            exclude group: 'com.nd.android.adhoc', module: 'file_transfer_api'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+        }
+    }
+
+
+    try {
+        api project(':adhoc_communicate')
+    } catch (Exception ignored) {
+        api('com.nd.android.mdm.biz:adhoc_communicate:0.0.9-develop-SNAPSHOT')
+    }
+
+    try {
+        api project(':mdm_biz_common')
+    } catch (Exception ignored) {
+        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.9-develop-SNAPSHOT')
+    }
+
+
+    api "com.nd.sdp.android.serviceloader:service-loader:1.0.9"
+    api "com.nd.sdp.android.serviceloader:service-loader-annotation:1.0.9"
+    annotationProcessor "com.nd.sdp.android.serviceloader:service-loader-compiler:1.0.9"
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+
+        }
+    }
+    compile.extendsFrom provided
+}

@@ -7,7 +7,7 @@ include ':adhoc_communicate'    // 通讯模块，包含 pushsdk、 自组网 co
 
 include ':mdm_util_cmd'         // 通讯模块，包含 pushsdk、 自组网 connect 通讯
 
-
+include ":mdm_feedback_biz"
 
 
 // 可配置工程
