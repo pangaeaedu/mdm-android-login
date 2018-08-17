@@ -171,6 +171,8 @@ public class LoginManager {
         getConfig().clearData();
         mConnectSubject = BehaviorSubject.create();
         MdmTransferFactory.getPushModel().start();
+
+
     }
 
     private IThirdPartyLogin getThirdPartyLogin(){

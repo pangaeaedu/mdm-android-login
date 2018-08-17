@@ -10,7 +10,7 @@ import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.eventListener.IUserActivateListener;
 import com.nd.android.adhoc.login.exception.DeviceBindedException;
-import com.nd.android.adhoc.login.exception.SimBindException;
+import com.nd.android.adhoc.login.exception.SimOrOtherException;
 import com.nd.android.adhoc.login.exception.UcLoginCancelException;
 import com.nd.android.adhoc.login.exception.UcUserNullException;
 import com.nd.android.adhoc.login.exception.UcVerificationException;
@@ -126,7 +126,7 @@ public class UcLogin implements IThirdPartyLogin {
                                                                 return Observable.error(new DeviceBindedException());
                                                             }
 
-                                                            return Observable.error(new SimBindException());
+                                                            return Observable.error(new SimOrOtherException());
 
                                                         }
 
