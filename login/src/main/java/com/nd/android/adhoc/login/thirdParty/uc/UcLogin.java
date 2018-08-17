@@ -9,8 +9,12 @@ import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.eventListener.IUserActivateListener;
+import com.nd.android.adhoc.login.exception.DeviceBindedException;
+import com.nd.android.adhoc.login.exception.SimBindException;
 import com.nd.android.adhoc.login.exception.UcLoginCancelException;
 import com.nd.android.adhoc.login.exception.UcUserNullException;
+import com.nd.android.adhoc.login.exception.UcVerificationException;
+import com.nd.android.adhoc.login.exception.UserBindedException;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.utils.DeviceHelper;
@@ -36,7 +40,7 @@ public class UcLogin implements IThirdPartyLogin {
     private IUserActivateListener mActivateListener = new IUserActivateListener() {
         @Override
         public void onUserActivateResult(UserActivateResult pResult) {
-            Log.e(TAG, "onUserActivateResult"+pResult.sessionid);
+            Log.e(TAG, "onUserActivateResult" + pResult.sessionid);
             if (TextUtils.isEmpty(mCurSessionID)) {
                 return;
             }
@@ -85,7 +89,7 @@ public class UcLogin implements IThirdPartyLogin {
                                             ActivateHttpResult result = getHttpService()
                                                     .activateUser(deviceToken, deviceToken);
                                             mCurSessionID = result.requestid;
-                                            Log.e(TAG, "Sessiong ID: "+mCurSessionID);
+                                            Log.e(TAG, "Sessiong ID: " + mCurSessionID);
 
                                             subscriber.onNext(currentUser);
                                             subscriber.onCompleted();
@@ -106,9 +110,24 @@ public class UcLogin implements IThirdPartyLogin {
                                                                     ("activate response null"));
                                                         }
 
-                                                        if(pResult.errcode == -1){
-                                                            return Observable.error(new Exception
-                                                                    ("activate failed"));
+                                                        if (pResult.errcode == -1) {
+                                                            if (pResult.msgcode.equalsIgnoreCase
+                                                                    ("001")) {
+                                                                return Observable.error(new UcVerificationException());
+                                                            }
+
+                                                            if (pResult.msgcode.equalsIgnoreCase
+                                                                    ("002")) {
+                                                                return Observable.error(new UserBindedException());
+                                                            }
+
+                                                            if (pResult.msgcode.equalsIgnoreCase
+                                                                    ("003")) {
+                                                                return Observable.error(new DeviceBindedException());
+                                                            }
+
+                                                            return Observable.error(new SimBindException());
+
                                                         }
 
                                                         return Observable.just(new UcLoginResult(pUser,
