@@ -14,6 +14,7 @@ import com.nd.android.adhoc.communicate.constant.AdhocPushMsgType;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
+import com.nd.android.adhoc.communicate.receiver.IFeedbackMsgReceiver;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.android.mdm.biz.common.MsgCode;
@@ -43,6 +44,8 @@ class PushModule implements IPushModule {
 
     private ICmdMsgReceiver mCmdReceiver;
 
+    private IFeedbackMsgReceiver mFeedbackReceiver;
+
     private List<IPushConnectListener> mConnectListeners;
 
 
@@ -69,6 +72,10 @@ class PushModule implements IPushModule {
         Iterator<ICmdMsgReceiver> receiverIterator =  AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
         mCmdReceiver = receiverIterator.next();
 
+        Iterator<IFeedbackMsgReceiver> feedbackIterator =  AnnotationServiceLoader
+                .load(IFeedbackMsgReceiver.class).iterator();
+        mFeedbackReceiver = feedbackIterator.next();
+
     }
 
     @Override
@@ -79,6 +86,10 @@ class PushModule implements IPushModule {
     @Override
     public String getDeviceId() {
         return PushSdk.getInstance().getDeviceid();
+    }
+
+    private void doFeedbackCmdReceived(byte[] pContent){
+        mFeedbackReceiver.onCmdReceived(new String(pContent));
     }
 
     @Override
@@ -102,9 +113,10 @@ class PushModule implements IPushModule {
             try {
                 if(msgtype == AdhocPushMsgType.Feedback.getValue()){
                     Log.e(TAG, "feedback:"+new String(content));
+                    doFeedbackCmdReceived(content);
+                } else {
+                    doCmdReceived(content);
                 }
-//                new PushMsgEvent(content).post();
-                doCmdReceived(content);
             } catch (Exception e) {
                 e.printStackTrace();
                 Logger.e(TAG, "get error:" + e.toString() + "\n with messege:" + new String(content));
@@ -190,7 +202,7 @@ class PushModule implements IPushModule {
     @Override
     public void release() {
         mCmdReceiver = null;
-
+        mFeedbackReceiver = null;
         if(!AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)){
             mConnectListeners.clear();
         }

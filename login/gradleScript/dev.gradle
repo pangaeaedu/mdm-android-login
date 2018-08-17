@@ -12,7 +12,13 @@ dependencies {
     annotationProcessor ("com.nd.android.adhoc.basic:adhoc-router-compiler:$adhoc_basic_version")
 
     try{
-        implementation project (':adhoc_communicate')
+        api project (':adhoc_communicate')
+    }catch (Exception e){
+
+    }
+
+    try{
+        api project (':mdm_feedback_biz')
     }catch (Exception e){
 
     }

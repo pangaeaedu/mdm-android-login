@@ -7,16 +7,17 @@ import android.util.Log;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
+import com.nd.android.adhoc.login.basicService.operator.UserActivateOperator;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
 import com.nd.android.adhoc.login.basicService.http.IBindResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
-import com.nd.android.adhoc.login.eventListener.ILogoutEventListener;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
 import com.nd.android.adhoc.login.utils.DeviceHelper;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
+import com.nd.android.mdm.mdm_feedback_biz.MdmFeedbackReceiveFactory;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -69,8 +70,9 @@ public class LoginManager {
     };
 
     private LoginManager() {
+        MdmFeedbackReceiveFactory.addCmdOperator(new UserActivateOperator());
+
         MdmTransferFactory.getPushModel().addConnectListener(mPushConnectListener);
-        BasicServiceFactory.getInstance().addLogoutListener(mEventListener);
 
         MdmTransferFactory.getPushModel().start();
     }
@@ -140,8 +142,16 @@ public class LoginManager {
                             .login(pUserName, pPassword, new IThirdPartyLoginCallBack() {
                                 @Override
                                 public void onSuccess(IThirdPartyLoginResult pResult) {
-                                    getConfig().saveNickname(pUserName);
-                                    pSubscriber.onNext(pResult);
+                                    String deviceToken = DeviceHelper.generateDeviceToken();
+                                    try {
+                                        getHttpService().requestPolicy(deviceToken);
+
+                                        getConfig().saveNickname(pUserName);
+                                        pSubscriber.onNext(pResult);
+                                    } catch (Exception pE) {
+                                        pE.printStackTrace();
+                                    }
+
                                 }
 
                                 @Override
@@ -157,6 +167,12 @@ public class LoginManager {
         });
     }
 
+    public void logout(){
+        getConfig().clearData();
+        mConnectSubject = BehaviorSubject.create();
+        MdmTransferFactory.getPushModel().start();
+    }
+
     private IThirdPartyLogin getThirdPartyLogin(){
         String orgName = MdmEvnFactory.getInstance().getCurEnvironment().getOrg();
         return new UcLogin(orgName);
@@ -170,12 +186,4 @@ public class LoginManager {
         return BasicServiceFactory.getInstance().getHttpService();
     }
 
-    private ILogoutEventListener mEventListener = new ILogoutEventListener() {
-        @Override
-        public void onLogout() {
-            getConfig().clearData();
-            mConnectSubject = BehaviorSubject.create();
-            MdmTransferFactory.getPushModel().start();
-        }
-    };
 }

@@ -1,11 +1,9 @@
 package com.nd.android.adhoc.login.basicService;
 
-import com.nd.android.adhoc.login.eventListener.ILogoutEventListener;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.HttpServiceImpl;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
-import com.nd.android.adhoc.login.eventListener.ILoginListener;
 import com.nd.android.adhoc.login.eventListener.IUserActivateListener;
 
 import java.util.List;
@@ -16,8 +14,6 @@ public class BasicServiceFactory {
 
     private IHttpService mHttpService = null;
     private LoginSpConfig mSpConfig = null;
-
-    private List<ILogoutEventListener> mLogoutListeners = new CopyOnWriteArrayList<>();
 
     private List<IUserActivateListener> mActivateListeners = new CopyOnWriteArrayList<>();
 
@@ -48,14 +44,6 @@ public class BasicServiceFactory {
         mActivateListeners.remove(pListener);
     }
 
-    public void addLogoutListener(ILogoutEventListener pListener){
-        mLogoutListeners.add(pListener);
-    }
-
-    public void removeLogoutListener(ILoginListener pListener){
-        mLogoutListeners.remove(pListener);
-    }
-
     public LoginSpConfig getConfig(){
 //        AdhocBasicConfig.getInstance().getAppContext();
         if(mSpConfig == null){
@@ -75,19 +63,11 @@ public class BasicServiceFactory {
         }
     }
 
-
-    public void notifyForceLogout(){
-        for (ILogoutEventListener listener : mLogoutListeners) {
-            listener.onLogout();
-        }
-    }
-
     public void clear(){
         if(mHttpService != null){
             mHttpService = null;
         }
 
-        mLogoutListeners.clear();
         mActivateListeners.clear();
     }
 }

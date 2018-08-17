@@ -1,21 +1,19 @@
 package com.nd.android.adhoc.login.basicService.data.push;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class UserActivateResult {
 
-    @JsonProperty("cmd")
-    public String mCmd = "";
+    public String cmd = "";
 
-    @JsonProperty("sessionid")
-    public String mSessionID = "";
+    public String sessionid = "";
 
-    @JsonProperty()
-    public int mMsgType = 1;
+    public int msgtype = 1;
 
-    public int mErrorCode = 1;
+    public String msgcode = "";
 
-    public UserActivateData mData = null;
+    public int errcode = 0;
 
+    public Long timestamp = 0L;
+
+    public String nick_name = "";
 
 }

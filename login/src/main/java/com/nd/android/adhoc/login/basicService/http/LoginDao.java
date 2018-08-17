@@ -27,12 +27,21 @@ public class LoginDao extends AdhocHttpDao {
     public void requestPolicySet(String pDeviceToken) throws AdhocHttpException {
         Map<String, Object> map = new HashMap();
         map.put("device_token", pDeviceToken);
-        String result = postAction().post("/v1.1/registe/policyset/", String.class, map);
+        map.put("crtime", 0);
+        try {
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+
+            String result = postAction().post("/v1.1/registe/policyset/",
+                    String.class, content, null);
+        } catch (RuntimeException e) {
+            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+        }
     }
 
 
-    public BindResult bindDevice(String pDeviceToken, String pSerialNum,
-                                 String pPushID) throws AdhocHttpException {
+    public BindResult bindDevice(String pDeviceToken,String pPushID,
+                                 String pSerialNum) throws AdhocHttpException {
         Map<String, Object> map = new HashMap<>();
         map.put("device_token", pDeviceToken);
         map.put("serial_num", pSerialNum);

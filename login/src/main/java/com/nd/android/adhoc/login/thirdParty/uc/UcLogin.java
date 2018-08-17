@@ -14,7 +14,6 @@ import com.nd.android.adhoc.login.exception.UcUserNullException;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.utils.DeviceHelper;
-import com.nd.sdp.im.common.utils.rx.RxJavaUtils;
 import com.nd.smartcan.accountclient.CurrentUser;
 import com.nd.smartcan.accountclient.LoginCallback;
 import com.nd.smartcan.accountclient.UCManager;
@@ -24,6 +23,7 @@ import com.nd.smartcan.accountclient.core.User;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
 public class UcLogin implements IThirdPartyLogin {
@@ -36,12 +36,12 @@ public class UcLogin implements IThirdPartyLogin {
     private IUserActivateListener mActivateListener = new IUserActivateListener() {
         @Override
         public void onUserActivateResult(UserActivateResult pResult) {
-            Log.e(TAG, "onUserActivateResult"+pResult.mSessionID);
+            Log.e(TAG, "onUserActivateResult"+pResult.sessionid);
             if (TextUtils.isEmpty(mCurSessionID)) {
                 return;
             }
 
-            if (!mCurSessionID.equalsIgnoreCase(pResult.mSessionID)) {
+            if (!mCurSessionID.equalsIgnoreCase(pResult.sessionid)) {
                 return;
             }
 
@@ -106,13 +106,18 @@ public class UcLogin implements IThirdPartyLogin {
                                                                     ("activate response null"));
                                                         }
 
+                                                        if(pResult.errcode == -1){
+                                                            return Observable.error(new Exception
+                                                                    ("activate failed"));
+                                                        }
+
                                                         return Observable.just(new UcLoginResult(pUser,
                                                                 pResult));
                                                     }
                                                 });
                                     }
                                 })
-                                .compose(RxJavaUtils.<UcLoginResult>applyDefaultSchedulers())
+                                .subscribeOn(Schedulers.io())
                                 .subscribe(new Subscriber<UcLoginResult>() {
                                     @Override
                                     public void onCompleted() {

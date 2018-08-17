@@ -27,7 +27,7 @@ public class HttpServiceImpl implements IHttpService {
 
     @Override
     public ActivateHttpResult activateUser(String pUserToken, String pDeviceToken) throws Exception {
-       LoginDao dao = new LoginDao("http://192.168.254.23:8090");
+       LoginDao dao = new LoginDao(mBaseUrl);
         ActivateHttpResult result = dao.activateUser(pUserToken, pDeviceToken);
         if(result.result.equalsIgnoreCase("success")){
             return result;
