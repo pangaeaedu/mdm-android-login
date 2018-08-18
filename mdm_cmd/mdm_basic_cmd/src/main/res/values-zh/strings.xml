@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cmd_success">成功</string>
+    <string name="cmd_failed">失败</string>
+    <string name="cmd_unknown">未知</string>
+    <string name="cmd_executing">執行中</string>
+    <string name="cmd_unusable">未執行 </string>
+</resources>

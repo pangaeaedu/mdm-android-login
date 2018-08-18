@@ -1,7 +1,15 @@
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
 //    api project(':module_cmd_basic')
+//    api project(':mdm_login_sdk')
+
+
+    try {
+        api project(':adhoc_basic_cmd')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_cmd:$adhoc_basic_version")
+    }
 
     try {
         api project(':cmd_log')
@@ -9,28 +17,45 @@ dependencies {
         api('com.nd.android.adhoc:cmd_log:0.0.8-develop-SNAPSHOT') {
             exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
             exclude group: 'com.nd.android.adhoc', module: 'file_transfer_api'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
         }
     }
 
 
     try {
-        api project(':adhoc_communicate')
+        api project(':mdm_util_cmd')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:adhoc_communicate:0.0.9-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.11-develop-SNAPSHOT')
     }
 
     try {
-        api project(':mdm_biz_common')
+        api project(':file_transfer')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.9-develop-SNAPSHOT')
+        api('com.nd.android.adhoc:file_transfer:0.0.6-develop-SNAPSHOT') {
+            exclude group: 'com.nd.android.adhoc', module: 'cmd_log_api'
+        }
+    }
+
+//    api project(':mdm_transfer')
+    try {
+        api project(':adhoc_communicate') {
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+        }
+    } catch (Exception ignored) {
+        api('com.nd.android.mdm.biz:adhoc_communicate:0.0.11-develop-SNAPSHOT') {
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+        }
     }
 
 
     api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
     api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
     annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
+}
+
+configurations {
+    all*.exclude group: 'android.support'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
 }
 
 configurations.all {

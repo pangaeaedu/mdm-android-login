@@ -2,7 +2,9 @@ dependencies {
     api("com.android.support:support-annotations:$androidSupportSdkVersion")
 
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
-    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version") {
+        exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+    }
 }
 
 

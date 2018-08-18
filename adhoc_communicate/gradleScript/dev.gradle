@@ -15,7 +15,9 @@ dependencies {
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
-    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version") {
+        exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+    }
 
     try {
         api project(':mdm_env')
@@ -32,12 +34,12 @@ dependencies {
     try {
         api project(':mdm_util_cmd')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.8-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.11-develop-SNAPSHOT')
     }
 
-    annotationProcessor "com.nd.sdp.android.serviceloader:service-loader-compiler:1.0.9"
-    api "com.nd.sdp.android.serviceloader:service-loader:1.0.9"
-    api "com.nd.sdp.android.serviceloader:service-loader-annotation:1.0.9"
+    api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+    api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
+    annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 
 }
 

@@ -1,16 +1,18 @@
-include ':login', ':loginapi'                // 登录 SDK
+include ':login', ':loginapi'       // 登录 SDK、API
 
-include ':mdm_biz_common'       // MDM 业务公共模块
-include ':mdm_env'              // 环境配置模块
-include ':adhoc_communicate'    // 通讯模块，包含 pushsdk、 自组网 connect 通讯
-
-
-include ':mdm_util_cmd'         // 通讯模块，包含 pushsdk、 自组网 connect 通讯
-
-include ":mdm_feedback_biz"
+include ':mdm_biz_common'           // MDM 业务公共模块
+include ':mdm_env'                  // 环境配置模块
+include ':adhoc_communicate'        // 通讯模块，包含 pushsdk、 自组网 connect 通讯
 
 
-include ":adhoc_wifi:wifi_sdk"
+include ':mdm_util_cmd'             // 通讯模块，包含 pushsdk、 自组网 connect 通讯
+
+include ":mdm_feedback_biz"         // 请求回报处理模块
+
+
+include ":adhoc_wifi:wifi_sdk"      // WIFI sdk
+
+include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
 
 
 // 可配置工程
@@ -29,26 +31,3 @@ map.each { dirPath, projectName ->
         project(projectName).projectDir = file
     }
 }
-
-//File adhoc_basic_net = new File('G:\\MDM\\adhoc-androidframework\\adhoc_basic\\adhoc_basic_net')
-//if (adhoc_basic_net.isDirectory() && adhoc_basic_net.exists()
-//        && new File(adhoc_basic_net, "build.gradle").exists()) {
-//    include ":adhoc_basic_net"
-//    project(":adhoc_basic_net").projectDir = adhoc_basic_net
-//}
-//
-//File adhoc_basic_common = new File('G:\\MDM\\adhoc-androidframework\\adhoc_basic\\adhoc_basic_common')
-//if (adhoc_basic_common.isDirectory() && adhoc_basic_common.exists()
-//        && new File(adhoc_basic_common, "build.gradle").exists()) {
-//    include ":adhoc_basic_common"
-//    project(":adhoc_basic_common").projectDir = adhoc_basic_common
-//}
-//
-//File adhoc_util_thread = new File
-//        ('G:\\MDM\\adhoc-androidframework\\adhoc_basic\\adhoc_util_thread')
-//if (adhoc_util_thread.isDirectory() && adhoc_util_thread.exists()
-//        && new File(adhoc_util_thread, "build.gradle").exists()) {
-//    include ":adhoc_util_thread"
-//    project(":adhoc_util_thread").projectDir = adhoc_util_thread
-//}
-
