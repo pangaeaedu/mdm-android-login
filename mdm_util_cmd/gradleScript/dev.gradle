@@ -1,8 +1,8 @@
 dependencies {
     implementation("com.android.support:support-annotations:$androidSupportSdkVersion")
 
-    implementation("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
-    implementation("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
 }
 
 
