@@ -11,6 +11,9 @@ import java.io.Serializable;
  */
 public class MdmWifiInfo implements Serializable {
 
+    private static final String NORMAL_MAC = "00:00:00:00:00";
+
+
     /**
      * wifi 信道
      */
@@ -84,7 +87,7 @@ public class MdmWifiInfo implements Serializable {
         mSsid = "";
         mRssi = -999;
         mApMac = "";
-        mMac = "00:00:00:00:00";
+        mMac = NORMAL_MAC;
         mSpeed = -1;
         mIp = "";
         mDns = "";
@@ -99,7 +102,7 @@ public class MdmWifiInfo implements Serializable {
                 && !TextUtils.isEmpty(mSsid)
                 && mRssi != -999
                 && !TextUtils.isEmpty(mApMac)
-                && !TextUtils.isEmpty(mMac)
+                && !NORMAL_MAC.equals(mMac)
                 && mSpeed != -1;
     }
 
@@ -140,7 +143,7 @@ public class MdmWifiInfo implements Serializable {
     }
 
     public void setMac(String mac) {
-        mMac = mac;
+        mMac = TextUtils.isDigitsOnly(mac) ? NORMAL_MAC : mac;
     }
 
     public int getSpeed() {
