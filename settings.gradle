@@ -10,6 +10,9 @@ include ':mdm_util_cmd'         // 通讯模块，包含 pushsdk、 自组网 co
 include ":mdm_feedback_biz"
 
 
+include ":adhoc_wifi:wifi_sdk"
+
+
 // 可配置工程
 // 配置后如果存在该目录，工程将包含该目录模块，否则不包含
 // 依赖配置采用try catch方式依赖此些工程

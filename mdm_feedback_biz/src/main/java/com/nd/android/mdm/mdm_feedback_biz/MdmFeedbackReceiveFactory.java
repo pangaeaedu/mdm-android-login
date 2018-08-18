@@ -5,6 +5,7 @@ import android.support.v4.util.ArraySet;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
+import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 
 import org.json.JSONObject;
 
@@ -49,8 +50,7 @@ public final class MdmFeedbackReceiveFactory {
     }
 
     private static void startAction(final Action0 action) {
-
-        Observable
+        AdhocRxJavaUtil.safeSubscribe(Observable
                 .create(new Observable.OnSubscribe<Void>() {
                     @Override
                     public void call(Subscriber<? super Void> subscriber) {
@@ -60,21 +60,6 @@ public final class MdmFeedbackReceiveFactory {
                         subscriber.onCompleted();
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<Void>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Void aVoid) {
-
-                    }
-                });
+                .subscribeOn(Schedulers.io()));
     }
 }

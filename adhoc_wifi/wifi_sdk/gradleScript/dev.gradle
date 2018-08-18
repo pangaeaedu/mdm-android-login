@@ -1,0 +1,41 @@
+dependencies {
+    compile  fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    try {
+        api project(':adhoc_basic_db')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_db:$adhoc_basic_version")
+    }
+
+    api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
+
+    api("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
+
+
+    api("com.android.support:support-v4:$androidSupportSdkVersion")
+
+    api "com.nd.sdp.android.serviceloader:service-loader:1.0.9"
+    api "com.nd.sdp.android.serviceloader:service-loader-annotation:1.0.9"
+    annotationProcessor "com.nd.sdp.android.serviceloader:service-loader-compiler:1.0.9"
+}
+
+
+configurations {
+    all*.exclude group: 'android.support'
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+
+        }
+    }
+    compile.extendsFrom provided
+}
