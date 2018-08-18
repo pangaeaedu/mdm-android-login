@@ -84,7 +84,7 @@ public class MdmWifiInfo implements Serializable {
         mSsid = "";
         mRssi = -999;
         mApMac = "";
-        mMac = "";
+        mMac = "00:00:00:00:00";
         mSpeed = -1;
         mIp = "";
         mDns = "";

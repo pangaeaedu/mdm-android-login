@@ -1,5 +1,5 @@
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    api fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
 //    api project(':module_cmd_basic')
 
