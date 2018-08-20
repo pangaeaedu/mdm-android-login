@@ -96,7 +96,7 @@ public class LoginManager {
     }
 
     private void bindDeviceAfterReceiveNewPushID(String pPushID) throws Exception{
-        String deviceToken = DeviceHelper.generateDeviceToken();
+        String deviceToken = DeviceHelper.getDeviceToken();
         String serialNum = DeviceHelper.generateSerialNum();
 
         if(TextUtils.isEmpty(deviceToken) || TextUtils.isEmpty(serialNum)){
@@ -142,7 +142,7 @@ public class LoginManager {
                             .login(pUserName, pPassword, new IThirdPartyLoginCallBack() {
                                 @Override
                                 public void onSuccess(IThirdPartyLoginResult pResult) {
-                                    String deviceToken = DeviceHelper.generateDeviceToken();
+                                    String deviceToken = DeviceHelper.getDeviceToken();
                                     try {
                                         getHttpService().requestPolicy(deviceToken);
 
@@ -171,8 +171,10 @@ public class LoginManager {
         getConfig().clearData();
         mConnectSubject = BehaviorSubject.create();
         MdmTransferFactory.getPushModel().start();
+    }
 
-
+    public boolean isActivated(){
+        return false;
     }
 
     private IThirdPartyLogin getThirdPartyLogin(){

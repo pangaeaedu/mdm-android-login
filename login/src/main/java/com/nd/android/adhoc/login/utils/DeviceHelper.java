@@ -6,10 +6,13 @@ import android.support.annotation.NonNull;
 public class DeviceHelper {
 
     @NonNull
-    public static String generateDeviceToken(){
+    public static String getDeviceToken(){
         return getUniqueID();
     }
 
+    public static String getUserToken(){
+        return "";
+    }
     @NonNull
     public static String generateSerialNum(){
         return android.os.Build.SERIAL;
