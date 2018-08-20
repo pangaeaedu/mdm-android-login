@@ -7,10 +7,10 @@ import android.util.Log;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
-import com.nd.android.adhoc.login.basicService.operator.UserActivateOperator;
 import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
 import com.nd.android.adhoc.login.basicService.http.IBindResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
+import com.nd.android.adhoc.login.basicService.operator.UserActivateOperator;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;
@@ -97,7 +97,7 @@ public class LoginManager {
 
     private void bindDeviceAfterReceiveNewPushID(String pPushID) throws Exception{
         String deviceToken = DeviceHelper.getDeviceToken();
-        String serialNum = DeviceHelper.generateSerialNum();
+        String serialNum = DeviceHelper.getSerialNumber();
 
         if(TextUtils.isEmpty(deviceToken) || TextUtils.isEmpty(serialNum)){
             throw new Exception("deviceToken or serialNum empty");

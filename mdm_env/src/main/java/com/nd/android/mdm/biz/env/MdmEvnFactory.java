@@ -170,6 +170,7 @@ public final class MdmEvnFactory {
         }
     }
 
+    @NonNull
     public IMdmEnvModule getCurEnvironment() {
         // 保证返回的环境数据不会为空
         if (mCurMdmEnvModule == null) {
