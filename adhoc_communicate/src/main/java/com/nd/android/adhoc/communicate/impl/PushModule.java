@@ -69,12 +69,16 @@ class PushModule implements IPushModule {
         PushSdk.getInstance().stop();
         PushSdk.getInstance().startPushSdk(mContext, "mdm", null, pushSrvIp, pushSrvPort, mPushSdkCallback);
 
-        Iterator<ICmdMsgReceiver> receiverIterator =  AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
-        mCmdReceiver = receiverIterator.next();
+        Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
+        if (receiverIterator.hasNext()) {
+            mCmdReceiver = receiverIterator.next();
+        }
 
-        Iterator<IFeedbackMsgReceiver> feedbackIterator =  AnnotationServiceLoader
+        Iterator<IFeedbackMsgReceiver> feedbackIterator = AnnotationServiceLoader
                 .load(IFeedbackMsgReceiver.class).iterator();
-        mFeedbackReceiver = feedbackIterator.next();
+        if (feedbackIterator.hasNext()) {
+            mFeedbackReceiver = feedbackIterator.next();
+        }
 
     }
 
