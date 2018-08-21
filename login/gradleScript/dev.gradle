@@ -38,9 +38,8 @@ dependencies {
 
     compile  'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
 
-    compile  'io.reactivex:rxandroid:1.2.1'
-
-    compile  'com.nd.sdp.im.common:utils:0.2.98.release'
+    api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
+//    compile  'com.nd.sdp.im.common:utils:0.2.98.release'
 }
 
 configurations.all {
