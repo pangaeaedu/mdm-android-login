@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 登入面板-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:ptr="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_login_panel"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -20,7 +21,6 @@
 
     <!--请输入用户名         -->
     <com.nd.android.adhoc.login.ui.widget.edit.AdHocEditText
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cilv_user_login"
         style="@style/AdHocEditInputStyle"
         android:layout_below="@+id/profile_image"
@@ -31,7 +31,6 @@
         ptr:renderIconColor="@color/icon_input_color" />
     <!--请输入密码         -->
     <com.nd.android.adhoc.login.ui.widget.edit.AdHocEditText
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cilv_password_login"
         style="@style/AdHocEditInputStyle"
         android:layout_below="@+id/cilv_user_login"
