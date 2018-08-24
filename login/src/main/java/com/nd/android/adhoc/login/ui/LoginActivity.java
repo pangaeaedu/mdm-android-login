@@ -119,7 +119,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     private void addListener() {
         btnSubmitUserLogin.setOnClickListener(this);
         mEnvironmentSetting.setOnClickListener(this);
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         cilvUserLogin.setEditStyle(new UnderlineStyle());
         cilvPasswdLogin.setEditStyle(new UnderlineStyle());
 
