@@ -1,0 +1,98 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+    </style>
+
+    <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabMaxWidth">360dp</item>
+        <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">?attr/selectableItemBackground</item>
+        <item name="tabTextAppearance">@style/CustomTabTextAppearance</item>
+        <item name="tabSelectedTextColor">?android:textColorPrimary</item>
+    </style>
+    <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/status_middle_size</item>
+        <item name="android:textColor">@color/large_size_color_shader</item>
+        <item name="textAllCaps">false</item>
+    </style>
+    <style name="AdHocCheckStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/checkbox_style</item>
+        <item name="android:paddingLeft">7dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/large_size_color_shader</item>
+        <item name="android:textSize">@dimen/check_box_font_size_login</item>
+        <item name="android:layout_marginTop">@dimen/check_box_margin_top_login</item>
+    </style>
+
+    <style name="AdHocEditInputStyle" parent="@android:style/Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/large_size_color_shader</item>
+        <item name="android:textSize">@dimen/input_method_font_size_login</item>
+        <item name="backgroundResId">@drawable/bg_input_frame_login</item>
+        <item name="android:background">@drawable/bg_input_frame_login</item>
+        <item name="renderFocusBackgroundColor">@color/btn_blue_on</item>
+        <item name="renderWarningBackgroundColor">@color/error_exception</item>
+        <item name="android:layout_marginLeft">@dimen/input_method_padding_margin_left_login</item>
+        <item name="android:layout_marginRight">@dimen/input_method_padding_margin_right_login
+        </item>
+        <item name="android:paddingLeft">@dimen/input_method_padding_left_login</item>
+        <item name="android:paddingRight">@dimen/input_method_padding_right_login</item>
+        <item name="android:paddingTop">@dimen/input_method_padding_top_login</item>
+        <item name="android:paddingBottom">@dimen/input_method_padding_bottom_login</item>
+    </style>
+
+    <style name="AdHocSubmitStyle" parent="@android:style/Widget.Button">
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/btn_submit_font_size</item>
+        <item name="android:background">@drawable/btn_selector_submit_action</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+    <style name="AdHocTabItem" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:background">@drawable/radio_style</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+        <item name="android:textColor">@color/large_size_color_shader</item>
+        <item name="android:textSize">@dimen/btn_tbar_font_size_cmd_detail</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/btn_tbar_height_cmd_detail</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="AdHocSubTabItem" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:background">@drawable/radio_style</item>
+        <item name="android:button">@null</item>
+        <item name="android:layout_height">@dimen/btn_tbar_height_cmd_detail</item>
+        <item name="android:textColor">@color/large_size_color_shader</item>
+        <item name="android:textSize">@dimen/btn_tbar_font_size_cmd_detail</item>
+        <item name="android:layout_width">@dimen/btn_tbar_width_cmd_detail</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+
+    <style name="AdHocSubChildTabItem" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:background">@drawable/radio_style</item>
+        <item name="android:button">@null</item>
+        <item name="android:layout_height">@dimen/btn_tbar_height_cmd_detail</item>
+        <item name="android:textColor">@color/large_size_color_shader</item>
+        <item name="android:textSize">@dimen/btn_tbar_font_size_cmd_detail</item>
+        <item name="android:layout_width">@dimen/btn_tbar_child_width_cmd_detail</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+</resources>

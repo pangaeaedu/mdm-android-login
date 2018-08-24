@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 用户登录模块-->
+    <dimen name="icon_user_header_large_width_login">79.528dp</dimen>
+    <dimen name="icon_user_header_large_height_login">79.528dp</dimen>
+    <dimen name="icon_user_header_large_top_login">46.04399878025055dp</dimen>
+    <dimen name="input_method_username_top_login">54.449998557567596dp</dimen>
+    <dimen name="input_method_password_top_login">24.44399935245514dp</dimen>
+    <dimen name="input_method_drawable_padding_left_login">8.846999765634537dp</dimen>
+    <dimen name="input_method_padding_left_login">8.846999765634537dp</dimen>
+    <dimen name="input_method_padding_right_login">8.846999765634537dp</dimen>
+    <dimen name="input_method_padding_top_login">11.249999701976776dp</dimen>
+    <dimen name="input_method_padding_bottom_login">11.249999701976776dp</dimen>
+    <dimen name="input_method_padding_margin_left_login">38.84399897098541dp</dimen>
+    <dimen name="input_method_padding_margin_right_login">38.84399897098541dp</dimen>
+    <dimen name="input_method_font_size_login">14.849999606609344dp</dimen>
+    <dimen name="check_box_font_size_login">11.249999701976776dp</dimen>
+    <dimen name="check_box_drawable_left_login">8.846999765634537dp</dimen>
+    <dimen name="check_box_margin_top_login">13.643999638557434dp</dimen>
+    <dimen name="btn_submit_margin_top_login">31.643999161720274dp</dimen>
+    <dimen name="btn_submit_font_size">19.64699947953224dp</dimen>
+    <!--用户登录模块 状态模块-->
+    <dimen name="icon_user_header_large_width_login_status">138.446996332407dp</dimen>
+    <dimen name="icon_user_header_large_height_login_status">138.446996332407dp</dimen>
+    <dimen name="icon_user_header_large_top_login_status">116.8469969046116dp</dimen>
+    <dimen name="icon_user_nickname_top_login_status">5.246999861001968dp</dimen>
+    <dimen name="icon_user_nickname_font_size_login_status">19.64699947953224dp</dimen>
+    <dimen name="icon_user_state_top_login_status">38.84399897098541dp</dimen>
+    <dimen name="icon_user_state_font_size_login_status">14.849999606609344dp</dimen>
+    <!-- 通用组件 - 提示框-->
+    <dimen name="customer_tip_text_font_size_common">17.243999543190004dp</dimen>
+    <!-- dialog 弹窗- 连接和设置环境-->
+    <dimen name="dialog_middle_root_padding_right_common">8.846999765634537dp</dimen>
+    <dimen name="btn_close_width_common">30.446999193429946dp</dimen>
+    <dimen name="btn_close_height_common">30.446999193429946dp</dimen>
+    <dimen name="btn_close_margin_top_common">8.846999765634537dp</dimen>
+    <dimen name="btn_close_margin_right_common">8.846999765634537dp</dimen>
+    <dimen name="btn_app_logo_margin_top_common">32.849999129772186dp</dimen>
+    <dimen name="btn_app_logo_width_common">78.44399792194366dp</dimen>
+    <dimen name="btn_app_logo_height_common">79.04699790596962dp</dimen>
+    <dimen name="title_app_logo_font_size_common">29.249999225139618dp</dimen>
+    <dimen name="title_app_logo_margin_top_common">8.846999765634537dp</dimen>
+    <dimen name="title_app_version_margin_top_common">23.24699938416481dp</dimen>
+    <dimen name="title_app_version_font_size_common">17.243999543190004dp</dimen>
+    <dimen name="btn_app_version_width_common">208.04399448871612dp</dimen>
+    <dimen name="btn_app_version_height_common">30.446999193429946dp</dimen>
+    <dimen name="btn_app_versioninfo_top_common">17.243999543190004dp</dimen>
+    <dimen name="btn_app_versionintro_font_size_common">14.849999606609344dp</dimen>
+    <dimen name="btn_app_versionintro_top_common">30.446999193429946dp</dimen>
+    <dimen name="title_environment_margin_left_common">12.446999670267106dp</dimen>
+    <dimen name="title_environment_margin_top_common">37.64699900269508dp</dimen>
+    <dimen name="title_environment_font_size_common">17.243999543190004dp</dimen>
+    <dimen name="title_current_environment_font_size_common">17.243999543190004dp</dimen>
+    <dimen name="title_current_environment_margin_left_common">31.643999161720274dp</dimen>
+    <dimen name="title_current_environment_margin_top_common">40.04999893903732dp</dimen>
+    <dimen name="btn_environment_width_common">207.44999450445175dp</dimen>
+    <dimen name="btn_environment_height_common">34.046999098062514dp</dimen>
+    <dimen name="btn_environment_top_common">30.446999193429946dp</dimen>
+    <dimen name="frame_margin_common">12.446999670267106dp</dimen>
+    <dimen name="tab_layout_height_common">56.84399849414825dp</dimen>
+    <dimen name="tab_layout_margin_top_common">3.4469999086856844dp</dimen>
+    <dimen name="tab_layout_font_size_common">14.849999606609344dp</dimen>
+    <dimen name="panel_toolbar_height_land_main">134.84699642777443dp</dimen>
+    <dimen name="title_tip_margin_top_wifi_detail">8.243999781608581dp</dimen>
+    <dimen name="title_tip_margin_left_wifi_detail">11.249999701976776dp</dimen>
+    <dimen name="title_tip_font_size_wifi_detail">14.849999606609344dp</dimen>
+    <dimen name="title_wifiname_margin_top_wifi_detail">8.243999781608581dp</dimen>
+    <dimen name="title_wifiname_font_size_wifi_detail">19.64699947953224dp</dimen>
+    <dimen name="btn_change_height_wifi_detail">32.849999129772186dp</dimen>
+    <dimen name="btn_change_margin_top_wifi_detail">28.04399925708771dp</dimen>
+    <dimen name="btn_change_font_size_wifi_detail">19.64699947953224dp</dimen>
+    <dimen name="btn_change_margin_right_wifi_detail">20.843999447822572dp</dimen>
+    <dimen name="title_segement_font_size_wifi_detail">19.64699947953224dp</dimen>
+    <dimen name="title_segement_margin_top_wifi_detail">19.64699947953224dp</dimen>
+    <dimen name="title_segement_margin_left_wifi_detail">18.449999511241913dp</dimen>
+    <dimen name="icon_vendor_margin_top_wifi_detail">6.443999829292298dp</dimen>
+    <dimen name="icon_vendor_width_wifi_detail">52.046998621225356dp</dimen>
+    <dimen name="icon_vendor_height_wifi_detail">52.046998621225356dp</dimen>
+    <dimen name="title_vendor_margin_top_wifi_detail">9.449999749660492dp</dimen>
+    <dimen name="title_vendor_font_size_wifi_detail">13.643999638557434dp</dimen>
+    <dimen name="layout_single_area_top_wifi_detail">9.449999749660492dp</dimen>
+    <dimen name="title_single_area_font_size_wifi_detail">14.849999606609344dp</dimen>
+    <dimen name="title_single_area_padding_wifi_detail">8.846999765634537dp</dimen>
+    <dimen name="title_single_areaname_margin_left_wifi_detail">30.446999193429946dp</dimen>
+    <dimen name="panel_cmd_search_height_cmd_detail">48.44699871659279dp</dimen>
+    <dimen name="panel_cmd_layout_padding_cmd_detail">7.046999813318252dp</dimen>
+    <dimen name="panel_cmd_layout_top_cmd_detail">7.649999797344208dp</dimen>
+    <dimen name="panel_cmd_layout_left_cmd_detail">24.44399935245514dp</dimen>
+    <dimen name="layout_land_margin_top_cmd_detail">7.649999797344208dp</dimen>
+    <dimen name="layout_land_margin_left_cmd_detail">24.44399935245514dp</dimen>
+    <dimen name="layout_land_margin_right_cmd_detail">24.44399935245514dp</dimen>
+    <dimen name="layout_land_margin_bottom_cmd_detail">7.649999797344208dp</dimen>
+    <dimen name="icon_state_margin_left_cmd_detail">11.249999701976776dp</dimen>
+    <dimen name="icon_type_margin_left_cmd_detail">12.446999670267106dp</dimen>
+    <dimen name="title_source_name_margin_left_cmd_detail">12.446999670267106dp</dimen>
+    <dimen name="title_source_name_margin_margin_top_cmd_detail">7.046999813318252dp</dimen>
+    <dimen name="title_source_name_font_size_cmd_detail">19.64699947953224dp</dimen>
+    <dimen name="title_source_size_top_cmd_detail">3.4469999086856844dp</dimen>
+    <dimen name="title_source_size_font_size_detail">14.849999606609344dp</dimen>
+    <dimen name="btn_openfile_font_size_cmd_detail">19.64699947953224dp</dimen>
+    <dimen name="btn_openfile_margin_right_cmd_detail">14.849999606609344dp</dimen>
+    <dimen name="btn_openfile_padding_cmd_detail">8.846999765634537dp</dimen>
+    <dimen name="btn_openfiles_margin_right_cmd_detail">24.44399935245514dp</dimen>
+    <dimen name="btn_openfiles_padding_cmd_detail">6.443999829292298dp</dimen>
+    <dimen name="btn_tbar_width_cmd_detail">115.34399694442749dp</dimen>
+    <dimen name="btn_tbar_height_cmd_detail">34.046999098062514dp</dimen>
+    <dimen name="btn_tbar_font_size_cmd_detail">14.849999606609344dp</dimen>
+    <dimen name="title_font_size_log">14.849999606609344dp</dimen>
+    <dimen name="layout_padding_wifi_change">2.2750199397325517dp</dimen>
+    <dimen name="title_wifiname_margin_left_wifi_change">29.249999225139618dp</dimen>
+    <dimen name="title_wifiname_margin_top_wifi_change">5.669999849796295dp</dimen>
+    <dimen name="title_wifiname_font_size_wifi_change">19.64699947953224dp</dimen>
+    <dimen name="title_state_font_size_wifi_change">13.04999965429306dp</dimen>
+    <dimen name="title_state_margin_top_wifi_change">2.2499999403953552dp</dimen>
+    <dimen name="panel_padding_top_wifi_change">13.643999638557434dp</dimen>
+    <dimen name="panel_padding_bottom_wifi_change">13.643999638557434dp</dimen>
+    <dimen name="panel_padding_left_wifi_change">16.046999574899672dp</dimen>
+    <dimen name="panel_padding_right_wifi_change">16.046999574899672dp</dimen>
+    <dimen name="title_tip_margin_left_wifi_change">16.046999574899672dp</dimen>
+    <dimen name="title_tip_font_size_wifi_change">14.849999606609344dp</dimen>
+    <dimen name="title_lock_margin_right_wifi_change">47.24999874830246dp</dimen>
+    <dimen name="title_lock_margin_left_wifi_change">24.44399935245514dp</dimen>
+    <!-- 此处不可使用-->
+    <dimen name="title_ip_margin_left_wifi_info">16.046999574899672dp</dimen>
+    <dimen name="title_ip_margin_right_wifi_info">16.046999574899672dp</dimen>
+    <dimen name="title_ip_margin_top_wifi_info">38.84399897098541dp</dimen>
+    <dimen name="title_ip_font_size_wifi_info">38.84399897098541dp</dimen>
+    <dimen name="icon_segment_strong_width_wifi_info">16.046999574899672dp</dimen>
+    <dimen name="icon_segment_strong_height_wifi_info">16.046999574899672dp</dimen>
+    <dimen name="icon_segment_strong_margin_top_wifi_info">14.849999606609344dp</dimen>
+    <dimen name="title_wifiname_margin_left_wifi_info">47.24999874830246dp</dimen>
+    <dimen name="title_wifiname_margin_right_wifi_info">24.44399935245514dp</dimen>
+    <dimen name="title_wifiname_margin_top_wifi_info">24.44399935245514dp</dimen>
+    <dimen name="title_wifiname_font_size_wifi_info">14.849999606609344dp</dimen>
+    <dimen name="prg_margin_left_wifi_info">14.849999606609344dp</dimen>
+    <dimen name="prg_margin_right_wifi_info">47.24999874830246dp</dimen>
+    <dimen name="prg_min_height_wifi_info">47.24999874830246dp</dimen>
+    <dimen name="layout_margin_top_wifi_info">24.44399935245514dp</dimen>
+    <dimen name="title_font_size_wifi_info">14.849999606609344dp</dimen>
+    <dimen name="title_wifi_prg_font_size_wifi_info">24.44399935245514dp</dimen>
+    <dimen name="panel_land_constraint_margin">48.25169872176647dp</dimen>
+    <dimen name="icon_settings_width_login_panel">26.846999288797377dp</dimen>
+    <dimen name="icon_settings_height_login_panel">26.243999304771425dp</dimen>
+    <dimen name="title_land_app_margin_left_login">37.64699900269508dp</dimen>
+    <dimen name="title_land_app_margin_right_login">38.84399897098541dp</dimen>
+    <dimen name="title_land_app_font_size_login">38.84399897098541dp</dimen>
+    <dimen name="bg_guide_app_width_login">574.0469847929478dp</dimen>
+    <dimen name="bg_guide_app_height_login">273.4469927561283dp</dimen>
+    <dimen name="bg_guide_app_margin_left_login">38.84399897098541dp</dimen>
+    <dimen name="icon_settings_margin_right_main_panel">35.24399906635284dp</dimen>
+    <dimen name="icon_settings_margin_top_main_panel">6.443999829292298dp</dimen>
+    <dimen name="title_ip_margin_left_land_main">35.24399906635284dp</dimen>
+    <dimen name="title_ip_margin_right_land_main">35.24399906635284dp</dimen>
+    <dimen name="title_ip_margin_top_land_main">6.443999829292298dp</dimen>
+    <dimen name="title_ip_font_size_land_main">38.84399897098541dp</dimen>
+    <dimen name="layout_margin_top_land_main">11.249999701976776dp</dimen>
+    <dimen name="title_font_size_land_main">19.64699947953224dp</dimen>
+    <dimen name="prg_margin_right_land_main">35.24399906635284dp</dimen>
+    <dimen name="prg_margin_top_land_main">13.643999638557434dp</dimen>
+    <dimen name="prg_min_height_land_main">12.446999670267106dp</dimen>
+    <dimen name="icon_user_header_middle_width_land_main">46.6469987642765dp</dimen>
+    <dimen name="icon_user_header_middle_height_land_main">46.6469987642765dp</dimen>
+    <dimen name="icon_user_header_middle_right_land_main">35.24399906635284dp</dimen>
+    <dimen name="icon_user_header_middle_top_land_main">13.04999965429306dp</dimen>
+    <dimen name="icon_user_nickname_margin_right_land_main">14.849999606609344dp</dimen>
+    <dimen name="icon_user_nickname_margin_top_land_main">25.64999932050705dp</dimen>
+    <dimen name="icon_user_nickname_font_size_land_main">19.64699947953224dp</dimen>
+    <dimen name="icon_tab_item_margin_left_land_main">8.846999765634537dp</dimen>
+    <dimen name="title_tab_item_font_size_land_main">19.64699947953224dp</dimen>
+    <dimen name="user_head_dimen_margin">17.999999523162842dp</dimen>
+    <dimen name="input_method_text_size">17.999999523162842dp</dimen>
+    <dimen name="input_method_dimin_margin_top">71.99999809265137dp</dimen>
+    <dimen name="input_method_dimin_margin_top_2">89.99999761581421dp</dimen>
+    <dimen name="panel_tab_height">89.99999761581421dp</dimen>
+    <dimen name="panel_tab_item_width">89.99999761581421dp</dimen>
+    <dimen name="main_str_ip_address_size">16.199999570846558dp</dimen>
+    <dimen name="main_cmd_status_text_size">13.499999642372131dp</dimen>
+    <dimen name="main_user_nickname_text_size">9.899999737739563dp</dimen>
+    <dimen name="main_str_semaphore_size">19.799999475479126dp</dimen>
+    <!-- 新版本UI间距  toolbar 58px/2-->
+    <dimen name="toolbar_distance_top">6.299999833106995dp</dimen>
+    <!-- progessbar 20px/2-->
+    <dimen name="progress_height_main">11.699999690055847dp</dimen>
+    <!-- progessbar 22px/2-->
+    <dimen name="progress_top_distance">9.899999737739563dp</dimen>
+    <!-- icon version and helper distance 42/2-->
+    <dimen name="icon_text_top_distance">25.19999933242798dp</dimen>
+    <!-- icon version and helper distance 77/2-->
+    <dimen name="icon_nick_image_size">34.64999908208847dp</dimen>
+    <!--nick name and nick icon  distance-->
+    <dimen name="icon_nick_distance_top">6.299999833106995dp</dimen>
+    <!-- toolbar 右侧的两个图标 44*43-->
+    <dimen name="toolbar_icon_help_size">19.799999475479126dp</dimen>
+    <!-- toolbar间距 10px-->
+    <dimen name="toolbar_distance_top_max">8.999999761581421dp</dimen>
+    <!--wifi信号区分割线 -->
+    <dimen name="tabbar_deliver_height">11.96999968290329dp</dimen>
+    <dimen name="wifi_area_signal_line_height_min">11.699999690055847dp</dimen>
+    <!-- wifi信号区分割位置 icon和文本间距 14px-->
+    <dimen name="wifi_area_signal_icon_distance">6.299999833106995dp</dimen>
+    <!-- wifi信号区分割位置 line和左右的间距 14px-->
+    <dimen name="wifi_area_signal_line_height_margin">7.199999809265137dp</dimen>
+    <!--标题和文本之间的间距 50px -->
+    <dimen name="wifi_area_title_value_margin">22.499999403953552dp</dimen>
+    <!-- wifi single 24/2-->
+    <dimen name="wifi_area_title_size">10.799999713897705dp</dimen>
+    <!--tabbar item  width 236Px/2-->
+    <dimen name="tabbar_item_width">141.2999962568283dp</dimen>
+    <!-- 切换按钮 56px/2-->
+    <dimen name="wifi_area_change_button_distance">25.19999933242798dp</dimen>
+    <!-- 切换按钮的大小 126/2-->
+    <dimen name="wifi_area_change_button_size_width">56.69999849796295dp</dimen>
+    <!-- 切换按钮的大小 54/2-->
+    <dimen name="wifi_area_change_button_size_height">24.299999356269836dp</dimen>
+    <!-- 文本区域间距18 px/2-->
+    <dimen name="wifi_area_distance_left">10.799999713897705dp</dimen>
+    <!-- 文本区域间距 右边34px-->
+    <dimen name="wifi_area_distance_right">15.299999594688416dp</dimen>
+    <!-- wifi名称和按钮的间距-->
+    <dimen name="wifi_name_change_icon_left_distance">19.169999492168426dp</dimen>
+    <!-- wifi名称和按钮的间距 86/2-->
+    <dimen name="wifi_name_vendor_size_widthorheight">38.69999897480011dp</dimen>
+    <!-- 70px-->
+    <dimen name="wifi_change_page_bg_titlbar">31.499999165534973dp</dimen>
+    <!-- 24-->
+    <dimen name="wifi_change_page_bg_toporbottom">10.799999713897705dp</dimen>
+    <!-- 26-->
+    <dimen name="wifi_change_page_bg_left">11.699999690055847dp</dimen>
+    <!-- 66/2-->
+    <dimen name="wifi_change_page_bg_distance">29.69999921321869dp</dimen>
+    <!--wifi列表每个item的高度 31px -->
+    <dimen name="wifi_change_page_list_item">13.949999630451202dp</dimen>
+    <!--48px wifi强度和列表之间的间距 -->
+    <dimen name="wifi_change_page_list_margin">39.59999895095825dp</dimen>
+    <!-- wifi信号的是否加密和右边的间距 78px-->
+    <dimen name="wifi_passwd_change_page_list_margin">35.09999907016754dp</dimen>
+    <!-- 是否可用和密码加锁之间的距离 40px-->
+    <dimen name="wifi_passwd_lock_item_distance">17.999999523162842dp</dimen>
+    <!--wifi dilaog close margin 14px-->
+    <dimen name="wifi_connect_dialog_close_margin">6.299999833106995dp</dimen>
+    <!-- wifi账号的间距 52px-->
+    <dimen name="wifi_connect_account_distance">23.399999380111694dp</dimen>
+    <!-- wifi账号头部的间距 62px-->
+    <dimen name="wifi_connect_account_margin_top">27.899999260902405dp</dimen>
+    <!-- Title 和value之间的间距 20px-->
+    <dimen name="wifi_connect_tip_value_distance">8.999999761581421dp</dimen>
+    <!-- 输入框和面板的间距 46px-->
+    <dimen name="wifi_input_distance">20.699999451637268dp</dimen>
+    <!-- 输入框和面板的间距 50px-->
+    <dimen name="wifi_input_margin_top">22.499999403953552dp</dimen>
+    <!-- Title 和value之间的间距 66px-->
+    <dimen name="wifi_connect_password_margin_top">29.69999921321869dp</dimen>
+    <dimen name="option_input_distance">7.199999809265137dp</dimen>
+    <!--忘记密码和自动连接里面的字体 18px -->
+    <dimen name="option_text_size">8.099999785423279dp</dimen>
+    <!-- 登录页面的界面 top 120px-->
+    <dimen name="panel_login_bg_margin_top">80.99999785423279dp</dimen>
+    <!--登录页面的界面 ICON  间距 76 -->
+    <dimen name="panel_login_panel_top">34.1999990940094dp</dimen>
+    <dimen name="panel_login_panel_status_top">64.79999828338623dp</dimen>
+    <!--登录页面的界面 ICON和输入框的距离 90 -->
+    <dimen name="panel_login_icon_input_distance">40.499998927116394dp</dimen>
+    <!--登录页面的界面 ICON和输入框的距离 64px -->
+    <dimen name="panel_login_distance">28.799999237060547dp</dimen>
+    <dimen name="toolbar_height">136.7999963760376dp</dimen>
+    <!-- 字体大小  UI命令规范 模块名+间距+-->
+    <dimen name="large_size_maxsize">23.399999380111694dp</dimen>
+    <!-- CMD 提示语大小 32px/2-->
+    <dimen name="large_size_middle">13.499999642372131dp</dimen>
+    <!-- CMD 提示语大小 28px/2-->
+    <dimen name="large_size_min">12.59999966621399dp</dimen>
+    <!-- 标准字号-->    <!--最大号 64px/2 -->
+    <dimen name="status_large_size">38.69999897480011dp</dimen>
+    <!--中字号 字体大小-->
+    <dimen name="status_middle_size">22.499999403953552dp</dimen>
+    <!--小号字体大小 24-->
+    <dimen name="status_litter_size">16.199999570846558dp</dimen>
+    <!--小号字体大小 28-->
+    <dimen name="status_litter_max_size">20.699999451637268dp</dimen>
+    <!--小号字体大小  18sp-->
+    <dimen name="status_litter_min_size">16.199999570846558dp</dimen>
+    <!--小号字体大小  16sp-->
+    <dimen name="status_litter_lastmin_size">13.499999642372131dp</dimen>
+    <!-- toolbar距离状态栏的间距-->
+    <dimen name="toolbar_distance_statusbar">10.799999713897705dp</dimen>
+    <!-- 新版本UI间距  toolbar 58px/2-->
+    <dimen name="toolbar_distance_ip_cmd">10.799999713897705dp</dimen>
+    <!-- 新版本UI间距  toolbar 58px/2-->
+    <dimen name="toolbar_distance_parent">35.09999907016754dp</dimen>
+    <!-- 新版本UI间距  toolbar 58px/2-->
+    <dimen name="toolbar_distance_icon">1.7999999523162842dp</dimen>
+    <dimen name="panel_toolbar_height">126.89999663829803dp</dimen>
+    <!-- 版本和设置之间的间距-->
+    <dimen name="toolbar_distance_version_settings">20.699999451637268dp</dimen>
+    <!-- 新版本UI间距  icon和文字之间的间距-->
+    <dimen name="toolbar_distance_icon_nickname">25.19999933242798dp</dimen>
+    <!-- toolbar 图片和文字的距离-->
+    <dimen name="toolbar_distance_icon_txt">14.399999618530273dp</dimen>
+    <!--toolbar模块的帮助按钮和用户头像之间的间距-->
+    <dimen name="toolbar_distance_icon_userhead">13.499999642372131dp</dimen>
+    <!-- 用户头像大小-->
+    <dimen name="toolbar_userhead_icon_width_test">45.89999878406525dp</dimen>
+    <!--tabbar的高度 94 -->
+    <dimen name="toolbar_tablayout_height">56.69999849796295dp</dimen>
+    <!--边缘框间距-->
+    <dimen name="frame_padding_margin">11.699999690055847dp</dimen>
+    <!-- wifi信号区分割位置 26px-->
+    <dimen name="wifiarea_diliver_height">2.6999999284744263dp</dimen>
+    <!-- 切换按钮 间距-->
+    <dimen name="wifiarea_diliver_parent_height">35.999999046325684dp</dimen>
+    <!-- 切换按钮 56px/2-->
+    <dimen name="wifiarea_diliver_padding_height">33.29999911785126dp</dimen>
+    <dimen name="wifiarea_diliver_parent_right">20.699999451637268dp</dimen>
+    <dimen name="wifiarea_diliver_change_semaphore">8.999999761581421dp</dimen>
+    <!--wifi连接页面的账号位置 -->
+    <dimen name="dialog_wificonnect_distance_parent_top">36.899999022483826dp</dimen>
+    <dimen name="dialog_wificonnect_distance_parent_left">31.499999165534973dp</dimen>
+    <dimen name="dialog_wificonnect_distance_checkitem">29.69999921321869dp</dimen>
+    <dimen name="loginpanel_userhead_distance_top">45.89999878406525dp</dimen>
+    <dimen name="loginpanel_inputmethod_distance_top">53.999998569488525dp</dimen>
+    <dimen name="loginpanel_inputmethod_distance">44.999998807907104dp</dimen>
+    <dimen name="loginpanel_inputmethod_deliver_margin">35.999999046325684dp</dimen>
+    <dimen name="loginpanel_distance_check_input">26.999999284744263dp</dimen>
+    <dimen name="loginpanel_distance_parent_right">89.99999761581421dp</dimen>
+    <dimen name="loginpanel_distance_parent_top">89.99999761581421dp</dimen>
+    <dimen name="loginpanel_distance_parent_logo_right">143.99999618530273dp</dimen>
+    <dimen name="loginpanel_distance_logo_top">44.999998807907104dp</dimen>
+    <dimen name="panel_loginstatus_prg_distance">38.69999897480011dp</dimen>
+    <dimen name="toolbar_distance_statusbar_f">-6.299999833106995dp</dimen>
+    <dimen name="wifiarea_diliver_height_max">13.499999642372131dp</dimen>
+    <dimen name="wifiarea_diliver_margin_height">4.4999998807907104dp</dimen>
+    <dimen name="cmdtransfer_panel_height">47.69999873638153dp</dimen>
+    <dimen name="cmdtransfer_tabitem_width">96.2999974489212dp</dimen>
+    <dimen name="cmdtransfer_tabitem_height">32.399999141693115dp</dimen>
+    <dimen name="cmdtransfer_list_item_padding">4.4999998807907104dp</dimen>
+    <dimen name="cmdtransfer_list_item_parent_margin_left">10.799999713897705dp</dimen>
+    <dimen name="cmdtransfer_list_item_type_margin_left">11.699999690055847dp</dimen>
+    <dimen name="cmdtransfer_list_item_type_margin_top">4.4999998807907104dp</dimen>
+    <dimen name="cmdtransfer_list_item_subtitle_distance_title">0.8999999761581421dp</dimen>
+    <!--通用的间距 drawable和文本之间的间距 -->
+    <dimen name="common_title_image_padding">6.299999833106995dp</dimen>
+    <!-- listview通用的边距值-->
+    <dimen name="common_list_item_margin_right">14.399999618530273dp</dimen>
+    <!-- listview通用的边距值 右侧两边按钮之间的间距-->
+    <dimen name="common_list_itemto_item_distance">24.299999356269836dp</dimen>
+    <dimen name="panel_land_constraint_margin_left_right">53.613dp</dimen>
+    <dimen name="panel_land_constraint_margin_top_bottom">10.5dp</dimen>
+    <dimen name="tab_item_width_common">39.44699895501137dp</dimen>
+    <dimen name="tab_item_height_common">39.44699895501137dp</dimen>
+    <dimen name="title_wifistrong_width_change">59.84999841451645dp</dimen>
+    <dimen name="title_wifistrong_height_change">59.84999841451645dp</dimen>
+    <dimen name="layout_single_area_bottom_wifi_detail">1.7999999523162842dp</dimen>
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 登入面板-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_login_status"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    android:orientation="vertical">
+    <!-- 默认图片大小-->
+
+    <com.nd.android.adhoc.login.ui.widget.CircleImageView
+        android:id="@+id/profile_image_status"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="@dimen/icon_user_header_large_width_login_status"
+        android:layout_height="@dimen/icon_user_header_large_height_login_status"
+        android:scaleType="centerCrop"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/icon_user_header_large_top_login_status"
+        android:src="@drawable/icon_user_header_login"
+        app:civ_border_color="@color/transparent"
+        app:civ_border_width="2dp" />
+
+    <TextView
+        android:id="@+id/tv_usernickname_login"
+        android:text="@string/source_user_name"
+        android:layout_below="@+id/profile_image_status"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/icon_user_nickname_top_login_status"
+        android:textSize="@dimen/icon_user_nickname_font_size_login_status"
+        android:textColor="@color/large_size_color_shader"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="@string/user_connecting_str"
+        android:layout_below="@+id/tv_usernickname_login"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/icon_user_state_top_login_status"
+        android:textSize="@dimen/icon_user_state_font_size_login_status"
+        android:textColor="@color/large_size_color_shader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

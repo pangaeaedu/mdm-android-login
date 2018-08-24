@@ -1,6 +1,5 @@
 package com.nd.android.adhoc.login.basicService;
 
-import com.nd.android.adhoc.login.basicService.config.LoginSpConfig;
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.HttpServiceImpl;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
@@ -13,7 +12,6 @@ public class BasicServiceFactory {
     private static final BasicServiceFactory ourInstance = new BasicServiceFactory();
 
     private IHttpService mHttpService = null;
-    private LoginSpConfig mSpConfig = null;
 
     private List<IUserActivateListener> mActivateListeners = new CopyOnWriteArrayList<>();
 
@@ -44,18 +42,18 @@ public class BasicServiceFactory {
         mActivateListeners.remove(pListener);
     }
 
-    public LoginSpConfig getConfig(){
+//    public LoginSpConfig getConfig(){
 //        AdhocBasicConfig.getInstance().getAppContext();
-        if(mSpConfig == null){
-            synchronized (this){
-                if(mSpConfig == null){
-                    mSpConfig = new LoginSpConfig("");
-                }
-            }
-        }
-
-        return mSpConfig;
-    }
+//        if(mSpConfig == null){
+//            synchronized (this){
+//                if(mSpConfig == null){
+//                    mSpConfig = new LoginSpConfig("");
+//                }
+//            }
+//        }
+//
+//        return mSpConfig;
+//    }
 
     public void notifyActivateResponse(UserActivateResult pResult){
         for (IUserActivateListener listener : mActivateListeners) {

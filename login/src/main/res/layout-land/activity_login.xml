@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <!--配置状态栏 -->
+    <View
+        android:id="@+id/status_bar_login"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+    <android.support.constraint.ConstraintLayout
+        android:background="@drawable/bg_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/panel_land_constraint_margin_top_bottom"
+            android:layout_marginEnd="@dimen/panel_land_constraint_margin_left_right"
+            android:layout_marginStart="@dimen/panel_land_constraint_margin_left_right"
+            android:layout_marginTop="@dimen/panel_land_constraint_margin_top_bottom"
+            android:background="@drawable/bg_login_panel"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <include
+                layout="@layout/panel_land_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:visibility="visible" />
+            <!-- 环境设置-->
+            <TextView
+                android:id="@+id/tv_btn_select_environment"
+                android:layout_width="@dimen/icon_settings_width_login_panel"
+                android:layout_height="@dimen/icon_settings_height_login_panel"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginStart="15dp"
+                android:drawableStart="@drawable/btn_selector_settings_toolbar"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+    </android.support.constraint.ConstraintLayout>
+</LinearLayout>

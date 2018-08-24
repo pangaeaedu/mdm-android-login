@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 登入面板-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_toolabar"
+    android:orientation="vertical">
+    <!-- 右上角的2个-帮助-->
+    <ImageView
+        android:id="@+id/iv_setting_main"
+        android:layout_width="@dimen/icon_settings_width_login_panel"
+        android:layout_height="@dimen/icon_settings_height_login_panel"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/icon_settings_margin_right_main_panel"
+        android:layout_marginTop="@dimen/icon_settings_margin_top_main_panel"
+        android:src="@drawable/btn_selector_about_toolbar" />
+
+    <!--&lt;!&ndash; 设置&ndash;&gt;-->
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_help_main"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:visibility="gone"-->
+    <!--android:layout_above="@+id/tv_usernickname_main"-->
+    <!--android:layout_toStartOf="@+id/iv_userheader_main"-->
+    <!--android:src="@drawable/btn_selector_settings_toolbar" />-->
+    <!-- 環境 -->
+    <TextView
+        android:id="@+id/tv_env_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_usernickname_main"
+        android:layout_marginRight="@dimen/toolbar_distance_icon_userhead"
+        android:layout_toStartOf="@+id/iv_setting_main"
+        android:shadowColor="@color/large_size_shdow_color"
+        android:shadowDx="1"
+        android:shadowDy="0"
+        android:shadowRadius="1"
+        android:textColor="@color/large_size_color_shader"
+        android:textSize="@dimen/status_litter_min_size" />
+    <!-- IP地址-->
+    <TextView
+        android:id="@+id/tv_ipaddress_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/title_ip_margin_left_land_main"
+        android:layout_marginRight="@dimen/title_ip_margin_right_land_main"
+        android:layout_marginTop="@dimen/title_ip_margin_top_land_main"
+        android:shadowColor="@color/large_size_shdow_color"
+        android:shadowDx="1"
+        android:shadowDy="0"
+        android:shadowRadius="1"
+        android:text="@string/main_str_ip_address"
+        android:textColor="@color/large_size_color_shader"
+        android:textSize="@dimen/title_ip_font_size_land_main" />
+
+    <TextView
+        android:id="@+id/tv_adhoc_master"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/title_ip_margin_top_land_main"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/tv_usernickname_main"
+        android:layout_alignBottom="@id/tv_usernickname_main"
+        android:layout_marginEnd="@dimen/cdm_margin_right"
+        android:shadowColor="@color/large_size_shdow_color"
+        android:shadowDx="1"
+        android:shadowDy="0"
+        android:shadowRadius="1"
+        android:textColor="@color/black_overlay" />
+    <!---指令接收集体-->
+    <LinearLayout
+        android:id="@+id/ll_cmd_collect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/tv_ipaddress_main"
+        android:layout_below="@id/tv_ipaddress_main"
+        android:layout_marginTop="@dimen/layout_margin_top_land_main"
+        android:orientation="horizontal">
+        <!--共接收指令 -->
+        <TextView
+            android:id="@+id/tv_all_cmd_count_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:text="@string/main_str_cmd_statics_all"
+            android:textColor="@color/large_size_color_shader"
+            android:textSize="@dimen/title_font_size_land_main" />
+        <!--已完成 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="11dp"
+            android:includeFontPadding="false"
+            android:text="@string/main_str_cmd_statics_already"
+            android:textColor="@color/large_size_color_shader"
+            android:textSize="@dimen/title_font_size_land_main"
+            android:visibility="gone" />
+        <!-- 12 项目-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:includeFontPadding="false"
+            android:text="0 项"
+            android:textColor="@color/large_size_color_shader_cmd"
+            android:textSize="@dimen/title_font_size_land_main"
+            android:visibility="gone" />
+        <!-- 正在执行-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="11dp"
+            android:includeFontPadding="false"
+            android:text="@string/main_str_cmd_statics_now"
+            android:textColor="@color/large_size_color_shader"
+            android:textSize="@dimen/title_font_size_land_main"
+            android:visibility="gone" />
+        <!-- 4 项目-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:includeFontPadding="false"
+            android:text="0 项"
+            android:textColor="@color/large_size_color_shader_cmd"
+            android:textSize="@dimen/title_font_size_land_main"
+            android:visibility="gone" />
+        <!--进度-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="11dp"
+            android:includeFontPadding="false"
+            android:text="@string/main_str_cmd_statics_progress"
+            android:textColor="@color/large_size_color_shader"
+            android:textSize="@dimen/title_font_size_land_main" />
+        <!--75%-->
+        <TextView
+            android:id="@+id/tv_cmd_progress_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:includeFontPadding="false"
+            android:text="0%"
+            android:textColor="@color/large_size_color_shader_cmd"
+            android:textSize="@dimen/title_font_size_land_main" />
+    </LinearLayout>
+    <!--&lt;!&ndash;警告的ICON &ndash;&gt;-->
+    <!--<ImageView-->
+    <!--android:id="@+id/iv_error_cmd_main"-->
+    <!--android:visibility="invisible"-->
+    <!--android:layout_below="@+id/tv_ipaddress_main"-->
+    <!--android:layout_toRightOf="@+id/ll_cmd_collect"-->
+    <!--android:layout_marginLeft="17dp"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/x42"-->
+    <!--android:src="@drawable/icon_warning_cmd" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_error_cmd_main"-->
+    <!--android:visibility="invisible"-->
+    <!--android:layout_below="@+id/tv_ipaddress_main"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:includeFontPadding="false"-->
+    <!--android:layout_marginTop="@dimen/x46"-->
+    <!--android:layout_marginLeft="7dp"-->
+    <!--android:layout_toRightOf="@+id/iv_error_cmd_main"-->
+    <!--android:textColor="@color/error_exception"-->
+    <!--android:textSize="@dimen/x32" />-->
+
+    <ProgressBar
+        android:id="@+id/prg_loadcmdrate_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/tv_ipaddress_main"
+        android:layout_below="@+id/ll_cmd_collect"
+        android:layout_marginRight="@dimen/prg_margin_right_land_main"
+        android:layout_marginTop="@dimen/prg_margin_top_land_main"
+        android:indeterminateOnly="false"
+        android:max="100"
+        android:minHeight="@dimen/prg_min_height_land_main"
+        android:mirrorForRtl="true"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress_cmd" />
+    <!-- 指令集,loading加载-->
+    <com.nd.android.adhoc.login.ui.widget.CircleImageView
+        android:id="@+id/iv_userheader_main"
+        android:layout_width="@dimen/icon_user_header_middle_width_land_main"
+        android:layout_height="@dimen/icon_user_header_middle_height_land_main"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/iv_setting_main"
+        android:layout_marginRight="@dimen/icon_user_header_middle_right_land_main"
+        android:layout_marginTop="@dimen/icon_user_header_middle_top_land_main"
+        android:src="@drawable/icon_userheader_toolbar" />
+    <!-- 用户昵称-->
+    <TextView
+        android:id="@+id/tv_usernickname_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_setting_main"
+        android:layout_marginRight="@dimen/icon_user_nickname_margin_right_land_main"
+        android:layout_marginTop="@dimen/icon_user_nickname_margin_top_land_main"
+        android:layout_toLeftOf="@+id/iv_userheader_main"
+        android:includeFontPadding="false"
+        android:text="@string/main_str_usernickname"
+        android:textColor="@color/large_size_color_shader"
+        android:textSize="@dimen/icon_user_nickname_font_size_land_main" />
+</RelativeLayout>

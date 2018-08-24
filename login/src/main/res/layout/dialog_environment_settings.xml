@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_connect_wifi_window"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/dialog_middle_root_padding_right_common"
+    android:paddingBottom="@dimen/dialog_middle_root_padding_right_common">
+    <!-- 左上角的按钮-->
+    <ImageView
+        android:id="@+id/iv_environment_close_window"
+        android:layout_width="@dimen/btn_close_width_common"
+        android:layout_height="@dimen/btn_close_width_common"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/btn_close_margin_top_common"
+        android:layout_marginTop="@dimen/btn_close_margin_top_common"
+        android:src="@drawable/btn_selector_close_wifi_connect" />
+    <!-- android wifi账号-->
+    <!-- 环境配置  显示当前环境-->
+    <TextView
+        android:id="@+id/tv_current_environment_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/title_environment_margin_left_common"
+        android:layout_marginTop="@dimen/title_environment_margin_top_common"
+        android:drawablePadding="@dimen/dialog_middle_root_padding_right_common"
+        android:textColor="@color/large_size_color_shader"
+        android:text="@string/current_environment"
+        android:textSize="@dimen/title_environment_font_size_common" />
+    <!-- 环境配置 显示当前环境-->
+    <TextView
+        android:id="@+id/tv_current_environment"
+        android:layout_toRightOf="@+id/tv_current_environment_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:layout_marginLeft="@dimen/title_current_environment_margin_left_common"
+        android:layout_marginTop="@dimen/title_current_environment_margin_top_common"
+        android:text="NetDragon- FZ"
+        android:textColor="@color/large_size_color_shader"
+        android:textSize="@dimen/title_current_environment_font_size_common" />
+
+    <!-- 选择环境-->
+    <TextView
+        android:id="@+id/tv_change_environment_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_current_environment_tip"
+        android:layout_below="@+id/tv_current_environment"
+        android:layout_marginTop="@dimen/title_current_environment_margin_top_common"
+        android:textColor="@color/large_size_color_shader"
+        android:drawablePadding="@dimen/dialog_middle_root_padding_right_common"
+        android:text="@string/please_environment"
+        android:textSize="@dimen/title_current_environment_font_size_common" />
+
+    <Spinner
+        android:id="@+id/sp_select_environment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_current_environment"
+        android:layout_below="@+id/tv_current_environment"
+        android:layout_marginRight="@dimen/title_environment_margin_left_common"
+        android:layout_marginTop="@dimen/title_current_environment_margin_top_common"
+        android:layout_toRightOf="@+id/tv_change_environment_tip"
+        android:hint="@string/please_environment"
+        android:textColor="@color/large_size_color_shader"
+        android:textSize="@dimen/title_environment_font_size_common"
+        android:entries="@array/environment"/>
+    <!-- 连接按钮-->
+    <Button
+        android:id="@+id/tv_commit_settings_environment"
+        android:layout_width="@dimen/btn_environment_width_common"
+        android:layout_height="@dimen/btn_environment_height_common"
+        android:layout_below="@+id/sp_select_environment"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/btn_environment_top_common"
+        android:background="@drawable/btn_selector_submit_action"
+        android:gravity="center"
+        android:text="@string/environment_settings"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/title_current_environment_font_size_common" />
+</RelativeLayout>

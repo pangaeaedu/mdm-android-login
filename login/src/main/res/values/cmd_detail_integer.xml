@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item type="integer" name="cmd_log_title_max_length">20</item>
+</resources>

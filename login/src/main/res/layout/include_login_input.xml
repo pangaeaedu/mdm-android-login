@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 登入面板-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_login_panel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible"
+    android:orientation="vertical">
+    <!-- 默认图片大小-->
+    <com.nd.android.adhoc.login.ui.widget.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="@dimen/icon_user_header_large_width_login"
+        android:layout_height="@dimen/icon_user_header_large_height_login"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/icon_user_header_large_top_login"
+        android:src="@drawable/icon_user_header_login"
+        app:civ_border_color="@color/transparent"
+        app:civ_border_width="2dp" />
+
+    <!--请输入用户名         -->
+    <com.nd.android.adhoc.login.ui.widget.edit.AdHocEditText
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cilv_user_login"
+        style="@style/AdHocEditInputStyle"
+        android:layout_below="@+id/profile_image"
+        android:layout_marginTop="@dimen/input_method_username_top_login"
+        android:background="@drawable/bg_input_frame_login"
+        android:focusable="false"
+        ptr:leftResId="@drawable/icon_username_input_normal"
+        ptr:renderIconColor="@color/icon_input_color" />
+    <!--请输入密码         -->
+    <com.nd.android.adhoc.login.ui.widget.edit.AdHocEditText
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cilv_password_login"
+        style="@style/AdHocEditInputStyle"
+        android:layout_below="@+id/cilv_user_login"
+        android:layout_marginTop="@dimen/input_method_password_top_login"
+        android:focusable="false"
+        android:inputType="textPassword"
+        ptr:leftResId="@drawable/icon_password_input_normal"
+        ptr:renderIconColor="@color/icon_input_color" />
+
+    <CheckBox
+        android:id="@+id/cb_record_passwd_main"
+        style="@style/AdHocCheckStyle"
+        android:layout_alignStart="@+id/cilv_password_login"
+        android:layout_below="@+id/cilv_password_login"
+        android:text="@string/record_passwd" />
+
+    <CheckBox
+        android:id="@+id/cb_auto_connect_main"
+        style="@style/AdHocCheckStyle"
+        android:layout_alignEnd="@+id/cilv_password_login"
+        android:layout_below="@+id/cilv_password_login"
+        android:text="@string/auto_login" />
+    <!-- 登录按钮-->
+    <Button
+        android:id="@+id/btn_submit_user_login"
+        style="@style/AdHocSubmitStyle"
+        android:layout_below="@+id/cb_record_passwd_main"
+        android:layout_marginTop="@dimen/btn_submit_margin_top_login"
+        android:text="@string/submit" />
+</RelativeLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/frame_margin_common"
+    android:paddingRight="@dimen/frame_margin_common"
+    android:paddingTop="@dimen/layout_single_area_top_wifi_detail"
+    android:orientation="horizontal">
+
+    <!-- 左边图标-->
+    <TextView
+        android:id="@+id/tv_item_key_lsv_main"
+        android:textSize="@dimen/title_single_area_font_size_wifi_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/wifi_area_item_color"
+        android:includeFontPadding="false"
+        android:drawablePadding="@dimen/title_single_area_padding_wifi_detail"
+        android:gravity="center_vertical"
+        android:minEms="5"
+        />
+
+    <TextView
+        android:id="@+id/tv_item_value_lsv_main"
+        android:layout_marginStart="@dimen/title_single_areaname_margin_left_wifi_detail"
+        android:textSize="@dimen/title_single_area_font_size_wifi_detail"
+        android:includeFontPadding="false"
+        android:singleLine="false"
+        android:maxEms="9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/wifi_area_item_color"/>
+</LinearLayout>

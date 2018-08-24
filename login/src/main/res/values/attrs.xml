@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <!-- {@deprecated Use civ_circlebackground_color instead.} -->
+        <attr name="civ_fill_color" format="color" />
+        <attr name="civ_circle_background_color" format="color" />
+    </declare-styleable>
+
+    <!--通用的文本框的属性-->
+    <declare-styleable name="AdHoc_Common_InputMethod_EditStyle">
+        <attr name="leftResId" format="reference" />
+        <attr name="rightResId" format="reference" />
+        <!--当样式被选中时，需要使用到什么颜色 -->
+        <attr name="renderIconColor" format="color" />
+        <attr name="backgroundResId" format="color"/>
+        <!-- 文本框警告时选用的颜色值-->
+        <attr name="renderWarningBackgroundColor" format="color"/>
+        <!-- 文本框警告时选用的颜色值-->
+        <attr name="renderFocusBackgroundColor" format="color"/>
+        <!-- 全局方法控件-->
+        <attr name="globalScale" format="float"/>
+    </declare-styleable>
+
+    <declare-styleable name="AdHoc_CommonTitleView">
+        <attr name="leftDrawable" format="reference" />
+        <attr name="rightDrawable" format="reference" />
+        <attr name="leftText" format="string" />
+        <attr name="rightText" format="string" />
+        <attr name="middleText" format="string" />
+        <attr name="leftTextColor" format="color" />
+        <attr name="middleTextColor" format="color" />
+        <attr name="rightTextColor" format="color" />
+        <attr name="leftTextSize" format="integer" />
+        <attr name="rightTextSize" format="integer" />
+        <attr name="middleTextSize" format="integer" />
+    </declare-styleable>
+</resources>

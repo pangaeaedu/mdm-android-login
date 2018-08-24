@@ -8,6 +8,7 @@ dependencies {
     }
 
     api("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
+    api('com.android.support.constraint:constraint-layout:1.0.2')
 
     annotationProcessor ("com.nd.android.adhoc.basic:adhoc-router-compiler:$adhoc_basic_version")
 
@@ -23,20 +24,35 @@ dependencies {
 
     }
 
+    api project(":assistant_sdk")
+
     try{
         api project (':loginapi')
     }catch (Exception e){
 
     }
 
+    try{
+        api project ("assistant_sdk")
+    }catch(Exception e){
+
+    }
+
+
+    api("com.android.support:support-v4:$androidSupportSdkVersion")
+    compile("com.android.support:design:$androidSupportSdkVersion")
+
     api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
         transitive = true
         changing = true
     }
 
-    api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
+//    api("com.nd.sdp.android.common:res:0.2.1.8")
 
-    compile  'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
+    api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
+
+    api  'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
 
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
 //    compile  'com.nd.sdp.im.common:utils:0.2.98.release'

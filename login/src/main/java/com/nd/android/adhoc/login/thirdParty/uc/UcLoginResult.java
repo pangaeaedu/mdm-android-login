@@ -3,10 +3,10 @@ package com.nd.android.adhoc.login.thirdParty.uc;
 import android.support.annotation.NonNull;
 
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
-import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginResult;
+import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.smartcan.accountclient.CurrentUser;
 
-public class UcLoginResult implements IThirdPartyLoginResult {
+public class UcLoginResult implements ILoginResult {
 
     private CurrentUser mUser;
     private UserActivateResult mCmdData;

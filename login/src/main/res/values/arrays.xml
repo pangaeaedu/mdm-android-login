@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="environment">
+        <item>@string/environment_dev</item>
+        <item>@string/environment_test </item>
+        <item>@string/environment_china</item>
+        <item>@string/environment_aws</item>
+    </string-array>
+    <string name="environment_test">Test</string>
+    <string name="environment_dev">Develop</string>
+    <string name="environment_china">China</string>
+    <string name="environment_aws">WholeWorld</string>
+</resources>
