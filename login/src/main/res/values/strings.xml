@@ -83,8 +83,6 @@
 
 
 
-    <string name="mdm_splash_initializing_tip">正在初始化，请稍候…</string>
-
     <string name="login_commit">确认</string>
     <string name="login_auto">自动</string>
     <string name="login_clear">清除</string>

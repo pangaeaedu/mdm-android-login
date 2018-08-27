@@ -2,12 +2,9 @@
 <resources>
     <color name="transparent">#00000000</color>
     <color name="btn_blue_on">#197AF0</color>
-    <color name="light_gray">#EBEBEB</color>
 
     <!--新版UI的色值  IP的色值，tab nav页面使用-->
     <color name="large_size_color_shader">#666666</color>
-    <color name="large_size_shdow_color">#FFF8EA</color>
-    <color name="deliver_main">#e7e7e7</color>
     <!--左侧wifi区域下所有的字体颜色 -->
     <color name="wifi_area_item_color">#999999</color>
     <color name="cmd_transfer_bg_error">#FF4200</color>

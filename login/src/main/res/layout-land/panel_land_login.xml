@@ -26,7 +26,6 @@
             android:layout_height="@dimen/bg_guide_app_height_login"
             android:scaleType="fitCenter"
             android:layout_marginStart="@dimen/bg_guide_app_margin_left_login"
-            android:contentDescription="@string/wifi_area_channel"
             android:src="@drawable/bg_im_login" />
     </LinearLayout>
 

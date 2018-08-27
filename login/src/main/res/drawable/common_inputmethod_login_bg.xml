@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_window_focused="false" android:drawable="@drawable/common_inputmethod_login_bg_shape_nofocus" />
-    <item android:state_focused="true" android:drawable="@drawable/common_inputmethod_login_bg_shape_focus" />
-</selector>

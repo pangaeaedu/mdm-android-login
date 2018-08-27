@@ -1,4 +1,5 @@
 <resources>
+
     <style name="AdHocCheckStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
         <item name="android:button">@drawable/checkbox_style</item>
         <item name="android:paddingLeft">7dp</item>
@@ -37,6 +38,4 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:gravity">center</item>
     </style>
-
-
 </resources>

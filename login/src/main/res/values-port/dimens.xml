@@ -27,26 +27,14 @@
     <dimen name="icon_user_nickname_font_size_login_status">21.83dp</dimen>
     <dimen name="icon_user_state_top_login_status">43.16dp</dimen>
     <dimen name="icon_user_state_font_size_login_status">16.5dp</dimen>
-    <!-- 通用组件 - 提示框-->
-    <dimen name="customer_tip_text_font_size_common">19.16dp</dimen>
+
+
     <!-- dialog 弹窗- 连接和设置环境-->
     <dimen name="dialog_middle_root_padding_right_common">9.83dp</dimen>
     <dimen name="btn_close_width_common">33.83dp</dimen>
     <dimen name="btn_close_height_common">33.83dp</dimen>
     <dimen name="btn_close_margin_top_common">9.83dp</dimen>
-    <dimen name="btn_close_margin_right_common">9.83dp</dimen>
-    <dimen name="btn_app_logo_margin_top_common">36.5dp</dimen>
-    <dimen name="btn_app_logo_width_common">49.0275dp</dimen>
-    <dimen name="btn_app_logo_height_common">49.0275dp</dimen>
-    <dimen name="title_app_logo_font_size_common">32.5dp</dimen>
-    <dimen name="title_app_logo_margin_top_common">9.83dp</dimen>
-    <dimen name="title_app_version_margin_top_common">14.529375dp</dimen>
-    <dimen name="title_app_version_font_size_common">13.16dp</dimen>
-    <dimen name="btn_app_version_width_common">150.0275dp</dimen>
-    <dimen name="btn_app_version_height_common">21.14375dp</dimen>
-    <dimen name="btn_app_versioninfo_top_common">11.975dp</dimen>
-    <dimen name="btn_app_versionintro_font_size_common">12.5dp</dimen>
-    <dimen name="btn_app_versionintro_top_common">33.83dp</dimen>
+
     <dimen name="title_environment_margin_left_common">13.83dp</dimen>
     <dimen name="title_environment_margin_top_common">41.83dp</dimen>
     <dimen name="title_environment_font_size_common">19.16dp</dimen>
