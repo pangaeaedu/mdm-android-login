@@ -47,9 +47,11 @@ public class LoginManager {
                     return;
                 }
 
+                Log.e(TAG, "pushid:"+pushID);
+
                 String existPushID = getConfig().getPushID();
                 if (pushID.equalsIgnoreCase(existPushID)) {
-                    Log.e(TAG, "device binded");
+                    Log.e(TAG, "device binded:"+existPushID);
                     mConnectSubject.onNext(true);
                     return;
                 }

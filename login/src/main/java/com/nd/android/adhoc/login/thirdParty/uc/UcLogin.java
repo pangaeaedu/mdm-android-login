@@ -111,23 +111,7 @@ public class UcLogin implements IThirdPartyLogin {
                                                         }
 
                                                         if (pResult.errcode == -1) {
-                                                            if (pResult.msgcode.equalsIgnoreCase
-                                                                    ("001")) {
-                                                                return Observable.error(new UcVerificationException());
-                                                            }
-
-                                                            if (pResult.msgcode.equalsIgnoreCase
-                                                                    ("002")) {
-                                                                return Observable.error(new UserBindedException());
-                                                            }
-
-                                                            if (pResult.msgcode.equalsIgnoreCase
-                                                                    ("003")) {
-                                                                return Observable.error(new DeviceBindedException());
-                                                            }
-
-                                                            return Observable.error(new SimOrOtherException());
-
+                                                            return throwError(pResult);
                                                         }
 
                                                         return Observable.just(new UcLoginResult(pUser,
@@ -167,6 +151,25 @@ public class UcLogin implements IThirdPartyLogin {
                         pCallBack.onFailed(e);
                     }
                 });
+    }
+
+    private Observable<UcLoginResult> throwError(UserActivateResult pResult){
+        if (pResult.msgcode.equalsIgnoreCase
+                ("001")) {
+            return Observable.error(new UcVerificationException());
+        }
+
+        if (pResult.msgcode.equalsIgnoreCase
+                ("002")) {
+            return Observable.error(new UserBindedException());
+        }
+
+        if (pResult.msgcode.equalsIgnoreCase
+                ("003")) {
+            return Observable.error(new DeviceBindedException());
+        }
+
+        return Observable.error(new SimOrOtherException());
     }
 
     private IHttpService getHttpService() {
