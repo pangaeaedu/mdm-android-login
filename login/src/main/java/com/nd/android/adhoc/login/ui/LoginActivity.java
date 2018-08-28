@@ -19,11 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
 import com.nd.android.adhoc.login.R;
+import com.nd.android.adhoc.login.exception.DeviceBindedException;
+import com.nd.android.adhoc.login.exception.UcUserNullException;
+import com.nd.android.adhoc.login.exception.UcVerificationException;
+import com.nd.android.adhoc.login.exception.UserBindedException;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
 import com.nd.android.adhoc.login.ui.widget.CircleImageView;
 import com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils;
@@ -285,12 +290,6 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     public void onResume() {
         super.onResume();
         mContext = this;
-        //判断设备是否被激活过，如果被激活过，则执行跳转至主页面
-        // TODO: yhq 由于引用失败，暂时注释
-//        if (ActivateManager.getInstance().isActivatedState()) {
-//            Logger.e("HYK","LoginActivity onResume");
-//            jumpMain();
-//        }
     }
 
 
@@ -521,6 +520,17 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     @Override
     public void onLoginFailed(Throwable pThrowable) {
         Log.e(TAG, "onLoginFailed:"+pThrowable);
+        if(pThrowable instanceof UcVerificationException
+                || pThrowable instanceof UcUserNullException){
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_uc_verification));
+        } else if(pThrowable instanceof UserBindedException){
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_binded));
+        } else if(pThrowable instanceof DeviceBindedException){
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_binded));
+        } else {
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_other));
+        }
+
         mLoginPanel.setVisibility(View.VISIBLE);
         mLoginStatus.setVisibility(View.GONE);
     }

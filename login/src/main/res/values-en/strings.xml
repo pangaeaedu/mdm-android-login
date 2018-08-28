@@ -5,4 +5,9 @@
 
 
     <string name="mdm_login_argument_invalid">Account or password is invalid</string>
+
+    <string name="login_error_uc_verification">UC verification failed</string>
+    <string name="login_error_user_binded">user binded</string>
+    <string name="login_error_device_binded">device binded</string>
+    <string name="login_error_other">login user failed</string>
 </resources>

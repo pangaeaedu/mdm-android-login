@@ -93,4 +93,9 @@
     <string name="login_psd">正在登陆中</string>
     <string name="login_remember_psd">记住密码</string>
 
+
+    <string name="login_error_uc_verification">UC验证失败</string>
+    <string name="login_error_user_binded">用户已绑定</string>
+    <string name="login_error_device_binded">设备已绑定</string>
+    <string name="login_error_other">激活用户失败</string>
 </resources>
