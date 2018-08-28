@@ -8,6 +8,6 @@ public interface IHttpService {
 
     IBindResult bindDevice(String pDeviceToken, String pPushID, String pSerialNum) throws Exception;
 
-    ActivateHttpResult activateUser(String pUserToken, String pDeviceToken) throws
+    ActivateHttpResult activateUser(String pUCAccessToken, String pDeviceToken) throws
             Exception;
 }
