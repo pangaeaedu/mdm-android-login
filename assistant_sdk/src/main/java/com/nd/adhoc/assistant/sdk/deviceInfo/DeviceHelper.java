@@ -4,19 +4,29 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.nd.adhoc.assistant.sdk.utils.MD5ArithmeticUtils;
+
 import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
 
 public class DeviceHelper {
     private static Method systemProperties_get = null;
 
     @NonNull
     public static String getDeviceToken(){
-        return getUniqueID();
+        String id = getUniqueID()+getSerialNumber();
+        try {
+            return MD5ArithmeticUtils.getMd5(id);
+        } catch (NoSuchAlgorithmException pE) {
+            pE.printStackTrace();
+        }
+
+        return id;
     }
 
-    public static String getUserToken(){
-        return getDeviceToken();
-    }
+//    public static String getUserToken(){
+//        return getDeviceToken();
+//    }
 //    @NonNull
 //    public static String generateSerialNum(){
 //        return ;

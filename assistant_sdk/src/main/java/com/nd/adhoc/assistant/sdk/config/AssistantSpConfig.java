@@ -82,4 +82,5 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveActivated(false);
         savePushID("");
     }
+
 }
