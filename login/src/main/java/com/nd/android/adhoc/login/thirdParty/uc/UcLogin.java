@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
@@ -17,7 +18,6 @@ import com.nd.android.adhoc.login.exception.UcVerificationException;
 import com.nd.android.adhoc.login.exception.UserBindedException;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
-import com.nd.android.adhoc.login.utils.DeviceHelper;
 import com.nd.smartcan.accountclient.CurrentUser;
 import com.nd.smartcan.accountclient.LoginCallback;
 import com.nd.smartcan.accountclient.UCManager;

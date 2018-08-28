@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
@@ -14,10 +15,9 @@ import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.basicService.operator.UserActivateOperator;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
+import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLoginResult;
 import com.nd.android.adhoc.loginapi.ILoginResult;
-import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
-import com.nd.android.adhoc.login.utils.DeviceHelper;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.mdm_feedback_biz.MdmFeedbackReceiveFactory;
 
@@ -75,9 +75,7 @@ public class LoginManager {
 
     private LoginManager() {
         MdmFeedbackReceiveFactory.addCmdOperator(new UserActivateOperator());
-
         MdmTransferFactory.getPushModel().addConnectListener(mPushConnectListener);
-
         MdmTransferFactory.getPushModel().start();
     }
 
@@ -91,15 +89,11 @@ public class LoginManager {
                             return false;
                         }
 
-                        if(getConfig().isAutoLogin()){
+                        if(getConfig().isActivated()){
                             return true;
                         }
 
-                        if(TextUtils.isEmpty(getConfig().getAccountNum())) {
-                            return false;
-                        }
-
-                        return true;
+                        return false;
                     }
                 });
     }
@@ -117,8 +111,10 @@ public class LoginManager {
         getConfig().saveAutoLogin(result.isAutoLogin());
         if(!result.isAutoLogin()){
             getConfig().saveNickname("");
+            getConfig().saveActivated(false);
         } else {
             getConfig().saveNickname(result.getNickName());
+            getConfig().saveActivated(true);
         }
         getConfig().savePushID(pPushID);
         getConfig().saveDeviceToken(deviceToken);
@@ -159,7 +155,7 @@ public class LoginManager {
                                         String name = ((UcLoginResult)pResult).getUser()
                                                 .getUserInfo().getNickName();
                                         getConfig().saveNickname(name);
-
+                                        getConfig().saveActivated(true);
                                         pSubscriber.onNext(pResult);
                                     } catch (Exception pE) {
                                         pE.printStackTrace();
