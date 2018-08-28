@@ -13,6 +13,8 @@ public class AssistantSpConfig extends BaseSpConfig {
     private static final String KEY_AUTO_LOGIN = "auto_login";
     private static final String KEY_NICKNAME = "nick_name";
 
+    private static final String KEY_ACCOUNT_NUM = "account_num";
+
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
     }
@@ -65,7 +67,16 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getString(KEY_NICKNAME);
     }
 
+    public String getAccountNum(){
+        return getString(KEY_ACCOUNT_NUM);
+    }
+
+    public void saveAccountNum(String pAccountNum){
+        saveString(KEY_ACCOUNT_NUM, pAccountNum);
+    }
+    
     public void clearData(){
+        saveAccountNum("");
         saveNickname("");
         saveAutoLogin(false);
         saveActivated(false);
