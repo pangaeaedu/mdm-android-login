@@ -1,8 +1,4 @@
 <resources>
-    <string name="submit">登录</string>
-    <string name="record_passwd">记住密码</string>
-    <string name="auto_login">自动登录</string>
-
     <string name="user_connecting_str">正在登陆中...</string>
     <string name="source_user_name">王小明</string>
 
@@ -17,8 +13,13 @@
     <string name="login_remember_psd">记住密码</string>
 
 
-    <string name="login_error_uc_verification">UC验证失败</string>
-    <string name="login_error_user_binded">用户已绑定</string>
-    <string name="login_error_device_binded">设备已绑定</string>
-    <string name="login_error_other">激活用户失败</string>
+    <string name="submit">Login</string>
+    <string name="record_passwd">Record</string>
+    <string name="auto_login">Auto Login</string>
+
+
+    <string name="login_error_uc_verification">UC verification failed</string>
+    <string name="login_error_user_binded">user binded</string>
+    <string name="login_error_device_binded">device binded</string>
+    <string name="login_error_other">login user failed</string>
 </resources>
