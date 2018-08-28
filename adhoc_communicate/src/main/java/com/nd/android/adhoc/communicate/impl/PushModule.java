@@ -2,7 +2,6 @@ package com.nd.android.adhoc.communicate.impl;
 
 import android.content.Context;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.nd.adhoc.push.PushSdk;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
@@ -111,12 +110,14 @@ class PushModule implements IPushModule {
             //initCallback = null;
         }
 
-
         @Override
         public byte[] onPushMessage(String appId, int msgtype, byte[] contenttype, long msgid, long msgTime, byte[] content, String[] extraKeys, String[] extraValues) {
             try {
-                if(msgtype == AdhocPushMsgType.Feedback.getValue()){
-                    Log.e(TAG, "feedback:"+new String(content));
+                String data = new String(content);
+                Logger.e(TAG, "onPushMessage:"+data);
+                JSONObject object = new JSONObject(data);
+                int type = object.optInt("msgtype");
+                if(type == AdhocPushMsgType.Feedback.getValue()){
                     doFeedbackCmdReceived(content);
                 } else {
                     doCmdReceived(content);
@@ -124,7 +125,6 @@ class PushModule implements IPushModule {
             } catch (Exception e) {
                 e.printStackTrace();
                 Logger.e(TAG, "get error:" + e.toString() + "\n with messege:" + new String(content));
-//                new DialogEvent("get error:" + e.toString() + "\nwith messege:" + new String(content.toString()));
             }
             return UUID.randomUUID().toString().getBytes();
         }

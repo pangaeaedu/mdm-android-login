@@ -18,6 +18,12 @@ dependencies {
 
     }
 
+    try {
+        api project(':adhoc_basic_frame')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
+    }
+
     try{
         api project (':mdm_feedback_biz')
     }catch (Exception e){

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -18,10 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
 import com.nd.android.adhoc.login.R;
-import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
 import com.nd.android.adhoc.login.ui.widget.CircleImageView;
 import com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils;
@@ -30,7 +32,10 @@ import com.nd.android.adhoc.login.ui.widget.edit.AdHocEditText;
 import com.nd.android.adhoc.login.ui.widget.edit.action.AdHocEditAction;
 import com.nd.android.adhoc.login.ui.widget.edit.strategy.style.UnderlineStyle;
 import com.nd.android.adhoc.login.ui.widget.spinner.CommonAppCompatSpinner;
+import com.nd.android.adhoc.loginapi.ILoginResult;
+import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
+import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import de.greenrobot.event.EventBus;
 
@@ -400,10 +405,26 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
      * 跳转至主页
      */
     private void jumpMain() {
-//        Intent intent = new Intent(this, MainActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
-//        finish();
+         AdhocFrameFactory.getInstance().getAdhocRouter().build("/component_main/main_activity")
+                .navigation(this, new NavCallback() {
+
+                    @Override
+                    public void onInterrupt(@NonNull Postcard postcard) {
+                        super.onInterrupt(postcard);
+                        Logger.w(TAG, "onInterrupt");
+                    }
+
+                    @Override
+                    public void onLost(@NonNull Postcard postcard) {
+                        super.onLost(postcard);
+                        Logger.e(TAG, "onLost");
+                    }
+
+                    @Override
+                    public void onArrival(@NonNull Postcard postcard) {
+                        finish();
+                    }
+                });
     }
 
 //    public void onEventMainThread(final LoginMdmDebugEvent event) {
