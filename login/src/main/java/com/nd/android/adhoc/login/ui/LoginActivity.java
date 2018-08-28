@@ -44,7 +44,7 @@ import de.greenrobot.event.EventBus;
  * 自组网登录页面
  * //使用loaderManager处理操作逻辑
  */
-@Route(path = "/component_main/login_activity")
+@Route(path = "/login/login_activity")
 public class LoginActivity extends AdhocBaseActivity implements View.OnClickListener,
         CommonAppCompatSpinner.OnItemSelectPopListener, ILoginPresenter.IView{
 
