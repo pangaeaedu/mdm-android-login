@@ -68,18 +68,18 @@
     <string name="ip_address">IP :  %1$s</string>
     <string name="settings">关于</string>
     <string name="wifi_detail">WIFI详情</string>
-    <string name="cmd_error_application">Install app error</string>
-    <string name="cmd_error">Execute Error</string>
-    <string name="cmd_installl_application">Installing</string>
-    <string name="cmd_execute">Excuting</string>
-    <string name="cmd_execute_unknow">UNKNOW</string>
-    <string name="cmd_unexecute">UNSABLE</string>
-    <string name="cmd_error_filetransfer">Transport Error</string>
-    <string name="main_str_cmd_statics_now">In progress</string>
-    <string name="main_str_cmd_statics_already">Completed</string>
-    <string name="transfer_complete">File transfer Completed</string>
-    <string name="mdm_login_argument_invalid">Username or Password is Error</string>
-    <string name="install_app_sucess">Install Completed</string>
+    <string name="cmd_error_application">安装失败</string>
+    <string name="cmd_error">执行失败</string>
+    <string name="cmd_installl_application">安装中</string>
+    <string name="cmd_execute">执行中</string>
+    <string name="cmd_execute_unknow">未知</string>
+    <string name="cmd_unexecute">不可用</string>
+    <string name="cmd_error_filetransfer">传输出错</string>
+    <string name="main_str_cmd_statics_now">进行中</string>
+    <string name="main_str_cmd_statics_already">已完成</string>
+    <string name="transfer_complete">传输完成</string>
+    <string name="mdm_login_argument_invalid">用户名或密码错误</string>
+    <string name="install_app_sucess">安装完成</string>
 
 
 
