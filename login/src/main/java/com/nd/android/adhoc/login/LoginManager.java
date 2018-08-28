@@ -14,6 +14,7 @@ import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.basicService.operator.UserActivateOperator;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
+import com.nd.android.adhoc.login.thirdParty.uc.UcLoginResult;
 import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
 import com.nd.android.adhoc.login.utils.DeviceHelper;
@@ -89,11 +90,16 @@ public class LoginManager {
                         if(!pBinded){
                             return false;
                         }
+
                         if(getConfig().isAutoLogin()){
                             return true;
                         }
 
-                       return false;
+                        if(TextUtils.isEmpty(getConfig().getAccountNum())) {
+                            return false;
+                        }
+
+                        return true;
                     }
                 });
     }
@@ -148,8 +154,12 @@ public class LoginManager {
                                     String deviceToken = DeviceHelper.getDeviceToken();
                                     try {
                                         getHttpService().requestPolicy(deviceToken);
+                                        getConfig().saveAccountNum(pUserName);
 
-                                        getConfig().saveNickname(pUserName);
+                                        String name = ((UcLoginResult)pResult).getUser()
+                                                .getUserInfo().getNickName();
+                                        getConfig().saveNickname(name);
+
                                         pSubscriber.onNext(pResult);
                                     } catch (Exception pE) {
                                         pE.printStackTrace();
