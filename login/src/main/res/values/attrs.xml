@@ -24,17 +24,4 @@
         <attr name="globalScale" format="float"/>
     </declare-styleable>
 
-    <declare-styleable name="AdHoc_CommonTitleView">
-        <attr name="leftDrawable" format="reference" />
-        <attr name="rightDrawable" format="reference" />
-        <attr name="leftText" format="string" />
-        <attr name="rightText" format="string" />
-        <attr name="middleText" format="string" />
-        <attr name="leftTextColor" format="color" />
-        <attr name="middleTextColor" format="color" />
-        <attr name="rightTextColor" format="color" />
-        <attr name="leftTextSize" format="integer" />
-        <attr name="rightTextSize" format="integer" />
-        <attr name="middleTextSize" format="integer" />
-    </declare-styleable>
 </resources>

@@ -1,87 +1,10 @@
 <resources>
-    <string name="application_name">101助手</string>
     <string name="submit">登录</string>
     <string name="record_passwd">记住密码</string>
     <string name="auto_login">自动登录</string>
-    <string name="copytright">版本号:V1.0.3</string>
-    <string name="version">CDM后台管理平台</string>
-    <string name="main_str_ip_address">IP :  0.0.0.0</string>
-    <string name="main_str_cmd_statics">共接受指令 23 项，已完成 14 项，正在执行 4 项, 进度 75%</string>
-    <string name="main_str_usernickname">王小明</string>
-    <string name="assist_wifi_tip">WIFI</string>
-    <string name="assis_wifi_change_str">切换</string>
-    <string name="assist_wifi_product_name">AP产商全名：Hangzhou      H3CTechnologies CO,Limited</string>
-    <string name="assist_wifi_semaphore_number">* -30 dBm (良好)</string>
 
-    <string name="wifi_area_channel">信道</string>
-    <string name="wifi_area_speed_rate">速率</string>
-    <string name="wifi_area_location">位置</string>
-    <string name="wifi_area_dns">DNS</string>
-    <string name="wifi_area_network_ip">网关</string>
-    <string name="wifi_area_device">设备</string>
-    <string name="wifi_area_mac">MAC</string>
-    <string name="wifi_connect_account">账号：</string>
-    <string name="wifi_connect_password">密码：</string>
-    <string name="wifi_connect_record_passwd">记住密码</string>
-    <string name="wifi_connect_auto_connect">自动连接</string>
-    <string name="wifi_connect">连接</string>
-    <string name="fcmd_page_all_str">全部</string>
-    <string name="fcmd_page_failure_str">指令</string>
-    <string name="fcmd_page_file_transfer_str">文件</string>
-    <string name="fcmd_page_app_install_str">应用</string>
-    <string name="wifi_device_lock">设备已锁，请联系管理员</string>
-    <string name="main_str_cmd_statics_all">共接收指令项%1$d 项</string>
-    <string name="main_str_cmd_statics_progress">文件传输进度</string>
-    <string name="uc_login_failure">用户或密码错误</string>
-    <string name="current_environment">当前环境</string>
-    <string name="please_environment">切换环境</string>
-    <string name="environment_settings">设置</string>
-    <string name="wifi_change">WIFI列表</string>
-    <string name="wifi_assistant">WIFI分析</string>
-    <string name="home_page">主页</string>
-    <string name="wifi_cmd_detail">指令详情</string>
-    <string name="wifi_vendor_name">AP产商：                   </string>
-    <string name="wifi_vendor_mac">AP MAC：                </string>
-    <string name="wifi_status_good">良好</string>
-    <string name="wifi_status_general">一般</string>
-    <string name="wifi_status_congestion">拥堵</string>
-    <string name="wifi_status_disconnected">断线</string>
-    <string name="ignore_failure">Delete</string>
-    <string name="fucntion_failure">功能待完善</string>
     <string name="user_connecting_str">正在登陆中...</string>
     <string name="source_user_name">王小明</string>
-    <string name="wifi_strong_icontip">附近有可连接的WIFI</string>
-    <string name="wifi_strong_name">WIFI名称</string>
-    <string name="open_files">打开文件夹</string>
-
-    <string name="open_file">打开</string>
-    <string name="focre_netwwork_str">该网络已被设定为禁止连接</string>
-    <string name="user_input_error">用户名输入错误</string>
-    <string name="passwd_input_error">密码输入错误</string>
-    <string name="mdm_name_str">101 MDM</string>
-    <string name="mdm_version_name">版本号:</string>
-    <string name="mdm_update_time">更新时间：2018.01.26</string>
-
-    <string name="wifi_safe">安全</string>
-    <string name="wifi_open">开放</string>
-    <string name="please_input_password">请输入密码</string>
-    <string name="ip_address">IP :  %1$s</string>
-    <string name="settings">关于</string>
-    <string name="wifi_detail">WIFI详情</string>
-    <string name="cmd_error_application">Install app error</string>
-    <string name="cmd_error">Execute Error</string>
-    <string name="cmd_installl_application">Installing</string>
-    <string name="cmd_execute">Excuting</string>
-    <string name="cmd_execute_unknow">UNKNOW</string>
-    <string name="cmd_unexecute">UNSABLE</string>
-    <string name="cmd_error_filetransfer">Transport Error</string>
-    <string name="main_str_cmd_statics_now">In progress</string>
-    <string name="main_str_cmd_statics_already">Completed</string>
-    <string name="transfer_complete">File transfer Completed</string>
-    <string name="mdm_login_argument_invalid">Username or Password is Error</string>
-    <string name="install_app_sucess">Install Completed</string>
-
-
 
     <string name="login_commit">确认</string>
     <string name="login_auto">自动</string>

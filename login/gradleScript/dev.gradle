@@ -1,5 +1,6 @@
 dependencies {
     api("com.android.support:support-v4:$androidSupportSdkVersion")
+    compile("com.android.support:design:$androidSupportSdkVersion")
 
     try {
         api project(':adhoc_basic_net')
@@ -44,9 +45,6 @@ dependencies {
 
     }
 
-
-    api("com.android.support:support-v4:$androidSupportSdkVersion")
-    compile("com.android.support:design:$androidSupportSdkVersion")
 
     api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
         transitive = true

@@ -7,38 +7,9 @@
     <color name="large_size_color_shader">#666666</color>
     <!--左侧wifi区域下所有的字体颜色 -->
     <color name="wifi_area_item_color">#999999</color>
-    <color name="cmd_transfer_bg_error">#FF4200</color>
-    <color name="cmd_transfer_bg_color">#D1FDDC</color>
     <!--进度的颜色 -->
     <color name="large_size_color_shader_cmd">#57A40C</color>
     <color name="error_exception">#F35858</color>
     <color name="icon_input_color">#f37447</color>
-    <color name="mdm_name_color">#F47447</color>
-    <color name="statusbar_bg">#FBE4B4</color>
-    <drawable name="error_exception">#F35858</drawable>
-    <drawable name="transfer_loading">#D1FDDC</drawable>
-    <drawable name="transfer_complete">#FFFFFF</drawable>
-    <!-- WIFI状态颜色-->
-    <color name="wifi_single_channel_general">#f36e43</color>
-    <color name="wifi_single_channel_congestion">#f35151</color>
-    <color name="wifi_single_channel_disconnected">#999999</color>
-    <color name="wifi_single_channel_good">#a3c738</color>
 
-
-
-
-
-    <color name="mdm_splash_tip_color">#666666</color>
-    <color name="mdm_splash_title_color">#333333</color>
-    <dimen name="mdm_splash_tip_size">18dp</dimen>
-    <dimen name="mdm_splash_title_size">30dp</dimen>
-
-
-    <color name="black_overlay">#66000000</color>
-    <color name="seat_default">#66938c8c</color>
-    <color name="seat_selected">#66961616</color>
-    <color name="transparent_background">#10000000</color>
-    <color name="colorWhite">#FFFFFF</color>
-    <color name="colorGray">#666666</color>
-    <color name="colorBlack">#000000</color>
 </resources>
