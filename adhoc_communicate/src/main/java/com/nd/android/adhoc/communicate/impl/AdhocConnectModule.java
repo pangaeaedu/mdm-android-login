@@ -17,9 +17,9 @@ import android.text.TextUtils;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.adhoc.basic.util.storage.ZipCompressorUtil;
+import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.connect.IAdhocConnectModule;
@@ -143,7 +143,9 @@ class AdhocConnectModule implements IAdhocConnectModule {
             data.put("versionname", info == null ? "" : info.versionName);
             data.put("type", 1);
             data.put("deviceid", pDevToken);
-            String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
+            // 备忘：此处这么修改是因为出现和登录时回报的 WifiMac 不一致的情况，所以 mac 统一改为传 wifimac  -- by hyk 2018-08-29
+//            String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
+            String mac = AdhocDeviceUtil.getWifiMac(mContext);
             data.put("mac", formatMac(mac));
 //            new MessageEvent(json.toString()).post();
             sendMessage(json.toString());
