@@ -16,7 +16,9 @@ dependencies {
     try{
         api project (':adhoc_communicate')
     }catch (Exception e){
-
+        api('com.nd.android.mdm.biz:adhoc_communicate:0.0.11-develop-SNAPSHOT') {
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+        }
     }
 
     try {
