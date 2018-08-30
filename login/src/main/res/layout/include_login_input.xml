@@ -45,19 +45,24 @@
         style="@style/AdHocCheckStyle"
         android:layout_alignStart="@+id/cilv_password_login"
         android:layout_below="@+id/cilv_password_login"
-        android:text="@string/record_passwd" />
+        android:text="@string/record_passwd"
+        android:visibility="gone"
+        />
 
     <CheckBox
         android:id="@+id/cb_auto_connect_main"
         style="@style/AdHocCheckStyle"
         android:layout_alignEnd="@+id/cilv_password_login"
         android:layout_below="@+id/cilv_password_login"
-        android:text="@string/auto_login" />
+        android:text="@string/auto_login"
+        android:visibility="gone"
+        />
     <!-- 登录按钮-->
     <Button
         android:id="@+id/btn_submit_user_login"
         style="@style/AdHocSubmitStyle"
         android:layout_below="@+id/cb_record_passwd_main"
         android:layout_marginTop="@dimen/btn_submit_margin_top_login"
-        android:text="@string/submit" />
+        android:text="@string/submit"
+        />
 </RelativeLayout>
