@@ -15,6 +15,8 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     private static final String KEY_ACCOUNT_NUM = "account_num";
 
+    private static final String KEY_POLICYSET_TIME = "policyset_time";
+
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
     }
@@ -74,13 +76,22 @@ public class AssistantSpConfig extends BaseSpConfig {
     public void saveAccountNum(String pAccountNum){
         saveString(KEY_ACCOUNT_NUM, pAccountNum);
     }
-    
+
+    public void savePolicySetTime(long pTime){
+        saveLong(KEY_POLICYSET_TIME, pTime);
+    }
+
+    public long getPolicySetTime(){
+        return getLong(KEY_POLICYSET_TIME, 0);
+    }
+
     public void clearData(){
         saveAccountNum("");
         saveNickname("");
         saveAutoLogin(false);
         saveActivated(false);
         savePushID("");
+        savePolicySetTime(0);
     }
 
 }
