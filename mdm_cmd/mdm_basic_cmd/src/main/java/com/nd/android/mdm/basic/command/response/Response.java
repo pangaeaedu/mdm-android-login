@@ -5,15 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.cmd_log.business.operator.impl.CmdLogBizOperatorFactory;
 import com.nd.android.adhoc.cmd_log.business.option.CmdLogOptions;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
-import com.nd.android.mdm.biz.common.ErrorCode;
-import com.nd.android.mdm.biz.common.MsgCode;
 import com.nd.android.mdm.basic.command.response.strategy.IMdmResponsePost;
 import com.nd.android.mdm.basic.command.response.strategy.impl.MdmResponsePost_ToAdhoc;
 import com.nd.android.mdm.basic.command.response.strategy.impl.MdmResponsePost_ToDatabase;
 import com.nd.android.mdm.basic.command.response.strategy.impl.MdmResponsePost_ToDrms;
+import com.nd.android.mdm.biz.common.ErrorCode;
+import com.nd.android.mdm.biz.common.MsgCode;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.json.JSONException;
@@ -235,8 +236,8 @@ public abstract class Response implements IResponse_MDM {
             json.put("other", other);
             json.put("type", mCmdType);
             // TODO:  getDevToken getUserToken 待替换为最新的登录 API 接口
-//            json.put("device_token", ActivateManager.getInstance().getDevToken());
-//            json.put("user_token", ActivateManager.getInstance().getUserToken());
+            json.put("device_token", DeviceHelper.getDeviceToken());
+            json.put("user_token", DeviceHelper.getDeviceToken());
             json.put("sessionid", mSessionId);
             json.put("errcode", mErrcode);
             json.put("msgcode", mMsgcode);

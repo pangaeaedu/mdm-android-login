@@ -18,6 +18,7 @@ dependencies {
             exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
             exclude group: 'com.nd.android.adhoc', module: 'file_transfer_api'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
         }
     }
 
@@ -36,11 +37,14 @@ dependencies {
         }
     }
 
+    try{
+        api project (':assistant_sdk')
+    }catch (Exception ignored){
+
+    }
 //    api project(':mdm_transfer')
     try {
-        api project(':adhoc_communicate') {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-        }
+        api project(':adhoc_communicate')
     } catch (Exception ignored) {
         api('com.nd.android.mdm.biz:adhoc_communicate:0.0.11-develop-SNAPSHOT') {
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
@@ -56,6 +60,7 @@ dependencies {
 configurations {
     all*.exclude group: 'android.support'
     all*.exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+    all*.exclude group: 'com.nd.android.smartcan', module: 'commons-util'
 }
 
 configurations.all {
