@@ -22,19 +22,19 @@ dependencies {
     try {
         api project(':mdm_env')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_env:0.0.9-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_env:0.0.16-develop-SNAPSHOT')
     }
 
     try {
         api project(':mdm_biz_common')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.11-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.16-develop-SNAPSHOT')
     }
 
 //    try {
 //        api project(':mdm_util_cmd')
 //    } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.11-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.16-develop-SNAPSHOT')
 //    }
 
     api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")

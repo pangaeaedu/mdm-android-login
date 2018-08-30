@@ -24,7 +24,7 @@ dependencies {
     try {
         api project(':mdm_biz_common')
     } catch (Exception ignored) {
-        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.9-develop-SNAPSHOT')
+        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.16-develop-SNAPSHOT')
     }
 
 
