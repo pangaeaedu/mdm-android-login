@@ -24,17 +24,23 @@ public class LoginDao extends AdhocHttpDao {
         super(pBaseUrl);
     }
 
-    public void requestPolicySet(String pDeviceToken) throws AdhocHttpException {
-        Map<String, Object> map = new HashMap();
-        map.put("device_token", pDeviceToken);
-        map.put("crtime", 0);
+    public void requestPolicySet(String pDeviceToken, long pTime, JSONObject pData) throws
+            AdhocHttpException {
+//        Map<String, Object> map = new HashMap();
+//        map.put("device_token", pDeviceToken);
+//        map.put("crtime", pTime);
+//        map.put("data", pData);
         try {
-            Gson gson = new GsonBuilder().create();
-            String content = gson.toJson(map);
-
+//            Gson gson = new GsonBuilder().create();
+//            String content = gson.toJson(map);
+            JSONObject object = new JSONObject();
+            object.put("device_token",pDeviceToken);
+            object.put("crtime", pTime);
+            object.put("data", pData);
+            String content = object.toString();
             String result = postAction().post("/v1.1/registe/policyset/",
                     String.class, content, null);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }

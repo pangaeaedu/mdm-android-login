@@ -7,19 +7,27 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
+import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
+import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
+import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.http.IBindResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.basicService.operator.UserActivateOperator;
+import com.nd.android.adhoc.login.info.AdhocLoginInfoImpl;
+import com.nd.android.adhoc.login.info.AdhocUserInfoImpl;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLoginResult;
+import com.nd.android.adhoc.loginapi.ILoginInfoProvider;
 import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.mdm_feedback_biz.MdmFeedbackReceiveFactory;
+
+import org.json.JSONObject;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -90,6 +98,15 @@ public class LoginManager {
                         }
 
                         if(getConfig().isActivated()){
+                            try{
+                                requestPolicySet();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                            String accountNum = getConfig().getAccountNum();
+                            String nickname = getConfig().getNickname();
+                            notifyLogin(accountNum, nickname);
                             return true;
                         }
 
@@ -147,18 +164,22 @@ public class LoginManager {
                             .login(pUserName, pPassword, new IThirdPartyLoginCallBack() {
                                 @Override
                                 public void onSuccess(ILoginResult pResult) {
-                                    String deviceToken = DeviceHelper.getDeviceToken();
+//                                    String deviceToken = DeviceHelper.getDeviceToken();
                                     try {
-                                        getHttpService().requestPolicy(deviceToken);
+//                                        getHttpService().requestPolicy(deviceToken);
+                                        requestPolicySet();
                                         getConfig().saveAccountNum(pUserName);
 
                                         String name = ((UcLoginResult)pResult).getUser()
                                                 .getUserInfo().getNickName();
                                         getConfig().saveNickname(name);
                                         getConfig().saveActivated(true);
+
+                                        notifyLogin(pUserName, name);
                                         pSubscriber.onNext(pResult);
                                     } catch (Exception pE) {
                                         pE.printStackTrace();
+                                        pSubscriber.onError(pE);
                                     }
 
                                 }
@@ -176,14 +197,63 @@ public class LoginManager {
         });
     }
 
+    private void requestPolicySet() throws Exception{
+        String deviceToken = DeviceHelper.getDeviceToken();
+        long pTime = getConfig().getPolicySetTime();
+        ILoginInfoProvider provider   = (ILoginInfoProvider) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(ILoginInfoProvider.PATH).navigation();
+        if(provider == null){
+            throw new Exception("login info provider not exist");
+        }
+
+        JSONObject object = provider.getDeviceInfo();
+        getHttpService().requestPolicy(deviceToken, pTime, object);
+    }
+
+//    public JSONObject executeGetDevInfoJson() {
+//
+//        try {
+//            JSONObject json = new JSONObject();
+//
+//            json.put("device_token", ActivateManager.getInstance().getDevToken());
+//            json.put("path_id", ActivateManager.getInstance().getPathId());
+//            json.put("data", MonitorModule.getInstance().getDevInfoJson());
+//
+//            String result = HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/registe/profile/", json.toString());
+//            if (result == null || result.isEmpty()) {
+//                SDKLogUtil.e("request profile failed,json return null or empty");
+//                return null;
+//            }
+//            JSONObject resJson = new JSONObject(result);
+//            if (resJson.getInt("errcode") == EnumActivateErrorCode.Error_Code_Success) {
+//                return new JSONObject(resJson.getString("content"));
+//            } else {
+//                SDKLogUtil.e("activate module reponse error message:" + result);
+//                ActivateManager.getInstance().onFailed(ErrorCode.ERR_ACTIVATE_PROFILE_FAILED, "get profile failed");
+//                return null;
+//            }
+//        } catch (JSONException e) {
+//            SDKLogUtil.e("get device info exception,write json error:" + e.toString());
+//        }
+//        return null;
+//    }
+
+    private void notifyLogin(String pAccountNum, String pNickName){
+        IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
+        if(api == null){
+            return;
+        }
+
+        AdhocUserInfoImpl userInfo = new AdhocUserInfoImpl(pAccountNum, pNickName);
+        AdhocLoginInfoImpl loginInfo = new AdhocLoginInfoImpl(userInfo, null);
+        api.onLogin(loginInfo);
+    }
+
     public void logout(){
         getConfig().clearData();
         mConnectSubject = BehaviorSubject.create();
         MdmTransferFactory.getPushModel().start();
-    }
-
-    public boolean isActivated(){
-        return false;
     }
 
     private IThirdPartyLogin getThirdPartyLogin(){

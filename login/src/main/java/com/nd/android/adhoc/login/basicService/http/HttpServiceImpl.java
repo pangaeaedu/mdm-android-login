@@ -4,6 +4,8 @@ import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.mdm.biz.env.IMdmEnvModule;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
+import org.json.JSONObject;
+
 public class HttpServiceImpl implements IHttpService {
     private String mBaseUrl = "";
 
@@ -13,9 +15,9 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public void requestPolicy(String pDeviceToken) throws Exception {
+    public void requestPolicy(String pDeviceToken, long pTime, JSONObject pData) throws Exception {
         LoginDao dao = new LoginDao(mBaseUrl);
-        dao.requestPolicySet(pDeviceToken);
+        dao.requestPolicySet(pDeviceToken, pTime, pData);
     }
 
     @Override
