@@ -6,7 +6,7 @@ dependencies {
     try {
         api project(':cmd_log')
     } catch (Exception ignored) {
-        api('com.nd.android.adhoc:cmd_log:0.0.8-develop-SNAPSHOT') {
+        api('com.nd.android.adhoc:cmd_log:0.0.9-develop-SNAPSHOT') {
             exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
             exclude group: 'com.nd.android.adhoc', module: 'file_transfer_api'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
