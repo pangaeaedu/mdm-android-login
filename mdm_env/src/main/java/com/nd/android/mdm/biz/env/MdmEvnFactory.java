@@ -126,7 +126,7 @@ public final class MdmEvnFactory {
 
         mPreferenceModel.applyPutBoolean(KEY_ENV_CONFIG, true);
         int env = mPreferenceModel.getInt("env", mCurIndexk);
-        setCurEnvironment(0);
+        setCurEnvironment(env);
     }
 
     public IMdmEnvModule getMdmEnvModel(int index) {
