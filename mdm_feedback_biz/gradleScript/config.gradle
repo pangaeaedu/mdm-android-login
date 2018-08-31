@@ -1,8 +1,0 @@
-ext {
-    // Module
-    revision = 'git rev-list --count HEAD'.execute().text.trim()
-    moduleVersion = '1.0.' + revision
-    moduleName = 'mdm_feedback_biz'
-    moduleGroupId = 'com.nd.android.mdm.mdm_feedback_biz'
-    moduleDescription = 'MDM Cmd Biz'
-}

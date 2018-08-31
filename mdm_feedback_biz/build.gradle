@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
-if (!hasProperty('configAvailable')) {
-    apply from: file('gradleScript/config.gradle')
-}
-//apply from: file('gradleScript/unittest4sdk.gradle')
 apply from: file('gradleScript/dev.gradle')
+//apply from: file('gradleScript/unittest4sdk.gradle')
 
+if (!project.hasProperty('LOCAL_BUILD_ENV')) {
+    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/maven_upload.gradle'
+}
 android {
     compileSdkVersion "$androidCompileSdkVersion".toInteger()
     buildToolsVersion "$androidBuildToolsVersion"
