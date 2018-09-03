@@ -16,8 +16,6 @@ import com.nd.android.adhoc.basic.util.storage.AdhocFileReadUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocFileWriteUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.mdm.biz.env.constant.MdmEnvConstant;
-import com.nd.smartcan.accountclient.UCEnv;
-import com.nd.smartcan.accountclient.UCManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -147,28 +145,14 @@ public final class MdmEvnFactory {
         }
 
         IMdmEnvModule old = getMdmEnvModel(mCurIndexk);
-
         mCurIndexk = index;
-        setUcEnv(mCurIndexk);
         mCurMdmEnvModule = getMdmEnvModel(index);
         mPreferenceModel.putInt("env",mCurIndexk).apply();
 
         notifyEnvChanged(old, mCurMdmEnvModule);
     }
 
-    private void setUcEnv(int pIndex){
-        switch (pIndex) {
-            case 3:
-                UCManager.getInstance().setEnv(UCEnv.AWS);
-                break;
-            case 0:
-            case 1:
-            case 2:
-            default:
-                UCManager.getInstance().setEnv(UCEnv.PreProduct);
-                break;
-        }
-    }
+
 
     @NonNull
     public IMdmEnvModule getCurEnvironment() {

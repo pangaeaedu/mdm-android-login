@@ -42,6 +42,14 @@ dependencies {
     }
 
     try{
+        api project (':mdm_env')
+    }catch (Exception e){
+        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version") {
+        }
+    }
+
+
+    try{
         api project ("assistant_sdk")
     }catch(Exception e){
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {

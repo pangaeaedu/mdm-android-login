@@ -22,10 +22,13 @@ import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLoginResult;
+import com.nd.android.adhoc.login.utils.Constants;
+import com.nd.android.adhoc.login.utils.EnvUtils;
 import com.nd.android.adhoc.loginapi.ILoginInfoProvider;
 import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.mdm_feedback_biz.MdmFeedbackReceiveFactory;
+import com.nd.smartcan.accountclient.UCManager;
 
 import org.json.JSONObject;
 
@@ -87,7 +90,13 @@ public class LoginManager {
         MdmTransferFactory.getPushModel().start();
     }
 
+    private void initUcEnv(){
+        UCManager.getInstance().setOrgName(Constants.ORG_NAME);
+        EnvUtils.setUcEnv(MdmEvnFactory.getInstance().getCurIndex());
+    }
+
     public Observable<Boolean> init(){
+        initUcEnv();
        return mConnectSubject.asObservable()
                 .first()
                 .map(new Func1<Boolean, Boolean>() {
@@ -210,33 +219,6 @@ public class LoginManager {
         getHttpService().requestPolicy(deviceToken, pTime, object);
     }
 
-//    public JSONObject executeGetDevInfoJson() {
-//
-//        try {
-//            JSONObject json = new JSONObject();
-//
-//            json.put("device_token", ActivateManager.getInstance().getDevToken());
-//            json.put("path_id", ActivateManager.getInstance().getPathId());
-//            json.put("data", MonitorModule.getInstance().getDevInfoJson());
-//
-//            String result = HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/registe/profile/", json.toString());
-//            if (result == null || result.isEmpty()) {
-//                SDKLogUtil.e("request profile failed,json return null or empty");
-//                return null;
-//            }
-//            JSONObject resJson = new JSONObject(result);
-//            if (resJson.getInt("errcode") == EnumActivateErrorCode.Error_Code_Success) {
-//                return new JSONObject(resJson.getString("content"));
-//            } else {
-//                SDKLogUtil.e("activate module reponse error message:" + result);
-//                ActivateManager.getInstance().onFailed(ErrorCode.ERR_ACTIVATE_PROFILE_FAILED, "get profile failed");
-//                return null;
-//            }
-//        } catch (JSONException e) {
-//            SDKLogUtil.e("get device info exception,write json error:" + e.toString());
-//        }
-//        return null;
-//    }
 
     private void notifyLogin(String pAccountNum, String pNickName){
         IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()

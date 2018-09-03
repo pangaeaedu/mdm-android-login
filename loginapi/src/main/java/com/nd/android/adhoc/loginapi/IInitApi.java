@@ -8,4 +8,6 @@ import rx.Observable;
 public interface IInitApi extends IProvider {
     String PATH = "/login/init";
     Observable<Boolean> initEnv();
+
+//    void onEnvChanged(int pIndex);
 }
