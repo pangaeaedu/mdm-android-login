@@ -24,6 +24,10 @@ public class DeviceHelper {
         return id;
     }
 
+    public static String getUserToken(){
+        return "";
+    }
+
 //    public static String getUserToken(){
 //        return getDeviceToken();
 //    }
