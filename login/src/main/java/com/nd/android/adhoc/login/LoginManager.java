@@ -53,9 +53,8 @@ public class LoginManager {
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
         public void onConnected() {
-            synchronized (LoginManager.getInstance()) {
+
                 doOnPushChannelConnected();
-            }
         }
 
         @Override
@@ -80,31 +79,6 @@ public class LoginManager {
 
         boolean connected = MdmTransferFactory.getPushModel().isConnected();
         boolean activated = getConfig().isActivated();
-//        if(connected){
-//            return Observable.create(new Observable.OnSubscribe<Boolean>() {
-//                @Override
-//                public void call(Subscriber<? super Boolean> pSubscriber) {
-//                    String pushID = MdmTransferFactory.getPushModel().getDeviceId();
-//                    String existPushID = getConfig().getPushID();
-//                    if (pushID.equalsIgnoreCase(existPushID)) {
-//                        pSubscriber.onNext(true);
-//                        pSubscriber.onCompleted();
-//                        return;
-//                    }
-//
-//                    try {
-//                        bindDeviceAfterReceiveNewPushID(pushID);
-//                        pSubscriber.onNext(true);
-//                        pSubscriber.onCompleted();
-//                    } catch (Exception pE) {
-//                        pE.printStackTrace();
-//                        pSubscriber.onNext(false);
-//                        pSubscriber.onCompleted();
-//                    }
-//                }
-//            }).map(loginFunc());
-//        }
-
         Observable<Boolean> obs = mConnectSubject.asObservable()
                 .first()
                 .map(loginFunc());
@@ -143,28 +117,30 @@ public class LoginManager {
     }
 
     protected void doOnPushChannelConnected(){
-        String pushID = MdmTransferFactory.getPushModel().getDeviceId();
-        Log.e(TAG, "push sdk connected");
-        if (TextUtils.isEmpty(pushID)) {
-            Log.e(TAG, "return a empty PushID");
-            return;
-        }
+        synchronized (LoginManager.getInstance()) {
+            String pushID = MdmTransferFactory.getPushModel().getDeviceId();
+            Log.e(TAG, "push sdk connected");
+            if (TextUtils.isEmpty(pushID)) {
+                Log.e(TAG, "return a empty PushID");
+                return;
+            }
 
-        Log.e(TAG, "pushid:"+pushID);
+            Log.e(TAG, "pushid:" + pushID);
 
-        String existPushID = getConfig().getPushID();
-        if (pushID.equalsIgnoreCase(existPushID)) {
-            Log.e(TAG, "device binded:"+existPushID);
-            mConnectSubject.onNext(true);
-            return;
-        }
+            String existPushID = getConfig().getPushID();
+            if (pushID.equalsIgnoreCase(existPushID)) {
+                Log.e(TAG, "device binded:" + existPushID);
+                mConnectSubject.onNext(true);
+                return;
+            }
 
-        try {
-            bindDeviceAfterReceiveNewPushID(pushID);
-            mConnectSubject.onNext(true);
-        } catch (Exception pE) {
-            pE.printStackTrace();
-            mConnectSubject.onNext(false);
+            try {
+                bindDeviceAfterReceiveNewPushID(pushID);
+                mConnectSubject.onNext(true);
+            } catch (Exception pE) {
+                pE.printStackTrace();
+                mConnectSubject.onNext(false);
+            }
         }
     }
 
@@ -211,6 +187,8 @@ public class LoginManager {
         } else {
             getConfig().saveNickname(result.getNickName());
             getConfig().saveActivated(true);
+
+            requestPolicySet();
         }
         getConfig().savePushID(pPushID);
         getConfig().saveDeviceToken(deviceToken);

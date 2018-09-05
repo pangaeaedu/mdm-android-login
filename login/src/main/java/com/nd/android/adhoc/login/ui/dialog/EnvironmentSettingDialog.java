@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
+import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.ui.widget.DensityUtils;
@@ -119,7 +121,12 @@ public class EnvironmentSettingDialog extends DialogFragment
 //            this.mOnEnvironmentSettingsListener.onSettings(this.position);
             MdmEvnFactory.getInstance().setCurEnvironment(position);
             EnvUtils.setUcEnv(position);
+            getConfig().clearData();
         }
+    }
+
+    private AssistantSpConfig getConfig(){
+        return AssistantBasicServiceFactory.getInstance().getSpConfig();
     }
 
     @Override
