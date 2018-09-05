@@ -33,8 +33,10 @@ import com.nd.smartcan.accountclient.UCManager;
 import org.json.JSONObject;
 
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
 public class LoginManager {
@@ -52,29 +54,7 @@ public class LoginManager {
         @Override
         public void onConnected() {
             synchronized (LoginManager.getInstance()) {
-                String pushID = MdmTransferFactory.getPushModel().getDeviceId();
-                Log.e(TAG, "push sdk connected");
-                if (TextUtils.isEmpty(pushID)) {
-                    Log.e(TAG, "return a empty PushID");
-                    return;
-                }
-
-                Log.e(TAG, "pushid:"+pushID);
-
-                String existPushID = getConfig().getPushID();
-                if (pushID.equalsIgnoreCase(existPushID)) {
-                    Log.e(TAG, "device binded:"+existPushID);
-                    mConnectSubject.onNext(true);
-                    return;
-                }
-
-                try {
-                    bindDeviceAfterReceiveNewPushID(pushID);
-                    mConnectSubject.onNext(true);
-                } catch (Exception pE) {
-                    pE.printStackTrace();
-                    mConnectSubject.onNext(false);
-                }
+                doOnPushChannelConnected();
             }
         }
 
@@ -97,31 +77,121 @@ public class LoginManager {
 
     public Observable<Boolean> init(){
         initUcEnv();
-       return mConnectSubject.asObservable()
+
+        boolean connected = MdmTransferFactory.getPushModel().isConnected();
+        boolean activated = getConfig().isActivated();
+//        if(connected){
+//            return Observable.create(new Observable.OnSubscribe<Boolean>() {
+//                @Override
+//                public void call(Subscriber<? super Boolean> pSubscriber) {
+//                    String pushID = MdmTransferFactory.getPushModel().getDeviceId();
+//                    String existPushID = getConfig().getPushID();
+//                    if (pushID.equalsIgnoreCase(existPushID)) {
+//                        pSubscriber.onNext(true);
+//                        pSubscriber.onCompleted();
+//                        return;
+//                    }
+//
+//                    try {
+//                        bindDeviceAfterReceiveNewPushID(pushID);
+//                        pSubscriber.onNext(true);
+//                        pSubscriber.onCompleted();
+//                    } catch (Exception pE) {
+//                        pE.printStackTrace();
+//                        pSubscriber.onNext(false);
+//                        pSubscriber.onCompleted();
+//                    }
+//                }
+//            }).map(loginFunc());
+//        }
+
+        Observable<Boolean> obs = mConnectSubject.asObservable()
                 .first()
-                .map(new Func1<Boolean, Boolean>() {
-                    @Override
-                    public Boolean call(Boolean pBinded) {
-                        if(!pBinded){
-                            return false;
+                .map(loginFunc());
+
+        //已连接或者已激活
+        if (connected || activated) {
+            Observable
+                    .create(new Observable.OnSubscribe<Void>() {
+                        @Override
+                        public void call(Subscriber<? super Void> pSubscriber) {
+                            doOnPushChannelConnected();
+                            pSubscriber.onNext(null);
+                            pSubscriber.onCompleted();
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Observer<Void>() {
+                        @Override
+                        public void onCompleted() {
+
                         }
 
-                        if(getConfig().isActivated()){
-                            try{
-                                requestPolicySet();
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
-
-                            String accountNum = getConfig().getAccountNum();
-                            String nickname = getConfig().getNickname();
-                            notifyLogin(accountNum, nickname);
-                            return true;
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
                         }
 
-                        return false;
+                        @Override
+                        public void onNext(Void pVoid) {
+
+                        }
+                    });
+        }
+
+       return obs;
+    }
+
+    protected void doOnPushChannelConnected(){
+        String pushID = MdmTransferFactory.getPushModel().getDeviceId();
+        Log.e(TAG, "push sdk connected");
+        if (TextUtils.isEmpty(pushID)) {
+            Log.e(TAG, "return a empty PushID");
+            return;
+        }
+
+        Log.e(TAG, "pushid:"+pushID);
+
+        String existPushID = getConfig().getPushID();
+        if (pushID.equalsIgnoreCase(existPushID)) {
+            Log.e(TAG, "device binded:"+existPushID);
+            mConnectSubject.onNext(true);
+            return;
+        }
+
+        try {
+            bindDeviceAfterReceiveNewPushID(pushID);
+            mConnectSubject.onNext(true);
+        } catch (Exception pE) {
+            pE.printStackTrace();
+            mConnectSubject.onNext(false);
+        }
+    }
+
+    private Func1<Boolean, Boolean> loginFunc(){
+        return new Func1<Boolean, Boolean>() {
+            @Override
+            public Boolean call(Boolean pBinded) {
+                if(!pBinded){
+                    return false;
+                }
+
+                if(getConfig().isActivated()){
+                    try{
+                        requestPolicySet();
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
-                });
+
+                    String accountNum = getConfig().getAccountNum();
+                    String nickname = getConfig().getNickname();
+                    notifyLogin(accountNum, nickname);
+                    return true;
+                }
+
+                return false;
+            }
+        };
     }
 
     private void bindDeviceAfterReceiveNewPushID(String pPushID) throws Exception{
@@ -173,9 +243,7 @@ public class LoginManager {
                             .login(pUserName, pPassword, new IThirdPartyLoginCallBack() {
                                 @Override
                                 public void onSuccess(ILoginResult pResult) {
-//                                    String deviceToken = DeviceHelper.getDeviceToken();
                                     try {
-//                                        getHttpService().requestPolicy(deviceToken);
                                         requestPolicySet();
                                         getConfig().saveAccountNum(pUserName);
 
