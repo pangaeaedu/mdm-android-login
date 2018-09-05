@@ -53,8 +53,7 @@ public class LoginManager {
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
         public void onConnected() {
-
-                doOnPushChannelConnected();
+            doOnPushChannelConnected();
         }
 
         @Override
@@ -113,7 +112,7 @@ public class LoginManager {
                     });
         }
 
-       return obs;
+        return obs;
     }
 
     protected void doOnPushChannelConnected(){
@@ -135,7 +134,7 @@ public class LoginManager {
             }
 
             try {
-                bindDeviceAfterReceiveNewPushID(pushID);
+                bindWithNewPushIDReturnLoginStatus(pushID);
                 mConnectSubject.onNext(true);
             } catch (Exception pE) {
                 pE.printStackTrace();
@@ -170,7 +169,7 @@ public class LoginManager {
         };
     }
 
-    private void bindDeviceAfterReceiveNewPushID(String pPushID) throws Exception{
+    private boolean bindWithNewPushIDReturnLoginStatus(String pPushID) throws Exception{
         String deviceToken = DeviceHelper.getDeviceToken();
         String serialNum = DeviceHelper.getSerialNumber();
 
@@ -187,12 +186,13 @@ public class LoginManager {
         } else {
             getConfig().saveNickname(result.getNickName());
             getConfig().saveActivated(true);
-
-            requestPolicySet();
         }
+
         getConfig().savePushID(pPushID);
         getConfig().saveDeviceToken(deviceToken);
         getConfig().saveSerialNum(serialNum);
+
+        return result.isAutoLogin();
     }
 
     public Observable<ILoginResult> login(@NonNull final String pUserName, @NonNull final String pPassword) {
@@ -214,7 +214,14 @@ public class LoginManager {
                     }
 
                     if(!pushID.equalsIgnoreCase(existPushID)){
-                        bindDeviceAfterReceiveNewPushID(pushID);
+                        boolean bAuto = bindWithNewPushIDReturnLoginStatus(pushID);
+                        if(bAuto){
+                            requestPolicySet();
+                            notifyLogin(getConfig().getAccountNum(), getConfig().getNickname());
+                            pSubscriber.onNext(null);
+                            pSubscriber.onCompleted();
+                            return;
+                        }
                     }
 
                     getThirdPartyLogin()
@@ -232,6 +239,7 @@ public class LoginManager {
 
                                         notifyLogin(pUserName, name);
                                         pSubscriber.onNext(pResult);
+                                        pSubscriber.onCompleted();
                                     } catch (Exception pE) {
                                         pE.printStackTrace();
                                         pSubscriber.onError(pE);
