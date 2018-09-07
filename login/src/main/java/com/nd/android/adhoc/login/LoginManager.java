@@ -10,6 +10,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
@@ -75,7 +77,10 @@ public class LoginManager {
 
     public Observable<Boolean> init(){
         initUcEnv();
+        return startToBindDevice();
+    }
 
+    private Observable<Boolean> startToBindDevice(){
         boolean connected = MdmTransferFactory.getPushModel().isConnected();
         boolean activated = getConfig().isActivated();
         Observable<Boolean> obs = mConnectSubject.asObservable()
@@ -261,6 +266,7 @@ public class LoginManager {
     }
 
     private void requestPolicySet() throws Exception{
+        Logger.e(TAG, "requestPolicySet");
         String deviceToken = DeviceHelper.getDeviceToken();
         long pTime = getConfig().getPolicySetTime();
         ILoginInfoProvider provider   = (ILoginInfoProvider) AdhocFrameFactory.getInstance().getAdhocRouter()
@@ -286,10 +292,42 @@ public class LoginManager {
         api.onLogin(loginInfo);
     }
 
-    public void logout(){
+    public void logout() {
         getConfig().clearData();
         mConnectSubject = BehaviorSubject.create();
         MdmTransferFactory.getPushModel().start();
+
+//        boolean connected = MdmTransferFactory.getPushModel().isConnected();
+//        if (connected) {
+//            doOnPushChannelConnected();
+//        } else {
+//            IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
+//                    .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
+//            if (api == null) {
+//                return;
+//            }
+//
+//            api.onLogout();
+//        }
+        startToBindDevice().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean pBoolean) {
+
+                    }
+                });
+
     }
 
     private IThirdPartyLogin getThirdPartyLogin(){

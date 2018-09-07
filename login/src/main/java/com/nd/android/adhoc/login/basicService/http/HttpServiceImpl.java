@@ -20,7 +20,12 @@ public class HttpServiceImpl implements IHttpService {
     public IBindResult bindDevice(String pDeviceToken, String pPushID, String pSerialNum)
             throws Exception {
         LoginDao dao = new LoginDao(getBaseUrl());
-        return dao.bindDevice(pDeviceToken, pPushID, pSerialNum);
+        IBindResult result = dao.bindDevice(pDeviceToken, pPushID, pSerialNum);
+        if(!result.isSuccess()){
+            throw new Exception("Bind Device Failed");
+        }
+
+        return result;
     }
 
     @Override

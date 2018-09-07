@@ -37,6 +37,7 @@ public class LoginDao extends AdhocHttpDao {
             object.put("device_token",pDeviceToken);
             object.put("crtime", pTime);
             object.put("data", pData);
+            object.put("type", 1);
             String content = object.toString();
             String result = postAction().post("/v1.1/registe/policyset/",
                     String.class, content, null);
@@ -51,6 +52,7 @@ public class LoginDao extends AdhocHttpDao {
         Map<String, Object> map = new HashMap<>();
         map.put("device_token", pDeviceToken);
         map.put("serial_num", pSerialNum);
+        map.put("type", 1);
         map.put("pushid", pPushID);
 
         try {
