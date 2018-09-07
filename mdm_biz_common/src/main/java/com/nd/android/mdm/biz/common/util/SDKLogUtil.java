@@ -1,5 +1,7 @@
 package com.nd.android.mdm.biz.common.util;
 
+import android.Manifest;
+
 import com.elvishew.xlog.Logger;
 import com.elvishew.xlog.XLog;
 import com.elvishew.xlog.flattener.Flattener;
@@ -9,12 +11,16 @@ import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.util.thread.rx.AdhocActionSubscriber;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import rx.functions.Action1;
 
 /**
  * 为了在 Log 打印规范还未统一的情况下，确保其他模块的正常使用，先从 module_mdm_basic 中移过来，但是已经标注为废弃
@@ -29,23 +35,30 @@ public class SDKLogUtil {
     static List<String> lastLogs = new ArrayList<String>();
 
     static {
-        XLog.init();
-        Printer loggerPrinter = new FilePrinter.Builder(new File("/sdcard", AdhocBasicConfig.getInstance().getAppContext().getPackageName()).getPath() + "/business")
-                .fileNameGenerator(new DateFileNameGenerator())
-                .logFlattener(new Flattener() {
+        RxPermissions.getInstance(AdhocBasicConfig.getInstance().getAppContext())
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new AdhocActionSubscriber<>(new Action1<Boolean>() {
                     @Override
-                    public CharSequence flatten(int logLevel, String tag, String message) {
-                        return String.format("%s\t%s\t%s", format.format(new Date()), tag, message);
+                    public void call(Boolean aBoolean) {
+                        XLog.init();
+                        Printer loggerPrinter = new FilePrinter.Builder(new File("/sdcard", AdhocBasicConfig.getInstance().getAppContext().getPackageName()).getPath() + "/business")
+                                .fileNameGenerator(new DateFileNameGenerator())
+                                .logFlattener(new Flattener() {
+                                    @Override
+                                    public CharSequence flatten(int logLevel, String tag, String message) {
+                                        return String.format("%s\t%s\t%s", format.format(new Date()), tag, message);
+                                    }
+                                })
+                                .build();
+                        logger = new Logger.Builder()
+                                .printers(new AndroidPrinter(), loggerPrinter)
+                                .build();
                     }
-                })
-                .build();
-        logger = new Logger.Builder()
-                .printers(new AndroidPrinter(), loggerPrinter)
-                .build();
+                }));
     }
 
     public static List<String> getHistory() {
-        return lastLogs;
+        return new ArrayList<>(lastLogs);
     }
 
     private static void addHistoryLog(String log) {
@@ -68,52 +81,73 @@ public class SDKLogUtil {
     }
 
     public static void v(String log) {
-        logger.v(log);
+        if (logger != null) {
+            logger.v(log);
+
+        }
         addHistoryLog(log);
     }
 
     public static void v(String str, Object... args) {
-        logger.v(str, args);
+        if (logger != null) {
+            logger.v(str, args);
+        }
         addHistoryLog(str, args);
     }
 
     public static void d(String log) {
-        logger.d(log);
+        if (logger != null) {
+            logger.d(log);
+        }
         addHistoryLog(log);
     }
 
     public static void d(String str, Object... args) {
-        logger.d(str, args);
+        if (logger != null) {
+            logger.d(str, args);
+        }
         addHistoryLog(str, args);
     }
 
     public static void i(String log) {
-        logger.i(log);
+        if (logger != null) {
+            logger.i(log);
+        }
         addHistoryLog(log);
     }
 
     public static void i(String str, Object... args) {
-        logger.i(str, args);
+        if (logger != null) {
+            logger.i(str, args);
+        }
         addHistoryLog(str, args);
     }
 
     public static void w(String log) {
-        logger.w(log);
+        if (logger != null) {
+            logger.w(log);
+        }
         addHistoryLog(log);
     }
 
     public static void w(String str, Object... args) {
-        logger.w(str, args);
+        if (logger != null) {
+            logger.w(str, args);
+        }
         addHistoryLog(str, args);
     }
 
     public static void e(String log) {
-        logger.e(log);
+        if (logger != null) {
+            logger.e(log);
+        }
         addHistoryLog(log);
     }
 
     public static void e(String str, Object... args) {
-        logger.e(str, args);
+        if (logger != null) {
+            logger.e(str, args);
+        }
         addHistoryLog(str, args);
     }
 

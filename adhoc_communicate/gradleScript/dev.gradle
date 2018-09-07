@@ -7,6 +7,8 @@ dependencies {
     api 'org.apache.commons:commons-lang3:3.6'
     api 'commons-net:commons-net:3.5'
 
+    api 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0'
+
 
     api 'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
     api 'com.nd.sdp.adhoc:adhoc-sdk:1.2.16.2006-develop-SNAPSHOT'

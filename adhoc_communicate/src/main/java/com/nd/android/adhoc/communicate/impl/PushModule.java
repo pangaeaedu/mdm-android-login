@@ -1,5 +1,6 @@
 package com.nd.android.adhoc.communicate.impl;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.RemoteException;
 
@@ -8,6 +9,7 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.basic.util.thread.rx.AdhocActionSubscriber;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.communicate.constant.AdhocPushMsgType;
 import com.nd.android.adhoc.communicate.push.IPushModule;
@@ -22,6 +24,7 @@ import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.util.cmd.CmdUtil;
 import com.nd.sdp.adhoc.push.IPushSdkCallback;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import rx.functions.Action1;
 
 
 /**
@@ -62,12 +67,6 @@ class PushModule implements IPushModule {
 
     @Override
     public void start() {
-        String pushSrvIp = MdmEvnFactory.getInstance().getCurEnvironment().getPushIp();
-        int pushSrvPort = MdmEvnFactory.getInstance().getCurEnvironment().getPushPort();
-//        CmdFactory.enableFactory(true);
-        PushSdk.getInstance().stop();
-        PushSdk.getInstance().startPushSdk(mContext, "mdm", null, pushSrvIp, pushSrvPort, mPushSdkCallback);
-
         Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
         if (receiverIterator.hasNext()) {
             mCmdReceiver = receiverIterator.next();
@@ -79,7 +78,23 @@ class PushModule implements IPushModule {
             mFeedbackReceiver = feedbackIterator.next();
         }
 
+        RxPermissions.getInstance(AdhocBasicConfig.getInstance().getAppContext())
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new AdhocActionSubscriber<>(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            String pushSrvIp = MdmEvnFactory.getInstance().getCurEnvironment().getPushIp();
+                            int pushSrvPort = MdmEvnFactory.getInstance().getCurEnvironment().getPushPort();
+//        CmdFactory.enableFactory(true);
+                            PushSdk.getInstance().stop();
+                            PushSdk.getInstance().startPushSdk(mContext, "mdm", null, pushSrvIp, pushSrvPort, mPushSdkCallback);
+                        }
+                    }
+                }));
+
     }
+
 
     @Override
     public void stop() {
@@ -91,7 +106,7 @@ class PushModule implements IPushModule {
         return PushSdk.getInstance().getDeviceid();
     }
 
-    private void doFeedbackCmdReceived(byte[] pContent){
+    private void doFeedbackCmdReceived(byte[] pContent) {
         mFeedbackReceiver.onCmdReceived(new String(pContent));
     }
 
@@ -114,10 +129,10 @@ class PushModule implements IPushModule {
         public byte[] onPushMessage(String appId, int msgtype, byte[] contenttype, long msgid, long msgTime, byte[] content, String[] extraKeys, String[] extraValues) {
             try {
                 String data = new String(content);
-                Logger.e(TAG, "onPushMessage:"+data);
+                Logger.e(TAG, "onPushMessage:" + data);
                 JSONObject object = new JSONObject(data);
                 int type = object.optInt("msgtype");
-                if(type == AdhocPushMsgType.Feedback.getValue()){
+                if (type == AdhocPushMsgType.Feedback.getValue()) {
                     doFeedbackCmdReceived(content);
                 } else {
                     doCmdReceived(content);
@@ -207,7 +222,7 @@ class PushModule implements IPushModule {
     public void release() {
         mCmdReceiver = null;
         mFeedbackReceiver = null;
-        if(!AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)){
+        if (!AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)) {
             mConnectListeners.clear();
         }
     }
@@ -217,7 +232,7 @@ class PushModule implements IPushModule {
             throw new AdhocException("PushModule doCmdReceived: Cmd message bytes is null", ErrorCode.FAILED, MsgCode.ERROR_PARAMETER);
         }
 
-        if(mCmdReceiver == null){
+        if (mCmdReceiver == null) {
             Logger.w(TAG, "mCmdReceiver is null");
             return;
         }
