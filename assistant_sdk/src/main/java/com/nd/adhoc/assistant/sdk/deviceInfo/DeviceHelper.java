@@ -56,20 +56,22 @@ public class DeviceHelper {
     }
 
     public static String getSerialNumber() {
-        String serialNo = null;
-        String[] propertys = {"ro.boot.serialno", "ro.serialno"};
+        String serialNo = android.os.Build.SERIAL;
+        if (!TextUtils.isEmpty(serialNo)) {
+            return serialNo;
+        }
+        String[] propertys = {"ro.boot.serialno", "ro.serialno", "ro.serialnocustom"};
         for (String key : propertys) {
-            String s = getAndroidOsSystemProperties(key);
-            if (!TextUtils.isEmpty(s)) {
-                serialNo = s;
-                return serialNo;
+            String sn = getAndroidOsSystemProperties(key);
+            if (!TextUtils.isEmpty(sn)) {
+                return sn;
             }
         }
-        return serialNo;
+        return null;
     }
 
     private static String getAndroidOsSystemProperties(String key) {
-        String ret = null;
+        String ret;
         try {
             systemProperties_get = Class.forName("android.os.SystemProperties").getMethod("get", String.class);
             if ((ret = (String) systemProperties_get.invoke(null, key)) != null) {
@@ -77,8 +79,7 @@ public class DeviceHelper {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return ret;
         }
-        return ret;
+        return null;
     }
 }
