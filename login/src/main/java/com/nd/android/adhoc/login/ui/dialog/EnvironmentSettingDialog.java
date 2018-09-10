@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
+import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.ui.widget.DensityUtils;
 import com.nd.android.adhoc.login.utils.EnvUtils;
@@ -122,6 +123,7 @@ public class EnvironmentSettingDialog extends DialogFragment
             MdmEvnFactory.getInstance().setCurEnvironment(position);
             EnvUtils.setUcEnv(position);
             getConfig().clearData();
+            MdmTransferFactory.getPushModel().start();
         }
     }
 
