@@ -67,6 +67,8 @@ class PushModule implements IPushModule {
 
     @Override
     public void start() {
+        PushSdk.getInstance().stop();
+
         Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
         if (receiverIterator.hasNext()) {
             mCmdReceiver = receiverIterator.next();
@@ -87,7 +89,6 @@ class PushModule implements IPushModule {
                             String pushSrvIp = MdmEvnFactory.getInstance().getCurEnvironment().getPushIp();
                             int pushSrvPort = MdmEvnFactory.getInstance().getCurEnvironment().getPushPort();
 //        CmdFactory.enableFactory(true);
-                            PushSdk.getInstance().stop();
                             PushSdk.getInstance().startPushSdk(mContext, "mdm", null, pushSrvIp, pushSrvPort, mPushSdkCallback);
                         }
                     }
