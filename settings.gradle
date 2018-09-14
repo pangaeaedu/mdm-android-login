@@ -1,18 +1,18 @@
-include ':login', ':loginapi' ,':assistant_sdk'      // 登录 SDK、API
-
+//include ':login', ':loginapi' ,':assistant_sdk'      // 登录 SDK、API
+//
 include ':mdm_biz_common'           // MDM 业务公共模块
-include ':mdm_env'                  // 环境配置模块
-include ':adhoc_communicate'        // 通讯模块，包含 pushsdk、 自组网 connect 通讯
-
-
-include ':mdm_util_cmd'             // 通讯模块，包含 pushsdk、 自组网 connect 通讯
-
-include ":mdm_feedback_biz"         // 请求回报处理模块
-
-
-include ":adhoc_wifi:wifi_sdk"      // WIFI sdk
-
-include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
+//include ':mdm_env'                  // 环境配置模块
+//include ':adhoc_communicate'        // 通讯模块，包含 pushsdk、 自组网 connect 通讯
+//
+//
+//include ':mdm_util_cmd'             // 通讯模块，包含 pushsdk、 自组网 connect 通讯
+//
+//include ":mdm_feedback_biz"         // 请求回报处理模块
+//
+//
+//include ":adhoc_wifi:wifi_sdk"      // WIFI sdk
+//
+//include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
 
 
 // 可配置工程
