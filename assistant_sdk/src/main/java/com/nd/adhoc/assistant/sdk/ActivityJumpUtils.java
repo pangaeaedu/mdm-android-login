@@ -31,7 +31,9 @@ public class ActivityJumpUtils {
 
                     @Override
                     public void onArrival(@NonNull Postcard postcard) {
-                        pSource.finish();
+                        if(pSource != null && !pSource.isFinishing()) {
+                            pSource.finish();
+                        }
                     }
                 });
     }
