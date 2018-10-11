@@ -3,6 +3,7 @@ package com.nd.android.adhoc.login.ui.widget;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -72,7 +73,9 @@ public class UserInputAnimation {
      */
     public void onDestory() {
         if ((mAnimationSet != null) && mAnimationSet.isRunning()) {
-            mAnimationSet.pause();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                mAnimationSet.pause();
+            }
             mAnimationSet.cancel();
             mAnimationSet = null;
         }
@@ -91,7 +94,9 @@ public class UserInputAnimation {
      */
     private void stop() {
         if (mAnimationSet != null && mAnimationSet.isStarted()) {
-            mAnimationSet.pause();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                mAnimationSet.pause();
+            }
             mAnimationSet.cancel();
         }
     }

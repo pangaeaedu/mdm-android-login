@@ -16,7 +16,7 @@ buildscript {
 
         // ARouter 支持
 //        classpath 'com.alibaba:arouter-register:1.0.0'
-        classpath 'com.nd.android.adhoc.basic:adhoc-router-register:0.0.6-planB-SNAPSHOT'
+        classpath "com.nd.android.adhoc.basic:adhoc-router-register:$adhoc_basic_version"
 
 //        classpath 'com.github.eyyoung:DexFixPlugin:1.0.0'
     }

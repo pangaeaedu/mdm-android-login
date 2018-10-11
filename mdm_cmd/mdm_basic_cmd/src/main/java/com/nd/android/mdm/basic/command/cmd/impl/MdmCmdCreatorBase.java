@@ -64,29 +64,35 @@ public abstract class MdmCmdCreatorBase implements ICmdCreator<ICmd_MDM, ICmdCon
             } else {
                 SDKLogUtil.e("make cmd failed,can not find class");
             }
-        } catch (InstantiationException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-//            try {
-//                if (TextUtils.isEmpty(pCmdContent.getCmdName()) && TextUtils.isEmpty(pCmdContent.getSessionId())) {
-            IResponse_MDM response = MdmResponseHelper.createResponseBase(
-                    pCmdContent.getCmdName(),
-                    "",
-                    pCmdContent.getSessionId(),
-                    AdhocCmdFromTo.MDM_CMD_ADHOC.getValue(),
-                    System.currentTimeMillis()
-            );
-            response.setErrorCode(ErrorCode.UNUSABLE)
-                    .setMsgCode(MsgCode.ERROR_JSON_INVALID)
-                    .setMsg(ExceptionUtils.getStackTrace(e));
-            response.post();
-//                }
-//            } catch (JSONException e1) {
-//                SDKLogUtil.e("create cmd with bad json:%s\n%s", json.toString(), ExceptionUtils.getFullStackTrace(e));
-//            }
-            throw new AdhocException("Create Cmd Error: " + ExceptionUtils.getStackTrace(e), ErrorCode.FAILED, MsgCode.ERROR_UNKNOWN);
-//            }
+        } catch (InstantiationException e) {
+            doException(pCmdContent, e);
+        } catch (NoSuchMethodException e) {
+            doException(pCmdContent, e);
+        } catch (IllegalAccessException e) {
+            doException(pCmdContent, e);
+        } catch (InvocationTargetException e) {
+            doException(pCmdContent, e);
         }
         return null;
     }
+
+    private void doException(ICmdContent_MDM pCmdContent, Throwable e) throws AdhocException {
+        IResponse_MDM response = MdmResponseHelper.createResponseBase(
+                pCmdContent.getCmdName(),
+                "",
+                pCmdContent.getSessionId(),
+                AdhocCmdFromTo.MDM_CMD_ADHOC.getValue(),
+                System.currentTimeMillis()
+        );
+        response.setErrorCode(ErrorCode.UNUSABLE)
+                .setMsgCode(MsgCode.ERROR_JSON_INVALID)
+                .setMsg(ExceptionUtils.getStackTrace(e));
+        response.post();
+
+        throw new AdhocException("Create Cmd Error: " + ExceptionUtils.getStackTrace(e), ErrorCode.FAILED, MsgCode.ERROR_UNKNOWN);
+
+    }
+
 
     protected abstract Class<? extends ICmd_MDM> getCmdClass(@NonNull String pCmdName);
 }
