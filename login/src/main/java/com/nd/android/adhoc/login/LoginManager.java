@@ -36,7 +36,6 @@ import org.json.JSONObject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
@@ -295,38 +294,38 @@ public class LoginManager {
     public void logout() {
         getConfig().clearData();
         mConnectSubject = BehaviorSubject.create();
-        MdmTransferFactory.getPushModel().start();
+        MdmTransferFactory.getPushModel().stop();
 
 //        boolean connected = MdmTransferFactory.getPushModel().isConnected();
 //        if (connected) {
 //            doOnPushChannelConnected();
 //        } else {
-//            IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
-//                    .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
-//            if (api == null) {
-//                return;
-//            }
-//
-//            api.onLogout();
+            IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
+                    .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
+            if (api == null) {
+                return;
+            }
+
+            api.onLogout();
 //        }
-        startToBindDevice().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Boolean pBoolean) {
-
-                    }
-                });
+//        startToBindDevice().subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<Boolean>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(Boolean pBoolean) {
+//
+//                    }
+//                });
 
     }
 
