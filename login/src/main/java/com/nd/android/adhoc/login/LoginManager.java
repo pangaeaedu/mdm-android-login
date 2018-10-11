@@ -308,6 +308,7 @@ public class LoginManager {
 
             api.onLogout();
 //        }
+        //这里为什么要startToBindDevice呢？？？
 //        startToBindDevice().subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe(new Subscriber<Boolean>() {
