@@ -8,6 +8,7 @@ import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpRequest;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.http.BindResult;
+import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
 import com.nd.android.smartcan.network.Method;
 import com.nd.smartcan.core.security.SecurityDelegate;
 
@@ -64,7 +65,26 @@ public class LoginDao extends AdhocHttpDao {
 
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
+    }
 
+    public BindResult bindDevice(String pOldToken, String pDeviceToken,String pPushID,
+                                 String pSerialNum) throws AdhocHttpException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("old_device_token", pOldToken);
+        map.put("device_token", pDeviceToken);
+        map.put("serial_num", pSerialNum);
+        map.put("type", 1);
+        map.put("pushid", pPushID);
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+
+            return postAction().post("/v1.1/registe/pushid/", BindResult.class, content, null);
+        } catch (RuntimeException e) {
+
+            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+        }
     }
 
     public ActivateHttpResult activateUser(String pUserToken, String pDeviceToken)
@@ -83,5 +103,30 @@ public class LoginDao extends AdhocHttpDao {
         request.uc.nonce = object.optString("nonce");
 
         return postAction().post("/v1.1/registe/activate/", ActivateHttpResult.class, request);
+    }
+
+
+    public GetOldTokenResult getOldToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
+                                         String pBlueToothMac, String pSerialNo)
+            throws Exception {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("build_sn", pBuildSn);
+        map.put("cpu_sn", pCpuSn);
+        map.put("imei", pIMEI);
+        map.put("wifi_mac", pWifiMac);
+        map.put("btooth_mac", pBlueToothMac);
+        map.put("serial_no", pSerialNo);
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+
+            return postAction().post("/v1.1/registe/getOldDeviceToken/", GetOldTokenResult.class,
+                    content, null);
+        } catch (RuntimeException e) {
+            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+        }
+
     }
 }

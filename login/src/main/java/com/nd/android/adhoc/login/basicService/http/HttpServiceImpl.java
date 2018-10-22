@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.login.basicService.http;
 
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
+import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
 import com.nd.android.mdm.biz.env.IMdmEnvModule;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
@@ -17,7 +18,8 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public IBindResult bindDevice(String pDeviceToken, String pPushID, String pSerialNum)
+    public IBindResult bindDevice(String pDeviceToken, String pPushID, String
+            pSerialNum)
             throws Exception {
         LoginDao dao = new LoginDao(getBaseUrl());
         IBindResult result = dao.bindDevice(pDeviceToken, pPushID, pSerialNum);
@@ -37,6 +39,17 @@ public class HttpServiceImpl implements IHttpService {
         }
 
         throw new Exception("activate user failed");
+    }
+
+    @Override
+    public GetOldTokenResult getOldDeviceToken(String pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
+                                    String pBlueToothMac, String pSerialNo) throws Exception {
+        LoginDao dao = new LoginDao(getBaseUrl());
+        GetOldTokenResult result = dao.getOldToken(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+                pBlueToothMac, pSerialNo);
+
+        return result;
+
     }
 
     private String getBaseUrl(){

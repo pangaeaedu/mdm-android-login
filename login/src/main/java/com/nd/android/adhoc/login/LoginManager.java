@@ -7,13 +7,16 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
+import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
 import com.nd.android.adhoc.login.basicService.http.IBindResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.basicService.operator.UserActivateOperator;
@@ -173,13 +176,50 @@ public class LoginManager {
         };
     }
 
-    private boolean bindWithNewPushIDReturnLoginStatus(String pPushID) throws Exception{
+    private String getDeviceToken() throws Exception{
         String deviceToken = DeviceHelper.getDeviceToken();
-        String serialNum = DeviceHelper.getSerialNumber();
 
-        if(TextUtils.isEmpty(deviceToken) || TextUtils.isEmpty(serialNum)){
+        if(TextUtils.isEmpty(deviceToken)){
             throw new Exception("deviceToken or serialNum empty");
         }
+
+        String oldToken = getConfig().getOldDeviceToken();
+        int oldTokenStatus = getConfig().getOldTokenStatus();
+
+        if(oldTokenStatus == 2){
+            if(!TextUtils.isEmpty(oldToken)){
+                deviceToken = oldToken;
+            }
+        } else {
+            String buildSn = AdhocDeviceUtil.getBuildSN(AdhocBasicConfig.getInstance().getAppContext());
+            String cpuSn = AdhocDeviceUtil.getCpuSN();
+            String imei = AdhocDeviceUtil.getIMEI(AdhocBasicConfig.getInstance().getAppContext());
+            String wifiMac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
+            String blueToothMac = AdhocDeviceUtil.getBloothMac();
+            String serialNo = AdhocDeviceUtil.getSerialNumber();
+
+            GetOldTokenResult oldTokenResult = getHttpService().getOldDeviceToken(buildSn,
+                    cpuSn, imei, wifiMac, blueToothMac, serialNo);
+
+            oldToken = oldTokenResult.getOld_device_token();
+            getConfig().saveOldDeviceToken(oldToken);
+            getConfig().saveOldTokenStatus(2);
+
+            if(!TextUtils.isEmpty(oldToken)){
+                deviceToken = oldToken;
+            }
+        }
+
+        return deviceToken;
+    }
+    private boolean bindWithNewPushIDReturnLoginStatus(String pPushID) throws Exception{
+        String serialNum = DeviceHelper.getSerialNumber();
+
+        if(TextUtils.isEmpty(serialNum)){
+            throw new Exception("serialNum empty");
+        }
+
+        String deviceToken = getDeviceToken();
 
         IBindResult result = getHttpService().bindDevice(deviceToken, pPushID, serialNum);
 

@@ -6,6 +6,10 @@ import android.support.annotation.NonNull;
 
 public class AssistantSpConfig extends BaseSpConfig {
     private static final String KEY_ACTIVATED = "activated";
+
+    private static final String KEY_OLD_DEVICE_TOKEN = "old_device_token";
+    private static final String KEY_OLD_TOKEN_STATUS = "old_token_status";
+
     private static final String KEY_DEVICE_TOKEN = "device_token";
     private static final String KEY_PUSH_ID = "push_id";
     private static final String KEY_SERIAL_NUM = "serial_num";
@@ -35,6 +39,22 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     public void saveDeviceToken(String pToken) {
         saveString(KEY_DEVICE_TOKEN, pToken);
+    }
+
+    public int getOldTokenStatus() {
+        return getInt(KEY_OLD_TOKEN_STATUS, 0);
+    }
+
+    public void saveOldTokenStatus(int pStatus) {
+        saveInt(KEY_OLD_TOKEN_STATUS, pStatus);
+    }
+
+    public String getOldDeviceToken() {
+        return getString(KEY_OLD_DEVICE_TOKEN);
+    }
+
+    public void saveOldDeviceToken(String pToken) {
+        saveString(KEY_OLD_DEVICE_TOKEN, pToken);
     }
 
     public String getPushID() {
