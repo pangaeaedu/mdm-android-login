@@ -76,7 +76,7 @@ public final class MdmCmdReceiveFactory {
                                         .post();
                             }
                         }
-
+                        subscriber.onCompleted();
                     }
                 }).subscribeOn(Schedulers.io()));
     }
