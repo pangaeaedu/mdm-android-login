@@ -112,6 +112,8 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveActivated(false);
         savePushID("");
         savePolicySetTime(0);
+        saveOldTokenStatus(0);
+        saveOldDeviceToken("");
     }
 
 }

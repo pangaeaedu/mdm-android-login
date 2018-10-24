@@ -4,6 +4,8 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
+import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.utils.MD5ArithmeticUtils;
 
 import java.lang.reflect.Method;
@@ -14,6 +16,11 @@ public class DeviceHelper {
 
     @NonNull
     public static String getDeviceToken(){
+        AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
+        if(!TextUtils.isEmpty(config.getDeviceToken())){
+            return config.getDeviceToken();
+        }
+
         String id = getUniqueID()+getSerialNumber();
         try {
             return MD5ArithmeticUtils.getMd5(id);
