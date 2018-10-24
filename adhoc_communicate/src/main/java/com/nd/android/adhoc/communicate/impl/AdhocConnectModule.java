@@ -146,7 +146,12 @@ class AdhocConnectModule implements IAdhocConnectModule {
             // 备忘：此处这么修改是因为出现和登录时回报的 WifiMac 不一致的情况，所以 mac 统一改为传 wifimac  -- by hyk 2018-08-29
 //            String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
             String mac = AdhocDeviceUtil.getWifiMac(mContext);
-            data.put("mac", formatMac(mac));
+            if(TextUtils.isEmpty(mac)){
+                data.put("mac", pDevToken);
+            }else {
+                data.put("mac", mac);
+            }
+
 //            new MessageEvent(json.toString()).post();
             sendMessage(json.toString());
         } catch (JSONException e) {
