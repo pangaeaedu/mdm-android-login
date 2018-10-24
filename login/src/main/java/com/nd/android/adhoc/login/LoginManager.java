@@ -72,17 +72,17 @@ public class LoginManager {
         MdmTransferFactory.getPushModel().start();
     }
 
-    private void initUcEnv(){
+    private void initUcEnv() {
         UCManager.getInstance().setOrgName(Constants.ORG_NAME);
         EnvUtils.setUcEnv(MdmEvnFactory.getInstance().getCurIndex());
     }
 
-    public Observable<Boolean> init(){
+    public Observable<Boolean> init() {
         initUcEnv();
         return startToBindDevice();
     }
 
-    private Observable<Boolean> startToBindDevice(){
+    private Observable<Boolean> startToBindDevice() {
         boolean connected = MdmTransferFactory.getPushModel().isConnected();
         boolean activated = getConfig().isActivated();
         Observable<Boolean> obs = mConnectSubject.asObservable()
@@ -122,7 +122,7 @@ public class LoginManager {
         return obs;
     }
 
-    protected void doOnPushChannelConnected(){
+    protected void doOnPushChannelConnected() {
         synchronized (LoginManager.getInstance()) {
             String pushID = MdmTransferFactory.getPushModel().getDeviceId();
             Log.e(TAG, "push sdk connected");
@@ -150,18 +150,18 @@ public class LoginManager {
         }
     }
 
-    private Func1<Boolean, Boolean> loginFunc(){
+    private Func1<Boolean, Boolean> loginFunc() {
         return new Func1<Boolean, Boolean>() {
             @Override
             public Boolean call(Boolean pBinded) {
-                if(!pBinded){
+                if (!pBinded) {
                     return false;
                 }
 
-                if(getConfig().isActivated()){
-                    try{
+                if (getConfig().isActivated()) {
+                    try {
                         requestPolicySet();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -176,18 +176,18 @@ public class LoginManager {
         };
     }
 
-    private String getDeviceToken() throws Exception{
+    private String getDeviceToken() throws Exception {
         String deviceToken = DeviceHelper.getDeviceToken();
 
-        if(TextUtils.isEmpty(deviceToken)){
+        if (TextUtils.isEmpty(deviceToken)) {
             throw new Exception("deviceToken or serialNum empty");
         }
 
         String oldToken = getConfig().getOldDeviceToken();
         int oldTokenStatus = getConfig().getOldTokenStatus();
 
-        if(oldTokenStatus == 2){
-            if(!TextUtils.isEmpty(oldToken)){
+        if (oldTokenStatus == 2) {
+            if (!TextUtils.isEmpty(oldToken)) {
                 deviceToken = oldToken;
             }
         } else {
@@ -205,38 +205,44 @@ public class LoginManager {
             getConfig().saveOldDeviceToken(oldToken);
             getConfig().saveOldTokenStatus(2);
 
-            if(!TextUtils.isEmpty(oldToken)){
+            if (!TextUtils.isEmpty(oldToken)) {
                 deviceToken = oldToken;
+                getConfig().saveNickname(oldTokenResult.getNick_name());
+                getConfig().saveActivated(true);
             }
         }
 
         return deviceToken;
     }
-    private boolean bindWithNewPushIDReturnLoginStatus(String pPushID) throws Exception{
+
+    private boolean bindWithNewPushIDReturnLoginStatus(String pPushID) throws Exception {
         String serialNum = DeviceHelper.getSerialNumber();
 
-        if(TextUtils.isEmpty(serialNum)){
+        if (TextUtils.isEmpty(serialNum)) {
             throw new Exception("serialNum empty");
         }
 
-        String deviceToken = getDeviceToken();
+        try {
+            String deviceToken = getDeviceToken();
 
-        IBindResult result = getHttpService().bindDevice(deviceToken, pPushID, serialNum);
+            IBindResult result = getHttpService().bindDevice(deviceToken, pPushID, serialNum);
 
-        getConfig().saveAutoLogin(result.isAutoLogin());
-        if(!result.isAutoLogin()){
-            getConfig().saveNickname("");
-            getConfig().saveActivated(false);
-        } else {
-            getConfig().saveNickname(result.getNickName());
-            getConfig().saveActivated(true);
+            getConfig().saveAutoLogin(result.isAutoLogin());
+            if (result.isAutoLogin()) {
+                getConfig().saveNickname(result.getNickName());
+                getConfig().saveActivated(true);
+            }
+
+            getConfig().savePushID(pPushID);
+            getConfig().saveDeviceToken(deviceToken);
+            getConfig().saveSerialNum(serialNum);
+
+            return result.isAutoLogin();
+        } catch (Exception e) {
+            getConfig().clearData();
+
+            throw e;
         }
-
-        getConfig().savePushID(pPushID);
-        getConfig().saveDeviceToken(deviceToken);
-        getConfig().saveSerialNum(serialNum);
-
-        return result.isAutoLogin();
     }
 
     public Observable<ILoginResult> login(@NonNull final String pUserName, @NonNull final String pPassword) {
@@ -252,14 +258,14 @@ public class LoginManager {
                     String pushID = MdmTransferFactory.getPushModel().getDeviceId();
                     String existPushID = getConfig().getPushID();
 
-                    if(TextUtils.isEmpty(pushID)){
+                    if (TextUtils.isEmpty(pushID)) {
                         pSubscriber.onError(new Exception("get push id empty"));
                         return;
                     }
 
-                    if(!pushID.equalsIgnoreCase(existPushID)){
+                    if (!pushID.equalsIgnoreCase(existPushID)) {
                         boolean bAuto = bindWithNewPushIDReturnLoginStatus(pushID);
-                        if(bAuto){
+                        if (bAuto) {
                             requestPolicySet();
                             notifyLogin(getConfig().getAccountNum(), getConfig().getNickname());
                             pSubscriber.onNext(null);
@@ -276,7 +282,7 @@ public class LoginManager {
                                         requestPolicySet();
                                         getConfig().saveAccountNum(pUserName);
 
-                                        String name = ((UcLoginResult)pResult).getUser()
+                                        String name = ((UcLoginResult) pResult).getUser()
                                                 .getUserInfo().getNickName();
                                         getConfig().saveNickname(name);
                                         getConfig().saveActivated(true);
@@ -296,7 +302,7 @@ public class LoginManager {
                                     pSubscriber.onError(pThrowable);
                                 }
                             });
-                }catch (Exception e){
+                } catch (Exception e) {
                     pSubscriber.onError(e);
                 }
 
@@ -304,13 +310,13 @@ public class LoginManager {
         });
     }
 
-    private void requestPolicySet() throws Exception{
+    private void requestPolicySet() throws Exception {
         Logger.e(TAG, "requestPolicySet");
         String deviceToken = DeviceHelper.getDeviceToken();
         long pTime = getConfig().getPolicySetTime();
-        ILoginInfoProvider provider   = (ILoginInfoProvider) AdhocFrameFactory.getInstance().getAdhocRouter()
+        ILoginInfoProvider provider = (ILoginInfoProvider) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(ILoginInfoProvider.PATH).navigation();
-        if(provider == null){
+        if (provider == null) {
             throw new Exception("login info provider not exist");
         }
 
@@ -319,10 +325,10 @@ public class LoginManager {
     }
 
 
-    private void notifyLogin(String pAccountNum, String pNickName){
+    private void notifyLogin(String pAccountNum, String pNickName) {
         IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
-        if(api == null){
+        if (api == null) {
             return;
         }
 
@@ -340,13 +346,13 @@ public class LoginManager {
 //        if (connected) {
 //            doOnPushChannelConnected();
 //        } else {
-            IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
-                    .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
-            if (api == null) {
-                return;
-            }
+        IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
+        if (api == null) {
+            return;
+        }
 
-            api.onLogout();
+        api.onLogout();
 //        }
         //这里为什么要startToBindDevice呢？？？
 //        startToBindDevice().subscribeOn(Schedulers.io())
@@ -370,16 +376,16 @@ public class LoginManager {
 
     }
 
-    private IThirdPartyLogin getThirdPartyLogin(){
+    private IThirdPartyLogin getThirdPartyLogin() {
         String orgName = MdmEvnFactory.getInstance().getCurEnvironment().getOrg();
         return new UcLogin(orgName);
     }
 
-    private AssistantSpConfig getConfig(){
+    private AssistantSpConfig getConfig() {
         return AssistantBasicServiceFactory.getInstance().getSpConfig();
     }
 
-    private IHttpService getHttpService(){
+    private IHttpService getHttpService() {
         return BasicServiceFactory.getInstance().getHttpService();
     }
 
