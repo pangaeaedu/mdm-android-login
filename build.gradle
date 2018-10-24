@@ -23,7 +23,7 @@ buildscript {
 }
 
 ext {
-    mdm_biz_version = '0.0.18-develop-SNAPSHOT'
+    mdm_biz_version = '0.0.29.2-develop-SNAPSHOT'
 }
 
 allprojects {
