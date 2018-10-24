@@ -1,0 +1,97 @@
+//apply plugin: 'com.android.library'
+//
+//android {
+//    compileSdkVersion "$androidCompileSdkVersion".toInteger()
+//    buildToolsVersion "$androidBuildToolsVersion"
+//
+//    defaultConfig {
+//        minSdkVersion "$androidMinSdkVersion".toInteger()
+//        targetSdkVersion "$androidTargetSdkVersion".toInteger()
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        ndk {
+//            abiFilters "armeabi-v7a"
+//        }
+//    }
+//
+//    buildTypes {
+//        sourceSets{
+//            main {
+//                jniLibs.srcDirs = ['libs']
+//            }
+//        }
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
+//
+//}
+//
+//dependencies {
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation 'com.android.support:appcompat-v7:26.0.2'
+//    compile ('com.nd.sdp.adhoc:screen-capture:1.3.19.2056-develop-SNAPSHOT') {
+//        exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
+//    }
+//    testImplementation 'junit:junit:4.12'
+//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+//}
+//
+//
+
+apply plugin: 'com.android.library'
+apply from: file('gradleScript/dev.gradle')
+//apply from: file('gradleScript/unittest4sdk.gradle')
+
+if (!project.hasProperty('LOCAL_BUILD_ENV')) {
+    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/maven_upload.gradle'
+}
+
+android {
+    compileSdkVersion "$androidCompileSdkVersion".toInteger()
+    buildToolsVersion "$androidBuildToolsVersion"
+
+    defaultConfig {
+        minSdkVersion "$androidMinSdkVersion".toInteger()
+        targetSdkVersion "$androidTargetSdkVersion".toInteger()
+        ndk {
+            abiFilters "armeabi-v7a"
+        }
+    }
+
+    useLibrary 'org.apache.http.legacy'
+
+    buildTypes {
+        sourceSets{
+            main {
+                jniLibs.srcDirs = ['libs']
+            }
+        }
+
+//        release {
+//            debuggable true
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//        }
+//        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+//            debug {
+//                debuggable true
+//                minifyEnabled true
+//                defaultPublishConfig "debug"
+//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//            }
+//        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
