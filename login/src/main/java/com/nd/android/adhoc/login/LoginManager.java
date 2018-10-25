@@ -205,6 +205,10 @@ public class LoginManager {
             getConfig().saveOldDeviceToken(oldToken);
             getConfig().saveOldTokenStatus(2);
 
+            Log.e(TAG, "OldToken:" + oldTokenResult.getOld_device_token()
+                    + " " + "Status:" + oldTokenResult.getStatus()
+                    + " nickname:" + oldTokenResult.getNick_name()
+                    + " pushID:" + oldTokenResult.getPush_id());
             if (!TextUtils.isEmpty(oldToken)) {
                 deviceToken = oldToken;
                 getConfig().saveNickname(oldTokenResult.getNick_name());
