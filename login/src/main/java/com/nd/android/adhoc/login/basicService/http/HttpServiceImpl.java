@@ -43,10 +43,11 @@ public class HttpServiceImpl implements IHttpService {
 
     @Override
     public GetOldTokenResult getOldDeviceToken(String pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                    String pBlueToothMac, String pSerialNo) throws Exception {
+                                    String pBlueToothMac, String pSerialNo, String pDeviceToken)
+            throws Exception {
         LoginDao dao = new LoginDao(getBaseUrl());
         GetOldTokenResult result = dao.getOldToken(pBuildSn, pCpuSn, pIMEI, pWifiMac,
-                pBlueToothMac, pSerialNo);
+                pBlueToothMac, pSerialNo, pDeviceToken);
 
         return result;
 

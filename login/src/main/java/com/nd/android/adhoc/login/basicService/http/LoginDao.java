@@ -107,7 +107,8 @@ public class LoginDao extends AdhocHttpDao {
 
 
     public GetOldTokenResult getOldToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                         String pBlueToothMac, String pSerialNo)
+                                         String pBlueToothMac, String pSerialNo,
+                                         String pDeviceToken)
             throws Exception {
 
         Map<String, Object> map = new HashMap<>();
@@ -117,6 +118,7 @@ public class LoginDao extends AdhocHttpDao {
         map.put("wifi_mac", pWifiMac);
         map.put("btooth_mac", pBlueToothMac);
         map.put("serial_no", pSerialNo);
+        map.put("device_token", pDeviceToken);
 
         try {
             Gson gson = new GsonBuilder().create();

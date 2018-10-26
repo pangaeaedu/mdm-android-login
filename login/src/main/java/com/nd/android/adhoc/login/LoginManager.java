@@ -197,9 +197,10 @@ public class LoginManager {
             String wifiMac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
             String blueToothMac = AdhocDeviceUtil.getBloothMac();
             String serialNo = AdhocDeviceUtil.getSerialNumber();
+            String Token = DeviceHelper.getDeviceTokenFromSystem();
 
             GetOldTokenResult oldTokenResult = getHttpService().getOldDeviceToken(buildSn,
-                    cpuSn, imei, wifiMac, blueToothMac, serialNo);
+                    cpuSn, imei, wifiMac, blueToothMac, serialNo, Token);
 
             oldToken = oldTokenResult.getOld_device_token();
             getConfig().saveOldDeviceToken(oldToken);
@@ -214,6 +215,7 @@ public class LoginManager {
                 getConfig().saveNickname(oldTokenResult.getNick_name());
                 getConfig().saveActivated(true);
             }
+
         }
 
         return deviceToken;

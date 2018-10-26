@@ -21,6 +21,18 @@ public class DeviceHelper {
             return config.getDeviceToken();
         }
 
+        return getDeviceTokenFromSystem();
+//        String id = getUniqueID()+getSerialNumber();
+//        try {
+//            return MD5ArithmeticUtils.getMd5(id);
+//        } catch (NoSuchAlgorithmException pE) {
+//            pE.printStackTrace();
+//        }
+//
+//        return id;
+    }
+
+    public static String getDeviceTokenFromSystem(){
         String id = getUniqueID()+getSerialNumber();
         try {
             return MD5ArithmeticUtils.getMd5(id);
