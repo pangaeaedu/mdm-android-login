@@ -32,6 +32,7 @@ import com.nd.android.adhoc.loginapi.ILoginInfoProvider;
 import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.mdm_feedback_biz.MdmFeedbackReceiveFactory;
+import com.nd.eci.sdk.api.AdhocImplement;
 import com.nd.smartcan.accountclient.UCManager;
 
 import org.json.JSONObject;
@@ -215,7 +216,6 @@ public class LoginManager {
                 getConfig().saveNickname(oldTokenResult.getNick_name());
                 getConfig().saveActivated(true);
             }
-
         }
 
         return deviceToken;
@@ -242,6 +242,10 @@ public class LoginManager {
             getConfig().savePushID(pPushID);
             getConfig().saveDeviceToken(deviceToken);
             getConfig().saveSerialNum(serialNum);
+
+            if(getConfig().isActivated()){
+                return true;
+            }
 
             return result.isAutoLogin();
         } catch (Exception e) {
@@ -347,7 +351,7 @@ public class LoginManager {
         getConfig().clearData();
         mConnectSubject = BehaviorSubject.create();
         MdmTransferFactory.getPushModel().stop();
-
+        AdhocImplement.getInstance().stop();
 //        boolean connected = MdmTransferFactory.getPushModel().isConnected();
 //        if (connected) {
 //            doOnPushChannelConnected();

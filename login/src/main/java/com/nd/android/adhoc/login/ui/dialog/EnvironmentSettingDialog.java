@@ -120,9 +120,9 @@ public class EnvironmentSettingDialog extends DialogFragment
 //            ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(getActivity());
 //            spModel.putInt("env",this.position).apply();
 //            this.mOnEnvironmentSettingsListener.onSettings(this.position);
-            MdmEvnFactory.getInstance().setCurEnvironment(position);
-            EnvUtils.setUcEnv(position);
             getConfig().clearData();
+            EnvUtils.setUcEnv(position);
+            MdmEvnFactory.getInstance().setCurEnvironment(position);
             MdmTransferFactory.getPushModel().start();
         }
     }

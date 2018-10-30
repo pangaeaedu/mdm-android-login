@@ -19,12 +19,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
+import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
+import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
+import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.login.R;
+import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
+import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
+import com.nd.android.adhoc.login.basicService.http.IBindResult;
+import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.exception.DeviceBindedException;
 import com.nd.android.adhoc.login.exception.UcUserNullException;
 import com.nd.android.adhoc.login.exception.UcVerificationException;
@@ -41,8 +51,16 @@ import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
+import com.nd.android.mdm.biz.env.IEnvChangedListener;
+import com.nd.android.mdm.biz.env.IMdmEnvModule;
+import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by richsjeson on 2018/1/18.
@@ -51,7 +69,7 @@ import de.greenrobot.event.EventBus;
  */
 @Route(path = "/login/login_activity")
 public class LoginActivity extends AdhocBaseActivity implements View.OnClickListener,
-        CommonAppCompatSpinner.OnItemSelectPopListener, ILoginPresenter.IView{
+        CommonAppCompatSpinner.OnItemSelectPopListener, ILoginPresenter.IView, IEnvChangedListener {
 
     private static final String TAG = "LoginActivity";
 
@@ -102,6 +120,8 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         addListener();
 
         mPresenter = new LoginPresenterImpl(this);
+
+        MdmEvnFactory.getInstance().addEnvChangedListener(this);
     }
 
 
@@ -306,6 +326,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         }
 
         mPresenter.onDestroy();
+        MdmEvnFactory.getInstance().removeEnvChangedListener(this);
         super.onDestroy();
     }
 
@@ -442,6 +463,91 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
         mLoginPanel.setVisibility(View.VISIBLE);
         mLoginStatus.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onEnvironmentChanged(@Nullable IMdmEnvModule pOld, @NonNull IMdmEnvModule pNew) {
+        showLoading();
+        isDeviceBinded(pNew)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        cancelLoading();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        cancelLoading();
+                    }
+
+                    @Override
+                    public void onNext(Boolean pBoolean) {
+                        if(pBoolean){
+                            jumpMain();
+                        }
+                    }
+                });
+    }
+
+    private Observable<Boolean> isDeviceBinded(final IMdmEnvModule pNew){
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> pSubscriber) {
+                Log.e(TAG, "onEnvironmentChanged:"+pNew.getName()+" org:"+pNew.getOrg());
+                String buildSn = AdhocDeviceUtil.getBuildSN(AdhocBasicConfig.getInstance().getAppContext());
+                String cpuSn = AdhocDeviceUtil.getCpuSN();
+                String imei = AdhocDeviceUtil.getIMEI(AdhocBasicConfig.getInstance().getAppContext());
+                String wifiMac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
+                String blueToothMac = AdhocDeviceUtil.getBloothMac();
+                String serialNo = AdhocDeviceUtil.getSerialNumber();
+                String Token = DeviceHelper.getDeviceTokenFromSystem();
+
+                GetOldTokenResult oldTokenResult = null;
+                try {
+                    oldTokenResult = getHttpService().getOldDeviceToken(buildSn,
+                            cpuSn, imei, wifiMac, blueToothMac, serialNo, Token);
+                    String oldToken = oldTokenResult.getOld_device_token();
+                    getConfig().saveOldDeviceToken(oldToken);
+                    getConfig().saveOldTokenStatus(2);
+
+                    Log.e(TAG, "onEnvironmentChanged OldToken:" + oldTokenResult.getOld_device_token()
+                            + " " + "Status:" + oldTokenResult.getStatus()
+                            + " nickname:" + oldTokenResult.getNick_name()
+                            + " pushID:" + oldTokenResult.getPush_id());
+                    if(TextUtils.isEmpty(oldToken)){
+                        pSubscriber.onNext(false);
+                        pSubscriber.onCompleted();
+                        return;
+                    }
+
+                    getConfig().saveNickname(oldTokenResult.getNick_name());
+                    getConfig().saveActivated(true);
+
+                    String pushID = MdmTransferFactory.getPushModel().getDeviceId();
+                    if(!pushID.equalsIgnoreCase(oldTokenResult.getPush_id())){
+                        IBindResult result = getHttpService().bindDevice(oldToken, pushID, DeviceHelper
+                                .getSerialNumber());
+                        getConfig().saveAutoLogin(result.isAutoLogin());
+                    }
+
+                    pSubscriber.onNext(true);
+                    pSubscriber.onCompleted();
+                } catch (Exception pE) {
+                    pSubscriber.onError(pE);
+                }
+            }
+        });
+    }
+
+    private AssistantSpConfig getConfig() {
+        return AssistantBasicServiceFactory.getInstance().getSpConfig();
+    }
+
+    private IHttpService getHttpService() {
+        return BasicServiceFactory.getInstance().getHttpService();
     }
 
 
