@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
+import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.IMdmWifiStatusReceiverCallback;
 import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.MdmWifiStatusReceiver;
@@ -386,7 +387,8 @@ public final class MdmWifiInfoManager {
         final String ssid = MdmWifiUtils.removeDoubleQuotes(wifiInfo.getSSID());
         final int rssi = wifiInfo.getRssi();
         final String bssid = wifiInfo.getBSSID();
-        final String mac = wifiInfo.getMacAddress();
+        final String mac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance()
+                .getAppContext()); //wifiInfo.getMacAddress();
         final int speed = wifiInfo.getLinkSpeed();
         final String ip = AdhocNetworkIpUtil.getCurrentIp(AdhocBasicConfig.getInstance().getAppContext());
         final String dns = dhcpInfo == null ? "" : AdhocNetworkIpUtil.formatIpAddress(dhcpInfo.dns1);

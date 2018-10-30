@@ -2,6 +2,9 @@ package com.nd.android.mdm.wifi_sdk.business.bean;
 
 import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
+
 import java.io.Serializable;
 
 /**
@@ -139,7 +142,7 @@ public class MdmWifiInfo implements Serializable {
     }
 
     public String getMac() {
-        return mMac;
+        return AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
     }
 
     public void setMac(String mac) {
