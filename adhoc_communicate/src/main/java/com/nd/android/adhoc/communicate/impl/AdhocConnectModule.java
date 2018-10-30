@@ -149,7 +149,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
             if(TextUtils.isEmpty(mac)){
                 data.put("mac", pDevToken);
             }else {
-                data.put("mac", mac);
+                data.put("mac", mac.replace(":",""));
             }
 
 //            new MessageEvent(json.toString()).post();
