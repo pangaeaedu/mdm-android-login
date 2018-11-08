@@ -13,7 +13,7 @@ public interface IAdocFileTransferListener {
 
     void onFileArriveProgress(long pSessionId, @Nullable String pFileName, long totalSize, long recvSize);
 
-    void onFileArriveComplete(long pSessionId, @Nullable String pFileName);
+    void onFileArriveComplete(long pSessionId, @Nullable String pFilePath);
 
     void onFileArriveException(long pSessionId, @Nullable String pFileName, int pErrorCode, @Nullable String pErrorMsg);
 }

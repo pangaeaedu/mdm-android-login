@@ -10,6 +10,7 @@ import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListen
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
 import com.nd.android.adhoc.communicate.utils.BroadcastUtil;
+import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.eci.sdk.IAdhocCallback;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
@@ -167,8 +168,13 @@ public class AdhocCallbackImpl implements IAdhocCallback {
         String fileName = fileNames.get(sessionId);
 
         if (mFileTransferListener != null) {
-            mFileTransferListener.onFileArriveComplete(sessionId, fileName);
+            if (filePath.contains(fileName)) {
+                mFileTransferListener.onFileArriveComplete(sessionId, filePath);
+            } else {
+                mFileTransferListener.onFileArriveException(sessionId, fileName, ErrorCode.FAILED, "文件下载成功信息不匹配");
+            }
         }
+
         fileNames.remove(sessionId);
     }
 

@@ -39,6 +39,13 @@ dependencies {
         api("com.nd.android.mdm.biz:mdm_util_cmd:$mdm_biz_version")
     }
 
+    try {
+        api project(':file_transfer')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc:file_transfer:0.0.9.1-develop-SNAPSHOT")
+    }
+
+
     api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
     api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
     annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
