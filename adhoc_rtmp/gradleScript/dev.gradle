@@ -3,7 +3,7 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:26.0.2'
 
-    compile ('com.nd.sdp.adhoc:screen-capture:1.3.25.2062-develop-SNAPSHOT') {
+    compile ('com.nd.sdp.adhoc:screen-capture:1.3.26.2062-develop-SNAPSHOT') {
         exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
     }
 }
