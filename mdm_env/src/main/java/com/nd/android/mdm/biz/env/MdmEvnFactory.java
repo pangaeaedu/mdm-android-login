@@ -133,9 +133,9 @@ public final class MdmEvnFactory {
                     IMdmEnvModule mdmEnvModule = gson.fromJson(String.valueOf(jsonEnvs.get(i)), MdmEnvModule.class);
                     mMdmEnvModules.add(mdmEnvModule);
                 }
-                if (!jsonObject.isNull("envs_index")) {
-                    mCurIndexk = jsonObject.getInt("envs_index");
-                }
+//                if (!jsonObject.isNull("envs_index")) {
+//                    mCurIndexk = jsonObject.getInt("envs_index");
+//                }
             }
         } catch (IOException e) {
             Logger.e(TAG, "EnvUtil read assets file failed:" + e.getMessage());
