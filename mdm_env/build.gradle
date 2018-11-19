@@ -13,6 +13,10 @@ android {
     defaultConfig {
         minSdkVersion "$androidMinSdkVersion".toInteger()
         targetSdkVersion "$androidTargetSdkVersion".toInteger()
+
+        manifestPlaceholders = [
+                ENV_INDEX_VALUE  : ENV_INDEX_VALUE,
+        ]
     }
 
     useLibrary 'org.apache.http.legacy'

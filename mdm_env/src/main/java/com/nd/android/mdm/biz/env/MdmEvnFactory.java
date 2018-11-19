@@ -1,10 +1,13 @@
 package com.nd.android.mdm.biz.env;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,7 +53,34 @@ public final class MdmEvnFactory {
 
     private MdmEvnFactory() {
         Context context = AdhocBasicConfig.getInstance().getAppContext();
+        loadManifestConfig(context);
         init(context);
+    }
+
+    private void loadManifestConfig(Context pContext) {
+        try {
+            ApplicationInfo appInfo = pContext.getPackageManager()
+                    .getApplicationInfo(pContext.getPackageName(),
+                            PackageManager.GET_META_DATA);
+            String envValue = appInfo.metaData.getString("ENV_INDEX");
+
+            if (TextUtils.isEmpty(envValue)) {
+                throw new IllegalArgumentException("The ENV_INDEX value of the META_DATA configuration in the manifest file does not exist.");
+            }
+
+            mCurIndexk = Integer.valueOf(envValue);
+
+            if (mCurIndexk < MdmEnvConstant.ENV_INDEX_DEVELOP || mCurIndexk > MdmEnvConstant.ENV_INDEX_WHOLEWORLD) {
+                throw new IllegalArgumentException("The ENV_INDEX value of the META_DATA configuration in the manifest file is invalid: " + mCurIndexk);
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }catch (NumberFormatException e){
+            e.printStackTrace();
+        }
+
+
     }
 
     public static MdmEvnFactory getInstance() {

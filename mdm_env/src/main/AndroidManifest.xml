@@ -1,3 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.nd.android.mdm.biz.env">
+
+    <application>
+
+        <meta-data
+            android:name="ENV_INDEX"
+            android:value="${ENV_INDEX_VALUE}"/>
+
+    </application>
+
 </manifest>
