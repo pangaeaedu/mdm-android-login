@@ -62,13 +62,12 @@ public final class MdmEvnFactory {
             ApplicationInfo appInfo = pContext.getPackageManager()
                     .getApplicationInfo(pContext.getPackageName(),
                             PackageManager.GET_META_DATA);
-            String envValue = appInfo.metaData.getString("ENV_INDEX");
 
-            if (TextUtils.isEmpty(envValue)) {
+            if (!appInfo.metaData.containsKey("ENV_INDEX")) {
                 throw new IllegalArgumentException("The ENV_INDEX value of the META_DATA configuration in the manifest file does not exist.");
             }
 
-            mCurIndexk = Integer.valueOf(envValue);
+            mCurIndexk = appInfo.metaData.getInt("ENV_INDEX");
 
             if (mCurIndexk < MdmEnvConstant.ENV_INDEX_DEVELOP || mCurIndexk > MdmEnvConstant.ENV_INDEX_WHOLEWORLD) {
                 throw new IllegalArgumentException("The ENV_INDEX value of the META_DATA configuration in the manifest file is invalid: " + mCurIndexk);
