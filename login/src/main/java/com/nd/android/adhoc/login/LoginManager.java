@@ -70,7 +70,7 @@ public class LoginManager {
                         pSubscriber.onError(e);
                     }
                 }
-            }));
+            }).subscribeOn(Schedulers.io()));
         }
 
         @Override
