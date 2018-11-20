@@ -13,6 +13,7 @@ import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
+import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
@@ -58,7 +59,18 @@ public class LoginManager {
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
         public void onConnected() {
-            doOnPushChannelConnected();
+            AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Object>() {
+                @Override
+                public void call(Subscriber<? super Object> pSubscriber) {
+                    try {
+                        doOnPushChannelConnected();
+                        pSubscriber.onNext(null);
+                        pSubscriber.onCompleted();
+                    }catch (Exception e){
+                        pSubscriber.onError(e);
+                    }
+                }
+            }).subscribeOn(Schedulers.io()));
         }
 
         @Override
