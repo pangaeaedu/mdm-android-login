@@ -24,7 +24,6 @@ buildscript {
 
 ext {
     mdm_biz_version = '0.0.30.1-develop-SNAPSHOT'
-    adhoc_basic_version='0.0.73-develop-SNAPSHOT'
 }
 
 allprojects {
