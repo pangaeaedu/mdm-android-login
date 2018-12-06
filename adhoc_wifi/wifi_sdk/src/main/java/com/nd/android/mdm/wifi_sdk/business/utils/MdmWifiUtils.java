@@ -163,6 +163,17 @@ public class MdmWifiUtils {
         return null;
     }
 
+    public static int getCurrentNetworkLinkSpeed(Context context) {
+        if (isWifi(context)) {
+            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            if (wifiInfo != null) {
+                return wifiInfo.getLinkSpeed();
+            }
+        }
+        return 0;
+    }
+
     /**
      * 判断当前网络是否wifi
      *
