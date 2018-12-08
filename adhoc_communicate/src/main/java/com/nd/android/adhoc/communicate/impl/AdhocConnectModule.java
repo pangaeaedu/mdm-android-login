@@ -1,14 +1,10 @@
 package com.nd.android.adhoc.communicate.impl;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -24,10 +20,8 @@ import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.connect.IAdhocConnectModule;
 import com.nd.android.adhoc.communicate.connect.callback.AdhocCallbackImpl;
-import com.nd.android.adhoc.communicate.connect.event.IDeviceInfoEvent;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
-import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.eci.sdk.IAdhoc;
 import com.nd.eci.sdk.service.AdhocService;
@@ -37,7 +31,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.UUID;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -50,7 +43,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
     private Context mContext;
     private IAdhoc mAdhoc;
     private String mTurnId;
-    private IDeviceInfoEvent mDeviceInfoEvent;
+//    private IDeviceInfoEvent mDeviceInfoEvent;
     private AdhocCallbackImpl mAdhocCallback;
 
     private final byte[] mTurnIdLock = new byte[]{};
@@ -67,25 +60,32 @@ class AdhocConnectModule implements IAdhocConnectModule {
         Logger.d(TAG, "AdhocConnectModule ready");
         Intent intent = new Intent(context, AdhocService.class);
         context.bindService(intent, mConn, Context.BIND_AUTO_CREATE);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        context.registerReceiver(mNetworkBroadcastReceiver, intentFilter);
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//        context.registerReceiver(mNetworkBroadcastReceiver, intentFilter);
     }
 
-    private BroadcastReceiver mNetworkBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
-                ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo info = manager.getActiveNetworkInfo();
-                if (info != null && mDeviceInfoEvent != null) {
-//                    new PostDeviceInfoEvent(UUID.randomUUID().toString(), MdmCmdFromTo.MDM_CMD_DRM.getValue()).post();
-                    mDeviceInfoEvent.notifyDeviceInfo(UUID.randomUUID().toString(), AdhocCmdFromTo.MDM_CMD_DRM.getValue());
-                }
-            }
-        }
-    };
+    // 这些原先是通过回调给 MonitorModule 去做，其实也就只是监听网络连上以后就去更新一次 deviceInfo，
+    // 没有必要放在这里去通知，还要外部再设置一个监听进来，多此一举
+//    private BroadcastReceiver mNetworkBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
+//                ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+//                NetworkInfo info = manager.getActiveNetworkInfo();
+//
+//                if (info != null) {
+//                    mSessionId = UUID.randomUUID().toString();
+//                }
+//
+//                if (mDeviceInfoEvent != null) {
+////                    new PostDeviceInfoEvent(UUID.randomUUID().toString(), MdmCmdFromTo.MDM_CMD_DRM.getValue()).post();
+//                    mDeviceInfoEvent.notifyDeviceInfo(mSessionId, AdhocCmdFromTo.MDM_CMD_DRM.getValue());
+//                }
+//            }
+//        }
+//    };
 
 
     private ServiceConnection mConn = new ServiceConnection() {
@@ -118,10 +118,10 @@ class AdhocConnectModule implements IAdhocConnectModule {
     };
 
 
-    @Override
-    public void setDeviceInfoEvent(IDeviceInfoEvent pDeviceInfoEvent) {
-        mDeviceInfoEvent = pDeviceInfoEvent;
-    }
+//    @Override
+//    public void setDeviceInfoEvent(IDeviceInfoEvent pDeviceInfoEvent) {
+//        mDeviceInfoEvent = pDeviceInfoEvent;
+//    }
 
     @Override
     public void setConnectListener(IAdhocConnectListener pListener) {
@@ -178,7 +178,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
 
     @Override
     public void release() {
-        mContext.unregisterReceiver(mNetworkBroadcastReceiver);
+//        mContext.unregisterReceiver(mNetworkBroadcastReceiver);
     }
 
     @Override

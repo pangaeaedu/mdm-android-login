@@ -1,5 +1,5 @@
 buildscript {
-    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config.gradle'
+    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config_0.6.2.0.gradle'
 
     repositories {
         maven {
@@ -24,6 +24,8 @@ buildscript {
 
 ext {
     mdm_biz_version = '0.0.30.1-develop-SNAPSHOT'
+    device_control_version = '0.2.2-promethean-SNAPSHOT'
+    command_version = '0.0.1-develop-SNAPSHOT'
 }
 
 allprojects {

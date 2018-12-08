@@ -47,6 +47,9 @@ public class AdhocCallbackImpl implements IAdhocCallback {
 
     public void setConnectListener(@NonNull IAdhocConnectListener pConnectListener) {
         mConnectListener = pConnectListener;
+        if (mAdhocConnect && mConnectListener != null) {
+            mConnectListener.onConnectionAvaialble();
+        }
     }
 
     public void setFileTransferListener(IAdocFileTransferListener pFileTransferListener) {

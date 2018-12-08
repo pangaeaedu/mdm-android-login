@@ -1,0 +1,84 @@
+dependencies {
+//    implementation  fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    try {
+        api project(':adhoc_util_time')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_time:$adhoc_basic_version")
+    }
+
+    try {
+        api project(':adhoc_basic_net')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
+    }
+
+    compile 'com.nd.sdp.adhoc:adhoc-sdk:1.2.18.2056-develop-SNAPSHOT'
+
+    try {
+        api project(':device_command_basic')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc:device_command_basic:$command_version") {
+            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
+            exclude group: 'com.nd.android.adhoc', module: 'cmd_log'
+        }
+    }
+
+
+    try {
+        api project(':device_control_nd3')
+    } catch (Exception ignored) {
+        api "com.nd.android.adhoc:device_control_nd3:$device_control_version"
+    }
+
+//    try {
+//        api project(':adhoc_communicate')
+//    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
+        }
+//    }
+
+//    try {
+//        api project(":assistant_sdk")
+//    }catch (Exception ignore){
+        api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
+        }
+//    }
+
+
+    try {
+        api project(':adhoc_basic_frame')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
+    }
+
+
+}
+
+
+configurations {
+    all*.exclude group: 'android.support'
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+
+        }
+    }
+    compile.extendsFrom provided
+}

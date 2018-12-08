@@ -2,10 +2,8 @@ package com.nd.android.adhoc.communicate.connect;
 
 import android.support.annotation.NonNull;
 
-import com.nd.android.adhoc.communicate.connect.event.IDeviceInfoEvent;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
-import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
 
 /**
  * Created by HuangYK on 2018/5/4.
@@ -15,7 +13,7 @@ public interface IAdhocConnectModule {
 
     void startAdhoc();
 
-    void setDeviceInfoEvent(IDeviceInfoEvent pDeviceInfoEvent);
+//    void setDeviceInfoEvent(IDeviceInfoEvent pDeviceInfoEvent);
 
     void setConnectListener(IAdhocConnectListener pListener);
 
