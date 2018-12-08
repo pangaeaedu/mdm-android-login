@@ -2,8 +2,8 @@ package com.nd.android.adhoc.communicate.connect.callback;
 
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 
+import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
@@ -15,10 +15,13 @@ import com.nd.eci.sdk.IAdhocCallback;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by HuangYK on 2018/5/4.
@@ -28,36 +31,57 @@ public class AdhocCallbackImpl implements IAdhocCallback {
 
     private static final String TAG = "AdhocCallbackImpl";
 
-    private Map<Long, String> fileInfos;
-    private Map<Long, String> fileNames = new HashMap<>();
-    private IAdhocConnectListener mConnectListener;
-    private boolean mAdhocConnect = false;
+    private Map<Long, String> fileInfos = new ConcurrentHashMap<>();
+    private Map<Long, String> fileNames = new ConcurrentHashMap<>();
+    private AtomicBoolean mAdhocConnect = new AtomicBoolean(false);
 
     private ICmdMsgReceiver mCmdReceiver;
 
-    private IAdocFileTransferListener mFileTransferListener;
+    private List<IAdhocConnectListener> mConnectListeners = new CopyOnWriteArrayList<>();
+    private List<IAdocFileTransferListener> mFileTransferListeners = new CopyOnWriteArrayList<>();
 
 
     public AdhocCallbackImpl() {
-        fileInfos = new HashMap<>();
+        loadCmdMsgReceiver();
+        loadFileTransferListeners();
+        loadConnectListeners();
+    }
 
-        Iterator<ICmdMsgReceiver> receiverIterator =  AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
+    private void loadCmdMsgReceiver() {
+        Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
         mCmdReceiver = receiverIterator.next();
     }
 
-    public void setConnectListener(@NonNull IAdhocConnectListener pConnectListener) {
-        mConnectListener = pConnectListener;
-        if (mAdhocConnect && mConnectListener != null) {
-            mConnectListener.onConnectionAvaialble();
+    private void loadFileTransferListeners() {
+        Iterator<IAdocFileTransferListener> fileTransferListenerIterator =
+                AnnotationServiceLoader.load(IAdocFileTransferListener.class).iterator();
+        while (fileTransferListenerIterator.hasNext()) {
+            mFileTransferListeners.add(fileTransferListenerIterator.next());
         }
     }
 
-    public void setFileTransferListener(IAdocFileTransferListener pFileTransferListener) {
-        mFileTransferListener = pFileTransferListener;
+    private void loadConnectListeners() {
+        Iterator<IAdhocConnectListener> connectListenerIterator =
+                AnnotationServiceLoader.load(IAdhocConnectListener.class).iterator();
+        while (connectListenerIterator.hasNext()) {
+            mConnectListeners.add(connectListenerIterator.next());
+        }
     }
 
+
+//    public void setConnectListener(@NonNull IAdhocConnectListener pConnectListener) {
+//        mConnectListener = pConnectListener;
+//        if (mAdhocConnect && mConnectListener != null) {
+//            mConnectListener.onConnectionAvaialble();
+//        }
+//    }
+//
+//    public void setFileTransferListener(IAdocFileTransferListener pFileTransferListener) {
+//        mFileTransferListener = pFileTransferListener;
+//    }
+
     public boolean isAdhocConnect() {
-        return mAdhocConnect;
+        return mAdhocConnect.get();
     }
 
 
@@ -135,9 +159,7 @@ public class AdhocCallbackImpl implements IAdhocCallback {
         // todo zyb的写法 只能沿用,没法改
         fileNames.put(sessionId, fileName);
 
-        if (mFileTransferListener != null) {
-            mFileTransferListener.onFileArriveBegin(sessionId, fileName);
-        }
+        notifyFileArriveBegin(sessionId, fileName);
         return 1;
     }
 
@@ -150,9 +172,7 @@ public class AdhocCallbackImpl implements IAdhocCallback {
         // todo zyb的写法 只能沿用,没法改
         String fileName = fileNames.get(sessionId);
 
-        if (mFileTransferListener != null) {
-            mFileTransferListener.onFileArriveProgress(sessionId, fileName, totalSize, recvSize);
-        }
+        notifyFileArriveProgress(sessionId, fileName, totalSize, recvSize);
 
     }
 
@@ -170,12 +190,10 @@ public class AdhocCallbackImpl implements IAdhocCallback {
         // todo zyb的写法 只能沿用,没法改
         String fileName = fileNames.get(sessionId);
 
-        if (mFileTransferListener != null) {
-            if (filePath.contains(fileName)) {
-                mFileTransferListener.onFileArriveComplete(sessionId, filePath);
-            } else {
-                mFileTransferListener.onFileArriveException(sessionId, fileName, ErrorCode.FAILED, "文件下载成功信息不匹配");
-            }
+        if (filePath.contains(fileName)) {
+            notifyFileArriveComplete(sessionId, filePath);
+        } else {
+            notifyFileArriveException(sessionId, fileName, ErrorCode.FAILED, "文件下载成功信息不匹配");
         }
 
         fileNames.remove(sessionId);
@@ -194,20 +212,16 @@ public class AdhocCallbackImpl implements IAdhocCallback {
         // todo zyb的写法 只能沿用,没法改
         String fileName = fileNames.get(sessionId);
 
-        if (mFileTransferListener != null) {
-            mFileTransferListener.onFileArriveException(sessionId, fileName, errorCode, errorMsg);
-        }
+        notifyFileArriveException(sessionId, fileName, errorCode, errorMsg);
 
         fileNames.remove(sessionId);
     }
 
     @Override
     public void onConnectionAvailable(int connectionTarget) throws RemoteException {
-        mAdhocConnect = true;
-
-        if (mConnectListener != null) {
-            mConnectListener.onConnectionAvaialble();
-        }
+//        mAdhocConnect = true;
+        mAdhocConnect.set(true);
+        notifyConnected();
     }
 
     @Override
@@ -217,12 +231,60 @@ public class AdhocCallbackImpl implements IAdhocCallback {
 
     @Override
     public void onConnectionClosed(int connectionTarget) throws RemoteException {
-        mAdhocConnect = false;
+        mAdhocConnect.set(false);
+//        mAdhocConnect = false;
     }
 
     @Override
     public IBinder asBinder() {
         return null;
+    }
+
+    private void notifyFileArriveBegin(long sessionId, String filePath) {
+        if (AdhocDataCheckUtils.isCollectionEmpty(mFileTransferListeners)) {
+            return;
+        }
+        for (IAdocFileTransferListener listener : mFileTransferListeners) {
+            listener.onFileArriveBegin(sessionId, filePath);
+        }
+    }
+
+    private void notifyFileArriveProgress(long sessionId, String fileName, long totalSize, long recvSize) {
+        if (AdhocDataCheckUtils.isCollectionEmpty(mFileTransferListeners)) {
+            return;
+        }
+        for (IAdocFileTransferListener listener : mFileTransferListeners) {
+            listener.onFileArriveProgress(sessionId, fileName, totalSize, recvSize);
+        }
+    }
+
+    private void notifyFileArriveComplete(long sessionId, String filePath) {
+        if (AdhocDataCheckUtils.isCollectionEmpty(mFileTransferListeners)) {
+            return;
+        }
+        for (IAdocFileTransferListener listener : mFileTransferListeners) {
+            listener.onFileArriveComplete(sessionId, filePath);
+        }
+    }
+
+    private void notifyFileArriveException(long sessionId, String fileName, int errorCode, String errorMsg) {
+        if (AdhocDataCheckUtils.isCollectionEmpty(mFileTransferListeners)) {
+            return;
+        }
+        for (IAdocFileTransferListener listener : mFileTransferListeners) {
+            listener.onFileArriveException(sessionId, fileName, errorCode, errorMsg);
+        }
+    }
+
+
+    private void notifyConnected() {
+        if (AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)) {
+            return;
+        }
+
+        for (IAdhocConnectListener listener : mConnectListeners) {
+            listener.onConnectionAvaialble();
+        }
     }
 
 

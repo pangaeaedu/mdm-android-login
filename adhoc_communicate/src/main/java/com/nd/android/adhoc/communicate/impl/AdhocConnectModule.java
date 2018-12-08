@@ -20,8 +20,6 @@ import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.connect.IAdhocConnectModule;
 import com.nd.android.adhoc.communicate.connect.callback.AdhocCallbackImpl;
-import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
-import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.eci.sdk.IAdhoc;
 import com.nd.eci.sdk.service.AdhocService;
@@ -123,10 +121,10 @@ class AdhocConnectModule implements IAdhocConnectModule {
 //        mDeviceInfoEvent = pDeviceInfoEvent;
 //    }
 
-    @Override
-    public void setConnectListener(IAdhocConnectListener pListener) {
-        mAdhocCallback.setConnectListener(pListener);
-    }
+//    @Override
+//    public void setConnectListener(IAdhocConnectListener pListener) {
+//        mAdhocCallback.setConnectListener(pListener);
+//    }
 
     @Override
     public void sendLoginInfo(String pDevToken) {
@@ -298,10 +296,10 @@ class AdhocConnectModule implements IAdhocConnectModule {
         }).subscribeOn(Schedulers.io()));
     }
 
-    @Override
-    public void setAdocFileTransferListener(IAdocFileTransferListener pListener) {
-        mAdhocCallback.setFileTransferListener(pListener);
-    }
+//    @Override
+//    public void setAdocFileTransferListener(IAdocFileTransferListener pListener) {
+//        mAdhocCallback.setFileTransferListener(pListener);
+//    }
 
 //    public void onEventAsync(HttpPostEvent event) {
 //        HttpUtil.post(event.url, event.toString());
