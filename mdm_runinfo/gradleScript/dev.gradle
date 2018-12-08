@@ -1,11 +1,11 @@
 dependencies {
 //    implementation  fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
-    try {
-        api project(':adhoc_util_time')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc.basic:adhoc_util_time:$adhoc_basic_version")
-    }
+//    try {
+//        api project(':adhoc_util_time')
+//    } catch (Exception ignored) {
+//        api("com.nd.android.adhoc.basic:adhoc_util_time:$adhoc_basic_version")
+//    }
 
     try {
         api project(':adhoc_basic_net')
@@ -15,19 +15,19 @@ dependencies {
 
     compile 'com.nd.sdp.adhoc:adhoc-sdk:1.2.18.2056-develop-SNAPSHOT'
 
-    try {
-        api project(':device_command_basic')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc:device_command_basic:$command_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
-            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
-            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
-            exclude group: 'com.nd.android.adhoc', module: 'cmd_log'
-        }
-    }
+//    try {
+//        api project(':device_command_basic')
+//    } catch (Exception ignored) {
+//        api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
+//            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+//            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
+//            exclude group: 'com.nd.android.adhoc', module: 'cmd_log'
+//        }
+//    }
 
 
     try {
