@@ -477,7 +477,7 @@ public class MonitorModule implements IMonitor {
 //            pDeviceInfo.strPannelId = deviceInfo.getSerialNumber();
 
             data.put("romName", deviceInfo.getRomName());
-            data.put("romVersion", deviceInfo.getVersion());
+            data.put("romVersion", deviceInfo.getRomVersion());
             data.put("panelId", deviceInfo.getSerialNumber());
         }
 
