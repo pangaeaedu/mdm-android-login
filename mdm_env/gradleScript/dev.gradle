@@ -17,10 +17,10 @@ dependencies {
         }
     }
 
-    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
-        transitive = true
-        changing = true
-    }
+//    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
+//        transitive = true
+//        changing = true
+//    }
 }
 
 
