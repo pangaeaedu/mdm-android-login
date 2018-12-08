@@ -1,0 +1,52 @@
+dependencies {
+//    implementation  fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    try {
+        api project(':file_transfer')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc:file_transfer:0.0.9.1-develop-SNAPSHOT")
+    }
+
+    try {
+        api project(':adhoc_communicate')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version")
+    }
+
+    try {
+        api project(':adhoc_basic_frame')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
+    }
+
+    try {
+        api project(':adhoc_basic_frame')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc:device_control_root:$device_control_version"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+        }
+    }
+
+
+}
+
+
+configurations {
+    all*.exclude group: 'android.support'
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+configurations {
+    provided {
+        dependencies.all { dep ->
+            configurations.default.exclude group: dep.group, module: dep.name
+
+        }
+    }
+    compile.extendsFrom provided
+}

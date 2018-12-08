@@ -19,8 +19,8 @@ include ":adhoc_wifi:wifi_sdk"      // WIFI sdk
 
 
 include ":mdm_monitor"              // Monitor Module
-
 include ":mdm_runinfo"              // 应用运行信息收集
+include ":mdm_autoupdate"              // 应用运行信息收集
 
 //include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
 
