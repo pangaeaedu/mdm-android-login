@@ -40,6 +40,7 @@ dependencies {
     } catch (Exception ignored) {
         api ("com.nd.android.adhoc:device_control_root:$device_control_version"){
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
         }
     }
 

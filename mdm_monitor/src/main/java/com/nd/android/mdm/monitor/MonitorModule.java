@@ -134,9 +134,9 @@ public class MonitorModule implements IMonitor {
 
     public void init(Context pContext) {
 //        MdmTransferFactory.getCommunicationModule().setDeviceInfoEvent(mDeviceInfoEvent);
-        MdmTransferFactory.getCommunicationModule().setConnectListener(mAdhocConnectListener);
+//        MdmTransferFactory.getCommunicationModule().setConnectListener(mAdhocConnectListener);
 
-        mContext = pContext;
+        mContext = pContext.getApplicationContext();
 //        mExecuteTime = new HashMap<>();
 //        mBackgroundThread = new HandlerThread("monitorthread");
 //        mBackgroundThread.start();
