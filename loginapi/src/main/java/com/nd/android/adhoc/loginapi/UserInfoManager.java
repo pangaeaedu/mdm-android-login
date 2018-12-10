@@ -3,6 +3,7 @@ package com.nd.android.adhoc.loginapi;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Deprecated
 public class UserInfoManager {
     private static final UserInfoManager ourInstance = new UserInfoManager();
 
