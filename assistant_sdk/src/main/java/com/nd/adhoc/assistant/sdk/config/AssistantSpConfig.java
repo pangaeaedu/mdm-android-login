@@ -21,6 +21,9 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     private static final String KEY_POLICYSET_TIME = "policyset_time";
 
+
+    private static final String KEY_USER_ID = "user_id";
+
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
     }
@@ -105,6 +108,14 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getLong(KEY_POLICYSET_TIME, 0);
     }
 
+    public void saveUserID(String pUserID) {
+        saveString(KEY_USER_ID, pUserID);
+    }
+
+    public String getUserID() {
+        return getString(KEY_USER_ID);
+    }
+
     public void clearData(){
         saveAccountNum("");
         saveNickname("");
@@ -116,6 +127,7 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveOldDeviceToken("");
         saveDeviceToken("");
         saveSerialNum("");
+        saveUserID("");
     }
 
 }
