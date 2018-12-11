@@ -6,7 +6,7 @@ package com.nd.android.mdm.runinfo.sdk.db.entity;
 
 public interface IAppRunInfoEntity {
 
-    String FIELD_ID = "package_name";
+    String FIELD_ID = "_id";
     String FIELD_PACKAGE_NAME = "package_name";
     String FIELD_HOUR = "hour";
     String FIELD_TIME = "time";

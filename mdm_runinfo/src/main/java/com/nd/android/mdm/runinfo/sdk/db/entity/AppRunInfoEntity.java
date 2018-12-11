@@ -11,7 +11,7 @@ import com.j256.ormlite.table.DatabaseTable;
 class AppRunInfoEntity implements IAppRunInfoEntity {
 
 
-    @DatabaseField(canBeNull = false, id = true, columnName = FIELD_ID, generatedId = true)
+    @DatabaseField(canBeNull = false, columnName = FIELD_ID, generatedId = true)
     private Long mId;
 
     // 包名
@@ -33,6 +33,9 @@ class AppRunInfoEntity implements IAppRunInfoEntity {
     // 更新时间
     @DatabaseField(canBeNull = false, columnName = FIELD_RUN_DATE)
     private Long mRunDate;
+
+    public AppRunInfoEntity() {
+    }
 
     AppRunInfoEntity(String packageName, Integer hour, Long time, Integer executeCount, Long runDate) {
         mPackageName = packageName;
