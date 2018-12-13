@@ -12,8 +12,7 @@ import com.nd.sdp.android.serviceloader.annotation.Service;
 public class MdmAutoUpdateInitAsync extends AdhocAppInitAsyncAbs {
 
     @Override
-    public boolean doInitAsync() {
+    public void doInitAsync() {
         AutoUpdateModule.getInstance().init(AdhocBasicConfig.getInstance().getAppContext());
-        return false;
     }
 }

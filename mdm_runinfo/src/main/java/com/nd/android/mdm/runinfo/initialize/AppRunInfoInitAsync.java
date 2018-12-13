@@ -12,8 +12,7 @@ import com.nd.sdp.android.serviceloader.annotation.Service;
 public class AppRunInfoInitAsync extends AdhocAppInitAsyncAbs {
 
     @Override
-    public boolean doInitAsync() {
+    public void doInitAsync() {
         AppRunInfoTaskModule.getInstance().init(AdhocBasicConfig.getInstance().getAppContext());
-        return true;
     }
 }
