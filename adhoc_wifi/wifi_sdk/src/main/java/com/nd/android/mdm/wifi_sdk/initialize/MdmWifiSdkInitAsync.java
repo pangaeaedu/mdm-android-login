@@ -11,8 +11,7 @@ import com.nd.sdp.android.serviceloader.annotation.Service;
 public class MdmWifiSdkInitAsync extends AdhocAppInitAsyncAbs {
 
     @Override
-    public boolean doInitAsync() {
+    public void doInitAsync() {
         MdmWifiInfoManager.getInstance().start();
-        return true;
     }
 }

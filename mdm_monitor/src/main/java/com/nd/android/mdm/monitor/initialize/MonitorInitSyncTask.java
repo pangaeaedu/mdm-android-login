@@ -1,7 +1,11 @@
 package com.nd.android.mdm.monitor.initialize;
 
+import android.support.annotation.NonNull;
+
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitSyncAbs;
+import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
 import com.nd.android.mdm.monitor.MonitorModule;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
@@ -12,8 +16,12 @@ import com.nd.sdp.android.serviceloader.annotation.Service;
 public class MonitorInitSyncTask extends AdhocAppInitSyncAbs {
 
     @Override
-    public boolean doInitSync() {
-        MonitorModule.getInstance().init(AdhocBasicConfig.getInstance().getAppContext());
-        return true;
+    public void doInitSync(@NonNull IAdhocInitCallback pCallback) {
+        try {
+            MonitorModule.getInstance().init(AdhocBasicConfig.getInstance().getAppContext());
+            pCallback.onSuccess();
+        } catch (Exception e) {
+            pCallback.onFailed(AdhocException.newException(e));
+        }
     }
 }
