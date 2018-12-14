@@ -20,6 +20,7 @@ import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
@@ -32,7 +33,6 @@ import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.control.MdmControlFactory;
 import com.nd.android.adhoc.control.define.IControl_DeviceInfo;
-import com.nd.android.mdm.biz.common.util.SDKLogUtil;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
 import com.nd.android.mdm.monitor.info.AdhocCpuInfo;
 import com.nd.android.mdm.monitor.info.AdhocMemoryInfo;
@@ -59,6 +59,10 @@ import java.util.UUID;
  */
 
 public class MonitorModule implements IMonitor {
+
+    private static final String TAG = "MonitorModule";
+
+
     public static final int TYPE_ALL_APP = 1;
     public static final int TYPE_RUNNING_APP = 2;
     private static final int UPDATE_MESSAGE_DELAY = 5000;
@@ -148,7 +152,7 @@ public class MonitorModule implements IMonitor {
 //                        checkVR();
 //                        break;
 //                    default:
-//                        SDKLogUtil.w("Monitor Module background handle message not defined:" + msg.what);
+//                        Logger.w(TAG, "Monitor Module background handle message not defined:" + msg.what);
 //                        break;
 //                }
 //            }
@@ -203,7 +207,7 @@ public class MonitorModule implements IMonitor {
 //    }
 
     private void writeToDB(int now) {
-        SDKLogUtil.d("MonitorModule write openinfo to db");
+        Logger.d(TAG, "MonitorModule write openinfo to db");
     }
 
     // 可以只指定一个time 参数,但是这样每次都要多计算时间转化,不如统一一次计算了,再传进来使用
@@ -221,16 +225,16 @@ public class MonitorModule implements IMonitor {
 //            e.printStackTrace();
 //        }
 //        if (compName != null) {
-//            SDKLogUtil.d("top activity:" + compName);
+//            Logger.d(TAG,"top activity:" + compName);
 //        } else {
-//            SDKLogUtil.d("top activity not exist");
+//            Logger.d(TAG,"top activity not exist");
 //        }
 ////        ActivityManager activityManager = (ActivityManager) mContext.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
 ////        List<ActivityManager.RunningTaskInfo> forGroundActivity = activityManager.getRunningTasks(1);
 ////        ActivityManager.RunningTaskInfo currentActivity;
 ////        currentActivity = forGroundActivity.get(0);
 ////        String activityName = currentActivity.topActivity.getClassName();
-////        SDKLogUtil.d(activityName);
+////        Logger.d(TAG,activityName);
 //    }
 
     // 方法没有地方使用，暂时注释
@@ -252,12 +256,12 @@ public class MonitorModule implements IMonitor {
 //    }
 
     private void usbAttached() {
-        SDKLogUtil.d("usb attached:" + AdhocTimeUtil.getTimeStamp());
+        Logger.d(TAG,"usb attached:" + AdhocTimeUtil.getTimeStamp());
         new UsbAttachMessage(true).send();
     }
 
     private void usbDetached() {
-        SDKLogUtil.d("usb detached:" + AdhocTimeUtil.getTimeStamp());
+        Logger.d(TAG,"usb detached:" + AdhocTimeUtil.getTimeStamp());
         new UsbAttachMessage(false).send();
     }
 
@@ -314,7 +318,7 @@ public class MonitorModule implements IMonitor {
                     packageNameList.add(packageName);
                     PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(mContext, packageName);
                     if (packageInfo == null) {
-                        SDKLogUtil.w("monitor module getApplication: get package:%s result is null", packageName);
+                        Logger.w(TAG, String.format("monitor module getApplication: get package:%s result is null", packageName));
                     } else {
                         packageInfos.add(packageInfo);
                     }
