@@ -18,28 +18,26 @@ import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
-import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
+import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
-import com.nd.android.adhoc.basic.util.thread.AdhocMainLooper;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
 import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
-import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
+import com.nd.android.adhoc.command.normal.response.ResponseLocation;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
-import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.control.MdmControlFactory;
 import com.nd.android.adhoc.control.define.IControl_DeviceInfo;
+import com.nd.android.adhoc.location.ILocationNavigation;
+import com.nd.android.adhoc.location.dataDefine.ILocation;
+import com.nd.android.adhoc.location.locationCallBack.ILocationChangeListener;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
 import com.nd.android.mdm.monitor.info.AdhocCpuInfo;
 import com.nd.android.mdm.monitor.info.AdhocMemoryInfo;
 import com.nd.android.mdm.monitor.info.AdhocNetworkInfo;
 import com.nd.android.mdm.monitor.info.AdhocSDCardInfo;
 import com.nd.android.mdm.monitor.message.BatteryChangeMessage;
-import com.nd.android.mdm.monitor.message.ModelMessage;
 import com.nd.android.mdm.monitor.message.UsbAttachMessage;
 import com.nd.android.mdm.wifi_sdk.business.MdmWifiInfoManager;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
@@ -127,6 +125,11 @@ public class MonitorModule implements IMonitor {
 
 
     private MonitorModule() {
+        ILocationNavigation locationNavigation =
+                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
+        if (locationNavigation != null) {
+            locationNavigation.addLocationListener(mLocationChangeListener);
+        }
     }
 
     public static MonitorModule getInstance() {
@@ -170,6 +173,11 @@ public class MonitorModule implements IMonitor {
     public void release() {
 //        mBackgroundHandler.removeCallbacks(null);
 //        mBackgroundThread.quit();
+        ILocationNavigation locationNavigation =
+                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
+        if (locationNavigation != null) {
+            locationNavigation.removeLocationListener(mLocationChangeListener);
+        }
         mContext.unregisterReceiver(mBroadcastReceiver);
     }
 
@@ -548,29 +556,52 @@ public class MonitorModule implements IMonitor {
 //        return vendorEntity == null ? "" : vendorEntity.getVendorName();
 //    }
 
-    private IAdhocConnectListener mAdhocConnectListener = new IAdhocConnectListener() {
+//    private IAdhocConnectListener mAdhocConnectListener = new IAdhocConnectListener() {
+//        @Override
+//        public void onConnectionAvaialble() {
+//            MdmTransferFactory.getCommunicationModule().sendLoginInfo(DeviceHelper.getDeviceToken());
+//
+//            AdhocMainLooper.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    AdhocToastModule.getInstance().showToast("adhoc on Connection Avaialble.");
+//                }
+//            });
+//
+//            String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
+//            // 发送电量改变消息
+//            new BatteryChangeMessage(batteryLevel, batteryIsCharging, mac).send();
+////            // 发送手机型号
+//            new ModelMessage(mac).send();
+////            // 发送穿戴信息
+////            new VRWearMessage(mac).send();
+////            // 发送usb接入状况
+////            new UsbAttachMessage(mac, isUsbAttached()).send();
+////            // 发送是否支持辅助功能
+////            new AccessibilityMessage(mac, isAccessibilitySettingsOn()).send();
+//        }
+//    };
+
+    private ILocationChangeListener mLocationChangeListener = new ILocationChangeListener() {
         @Override
-        public void onConnectionAvaialble() {
-            MdmTransferFactory.getCommunicationModule().sendLoginInfo(DeviceHelper.getDeviceToken());
+        public void onLocationChange(ILocation location) {
+            ResponseLocation responseLocation = new ResponseLocation(
+                    "",
+                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                    mContext.getString(R.string.cmd_location),
+                    System.currentTimeMillis());
+            responseLocation.mapType = location.getMapType();
+            responseLocation.netEnvr = location.getNetEnv();
+            responseLocation.lat = location.getLat();
+            responseLocation.lon = location.getLon();
+            responseLocation.address = location.getAddress();
 
-            AdhocMainLooper.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    AdhocToastModule.getInstance().showToast("adhoc on Connection Avaialble.");
-                }
-            });
+            responseLocation.post();
+        }
 
-            String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
-            // 发送电量改变消息
-            new BatteryChangeMessage(batteryLevel, batteryIsCharging, mac).send();
-//            // 发送手机型号
-            new ModelMessage(mac).send();
-//            // 发送穿戴信息
-//            new VRWearMessage(mac).send();
-//            // 发送usb接入状况
-//            new UsbAttachMessage(mac, isUsbAttached()).send();
-//            // 发送是否支持辅助功能
-//            new AccessibilityMessage(mac, isAccessibilitySettingsOn()).send();
+        @Override
+        public void onException(int errCode, String errStr) {
+
         }
     };
 }
