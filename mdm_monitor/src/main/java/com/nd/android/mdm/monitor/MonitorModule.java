@@ -10,8 +10,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.hardware.usb.UsbManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
@@ -23,8 +21,7 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
-import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
-import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
+import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.command.normal.response.ResponseLocation;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.control.MdmControlFactory;
@@ -139,18 +136,27 @@ public class MonitorModule implements IMonitor {
                     @Override
                     public void onInfoUpdated(MdmWifiInfo pWifiInfo) {
                         try {
-                            IResponse_MDM response =
-                                    MdmResponseHelper.createResponseBase(
-                                            "postdeviceinfo",
-                                            "",
-                                            UUID.randomUUID().toString(),
-                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                                            System.currentTimeMillis());
+//                            IResponse_MDM response =
+//                                    MdmResponseHelper.createResponseBase(
+//                                            "postdeviceinfo",
+//                                            "",
+//                                            UUID.randomUUID().toString(),
+//                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+//                                            System.currentTimeMillis());
+//
+//                            response.setJsonData(getDevInfoJson());
+//                            response.post();
 
-                            response.setJsonData(getDevInfoJson());
-                            response.post();
+                            ResponseBase responseBase = new ResponseBase("postdeviceinfo",
+                                    UUID.randomUUID().toString(),
+                                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                                    "",
+                                    System.currentTimeMillis());
+                            responseBase.setJsonData(getDevInfoJson());
+                            responseBase.postAsync();
+
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Logger.e(TAG, "onInfoUpdated, do response error: " + e);
                         }
                     }
                 }
@@ -163,19 +169,27 @@ public class MonitorModule implements IMonitor {
                         if(MdmWifiStatus.CONNECTED != pStatus){
                             return;
                         }
-                        try {
-                            IResponse_MDM response =
-                                    MdmResponseHelper.createResponseBase(
-                                            "postdeviceinfo",
-                                            "",
-                                            UUID.randomUUID().toString(),
-                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                                            System.currentTimeMillis());
 
-                            response.setJsonData(getDevInfoJson());
-                            response.post();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        try {
+//                            IResponse_MDM response =
+//                                    MdmResponseHelper.createResponseBase(
+//                                            "postdeviceinfo",
+//                                            "",
+//                                            UUID.randomUUID().toString(),
+//                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+//                                            System.currentTimeMillis());
+//                            response.setJsonData(getDevInfoJson());
+//                            response.post();
+
+                            ResponseBase responseBase = new ResponseBase("postdeviceinfo",
+                                    UUID.randomUUID().toString(),
+                                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                                    "",
+                                    System.currentTimeMillis());
+                            responseBase.setJsonData(getDevInfoJson());
+                            responseBase.postAsync();
+
+                        } catch (JSONException e) {Logger.e(TAG, "onWifiStatusChange, do response error: " + e);
                         }
 
                     }

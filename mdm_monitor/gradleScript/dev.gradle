@@ -16,8 +16,11 @@ dependencies {
 
     compile 'com.nd.sdp.adhoc:adhoc-sdk:1.2.18.2056-develop-SNAPSHOT'
 
-
-    api ("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version")
+    try{
+        api project(':wifi_sdk')
+    }catch (Exception ignored){
+        api ("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version")
+    }
 
     try {
         api project(':adhoc_communicate')
@@ -69,6 +72,7 @@ dependencies {
             exclude group: 'com.nd.android.adhoc', module: 'device_control_root'
             exclude group: 'com.nd.android.adhoc', module: 'device_control_nd3'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_monitor'
+            exclude group: 'com.nd.android.mdm.biz', module: 'wifi_sdk'
         }
     }
 
@@ -82,9 +86,16 @@ dependencies {
     try {
         api project(':adhoc_basic_frame')
     } catch (Exception ignored) {
-        api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
+        api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version"){
+            exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_basic_ui'
+        }
     }
 
+    try {
+        api project(':adhoc_basic_ui')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
+    }
 
 
 

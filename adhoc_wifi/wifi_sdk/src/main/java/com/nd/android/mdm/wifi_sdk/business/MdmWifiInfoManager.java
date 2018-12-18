@@ -395,17 +395,35 @@ public final class MdmWifiInfoManager {
         final String gateway = dhcpInfo == null ? "" : AdhocNetworkIpUtil.formatIpAddress(dhcpInfo.gateway);
 
         synchronized (mWifiInfo) {
+            boolean ipeq = mWifiInfo.getIp().equals(ip);
+            boolean ssideq = mWifiInfo.getSsid().equals(ssid);
+            boolean rssieq = Math.abs(mWifiInfo.getRssi() - rssi) < 3;
+            boolean apmaceq =  mWifiInfo.getApMac().equals(bssid);
+            boolean maceq =  mWifiInfo.getMac().equals(mac);
+            boolean speedeq =  mWifiInfo.getSpeed() == speed;
+            boolean dnseq =  mWifiInfo.getDns().equals(dns);
+            boolean gatewayeq = mWifiInfo.getGateway().equals(gateway);
+            boolean signaleq = mWifiInfo.getSignalLevel() == signalLevel;
 
-            if (mWifiInfo.getIp().equals(ip)
-                    && mWifiInfo.getSsid().equals(ssid)
-                    && mWifiInfo.getRssi() == rssi
-                    && mWifiInfo.getApMac().equals(bssid)
-                    && mWifiInfo.getMac().equals(mac)
-                    && mWifiInfo.getSpeed() == speed
-                    && mWifiInfo.getDns().equals(dns)
-                    && mWifiInfo.getGateway().equals(gateway)
-                    && mWifiInfo.getSignalLevel() == signalLevel
-                    ) {
+            Logger.d(TAG,"ipeq = " + ipeq
+                    + ", ssideq = " + ssideq
+                    + ", rssieq = " + rssieq
+                    +", apmaceq = " + apmaceq
+                    +", maceq = " + maceq
+                    +", speedeq = " + speedeq
+                    +", dnseq = " + dnseq
+                    +", gatewayeq = " + gatewayeq
+                    +", signaleq = " + signaleq);
+
+            if(ipeq && ssideq
+                    && rssieq
+                    && apmaceq
+                    && maceq
+                    && speedeq
+                    && dnseq
+                    && gatewayeq
+                    && signaleq){
+                Logger.e(TAG, "updateWifiInfo return false");
                 return false;
             }
 
@@ -426,6 +444,7 @@ public final class MdmWifiInfoManager {
                 + ", SSID = " + mWifiInfo.getSsid()
                 + ", APMAC = " + mWifiInfo.getApMac()
         );
+        Logger.e(TAG, "updateWifiInfo return true");
         return true;
     }
 
@@ -490,7 +509,9 @@ public final class MdmWifiInfoManager {
                 }).filter(new Func1<Long, Boolean>() {
                     @Override
                     public Boolean call(Long aLong) {
-                        return updateWifiInfo();
+                        boolean result = updateWifiInfo();
+                        Logger.e(TAG, "starStateTimer, updateWifiInfo result = " + result);
+                        return result;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
