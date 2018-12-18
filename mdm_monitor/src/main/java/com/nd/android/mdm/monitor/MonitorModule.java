@@ -40,6 +40,9 @@ import com.nd.android.mdm.monitor.info.AdhocSDCardInfo;
 import com.nd.android.mdm.monitor.message.BatteryChangeMessage;
 import com.nd.android.mdm.monitor.message.UsbAttachMessage;
 import com.nd.android.mdm.wifi_sdk.business.MdmWifiInfoManager;
+import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
+import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiInfoUpdateListener;
+import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiStatusChangeListener;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiVendor;
 import com.nd.eci.sdk.utils.MonitorUtil;
@@ -96,29 +99,29 @@ public class MonitorModule implements IMonitor {
                 case UsbManager.ACTION_USB_DEVICE_DETACHED:
                     usbDetached();
                     break;
-                case ConnectivityManager.CONNECTIVITY_ACTION:
-                    ConnectivityManager manager =
-                            (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-                    NetworkInfo info = manager == null ? null : manager.getActiveNetworkInfo();
-                    if (info == null) {
-                        break;
-                    }
-//                    mDeviceInfoEvent.notifyDeviceInfo(UUID.randomUUID().toString(), AdhocCmdFromTo.MDM_CMD_DRM.getValue());
-                    try {
-                        IResponse_MDM response =
-                                MdmResponseHelper.createResponseBase(
-                                        "postdeviceinfo",
-                                        "",
-                                        UUID.randomUUID().toString(),
-                                        AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                                        System.currentTimeMillis());
-
-                        response.setJsonData(getDevInfoJson());
-                        response.post();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    break;
+//                case ConnectivityManager.CONNECTIVITY_ACTION:
+//                    ConnectivityManager manager =
+//                            (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+//                    NetworkInfo info = manager == null ? null : manager.getActiveNetworkInfo();
+//                    if (info == null) {
+//                        break;
+//                    }
+////                    mDeviceInfoEvent.notifyDeviceInfo(UUID.randomUUID().toString(), AdhocCmdFromTo.MDM_CMD_DRM.getValue());
+//                    try {
+//                        IResponse_MDM response =
+//                                MdmResponseHelper.createResponseBase(
+//                                        "postdeviceinfo",
+//                                        "",
+//                                        UUID.randomUUID().toString(),
+//                                        AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+//                                        System.currentTimeMillis());
+//
+//                        response.setJsonData(getDevInfoJson());
+//                        response.post();
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    break;
             }
         }
     };
@@ -130,6 +133,54 @@ public class MonitorModule implements IMonitor {
         if (locationNavigation != null) {
             locationNavigation.addLocationListener(mLocationChangeListener);
         }
+
+        MdmWifiInfoManager.getInstance().getWifiListenerManager().addInfoUpdateListener(
+                new IMdmWifiInfoUpdateListener() {
+                    @Override
+                    public void onInfoUpdated(MdmWifiInfo pWifiInfo) {
+                        try {
+                            IResponse_MDM response =
+                                    MdmResponseHelper.createResponseBase(
+                                            "postdeviceinfo",
+                                            "",
+                                            UUID.randomUUID().toString(),
+                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                                            System.currentTimeMillis());
+
+                            response.setJsonData(getDevInfoJson());
+                            response.post();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
+
+        MdmWifiInfoManager.getInstance().getWifiListenerManager().addStatusChangeListener(
+                new IMdmWifiStatusChangeListener() {
+                    @Override
+                    public void onWifiStatusChange(MdmWifiStatus pStatus) {
+                        if(MdmWifiStatus.CONNECTED != pStatus){
+                            return;
+                        }
+                        try {
+                            IResponse_MDM response =
+                                    MdmResponseHelper.createResponseBase(
+                                            "postdeviceinfo",
+                                            "",
+                                            UUID.randomUUID().toString(),
+                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                                            System.currentTimeMillis());
+
+                            response.setJsonData(getDevInfoJson());
+                            response.post();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+        );
     }
 
     public static MonitorModule getInstance() {
@@ -165,7 +216,7 @@ public class MonitorModule implements IMonitor {
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         mContext.registerReceiver(mBroadcastReceiver, filter);
     }
 
