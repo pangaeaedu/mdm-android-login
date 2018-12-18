@@ -336,7 +336,7 @@ public final class MdmWifiInfoManager {
                             return false;
                         }
                         MdmWifiVendor oldVender = mWifiInfo.getVendor();
-                        return oldVender == null || !mdmWifiVendor.equals(oldVender);
+                        return !mdmWifiVendor.equals(oldVender);
                     }
                 })
                 .compose(AdhocRxJavaUtil.<MdmWifiVendor>applyDefaultSchedulers())
