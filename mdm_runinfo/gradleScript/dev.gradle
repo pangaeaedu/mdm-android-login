@@ -30,11 +30,11 @@ dependencies {
 //    }
 
 
-    try {
-        api project(':device_control_nd3')
-    } catch (Exception ignored) {
-        api "com.nd.android.adhoc:device_control_nd3:$device_control_version"
-    }
+//    try {
+//        api project(':device_control_nd3')
+//    } catch (Exception ignored) {
+//        api "com.nd.android.adhoc:device_control_nd3:$device_control_version"
+//    }
 
 //    try {
 //        api project(':adhoc_communicate')
@@ -52,6 +52,13 @@ dependencies {
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
         }
 //    }
+
+    try {
+        api project(":mdm_monitor")
+    }catch (Exception ignore){
+        api("com.nd.android.mdm.biz:mdm_monitor:$mdm_biz_version") {
+        }
+    }
 
 
     try {

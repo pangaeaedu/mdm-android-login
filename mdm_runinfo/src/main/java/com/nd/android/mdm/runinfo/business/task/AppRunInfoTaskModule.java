@@ -12,7 +12,7 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.thread.rx.AdhocActionSubscriber;
-import com.nd.android.adhoc.control.nd3.SystemControFactory;
+import com.nd.android.mdm.monitor.SystemControFactory;
 import com.nd.android.mdm.runinfo.business.operator.AppRunInfoBizOperatorFactory;
 import com.nd.android.mdm.runinfo.sdk.db.entity.AppRunInfoEntityHelper;
 import com.nd.android.mdm.runinfo.sdk.db.entity.IAppRunInfoEntity;
