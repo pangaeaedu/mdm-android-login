@@ -174,6 +174,17 @@ public class MdmWifiUtils {
         return 0;
     }
 
+    public static int getCurrentNetworkRSSI(Context context) {
+        if (isWifi(context)) {
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            if (wifiInfo != null) {
+                return wifiInfo.getRssi();
+            }
+        }
+        return -200;
+    }
+
     /**
      * 判断当前网络是否wifi
      *

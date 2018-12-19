@@ -13,7 +13,7 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
     }
 
-    compile 'com.nd.sdp.adhoc:adhoc-sdk:1.2.18.2056-develop-SNAPSHOT'
+    compile ("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
 //    try {
 //        api project(':device_command_basic')
