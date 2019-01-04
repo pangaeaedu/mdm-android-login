@@ -10,7 +10,7 @@ dependencies {
     api 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0'
 
 
-    api 'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
+    api 'com.nd.sdp.android:adhoc-push-util:0.3.20-fixMacBug-SNAPSHOT'
     compile ("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")

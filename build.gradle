@@ -23,9 +23,9 @@ buildscript {
 }
 
 ext {
-    mdm_biz_version = '0.0.30.22-0.6.2.0-SNAPSHOT'
-    device_control_version = '0.2.27-0.6.2.0-SNAPSHOT'
-    device_command_version = '0.0.2.17-0.6.2.0-SNAPSHOT'
+    mdm_biz_version = '0.0.30.28-0.6.2.0-SNAPSHOT'
+    device_control_version = '0.2.36-0.6.2.0-SNAPSHOT'
+    device_command_version = '0.0.2.22-0.6.2.0-SNAPSHOT'
     location_verison = '0.0.7-develop-SNAPSHOT'
     adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
 }
