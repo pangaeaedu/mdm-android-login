@@ -14,6 +14,7 @@ import com.nd.screen.ui.FloatCamera;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +27,10 @@ public class librtmp implements ScreenCaptureDataCallback {
     public static final int TYPE_CAMERA_BACK = 0;
     public static final int TYPE_CAMERA_FRONT = 1;
     public static final int TYPE_SCREEN = 2;
+    private static final String TAG = librtmp.class.getSimpleName();
+    private static librtmp sInstance = new librtmp();
+    private static List<ScreenCaptureCallback> sScreenCaptureCallbacks = new CopyOnWriteArrayList<>();
+    private static int sysVersion = Integer.parseInt(Build.VERSION.SDK);
 
     static {
         try {
@@ -35,44 +40,21 @@ public class librtmp implements ScreenCaptureDataCallback {
         }
     }
 
-    private static final String TAG = librtmp.class.getSimpleName();
-
-    private static librtmp sInstance = new librtmp();
-
-    private static ScreenCaptureCallback sScreenCaptureCallback = null;
-
-    public static native boolean native_connect(String url, int width, int height, int frameRate);
-
-    public static native void native_close();
-
-    public static native boolean native_sendH264_packet(byte[] data, int len);
-
-//    private static FileOutputStream fos;
-
     private AtomicBoolean mStarted = new AtomicBoolean(false);
-
     private AtomicBoolean mRtmpConnected = new AtomicBoolean(false);
 
+    //    private static FileOutputStream fos;
     private String mUrl;
-
     private int mWidth;
-
     private int mHeight;
-
     private int mFrameRate;
-
     private int mBitRate;
-
     private int mType = TYPE_NONE;
-
     private int mQuality;
-
     private Context mContext;
-
     private AtomicBoolean mConnecting = new AtomicBoolean(false);
-
-    private static int sysVersion = Integer.parseInt(Build.VERSION.SDK);
-
+    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+    private long mLastRestartTimestampMs = 0;
     private DataArriveCallback sSendCallback = new DataArriveCallback() {
         @Override
         public void onDataArrive(byte[] cmd, int cmdLen) {
@@ -83,17 +65,27 @@ public class librtmp implements ScreenCaptureDataCallback {
         }
     };
 
+    public static native boolean native_connect(String url, int width, int height, int frameRate);
+
+    public static native void native_close();
+
+    public static native boolean native_sendH264_packet(byte[] data, int len);
+
     public static librtmp getInstance() {
         return sInstance;
     }
 
-    public synchronized void init(ScreenCaptureCallback callback) {
-        sScreenCaptureCallback = callback;
+    public synchronized void addScreenCaptureCallback(ScreenCaptureCallback callback) {
+        if (callback != null && !sScreenCaptureCallbacks.contains(callback)) {
+            sScreenCaptureCallbacks.add(callback);
+        }
     }
 
-    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
-
-    private long mLastRestartTimestampMs = 0;
+    public synchronized void removeScreenCaptureCallback(ScreenCaptureCallback callback) {
+        if (callback != null && sScreenCaptureCallbacks.contains(callback)) {
+            sScreenCaptureCallbacks.remove(callback);
+        }
+    }
 
     public boolean start(final String url, final int width, final int height, final int frameRate, final int bitRate, final Context context) {
         if (mConnecting.get()) {
@@ -141,7 +133,7 @@ public class librtmp implements ScreenCaptureDataCallback {
     private boolean doConnect() {
         boolean connret = connect(mUrl, mWidth, mHeight, mFrameRate);
         if (!mStarted.get()) {
-            if(connret) {
+            if (connret) {
                 doDisconnect();
             }
             return false;
@@ -185,10 +177,10 @@ public class librtmp implements ScreenCaptureDataCallback {
                 if (sysVersion >= Build.VERSION_CODES.LOLLIPOP) {
                     ScreencastActivity.getInstance().start(mWidth, mHeight, mFrameRate, mBitRate, sSendCallback);
                 } else {
-                    if (null == sScreenCaptureCallback) {
-//                        Log4jLogger.d(TAG, "rtmp start failed, callback is null");
-                    } else {
-                        sScreenCaptureCallback.start(mWidth, mHeight, mFrameRate, mBitRate, this);
+                    if (sScreenCaptureCallbacks.size() > 0) {
+                        for (ScreenCaptureCallback screenCaptureCallback : sScreenCaptureCallbacks) {
+                            screenCaptureCallback.start(mWidth, mHeight, mFrameRate, mBitRate, this);
+                        }
                     }
                 }
                 postDesktopResolution();
@@ -205,8 +197,10 @@ public class librtmp implements ScreenCaptureDataCallback {
                 if (sysVersion >= Build.VERSION_CODES.LOLLIPOP) {
                     ScreencastActivity.getInstance().stop(sSendCallback);
                 } else {
-                    if (null != sScreenCaptureCallback) {
-                        sScreenCaptureCallback.stop();
+                    if (sScreenCaptureCallbacks.size() > 0) {
+                        for (ScreenCaptureCallback screenCaptureCallback : sScreenCaptureCallbacks) {
+                            screenCaptureCallback.stop();
+                        }
                     }
                 }
                 break;
@@ -257,7 +251,7 @@ public class librtmp implements ScreenCaptureDataCallback {
 
     private boolean connect(String url, int width, int height, int frameRate) {
 //        Log4jLogger.d(TAG, String.format("librtmp connect, url = %s, width = %d, height = %d, frameRate = %d", url, width, height, frameRate));
-        if(mRtmpConnected.get()){
+        if (mRtmpConnected.get()) {
 //            Log4jLogger.d(TAG,"rtmp is connected,close rtmp");
             native_close();
         }
