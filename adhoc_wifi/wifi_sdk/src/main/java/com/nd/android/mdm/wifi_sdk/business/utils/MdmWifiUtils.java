@@ -135,14 +135,18 @@ public class MdmWifiUtils {
 
 
     // 添加一个网络并连接
-    public static void addNetwork(Context context, WifiConfiguration wcg) {
+    public static boolean addNetwork(Context context, WifiConfiguration wcg) {
         WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (wm == null) {
+            return false;
+        }
         int wcgID = wm.addNetwork(wcg);
+        if (wcgID == -1) {
+            return false;
+        }
         boolean result = wm.enableNetwork(wcgID, true);
         Logger.i(TAG, "add net id:" + wcgID + " result:" + result);
-        if (result) {
-            wm.saveConfiguration();
-        }
+        return result && wm.saveConfiguration();
     }
 
 
