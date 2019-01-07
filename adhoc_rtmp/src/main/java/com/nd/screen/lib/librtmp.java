@@ -226,6 +226,9 @@ public class librtmp implements ScreenCaptureDataCallback {
 
     @Override
     public long sendVideoStream(byte[] data, int length) {
+        if (!mStarted.get()) {
+            return 0;
+        }
         long time = System.currentTimeMillis();
         boolean ret = sendH264Packet(data, length);
 //        Log4jLogger.d(TAG, String.format("rtmp send video = %d, time = %d , ret = %b", length, System.currentTimeMillis() - time, ret));
