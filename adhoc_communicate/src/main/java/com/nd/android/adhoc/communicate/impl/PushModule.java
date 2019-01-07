@@ -99,7 +99,7 @@ class PushModule implements IPushModule {
 
     @Override
     public void stop() {
-//        PushSdk.getInstance().stop();
+        PushSdk.getInstance().stop();
     }
 
     @Override
