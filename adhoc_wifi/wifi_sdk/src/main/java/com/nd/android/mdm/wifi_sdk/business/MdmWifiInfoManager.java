@@ -158,7 +158,7 @@ public final class MdmWifiInfoManager {
     }
 
     public void stop() {
-        mIsKeepRun.set(true);
+        mIsKeepRun.set(false);
         stopStateTimer();
     }
 
