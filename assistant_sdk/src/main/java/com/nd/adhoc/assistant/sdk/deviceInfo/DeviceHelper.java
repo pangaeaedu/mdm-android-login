@@ -8,6 +8,10 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.utils.MD5ArithmeticUtils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 
@@ -33,7 +37,12 @@ public class DeviceHelper {
     }
 
     public static String getDeviceTokenFromSystem(){
-        String id = getUniqueID()+getSerialNumber();
+        String serialNum = getSerialNumber();
+        if(TextUtils.isEmpty(serialNum) || serialNum.equalsIgnoreCase(Build.UNKNOWN)){
+            serialNum = getSerialNumForOPSG();
+        }
+
+        String id = getUniqueID()+serialNum;
         try {
             return MD5ArithmeticUtils.getMd5(id);
         } catch (NoSuchAlgorithmException pE) {
@@ -73,6 +82,26 @@ public class DeviceHelper {
 
         return m_szDevIDShort;
     }
+
+    public static String getSerialNumForOPSG() {
+        String mac = "";
+        try {
+            InputStream is = Runtime.getRuntime().exec("cat /tmp/factory/sn.txt").getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader bf = new BufferedReader(isr);
+            String line = bf.readLine();
+            if (line != null) {
+                mac = line;
+            }
+            bf.close();
+            isr.close();
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mac;
+    }
+
 
     public static String getSerialNumber() {
         String serialNo = android.os.Build.SERIAL;
