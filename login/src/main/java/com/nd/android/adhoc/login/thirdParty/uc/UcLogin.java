@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
@@ -24,6 +25,8 @@ import com.nd.smartcan.accountclient.UCManager;
 import com.nd.smartcan.accountclient.core.AccountException;
 import com.nd.smartcan.accountclient.core.User;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -32,7 +35,7 @@ import rx.subjects.BehaviorSubject;
 
 public class UcLogin implements IThirdPartyLogin {
     private static final String TAG = "UcLogin";
-    protected String mOrgName = "";
+    private String mOrgName = "";
 
     private BehaviorSubject<UserActivateResult> mActivateSubject = BehaviorSubject.create();
 
@@ -103,6 +106,8 @@ public class UcLogin implements IThirdPartyLogin {
                                     @Override
                                     public Observable<UcLoginResult> call(final CurrentUser pUser) {
                                         return mActivateSubject.asObservable().first()
+                                                // 20 秒还没收到激活成功的通知，那就认为本次是失败的，否则会导致登录界面无限登录中
+                                                .timeout(20, TimeUnit.SECONDS)
                                                 .flatMap(new Func1<UserActivateResult, Observable<UcLoginResult>>() {
                                                     @Override
                                                     public Observable<UcLoginResult> call(UserActivateResult pResult) {
@@ -130,7 +135,8 @@ public class UcLogin implements IThirdPartyLogin {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        e.printStackTrace();
+                                        Logger.e(TAG,"login error: " + e);
+                                        mCurSessionID = "";
                                         pCallBack.onFailed(e);
                                         BasicServiceFactory.getInstance().removeActivateListener(mActivateListener);
                                     }
