@@ -1,6 +1,7 @@
 package com.nd.android.mdm.wifi_sdk.business.basic.listener;
 
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 
@@ -13,6 +14,8 @@ import java.util.Set;
  * Created by HuangYK on 2018/3/15.
  */
 public class MdmWifiListenerManager {
+
+    private static final String TAG = "MdmWifiListenerManager";
 
     //    private Set<IMdmWifiConnectListener> mConnectListeners = new HashSet<>();
 //    private Set<IMdmWifiStateChangeListener> mStateChangeListeners = new HashSet<>();
@@ -79,7 +82,11 @@ public class MdmWifiListenerManager {
             if (listener == null) {
                 return;
             }
-            listener.onWifiStatusChange(pStatus);
+            try {
+                listener.onWifiStatusChange(pStatus);
+            } catch (Exception e) {
+                Logger.e(TAG, "noticeWifiStatusChange error on [" + listener.getClass().getCanonicalName() + "]: " + e);
+            }
         }
     }
 
@@ -91,7 +98,11 @@ public class MdmWifiListenerManager {
             if (listener == null) {
                 continue;
             }
-            listener.onInfoUpdated(pWifiInfo);
+            try {
+                listener.onInfoUpdated(pWifiInfo);
+            } catch (Exception e) {
+                Logger.e(TAG, "noticeInfoUpdated error on [" + listener.getClass().getCanonicalName() + "]: " + e);
+            }
         }
     }
 

@@ -2,9 +2,6 @@ package com.nd.android.mdm.wifi_sdk.business.bean;
 
 import android.text.TextUtils;
 
-import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
-import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
-
 import java.io.Serializable;
 
 /**
@@ -87,7 +84,7 @@ public class MdmWifiInfo implements Serializable {
 
     public void reset() {
         mChannel = -1;
-        mSsid = "";
+        mSsid = "Unknow";
         mRssi = -999;
         mApMac = "";
         mMac = NORMAL_MAC;
@@ -102,7 +99,7 @@ public class MdmWifiInfo implements Serializable {
 
     public boolean isVaild(){
         return mChannel != -1
-                && !TextUtils.isEmpty(mSsid)
+                && !TextUtils.isEmpty(mSsid) && mSsid.equals("Unknow")
                 && mRssi != -999
                 && !TextUtils.isEmpty(mApMac)
                 && !NORMAL_MAC.equals(mMac)
@@ -142,7 +139,7 @@ public class MdmWifiInfo implements Serializable {
     }
 
     public String getMac() {
-        return AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
+        return mMac;
     }
 
     public void setMac(String mac) {
