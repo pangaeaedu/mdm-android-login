@@ -159,7 +159,7 @@ public final class MdmWifiInfoManager {
 
     public void stop() {
 //        mIsKeepRun.set(false);
-        stopStateTimer();
+//        stopStateTimer();
     }
 
     public boolean getIsWiFiConnected() {
