@@ -56,7 +56,7 @@ public final class MdmWifiInfoManager {
 
     private final MdmWifiInfo mWifiInfo = new MdmWifiInfo();
     private AtomicBoolean mIsWiFiConnected = new AtomicBoolean(false);
-    private AtomicBoolean mIsKeepRun = new AtomicBoolean(false);
+//    private AtomicBoolean mIsKeepRun = new AtomicBoolean(false);
 
 
     private WifiManager mWifiManager;
@@ -128,7 +128,7 @@ public final class MdmWifiInfoManager {
     }
 
     @SuppressLint("WifiManagerLeak")
-    private void initWifiManager(){
+    private void initWifiManager() {
         if (mWifiManager == null) {
             mWifiManager = (WifiManager) AdhocBasicConfig.getInstance().getAppContext().getSystemService(Context.WIFI_SERVICE);
         }
@@ -150,7 +150,7 @@ public final class MdmWifiInfoManager {
 
 
     public void start() {
-        mIsKeepRun.set(true);
+//        mIsKeepRun.set(true);
         if (mIsWiFiConnected.get()) {
             updateCurWifiInfo();
             updateVendorInfo();
@@ -158,7 +158,7 @@ public final class MdmWifiInfoManager {
     }
 
     public void stop() {
-        mIsKeepRun.set(false);
+//        mIsKeepRun.set(false);
         stopStateTimer();
     }
 
@@ -192,7 +192,7 @@ public final class MdmWifiInfoManager {
     }
 
     private void initScanResultsSub() {
-        if(AdhocRxJavaUtil.isSubscribed(mScanResultsSub)){
+        if (AdhocRxJavaUtil.isSubscribed(mScanResultsSub)) {
             return;
         }
         mScanResultsSub =
@@ -237,7 +237,7 @@ public final class MdmWifiInfoManager {
      * 处理网络状态变更
      */
     private void initNetworkStateSub() {
-        if(AdhocRxJavaUtil.isSubscribed(mNetworkStateSub)){
+        if (AdhocRxJavaUtil.isSubscribed(mNetworkStateSub)) {
             return;
         }
 
@@ -298,8 +298,8 @@ public final class MdmWifiInfoManager {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
 //                if (!mWifiInfo.isVaild()) {
-                    subscriber.onNext(updateWifiInfo());
-                    subscriber.onCompleted();
+                subscriber.onNext(updateWifiInfo());
+                subscriber.onCompleted();
 //                }
             }
         })
@@ -363,7 +363,8 @@ public final class MdmWifiInfoManager {
         notifyInfoupdated();
 
         mIsKeepTimer.set(false);
-        if (mIsKeepRun.get() && mIsWiFiConnected.get()) {
+//        if (mIsKeepRun.get() && mIsWiFiConnected.get()) {
+        if (mIsWiFiConnected.get()) {
             if (mWifiInfo.getChannel() <= 0) {
                 //  诊断当前wifi所在信道是否改變, 不需要持續的 scan WiFi, 當 Ap 改變信道時, Wifi 會走重新連接流程, 並重新诊断当前wifi所在信道
                 //  初始WiFi 連接時強制調用一次, 取得信道訊息
@@ -398,31 +399,31 @@ public final class MdmWifiInfoManager {
             boolean ipeq = mWifiInfo.getIp().equals(ip);
             boolean ssideq = mWifiInfo.getSsid().equals(ssid);
             boolean rssieq = Math.abs(mWifiInfo.getRssi() - rssi) < 3;
-            boolean apmaceq =  mWifiInfo.getApMac().equals(bssid);
-            boolean maceq =  mWifiInfo.getMac().equals(mac);
-            boolean speedeq =  mWifiInfo.getSpeed() == speed;
-            boolean dnseq =  mWifiInfo.getDns().equals(dns);
+            boolean apmaceq = mWifiInfo.getApMac().equals(bssid);
+            boolean maceq = mWifiInfo.getMac().equals(mac);
+            boolean speedeq = mWifiInfo.getSpeed() == speed;
+            boolean dnseq = mWifiInfo.getDns().equals(dns);
             boolean gatewayeq = mWifiInfo.getGateway().equals(gateway);
             boolean signaleq = mWifiInfo.getSignalLevel() == signalLevel;
 
-            Logger.d(TAG,"ipeq = " + ipeq
+            Logger.d(TAG, "ipeq = " + ipeq
                     + ", ssideq = " + ssideq
                     + ", rssieq = " + rssieq
-                    +", apmaceq = " + apmaceq
-                    +", maceq = " + maceq
-                    +", speedeq = " + speedeq
-                    +", dnseq = " + dnseq
-                    +", gatewayeq = " + gatewayeq
-                    +", signaleq = " + signaleq);
+                    + ", apmaceq = " + apmaceq
+                    + ", maceq = " + maceq
+                    + ", speedeq = " + speedeq
+                    + ", dnseq = " + dnseq
+                    + ", gatewayeq = " + gatewayeq
+                    + ", signaleq = " + signaleq);
 
-            if(ipeq && ssideq
+            if (ipeq && ssideq
                     && rssieq
                     && apmaceq
                     && maceq
                     && speedeq
                     && dnseq
                     && gatewayeq
-                    && signaleq){
+                    && signaleq) {
                 Logger.e(TAG, "updateWifiInfo return false");
                 return false;
             }
@@ -449,10 +450,10 @@ public final class MdmWifiInfoManager {
     }
 
     private void notifyInfoupdated() {
-        if (mIsKeepRun.get()) {
+//        if (mIsKeepRun.get()) {
 //            EventBus.getDefault().post(new WiFiInfoUpdateEvent());
             mWifiListenerManager.noticeInfoUpdated(mWifiInfo);
-        }
+//        }
     }
 
     /**
