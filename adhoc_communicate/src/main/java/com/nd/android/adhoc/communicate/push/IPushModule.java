@@ -16,7 +16,7 @@ public interface IPushModule {
 
     String getDeviceId();
 
-    String getUid();
+//    String getUid();
 
     void fireConnectatusEvent();
 

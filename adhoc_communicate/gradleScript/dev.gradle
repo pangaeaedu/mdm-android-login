@@ -52,6 +52,8 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
     }
 
+    api project(':pushcore')
+    api project(':adhocpush')
 
     api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
     api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")

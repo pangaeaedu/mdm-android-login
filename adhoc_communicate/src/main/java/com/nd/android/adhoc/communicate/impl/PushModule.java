@@ -1,40 +1,33 @@
 package com.nd.android.adhoc.communicate.impl;
 
-import android.Manifest;
 import android.content.Context;
-import android.os.RemoteException;
 
-import com.nd.adhoc.push.PushSdk;
+import com.nd.adhoc.push.core.IPushChannel;
+import com.nd.adhoc.push.core.IPushChannelConnectListener;
+import com.nd.adhoc.push.core.IPushChannelDataListener;
+import com.nd.adhoc.push.core.IPushRecvData;
+import com.nd.adhoc.push.core.PushConnectStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.util.thread.rx.AdhocActionSubscriber;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.communicate.constant.AdhocPushMsgType;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
 import com.nd.android.adhoc.communicate.receiver.IFeedbackMsgReceiver;
-import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.android.mdm.biz.common.MsgCode;
 import com.nd.android.mdm.biz.common.util.SDKLogUtil;
-import com.nd.android.mdm.biz.env.MdmEvnFactory;
-import com.nd.android.mdm.util.cmd.CmdUtil;
-import com.nd.sdp.adhoc.push.IPushSdkCallback;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
-import com.tbruyelle.rxpermissions.RxPermissions;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import rx.functions.Action1;
 
 
 /**
@@ -52,86 +45,27 @@ class PushModule implements IPushModule {
 
     private List<IPushConnectListener> mConnectListeners;
 
+    private IPushChannel mPushChannel = null;
 
-    private String mUid;
-
-    PushModule() {
-        mContext = AdhocBasicConfig.getInstance().getAppContext();
-        mConnectListeners = new CopyOnWriteArrayList<>();
-    }
-
-    @Override
-    public boolean isConnected() {
-        return PushSdk.getInstance().isConnected();
-    }
-
-    @Override
-    public void start() {
-        PushSdk.getInstance().stop();
-
-        Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
-        if (receiverIterator.hasNext()) {
-            mCmdReceiver = receiverIterator.next();
-        }
-
-        Iterator<IFeedbackMsgReceiver> feedbackIterator = AnnotationServiceLoader
-                .load(IFeedbackMsgReceiver.class).iterator();
-        if (feedbackIterator.hasNext()) {
-            mFeedbackReceiver = feedbackIterator.next();
-        }
-
-        RxPermissions.getInstance(AdhocBasicConfig.getInstance().getAppContext())
-                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(new AdhocActionSubscriber<>(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean) {
-                            String pushSrvIp = MdmEvnFactory.getInstance().getCurEnvironment().getPushIp();
-                            int pushSrvPort = MdmEvnFactory.getInstance().getCurEnvironment().getPushPort();
-//        CmdFactory.enableFactory(true);
-                            PushSdk.getInstance().startPushSdk(mContext, "mdm", null, pushSrvIp, pushSrvPort, mPushSdkCallback);
-                        }
-                    }
-                }));
-
-    }
-
-
-    @Override
-    public void stop() {
-        // add by winnyang at 20190110 PushModule在关闭的时候，通道要保持。
-        // 因为业务需求要求在登出之后，可以通过Push通道来下发一些指令来执行
-//        PushSdk.getInstance().stop();
-    }
-
-    @Override
-    public String getDeviceId() {
-        return PushSdk.getInstance().getDeviceid();
-    }
-
-    private void doFeedbackCmdReceived(byte[] pContent) {
-        mFeedbackReceiver.onCmdReceived(new String(pContent));
-    }
-
-    @Override
-    public void fireConnectatusEvent() {
-//        if (PushSdk.getInstance().isConnected()) {
-//            EventBus.getDefault().post(new PushConnectStatusEvent(true));
-//        }
-        notifyConnectStatus(PushSdk.getInstance().isConnected());
-    }
-
-    private IPushSdkCallback.Stub mPushSdkCallback = new IPushSdkCallback.Stub() {
+    private IPushChannelConnectListener mChannelConnectListener = new IPushChannelConnectListener() {
         @Override
-        public void onPushDeviceToken(String deviceToken) {
-//            deviceId = ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-            //initCallback = null;
+        public void onConnectStatusChanged(IPushChannel pChannel, PushConnectStatus pStatus) {
+            for (IPushConnectListener listener : mConnectListeners) {
+                if (pStatus == PushConnectStatus.Connected) {
+                    listener.onConnected();
+                } else {
+                    listener.onDisconnected();
+                }
+            }
         }
+    };
 
+    private IPushChannelDataListener mChannelDataListener = new IPushChannelDataListener() {
         @Override
-        public byte[] onPushMessage(String appId, int msgtype, byte[] contenttype, long msgid, long msgTime, byte[] content, String[] extraKeys, String[] extraValues) {
+        public void onPushDataArrived(IPushChannel pChannel, IPushRecvData pData) {
             try {
-                String data = new String(content);
+                byte[] content = pData.getContent();
+                String data = new String(pData.getContent());
                 Logger.e(TAG, "onPushMessage:" + data);
                 JSONObject object = new JSONObject(data);
                 int type = object.optInt("msgtype");
@@ -142,71 +76,174 @@ class PushModule implements IPushModule {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Logger.e(TAG, "get error:" + e.toString() + "\n with messege:" + new String(content));
+                Logger.e(TAG, "get error:" + e.toString() +
+                        "\n with messege:" + new String(pData.getContent()));
             }
-            return UUID.randomUUID().toString().getBytes();
-        }
-
-        @Override
-        public void onPushStatus(final boolean isConnected) {
-            Logger.d("HYK", "onPushStatus: isConnected = " + isConnected);
-//            EventBus.getDefault().post(new PushConnectStatusEvent(isConnected));
-            notifyConnectStatus(isConnected);
-
-            //  郭文要求
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (isConnected) {
-                        try {
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("stock_id", getUid());
-                            String content = jsonObject.toString();
-                            String env = MdmEvnFactory.getInstance().getCurEnvironment().getUrl();
-                            HttpUtil.post(env, content);
-                        } catch (JSONException e) {
-                            Logger.e(TAG, "assistant service send stock failed:" + e.getMessage());
-                        } catch (Exception e) {
-                            Logger.e(TAG, "assistant service send stock failed:" + e.getMessage());
-                        }
-                    }
-                }
-            }).start();
-        }
-
-        @Override
-        public void onPushShutdown() throws RemoteException {
-            start();
         }
     };
 
-    public String getUid() {
-        if (mUid == null) {
-            String resLine = CmdUtil.runCmd("cat /proc/cpuinfo");
-            String hardware = null;
-            String serial = null;
-            String[] lines = resLine.split("\n");
-            for (int i = 0; i < lines.length; i++) {
-                if (lines[i].indexOf("Hardware") != -1) {
-                    hardware = lines[i].substring(lines[i].indexOf(":") + 1, lines[i].length());
-                    break;
-                }
-            }
-            for (int i = 0; i < lines.length; i++) {
-                if (lines[i].indexOf("Serial") != -1) {
-                    serial = lines[i].substring(lines[i].indexOf(":") + 1, lines[i].length());
-                    break;
-                }
-            }
-            hardware = hardware != null ? hardware.trim() : null;
-            serial = serial != null ? serial.trim() : null;
-            if (hardware != null && serial != null && hardware.length() + serial.length() > 63) {
-                hardware = hardware.substring(0, 63 - serial.length());
-            }
-            mUid = String.valueOf(hardware) + "-" + String.valueOf(serial);
-        }
-        return mUid;
+    PushModule() {
+        mContext = AdhocBasicConfig.getInstance().getAppContext();
+        mConnectListeners = new CopyOnWriteArrayList<>();
+
+        initMessageReceiver();
+        initPushChannel();
+
     }
+
+    private void initMessageReceiver() {
+        Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
+        if (receiverIterator.hasNext()) {
+            mCmdReceiver = receiverIterator.next();
+        }
+
+        Iterator<IFeedbackMsgReceiver> feedbackIterator = AnnotationServiceLoader
+                .load(IFeedbackMsgReceiver.class).iterator();
+        if (feedbackIterator.hasNext()) {
+            mFeedbackReceiver = feedbackIterator.next();
+        }
+    }
+
+    private void initPushChannel() {
+        Iterator<IPushChannel> iterator = AnnotationServiceLoader.load(IPushChannel.class)
+                .iterator();
+        List<IPushChannel> channels = new ArrayList<>();
+        while (iterator.hasNext()) {
+            IPushChannel channel = iterator.next();
+            channels.add(channel);
+        }
+
+        if (channels.isEmpty()) {
+            throw new RuntimeException("could not load any push channel");
+        }
+
+        mPushChannel = channels.get(0);
+        mPushChannel.init();
+        mPushChannel.addConnectListener(mChannelConnectListener);
+        mPushChannel.addDataListener(mChannelDataListener);
+    }
+
+    @Override
+    public boolean isConnected() {
+        PushConnectStatus status = mPushChannel.getCurrentStatus();
+        if (status == PushConnectStatus.Connected) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void start() {
+        mPushChannel.start();
+    }
+
+
+    @Override
+    public void stop() {
+        mPushChannel.start();
+    }
+
+    @Override
+    public String getDeviceId() {
+        return mPushChannel.getPushID();
+    }
+
+    private void doFeedbackCmdReceived(byte[] pContent) {
+        mFeedbackReceiver.onCmdReceived(new String(pContent));
+    }
+
+    @Override
+    public void fireConnectatusEvent() {
+        notifyConnectStatus();
+    }
+
+//    private IPushSdkCallback.Stub mPushSdkCallback = new IPushSdkCallback.Stub() {
+//        @Override
+//        public void onPushDeviceToken(String deviceToken) {
+////            deviceId = ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+//            //initCallback = null;
+//        }
+//
+//        @Override
+//        public byte[] onPushMessage(String appId, int msgtype, byte[] contenttype, long msgid, long msgTime, byte[] content, String[] extraKeys, String[] extraValues) {
+//            try {
+//                String data = new String(content);
+//                Logger.e(TAG, "onPushMessage:" + data);
+//                JSONObject object = new JSONObject(data);
+//                int type = object.optInt("msgtype");
+//                if (type == AdhocPushMsgType.Feedback.getValue()) {
+//                    doFeedbackCmdReceived(content);
+//                } else {
+//                    doCmdReceived(content);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Logger.e(TAG, "get error:" + e.toString() + "\n with messege:" + new String(content));
+//            }
+//            return UUID.randomUUID().toString().getBytes();
+//        }
+//
+//        @Override
+//        public void onPushStatus(final boolean isConnected) {
+//            Logger.d("HYK", "onPushStatus: isConnected = " + isConnected);
+////            EventBus.getDefault().post(new PushConnectStatusEvent(isConnected));
+//            notifyConnectStatus(isConnected);
+//
+//            //  郭文要求
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (isConnected) {
+//                        try {
+//                            JSONObject jsonObject = new JSONObject();
+//                            jsonObject.put("stock_id", getUid());
+//                            String content = jsonObject.toString();
+//                            String env = MdmEvnFactory.getInstance().getCurEnvironment().getUrl();
+//                            HttpUtil.post(env, content);
+//                        } catch (JSONException e) {
+//                            Logger.e(TAG, "assistant service send stock failed:" + e.getMessage());
+//                        } catch (Exception e) {
+//                            Logger.e(TAG, "assistant service send stock failed:" + e.getMessage());
+//                        }
+//                    }
+//                }
+//            }).start();
+//        }
+//
+//        @Override
+//        public void onPushShutdown() throws RemoteException {
+//            start();
+//        }
+//    };
+
+//    public String getUid() {
+//        if (mUid == null) {
+//            String resLine = CmdUtil.runCmd("cat /proc/cpuinfo");
+//            String hardware = null;
+//            String serial = null;
+//            String[] lines = resLine.split("\n");
+//            for (int i = 0; i < lines.length; i++) {
+//                if (lines[i].indexOf("Hardware") != -1) {
+//                    hardware = lines[i].substring(lines[i].indexOf(":") + 1, lines[i].length());
+//                    break;
+//                }
+//            }
+//            for (int i = 0; i < lines.length; i++) {
+//                if (lines[i].indexOf("Serial") != -1) {
+//                    serial = lines[i].substring(lines[i].indexOf(":") + 1, lines[i].length());
+//                    break;
+//                }
+//            }
+//            hardware = hardware != null ? hardware.trim() : null;
+//            serial = serial != null ? serial.trim() : null;
+//            if (hardware != null && serial != null && hardware.length() + serial.length() > 63) {
+//                hardware = hardware.substring(0, 63 - serial.length());
+//            }
+//            mUid = String.valueOf(hardware) + "-" + String.valueOf(serial);
+//        }
+//        return mUid;
+//    }
 
     @Override
     public void addConnectListener(IPushConnectListener pListener) {
@@ -246,9 +283,10 @@ class PushModule implements IPushModule {
 
     }
 
-    private synchronized void notifyConnectStatus(boolean pIsConnected) {
+    private synchronized void notifyConnectStatus() {
+        PushConnectStatus status = mPushChannel.getCurrentStatus();
         for (IPushConnectListener listener : mConnectListeners) {
-            if (pIsConnected) {
+            if (status == PushConnectStatus.Connected) {
                 listener.onConnected();
             } else {
                 listener.onDisconnected();
