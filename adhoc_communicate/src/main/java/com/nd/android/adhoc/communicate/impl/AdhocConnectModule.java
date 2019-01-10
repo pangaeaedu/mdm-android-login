@@ -127,7 +127,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
 //    }
 
     @Override
-    public void sendLoginInfo(String pDevToken) {
+    public void sendLoginInfo(String pDevToken, JSONObject pDeviceInfo) {
         if (!mAdhocCallback.isAdhocConnect()) {
             return;
         }
@@ -141,6 +141,12 @@ class AdhocConnectModule implements IAdhocConnectModule {
             data.put("versionname", info == null ? "" : info.versionName);
             data.put("type", 1);
             data.put("deviceid", pDevToken);
+
+            if (pDeviceInfo != null) {
+                data.put("level", pDeviceInfo.getString("battery"));
+                data.put("status", pDeviceInfo.getString("charge"));
+            }
+
             // 备忘：此处这么修改是因为出现和登录时回报的 WifiMac 不一致的情况，所以 mac 统一改为传 wifimac  -- by hyk 2018-08-29
 //            String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
             String mac = AdhocDeviceUtil.getWifiMac(mContext);

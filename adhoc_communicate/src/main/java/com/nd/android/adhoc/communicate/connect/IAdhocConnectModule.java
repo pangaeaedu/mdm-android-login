@@ -2,6 +2,8 @@ package com.nd.android.adhoc.communicate.connect;
 
 import android.support.annotation.NonNull;
 
+import org.json.JSONObject;
+
 
 /**
  * Created by HuangYK on 2018/5/4.
@@ -15,7 +17,7 @@ public interface IAdhocConnectModule {
 
 //    void setConnectListener(IAdhocConnectListener pListener);
 
-    void sendLoginInfo(String pDevToken);
+    void sendLoginInfo(String pDevToken, JSONObject pDeviceInfo);
 
     boolean isAdhocConnect();
 

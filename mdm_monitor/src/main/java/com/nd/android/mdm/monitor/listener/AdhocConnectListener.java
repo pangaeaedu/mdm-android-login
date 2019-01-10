@@ -5,6 +5,7 @@ import android.content.Context;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocMainLooper;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
@@ -15,16 +16,27 @@ import com.nd.android.mdm.monitor.message.BatteryChangeMessage;
 import com.nd.android.mdm.monitor.message.ModelMessage;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by HuangYK on 2018/12/17.
  */
 @Service(IAdhocConnectListener.class)
 public class AdhocConnectListener implements IAdhocConnectListener {
+    private static final String TAG = "AdhocConnectListener";
 
     @Override
     public void onConnectionAvaialble() {
+        JSONObject deviceInfo = null;
+        try {
+            deviceInfo = MonitorModule.getInstance().getDevInfoJson();
+        } catch (JSONException e) {
+            Logger.w(TAG, "onConnectionAvaialble getDevInfoJson error: " + e);
+        }
 
-        MdmTransferFactory.getCommunicationModule().sendLoginInfo(DeviceHelper.getDeviceToken());
+        MdmTransferFactory.getCommunicationModule()
+                .sendLoginInfo(DeviceHelper.getDeviceToken(), deviceInfo);
 
         AdhocMainLooper.runOnUiThread(new Runnable() {
             @Override
