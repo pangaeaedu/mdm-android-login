@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
@@ -25,7 +26,9 @@ import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.command.normal.response.ResponseLocation;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.control.MdmControlFactory;
-import com.nd.android.adhoc.control.define.IControl_DeviceInfo;
+import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
+import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
+import com.nd.android.adhoc.control.define.IControl_DeviceSerial;
 import com.nd.android.adhoc.location.ILocationNavigation;
 import com.nd.android.adhoc.location.dataDefine.ILocation;
 import com.nd.android.adhoc.location.locationCallBack.ILocationChangeListener;
@@ -547,16 +550,31 @@ public class MonitorModule implements IMonitor {
         data.put("AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
 
 
-        IControl_DeviceInfo deviceInfo = MdmControlFactory.getInstance().getControl(IControl_DeviceInfo.class);
-        if (null != deviceInfo) {
-//            pDeviceInfo.strRmoName = deviceInfo.getRomName();
-//            pDeviceInfo.RomVer = deviceInfo.getRomVersion();
-//            pDeviceInfo.strPannelId = deviceInfo.getSerialNumber();
-
-            data.put("romName", deviceInfo.getRomName());
-            data.put("romVersion", deviceInfo.getRomVersion());
-            data.put("panelId", deviceInfo.getSerialNumber());
+        IControl_DeviceSerial control_deviceSerial = MdmControlFactory.getInstance().getControl(IControl_DeviceSerial.class);
+        if (control_deviceSerial != null) {
+            try {
+                data.put("panelId", control_deviceSerial.getSerialNumber());
+            } catch (AdhocException ignored) {
+            }
         }
+        IControl_DeviceRomName control_deviceRomName = MdmControlFactory.getInstance().getControl(IControl_DeviceRomName.class);
+        if (control_deviceRomName != null) {
+            data.put("romName", control_deviceRomName.getRomName());
+        }
+        IControl_DeviceRomVersion control_deviceRomVersion = MdmControlFactory.getInstance().getControl(IControl_DeviceRomVersion.class);
+        if (control_deviceRomVersion != null) {
+            data.put("romVersion", control_deviceRomVersion.getRomVersion());
+        }
+
+//        if (null != deviceInfo) {
+////            pDeviceInfo.strRmoName = deviceInfo.getRomName();
+////            pDeviceInfo.RomVer = deviceInfo.getRomVersion();
+////            pDeviceInfo.strPannelId = deviceInfo.getSerialNumber();
+//
+//            data.put("romVersion", deviceInfo.getRomVersion());
+//            data.put("romName", deviceInfo.getRomName());
+//            data.put("panelId", deviceInfo.getSerialNumber());
+//        }
 
         return data;
     }
