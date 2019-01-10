@@ -99,7 +99,9 @@ class PushModule implements IPushModule {
 
     @Override
     public void stop() {
-        PushSdk.getInstance().stop();
+        // add by winnyang at 20190110 PushModule在关闭的时候，通道要保持。
+        // 因为业务需求要求在登出之后，可以通过Push通道来下发一些指令来执行
+//        PushSdk.getInstance().stop();
     }
 
     @Override
