@@ -9,7 +9,7 @@ import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
+import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.thread.rx.AdhocActionSubscriber;
 import com.nd.android.adhoc.control.nd3.SystemControFactory;

@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
-import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
+import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.control.MdmControlFactory;
 import com.nd.android.adhoc.control.define.IControl_Apk;

@@ -20,7 +20,7 @@ import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
-import com.nd.android.adhoc.basic.util.system.AdhocPackageUtil;
+import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.command.normal.response.ResponseLocation;
