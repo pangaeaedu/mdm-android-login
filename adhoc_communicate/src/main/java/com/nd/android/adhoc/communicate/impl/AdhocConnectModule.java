@@ -143,8 +143,8 @@ class AdhocConnectModule implements IAdhocConnectModule {
             data.put("deviceid", pDevToken);
 
             if (pDeviceInfo != null) {
-                data.put("level", pDeviceInfo.getString("battery"));
-                data.put("status", pDeviceInfo.getString("charge"));
+                data.put("level", pDeviceInfo.getInt("battery"));
+                data.put("status", pDeviceInfo.getBoolean("charge"));
             }
 
             // 备忘：此处这么修改是因为出现和登录时回报的 WifiMac 不一致的情况，所以 mac 统一改为传 wifimac  -- by hyk 2018-08-29
