@@ -24,7 +24,7 @@ buildscript {
 
 ext {
     mdm_biz_version = '0.0.30.57-0.6.2.0-SNAPSHOT'
-    device_control_version = '0.2.62-0.6.2.0-SNAPSHOT'
+    device_control_version = '0.2.67-0.6.2.0-SNAPSHOT'
     device_command_version = '0.0.2.30-0.6.2.0-SNAPSHOT'
     location_verison = '0.0.9-develop-SNAPSHOT'
     adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
