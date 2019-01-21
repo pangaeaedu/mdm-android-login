@@ -29,7 +29,7 @@ ext {
     location_verison = '0.0.9-develop-SNAPSHOT'
     adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
 
-    screen_capture_version = '1.3.33.2078-develop-SNAPSHOT'
+    screen_capture_version = '1.3.33.2079-develop-SNAPSHOT'
 }
 
 allprojects {
