@@ -67,7 +67,7 @@ dependencies {
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
 
-    api  'com.nd.sdp.android:adhoc-push-util:0.3.20-fixMacBug-SNAPSHOT'
+    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
 
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
 //    compile  'com.nd.sdp.im.common:utils:0.2.98.release'
