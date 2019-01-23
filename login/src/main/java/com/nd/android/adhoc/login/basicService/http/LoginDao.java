@@ -47,13 +47,31 @@ public class LoginDao extends AdhocHttpDao {
         }
     }
 
-
     public BindResult bindDevice(String pDeviceToken,String pPushID,
                                  String pSerialNum) throws AdhocHttpException {
         Map<String, Object> map = new HashMap<>();
         map.put("device_token", pDeviceToken);
         map.put("serial_num", pSerialNum);
         map.put("type", 1);
+        map.put("pushid", pPushID);
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+
+            return postAction().post("/v1.1/registe/pushid/", BindResult.class, content, null);
+        } catch (RuntimeException e) {
+
+            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+        }
+    }
+
+    public BindResult bindDeviceWithPushChannelType(String pDeviceToken,String pPushID,
+                                 String pSerialNum, int pPushChannelType) throws AdhocHttpException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("device_token", pDeviceToken);
+        map.put("serial_num", pSerialNum);
+        map.put("type", pPushChannelType);
         map.put("pushid", pPushID);
 
         try {
@@ -92,6 +110,26 @@ public class LoginDao extends AdhocHttpDao {
         ActivateHttpRequest request = new ActivateHttpRequest();
         request.user_token = pUserToken;
         request.device_token = pDeviceToken;
+
+        String uctoken = SecurityDelegate.getInstance().calculateMACContent(Method.POST, "uc.mdm",
+                "/device_token=" + pDeviceToken, false);
+
+        JSONObject object = null;
+        object = new JSONObject(uctoken);
+        request.uc.access_token = object.optString("access_token");
+        request.uc.mac = object.optString("mac");
+        request.uc.nonce = object.optString("nonce");
+
+        return postAction().post("/v1.1/registe/activate/", ActivateHttpResult.class, request);
+    }
+
+    public ActivateHttpResult activateUserWithPushChannelType(String pUserToken, String
+            pDeviceToken, int pPushChannelType)
+            throws Exception {
+        ActivateHttpRequest request = new ActivateHttpRequest();
+        request.user_token = pUserToken;
+        request.device_token = pDeviceToken;
+        request.type = pPushChannelType;
 
         String uctoken = SecurityDelegate.getInstance().calculateMACContent(Method.POST, "uc.mdm",
                 "/device_token=" + pDeviceToken, false);

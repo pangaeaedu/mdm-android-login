@@ -10,6 +10,8 @@ public interface IPushModule {
 
     boolean isConnected();
 
+    int getChannelType();
+
     void start();
 
     void stop();

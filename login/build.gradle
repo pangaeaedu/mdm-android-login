@@ -51,4 +51,8 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+configurations {
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+}
+
 tasks.withType(JavaCompile) { options.encoding = "UTF-8" }

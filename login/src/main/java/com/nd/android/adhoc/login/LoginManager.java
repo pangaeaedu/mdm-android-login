@@ -15,6 +15,7 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
@@ -242,7 +243,9 @@ public class LoginManager {
         try {
             String deviceToken = getDeviceToken();
 
-            IBindResult result = getHttpService().bindDevice(deviceToken, pPushID, serialNum);
+            IPushModule pushModule = MdmTransferFactory.getPushModel();
+            IBindResult result = getHttpService().bindDeviceWithChannelType(deviceToken, pPushID,
+                    serialNum, pushModule.getChannelType());
 
             getConfig().saveAutoLogin(result.isAutoLogin());
             if (result.isAutoLogin()) {

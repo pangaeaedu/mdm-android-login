@@ -2,8 +2,6 @@ package com.nd.android.adhoc.login.basicService.http;
 
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
-import com.nd.android.mdm.biz.env.IMdmEnvModule;
-import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONObject;
 
@@ -23,6 +21,19 @@ public class HttpServiceImpl implements IHttpService {
             throws Exception {
         LoginDao dao = new LoginDao(getBaseUrl());
         IBindResult result = dao.bindDevice(pDeviceToken, pPushID, pSerialNum);
+        if(!result.isSuccess()){
+            throw new Exception("Bind Device Failed");
+        }
+
+        return result;
+    }
+
+    @Override
+    public IBindResult bindDeviceWithChannelType(String pDeviceToken, String pPushID,
+                                                 String pSerialNum, int pPushChannelType) throws Exception {
+        LoginDao dao = new LoginDao(getBaseUrl());
+        IBindResult result = dao.bindDeviceWithPushChannelType(pDeviceToken, pPushID,
+                pSerialNum, pPushChannelType);
         if(!result.isSuccess()){
             throw new Exception("Bind Device Failed");
         }
@@ -54,8 +65,9 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     private String getBaseUrl(){
-        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
-        return module.getUrl();
+//        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
+//        return module.getUrl();
+        return "http://192.168.254.23:8090";
     }
 
 }

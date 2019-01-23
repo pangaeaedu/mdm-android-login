@@ -31,6 +31,7 @@ import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
@@ -538,10 +539,12 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
                     getConfig().saveNickname(oldTokenResult.getNick_name());
                     getConfig().saveActivated(true);
 
-                    String pushID = MdmTransferFactory.getPushModel().getDeviceId();
+                    IPushModule pushModule = MdmTransferFactory.getPushModel();
+                    String pushID = pushModule.getDeviceId();
+
                     if(!pushID.equalsIgnoreCase(oldTokenResult.getPush_id())){
-                        IBindResult result = getHttpService().bindDevice(oldToken, pushID, DeviceHelper
-                                .getSerialNumber());
+                        IBindResult result = getHttpService().bindDeviceWithChannelType(oldToken, pushID, DeviceHelper
+                                .getSerialNumber(), pushModule.getChannelType());
                         getConfig().saveAutoLogin(result.isAutoLogin());
                     }
 

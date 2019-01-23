@@ -12,6 +12,9 @@ public interface IHttpService {
     IBindResult bindDevice( String pDeviceToken, String pPushID,
                            String pSerialNum) throws Exception;
 
+    IBindResult bindDeviceWithChannelType( String pDeviceToken, String pPushID,
+                            String pSerialNum, int pPushChannelType) throws Exception;
+
     ActivateHttpResult activateUser(String pUCAccessToken, String pDeviceToken) throws Exception;
 
     GetOldTokenResult getOldDeviceToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,

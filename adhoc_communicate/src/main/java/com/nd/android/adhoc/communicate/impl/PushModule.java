@@ -1,12 +1,13 @@
 package com.nd.android.adhoc.communicate.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.nd.adhoc.push.core.IPushChannel;
 import com.nd.adhoc.push.core.IPushChannelConnectListener;
 import com.nd.adhoc.push.core.IPushChannelDataListener;
 import com.nd.adhoc.push.core.IPushRecvData;
-import com.nd.adhoc.push.core.PushConnectStatus;
+import com.nd.adhoc.push.core.enumConst.PushConnectStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
@@ -28,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import rx.Observer;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -83,12 +87,12 @@ class PushModule implements IPushModule {
     };
 
     PushModule() {
+        Log.e(TAG, "init push module");
         mContext = AdhocBasicConfig.getInstance().getAppContext();
         mConnectListeners = new CopyOnWriteArrayList<>();
 
         initMessageReceiver();
         initPushChannel();
-
     }
 
     private void initMessageReceiver() {
@@ -118,9 +122,27 @@ class PushModule implements IPushModule {
         }
 
         mPushChannel = channels.get(0);
-        mPushChannel.init();
+        Log.e(TAG, "initPushChannel :" + mPushChannel.getClass().getCanonicalName());
         mPushChannel.addConnectListener(mChannelConnectListener);
         mPushChannel.addDataListener(mChannelDataListener);
+        mPushChannel.init(mContext)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean pBoolean) {
+                        Log.e(TAG, "init push channel result:"+pBoolean);
+                    }
+                });
     }
 
     @Override
@@ -134,14 +156,36 @@ class PushModule implements IPushModule {
     }
 
     @Override
+    public int getChannelType() {
+        return mPushChannel.getChannelType();
+    }
+
+    @Override
     public void start() {
-        mPushChannel.start();
+        mPushChannel.start()
+                .observeOn(Schedulers.io())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean pBoolean) {
+
+                    }
+                });
     }
 
 
     @Override
     public void stop() {
-        mPushChannel.start();
+        mPushChannel.stop();
     }
 
     @Override

@@ -10,8 +10,8 @@ dependencies {
     api 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0'
 
 
-    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
-    compile ("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
+//    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
+    compile("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
@@ -53,11 +53,12 @@ dependencies {
     }
 
     api project(':pushcore')
-    api project(':adhocpush')
+//    api project(':adhocpush')
+    api project (":awspushchannel")
 
-    api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
-    api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
-    annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
+    api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+    api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
+    annotationProcessor("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 
 }
 
