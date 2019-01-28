@@ -1,6 +1,12 @@
 dependencies {
 
-    api("com.nd.android.adhoc.basic:adhoc_util_time:$adhoc_basic_version")
+
+
+    try {
+        api project(':adhoc_util_time')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_time:$adhoc_basic_version")
+    }
 
 
     api("com.nd.sdp.adhoc:screen-capture:$screen_capture_version") {
@@ -9,7 +15,11 @@ dependencies {
 
     compile("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
-    api("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version")
+    try{
+        api project(':adhoc_wifi:wifi_sdk')
+    }catch (Exception ignored){
+        api ("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version")
+    }
 
     try {
         api project(':adhoc_communicate')
@@ -36,14 +46,26 @@ dependencies {
     }
 
 
-    api("com.nd.android.adhoc:location_api:$location_verison")
-
-
-    api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version") {
-        exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_basic_ui'
+    try{
+        api project(':location_api')
+    }catch (Exception ignored){
+        api("com.nd.android.adhoc:location_api:$location_verison")
     }
 
-    api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
+
+    try {
+        api project(':adhoc_basic_frame')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version"){
+            exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_basic_ui'
+        }
+    }
+
+    try {
+        api project(':adhoc_basic_ui')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
+    }
 
 
 
