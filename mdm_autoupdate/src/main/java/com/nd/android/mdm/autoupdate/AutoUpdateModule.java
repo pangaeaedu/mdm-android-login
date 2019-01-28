@@ -10,16 +10,16 @@ import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
+import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
-import com.nd.android.adhoc.control.MdmControlFactory;
 import com.nd.android.adhoc.control.define.IControl_Apk;
 import com.nd.android.adhoc.file_transfer.business.download.AdhocDownloader;
 import com.nd.android.adhoc.file_transfer.business.download.listener.DownloadStatusListener;
 import com.nd.android.adhoc.file_transfer.business.download.operator.DownloadListenerManager;
 import com.nd.android.adhoc.file_transfer.business.download.param.AdhocDownloadParams;
 import com.nd.android.adhoc.file_transfer_api.define.AdhocFileStatusConstant;
+import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.android.mdm.biz.common.MsgCode;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
@@ -289,7 +289,7 @@ public class AutoUpdateModule {
             return;
         }
 
-        IControl_Apk control_apk = MdmControlFactory.getInstance().getControl(IControl_Apk.class);
+        IControl_Apk control_apk = ControlFactory.getInstance().getControl(IControl_Apk.class);
 
         if (control_apk != null) {
             mErrorCode = control_apk.install(mApkPath);

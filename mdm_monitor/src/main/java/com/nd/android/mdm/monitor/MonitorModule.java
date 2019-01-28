@@ -23,16 +23,17 @@ import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
+import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
+import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
-import com.nd.android.adhoc.command.normal.response.ResponseLocation;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
-import com.nd.android.adhoc.control.MdmControlFactory;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
 import com.nd.android.adhoc.control.define.IControl_DeviceSerial;
 import com.nd.android.adhoc.location.ILocationNavigation;
 import com.nd.android.adhoc.location.dataDefine.ILocation;
 import com.nd.android.adhoc.location.locationCallBack.ILocationChangeListener;
+import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
 import com.nd.android.mdm.monitor.info.AdhocCpuInfo;
 import com.nd.android.mdm.monitor.info.AdhocMemoryInfo;
@@ -552,18 +553,18 @@ public class MonitorModule implements IMonitor {
         data.put("AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
 
 
-        IControl_DeviceSerial control_deviceSerial = MdmControlFactory.getInstance().getControl(IControl_DeviceSerial.class);
+        IControl_DeviceSerial control_deviceSerial = ControlFactory.getInstance().getControl(IControl_DeviceSerial.class);
         if (control_deviceSerial != null) {
             try {
                 data.put("panelId", control_deviceSerial.getSerialNumber());
             } catch (AdhocException ignored) {
             }
         }
-        IControl_DeviceRomName control_deviceRomName = MdmControlFactory.getInstance().getControl(IControl_DeviceRomName.class);
+        IControl_DeviceRomName control_deviceRomName = ControlFactory.getInstance().getControl(IControl_DeviceRomName.class);
         if (control_deviceRomName != null) {
             data.put("romName", control_deviceRomName.getRomName());
         }
-        IControl_DeviceRomVersion control_deviceRomVersion = MdmControlFactory.getInstance().getControl(IControl_DeviceRomVersion.class);
+        IControl_DeviceRomVersion control_deviceRomVersion = ControlFactory.getInstance().getControl(IControl_DeviceRomVersion.class);
         if (control_deviceRomVersion != null) {
             data.put("romVersion", control_deviceRomVersion.getRomVersion());
         }
@@ -670,18 +671,36 @@ public class MonitorModule implements IMonitor {
     private ILocationChangeListener mLocationChangeListener = new ILocationChangeListener() {
         @Override
         public void onLocationChange(ILocation location) {
-            ResponseLocation responseLocation = new ResponseLocation(
+//            ResponseLocation responseLocation = new ResponseLocation(
+//                    "",
+//                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+//                    mContext.getString(R.string.cmd_location),
+//                    System.currentTimeMillis());
+//            responseLocation.mapType = location.getMapType();
+//            responseLocation.netEnvr = location.getNetEnv();
+//            responseLocation.lat = location.getLat();
+//            responseLocation.lon = location.getLon();
+//            responseLocation.address = location.getAddress();
+//            responseLocation.post();
+
+            IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
+                    "location",
+                    "",
                     "",
                     AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                    mContext.getString(R.string.cmd_location),
                     System.currentTimeMillis());
-            responseLocation.mapType = location.getMapType();
-            responseLocation.netEnvr = location.getNetEnv();
-            responseLocation.lat = location.getLat();
-            responseLocation.lon = location.getLon();
-            responseLocation.address = location.getAddress();
+            JSONObject data = new JSONObject();
+            try {
+                data.put("net_envrm", location.getNetEnv());
+                data.put("maptype", location.getMapType());
+                data.put("lat", location.getLat());
+                data.put("lon", location.getLon());
+                data.put("address", location.getAddress());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            responseLocation.post();
+            response_mdm.setJsonData(data).post();
         }
 
         @Override

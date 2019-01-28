@@ -15,8 +15,9 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
-import com.nd.android.adhoc.control.MdmControlFactory;
+
 import com.nd.android.adhoc.control.define.IControl_Apk;
+import com.nd.android.mdm.basic.ControlFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -258,7 +259,7 @@ public class DaemonModule {
             Logger.d(TAG, "daemon module package exist skip install");
             return;
         }
-        IControl_Apk control_apk = MdmControlFactory.getInstance().getControl(IControl_Apk.class);
+        IControl_Apk control_apk = ControlFactory.getInstance().getControl(IControl_Apk.class);
         if (control_apk != null) {
             mMonitorState.set(STATE_INSTALLING);
             int res = control_apk.install(packagePath);

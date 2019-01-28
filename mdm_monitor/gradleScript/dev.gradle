@@ -61,20 +61,20 @@ dependencies {
         }
     }
 
-    try {
-        api project(':device_command_normal')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc:device_command_normal:$device_command_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.adhoc', module: 'device_command_basic'
-            exclude group: 'com.nd.android.adhoc', module: 'device_control'
-            exclude group: 'com.nd.android.adhoc', module: 'device_control_root'
-            exclude group: 'com.nd.android.adhoc', module: 'device_control_nd3'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_monitor'
-            exclude group: 'com.nd.android.mdm.biz', module: 'wifi_sdk'
-        }
-    }
+//    try {
+//        api project(':device_command_normal')
+//    } catch (Exception ignored) {
+//        api("com.nd.android.adhoc:device_command_normal:$device_command_version") {
+//            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+//            exclude group: 'com.nd.android.adhoc', module: 'device_command_basic'
+//            exclude group: 'com.nd.android.adhoc', module: 'device_control'
+//            exclude group: 'com.nd.android.adhoc', module: 'device_control_root'
+//            exclude group: 'com.nd.android.adhoc', module: 'device_control_nd3'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_monitor'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'wifi_sdk'
+//        }
+//    }
 
     try{
         api project(':location_api')
