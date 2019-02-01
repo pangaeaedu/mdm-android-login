@@ -56,21 +56,18 @@ dependencies {
         }
     }
 
-
-    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
-        transitive = true
-        changing = true
-    }
+//    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
+//        transitive = true
+//        changing = true
+//    }
 
 //    api("com.nd.sdp.android.common:res:0.2.1.8")
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
 
-    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
-
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
-//    compile  'com.nd.sdp.im.common:utils:0.2.98.release'
+    api("com.alibaba:druid:1.0.12")
 }
 
 configurations.all {

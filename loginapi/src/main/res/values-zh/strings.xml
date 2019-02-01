@@ -1,0 +1,7 @@
+<resources>
+    <string name="login_error_device_id_not_confirm">设备ID未确认，请确保服务端接口的正确性</string>
+    <string name="login_error_query_status_error">查询状态失败</string>
+    <string name="login_error_user_not_activated">设备未激活</string>
+
+    <string name="init_api_not_found">Init Api接口未找到</string>
+</resources>

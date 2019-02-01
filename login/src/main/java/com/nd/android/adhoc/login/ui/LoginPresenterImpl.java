@@ -2,8 +2,9 @@ package com.nd.android.adhoc.login.ui;
 
 import android.support.annotation.NonNull;
 
-import com.nd.android.adhoc.login.LoginManager;
-import com.nd.android.adhoc.loginapi.ILoginResult;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.loginapi.ILoginApi;
 
 import rx.Observer;
 import rx.Subscription;
@@ -21,20 +22,27 @@ public class LoginPresenterImpl implements ILoginPresenter {
 
     @Override
     public void login(@NonNull String pUserName, @NonNull String pPassword) {
-        if(mSubscription != null){
+        if (mSubscription != null) {
             mSubscription.unsubscribe();
             mSubscription = null;
         }
 
         mView.showLoading();
-        mSubscription = LoginManager.getInstance().login(pUserName,pPassword)
+
+        ILoginApi api = (ILoginApi) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(ILoginApi.PATH).navigation();
+        if (api == null) {
+            return;
+        }
+
+        mSubscription = api.login(pUserName, pPassword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ILoginResult>() {
+                .subscribe(new Observer<DeviceStatus>() {
                     @Override
                     public void onCompleted() {
                         mSubscription = null;
-                        if(mView != null){
+                        if (mView != null) {
                             mView.cancelLoading();
                         }
                     }
@@ -43,15 +51,15 @@ public class LoginPresenterImpl implements ILoginPresenter {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         mSubscription = null;
-                        if(mView != null){
+                        if (mView != null) {
                             mView.cancelLoading();
                             mView.onLoginFailed(e);
                         }
                     }
 
                     @Override
-                    public void onNext(ILoginResult pResult) {
-                        if(mView != null){
+                    public void onNext(DeviceStatus pResult) {
+                        if (mView != null) {
                             mView.onLoginSuccess(pResult);
                         }
                     }

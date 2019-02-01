@@ -4,39 +4,12 @@ dependencies {
     api ("com.nd.android.adhoc.basic:adhoc-router-api:$adhoc_basic_version")
     api ("io.reactivex:rxjava:1.2.5")
 
-//    api("com.android.support:support-annotations:$androidSupportSdkVersion")
-//    api("com.android.support:support-v4:$androidSupportSdkVersion")
-//
-//    api 'org.apache.commons:commons-lang3:3.6'
-//    api 'commons-net:commons-net:3.5'
-//
-//
-//    api 'com.nd.sdp.android:adhoc-push-util:0.3.18-develop-SNAPSHOT'
-//    api 'com.nd.sdp.adhoc:adhoc-sdk:1.2.16.2006-develop-SNAPSHOT'
-//
-//    api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
-//    api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
-//    api("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
-//    api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
-//    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
-//
-//    try {
-//        api project(':mdm_env')
-//    } catch (Exception ignored) {
-//        api('com.nd.android.mdm.biz:mdm_env:0.0.1-develop-SNAPSHOT')
-//    }
-//
-//    try {
-//        api project(':mdm_biz_common')
-//    } catch (Exception ignored) {
-//        api('com.nd.android.mdm.biz:mdm_biz_common:0.0.6-develop-SNAPSHOT')
-//    }
-//
-//    try {
-//        api project(':mdm_util_cmd')
-//    } catch (Exception ignored) {
-//        api('com.nd.android.mdm.biz:mdm_util_cmd:0.0.6-develop-SNAPSHOT')
-//    }
+    try{
+        api project (":assistant_sdk")
+    }catch(Exception e){
+        api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
+        }
+    }
 
 }
 

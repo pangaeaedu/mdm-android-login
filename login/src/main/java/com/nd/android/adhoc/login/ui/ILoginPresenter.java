@@ -1,7 +1,6 @@
 package com.nd.android.adhoc.login.ui;
 
-
-import com.nd.android.adhoc.loginapi.ILoginResult;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 
 public interface ILoginPresenter {
 
@@ -13,7 +12,7 @@ public interface ILoginPresenter {
         void showLoading();
         void cancelLoading();
 
-        void onLoginSuccess(ILoginResult pResult);
+        void onLoginSuccess(DeviceStatus pResult);
         void onLoginFailed(Throwable pThrowable);
     }
 }

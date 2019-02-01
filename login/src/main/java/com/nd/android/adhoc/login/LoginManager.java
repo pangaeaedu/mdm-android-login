@@ -27,14 +27,10 @@ import com.nd.android.adhoc.login.info.AdhocUserInfoImpl;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 import com.nd.android.adhoc.login.thirdParty.uc.UcLogin;
-import com.nd.android.adhoc.login.thirdParty.uc.UcLoginResult;
-import com.nd.android.adhoc.login.utils.Constants;
-import com.nd.android.adhoc.login.utils.EnvUtils;
 import com.nd.android.adhoc.loginapi.ILoginInfoProvider;
 import com.nd.android.adhoc.loginapi.ILoginResult;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.mdm_feedback_biz.MdmFeedbackReceiveFactory;
-import com.nd.smartcan.accountclient.UCManager;
 
 import org.json.JSONObject;
 
@@ -45,6 +41,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
+@Deprecated
 public class LoginManager {
     private static final String TAG = "LoginManager";
 
@@ -86,8 +83,8 @@ public class LoginManager {
     }
 
     private void initUcEnv() {
-        UCManager.getInstance().setOrgName(Constants.ORG_NAME);
-        EnvUtils.setUcEnv(MdmEvnFactory.getInstance().getCurIndex());
+//        UCManager.getInstance().setOrgName(Constants.ORG_NAME);
+//        EnvUtils.setUcEnv(MdmEvnFactory.getInstance().getCurIndex());
     }
 
     public Observable<Boolean> init() {
@@ -306,12 +303,12 @@ public class LoginManager {
                                         requestPolicySet();
                                         getConfig().saveAccountNum(pUserName);
 
-                                        String name = ((UcLoginResult) pResult).getUser()
-                                                .getUserInfo().getNickName();
-                                        getConfig().saveNickname(name);
+//                                        String name = ((UcLoginResult) pResult).getUser()
+//                                                .getUserInfo().getNickName();
+                                        getConfig().saveNickname(pUserName);
                                         getConfig().saveActivated(true);
 
-                                        notifyLogin(pUserName, name);
+                                        notifyLogin(pUserName, pUserName);
                                         pSubscriber.onNext(pResult);
                                         pSubscriber.onCompleted();
                                     } catch (Exception pE) {

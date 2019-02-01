@@ -53,8 +53,8 @@ dependencies {
     }
 
     api project(':pushcore')
-//    api project(':adhocpush')
-    api project (":awspushchannel")
+    api project(':adhocpush')
+//    api project (":awspushchannel")
 
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
     api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")

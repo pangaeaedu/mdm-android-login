@@ -22,25 +22,19 @@ import android.widget.TextView;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
-import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
-import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
-import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
-import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
-import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
-import com.nd.android.adhoc.login.basicService.http.IBindResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.exception.DeviceBindedException;
-import com.nd.android.adhoc.login.exception.UcUserNullException;
 import com.nd.android.adhoc.login.exception.UcVerificationException;
 import com.nd.android.adhoc.login.exception.UserBindedException;
+import com.nd.android.adhoc.login.exception.UserNullException;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
 import com.nd.android.adhoc.login.ui.widget.CircleImageView;
 import com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils;
@@ -49,7 +43,9 @@ import com.nd.android.adhoc.login.ui.widget.edit.AdHocEditText;
 import com.nd.android.adhoc.login.ui.widget.edit.action.AdHocEditAction;
 import com.nd.android.adhoc.login.ui.widget.edit.strategy.style.UnderlineStyle;
 import com.nd.android.adhoc.login.ui.widget.spinner.CommonAppCompatSpinner;
-import com.nd.android.adhoc.loginapi.ILoginResult;
+import com.nd.android.adhoc.loginapi.IInitApi;
+import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
@@ -58,9 +54,7 @@ import com.nd.android.mdm.biz.env.IMdmEnvModule;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import de.greenrobot.event.EventBus;
-import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -456,35 +450,71 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     }
 
     @Override
-    public void onLoginSuccess(ILoginResult pResult) {
+    public void onLoginSuccess(DeviceStatus pStatus) {
+        if(pStatus == DeviceStatus.Unknown || pStatus == DeviceStatus.Enrolled){
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_not_activated));
+            mLoginPanel.setVisibility(View.VISIBLE);
+            mLoginStatus.setVisibility(View.GONE);
+            return;
+        }
+
         jumpMain();
     }
 
     @Override
     public void onLoginFailed(Throwable pThrowable) {
-        Log.e(TAG, "onLoginFailed:"+pThrowable);
-        if(pThrowable instanceof UcVerificationException
-                || pThrowable instanceof UcUserNullException){
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_uc_verification));
-        } else if(pThrowable instanceof UserBindedException){
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_binded));
-        } else if(pThrowable instanceof DeviceBindedException){
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_binded));
-        } else {
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_other));
-        }
-
+        Log.e(TAG, "onLoginFailed:" + pThrowable);
+        showErrorToast(pThrowable);
         mLoginPanel.setVisibility(View.VISIBLE);
         mLoginStatus.setVisibility(View.GONE);
+    }
+
+    private void showErrorToast(Throwable pThrowable) {
+        if (pThrowable instanceof UcVerificationException
+                || pThrowable instanceof UserNullException) {
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_uc_verification));
+            return;
+        }
+
+        if (pThrowable instanceof UserBindedException) {
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_binded));
+            return;
+        }
+
+        if (pThrowable instanceof DeviceBindedException) {
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_binded));
+            return;
+        }
+
+        if (pThrowable instanceof ConfirmIDServerException) {
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_id_not_confirm));
+            return;
+        }
+
+        if (pThrowable instanceof QueryDeviceStatusServerException) {
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_query_status_error));
+            return;
+        }
+
+        AdhocToastModule.getInstance().showToast(getString(R.string.login_error_other));
     }
 
     @Override
     public void onEnvironmentChanged(@Nullable IMdmEnvModule pOld, @NonNull IMdmEnvModule pNew) {
         showLoading();
-        isDeviceBinded(pNew)
+
+        IInitApi api = (IInitApi) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(IInitApi.PATH).navigation();
+        if (api == null) {
+            AdhocToastModule.getInstance().showToast(getString(R.string.init_api_not_found));
+            return;
+        }
+
+        Logger.i(TAG, "begin to initEnv");
+        api.queryDeviceStatus()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
+                .subscribe(new Observer<DeviceStatus>() {
                     @Override
                     public void onCompleted() {
                         cancelLoading();
@@ -497,65 +527,67 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
                     }
 
                     @Override
-                    public void onNext(Boolean pBoolean) {
-                        if(pBoolean){
-                            jumpMain();
+                    public void onNext(DeviceStatus pStatus) {
+                        if(pStatus == DeviceStatus.Enrolled || pStatus == DeviceStatus.Unknown){
+                            return;
                         }
+
+                        jumpMain();
                     }
                 });
     }
 
-    private Observable<Boolean> isDeviceBinded(final IMdmEnvModule pNew){
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> pSubscriber) {
-                Log.e(TAG, "onEnvironmentChanged:"+pNew.getName()+" org:"+pNew.getOrg());
-                String buildSn = AdhocDeviceUtil.getBuildSN(AdhocBasicConfig.getInstance().getAppContext());
-                String cpuSn = AdhocDeviceUtil.getCpuSN();
-                String imei = AdhocDeviceUtil.getIMEI(AdhocBasicConfig.getInstance().getAppContext());
-                String wifiMac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
-                String blueToothMac = AdhocDeviceUtil.getBloothMac();
-                String serialNo = AdhocDeviceUtil.getSerialNumber();
-                String Token = DeviceHelper.getDeviceTokenFromSystem();
-
-                GetOldTokenResult oldTokenResult = null;
-                try {
-                    oldTokenResult = getHttpService().getOldDeviceToken(buildSn,
-                            cpuSn, imei, wifiMac, blueToothMac, serialNo, Token);
-                    String oldToken = oldTokenResult.getOld_device_token();
-                    getConfig().saveOldDeviceToken(oldToken);
-                    getConfig().saveOldTokenStatus(2);
-
-                    Log.e(TAG, "onEnvironmentChanged OldToken:" + oldTokenResult.getOld_device_token()
-                            + " " + "Status:" + oldTokenResult.getStatus()
-                            + " nickname:" + oldTokenResult.getNick_name()
-                            + " pushID:" + oldTokenResult.getPush_id());
-                    if(TextUtils.isEmpty(oldToken)){
-                        pSubscriber.onNext(false);
-                        pSubscriber.onCompleted();
-                        return;
-                    }
-
-                    getConfig().saveNickname(oldTokenResult.getNick_name());
-                    getConfig().saveActivated(true);
-
-                    IPushModule pushModule = MdmTransferFactory.getPushModel();
-                    String pushID = pushModule.getDeviceId();
-
-                    if(!pushID.equalsIgnoreCase(oldTokenResult.getPush_id())){
-                        IBindResult result = getHttpService().bindDeviceWithChannelType(oldToken, pushID, DeviceHelper
-                                .getSerialNumber(), pushModule.getChannelType());
-                        getConfig().saveAutoLogin(result.isAutoLogin());
-                    }
-
-                    pSubscriber.onNext(true);
-                    pSubscriber.onCompleted();
-                } catch (Exception pE) {
-                    pSubscriber.onError(pE);
-                }
-            }
-        });
-    }
+//    private Observable<Boolean> isDeviceBinded(final IMdmEnvModule pNew){
+//        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+//            @Override
+//            public void call(Subscriber<? super Boolean> pSubscriber) {
+//                Log.e(TAG, "onEnvironmentChanged:"+pNew.getName()+" org:"+pNew.getOrg());
+//                String buildSn = AdhocDeviceUtil.getBuildSN(AdhocBasicConfig.getInstance().getAppContext());
+//                String cpuSn = AdhocDeviceUtil.getCpuSN();
+//                String imei = AdhocDeviceUtil.getIMEI(AdhocBasicConfig.getInstance().getAppContext());
+//                String wifiMac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
+//                String blueToothMac = AdhocDeviceUtil.getBloothMac();
+//                String serialNo = AdhocDeviceUtil.getSerialNumber();
+//                String Token = DeviceHelper.getDeviceTokenFromSystem();
+//
+//                GetOldTokenResult oldTokenResult = null;
+//                try {
+//                    oldTokenResult = getHttpService().getOldDeviceToken(buildSn,
+//                            cpuSn, imei, wifiMac, blueToothMac, serialNo, Token);
+//                    String oldToken = oldTokenResult.getOld_device_token();
+//                    getConfig().saveOldDeviceToken(oldToken);
+//                    getConfig().saveOldTokenStatus(2);
+//
+//                    Log.e(TAG, "onEnvironmentChanged OldToken:" + oldTokenResult.getOld_device_token()
+//                            + " " + "Status:" + oldTokenResult.getStatus()
+//                            + " nickname:" + oldTokenResult.getNick_name()
+//                            + " pushID:" + oldTokenResult.getPush_id());
+//                    if(TextUtils.isEmpty(oldToken)){
+//                        pSubscriber.onNext(false);
+//                        pSubscriber.onCompleted();
+//                        return;
+//                    }
+//
+//                    getConfig().saveNickname(oldTokenResult.getNick_name());
+//                    getConfig().saveActivated(true);
+//
+//                    IPushModule pushModule = MdmTransferFactory.getPushModel();
+//                    String pushID = pushModule.getDeviceId();
+//
+//                    if(!pushID.equalsIgnoreCase(oldTokenResult.getPush_id())){
+//                        IBindResult result = getHttpService().bindDeviceWithChannelType(oldToken, pushID, DeviceHelper
+//                                .getSerialNumber(), pushModule.getChannelType());
+//                        getConfig().saveAutoLogin(result.isAutoLogin());
+//                    }
+//
+//                    pSubscriber.onNext(true);
+//                    pSubscriber.onCompleted();
+//                } catch (Exception pE) {
+//                    pSubscriber.onError(pE);
+//                }
+//            }
+//        });
+//    }
 
     private AssistantSpConfig getConfig() {
         return AssistantBasicServiceFactory.getInstance().getSpConfig();

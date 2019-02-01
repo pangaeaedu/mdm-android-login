@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">LoginApi</string>
+    <string name="login_error_device_id_not_confirm">device id not confirm, please check
+        service interface</string>
+    <string name="login_error_query_status_error">Query device status failed</string>
+    <string name="login_error_user_not_activated">Device not activated</string>
+
+    <string name="init_api_not_found">Init Api接口未找到</string>
 </resources>

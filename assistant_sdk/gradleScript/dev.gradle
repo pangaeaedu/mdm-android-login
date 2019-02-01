@@ -10,6 +10,18 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
     }
+
+    api("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
+
+    try {
+        api project(':adhoc_basic_net')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
+    }
+
+
+    api 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0'
+    api ("com.alibaba:druid:1.0.12")
 }
 
 

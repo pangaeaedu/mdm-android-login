@@ -1,7 +1,15 @@
 package com.nd.android.adhoc.login.basicService.http;
 
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
+import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
+import com.nd.android.adhoc.login.basicService.data.http.GetTokenResult;
+import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
+import com.nd.android.adhoc.login.exception.LoginUserServerException;
+import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
+import com.nd.android.mdm.biz.env.IMdmEnvModule;
+import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONObject;
 
@@ -64,10 +72,53 @@ public class HttpServiceImpl implements IHttpService {
 
     }
 
+    @Override
+    public LoginUserResult login(String pEncryptUserName, String pEncryptPassword) throws Exception {
+        try {
+            LoginDao dao = new LoginDao(getBaseUrl());
+            LoginUserResult result = dao.loginUser(pEncryptUserName, pEncryptPassword);
+            return result;
+        } catch (Exception e) {
+            throw new LoginUserServerException();
+        }
+    }
+
+    @Override
+    public IQueryActivateResult queryActivateResult(String pDeviceID) throws Exception {
+        return null;
+    }
+
+    @Override
+    public GetTokenResult confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
+                                          String pWifiMac, String pBlueToothMac, String pSerialNo,
+                                          String pAndroidID, String pDeviceToken) throws Exception {
+        try {
+            LoginDao dao = new LoginDao(getBaseUrl());
+            GetTokenResult result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+                    pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
+
+            return result;
+        }catch (Exception e){
+            throw new ConfirmIDServerException();
+        }
+
+    }
+
+    @Override
+    public GetDeviceStatusResult getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception {
+        try {
+            LoginDao dao = new LoginDao(getBaseUrl());
+            GetDeviceStatusResult result = dao.getDeviceStatus(pDeviceID, pSerialNum);
+
+            return result;
+        }catch (Exception e){
+            throw new QueryDeviceStatusServerException();
+        }
+    }
+
     private String getBaseUrl(){
-//        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
-//        return module.getUrl();
-        return "http://192.168.254.23:8090";
+        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
+        return module.getUrl();
     }
 
 }
