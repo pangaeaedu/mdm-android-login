@@ -23,16 +23,16 @@ public class DeviceInfoManager {
 
     private BehaviorSubject<String> mPushIDSubject = BehaviorSubject.create();
 
-    public void setDeviceID(@NonNull String pDeviceID){
+    public void setDeviceID(@NonNull String pDeviceID) {
         mDeviceID = pDeviceID;
     }
 
-    public String getDeviceID(){
+    public String getDeviceID() {
         return mDeviceID;
     }
 
-    public DeviceStatus getCurrentStatus(){
-        if(mDeviceStatus == null){
+    public DeviceStatus getCurrentStatus() {
+        if (mDeviceStatus == null) {
             int status = getConfig().getDeviceStatus();
             mDeviceStatus = DeviceStatus.fromValue(status);
         }
@@ -40,22 +40,20 @@ public class DeviceInfoManager {
         return mDeviceStatus;
     }
 
-    public void setCurrentStatus(DeviceStatus pStatus){
+    public void setCurrentStatus(DeviceStatus pStatus) {
         mDeviceStatus = pStatus;
         getConfig().saveDeviceStatus(pStatus.getValue());
     }
 
-    public BehaviorSubject<String> getPushIDSubject(){
+    public BehaviorSubject<String> getPushIDSubject() {
         return mPushIDSubject;
     }
 
-    public void notifyPushID(String pPushID){
+    public void notifyPushID(String pPushID) {
         mPushIDSubject.onNext(pPushID);
     }
 
-
-
-    private static AssistantSpConfig getConfig(){
+    private static AssistantSpConfig getConfig() {
         return AssistantBasicServiceFactory.getInstance().getSpConfig();
     }
 }

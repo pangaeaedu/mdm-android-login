@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.druid.util.Base64;
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
@@ -22,6 +21,7 @@ public class DeviceIDSPUtils {
 
     private static final String TAG = "DeviceIDSPUtils";
 
+    // DeviceID不一样，报日志
     public static void startNewThreadToCheckDeviceIDIntegrity(final Context pContext,
                                                               final String pDeviceID) {
         RxPermissions.getInstance(pContext)
@@ -29,7 +29,7 @@ public class DeviceIDSPUtils {
                 .map(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean pBoolean) {
-                        String encrypt = Base64.byteArrayToBase64(pDeviceID.getBytes());
+                        String encrypt = DeviceIDEncryptUtils.encrypt(pDeviceID);
 
                         String idInCache = DeviceIDFileUtils.loadFromCacheFile(pContext);
                         if (!pDeviceID.equalsIgnoreCase(idInCache)) {

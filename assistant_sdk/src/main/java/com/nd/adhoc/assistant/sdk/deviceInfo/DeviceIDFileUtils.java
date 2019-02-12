@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.alibaba.druid.util.Base64;
 import com.nd.adhoc.assistant.sdk.utils.MD5ArithmeticUtils;
 import com.nd.android.adhoc.basic.util.storage.AdhocFileReadUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocFileWriteUtil;
@@ -61,7 +60,8 @@ public class DeviceIDFileUtils {
             return "";
         }
 
-        return new String(Base64.base64ToByteArray(encrypted));
+//        return new String(Base64.base64ToByteArray(encrypted));
+        return DeviceIDEncryptUtils.decrypt(encrypted);
     }
 
     public static boolean saveDeviceIDToCacheFile(Context pContext, String pEncryptDeviceID) {
