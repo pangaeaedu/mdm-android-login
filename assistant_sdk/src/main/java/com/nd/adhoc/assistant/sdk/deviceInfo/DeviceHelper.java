@@ -8,6 +8,8 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.utils.MD5ArithmeticUtils;
+import com.nd.android.adhoc.control.define.IControl_DeviceSerial;
+import com.nd.android.mdm.basic.ControlFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -105,6 +107,22 @@ public class DeviceHelper {
         return mac;
     }
 
+    public static String getSerialNumberThroughControl(){
+        IControl_DeviceSerial serial = ControlFactory.getInstance().getControl
+                (IControl_DeviceSerial.class);
+        try {
+            String serialNum = serial.getSerialNumber();
+            if(TextUtils.isEmpty(serialNum)){
+                return getSerialNumber();
+            }
+
+            return serialNum;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return getSerialNumber();
+    }
 
     public static String getSerialNumber() {
         String serialNo = android.os.Build.SERIAL;
