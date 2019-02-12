@@ -12,10 +12,10 @@ public interface IInitApi extends IProvider {
     @Deprecated
     Observable<Boolean> initEnv();
 
-//    void onEnvChanged(int pIndex);
-
     Observable<DeviceStatus> initDevice();
 
     Observable<DeviceStatus> queryDeviceStatus();
+
+    void uninit();
 
 }
