@@ -13,6 +13,7 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
 import com.nd.android.adhoc.login.basicService.http.IQueryActivateResult;
 import com.nd.android.adhoc.login.exception.UserNullException;
+import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.LoginNetworkUnavailableException;
 import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
 import com.nd.android.adhoc.loginapi.exception.QueryActivateUserTimeoutException;
@@ -67,13 +68,16 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         String nickname = pResult.getNickname();
 
         for (int i = 0; i < pTimes; i++) {
-            Thread.sleep(i * 3 + 3);
+            Thread.sleep((i * 3 + 1) * 1000);
 
             IQueryActivateResult queryResult = getHttpService().queryActivateResult(pDeviceID);
-            if(!queryResult.isSuccess()){
+            if (!queryResult.isSuccess()) {
                 if (queryResult.getActivateError() == ActivateUserError.Processing) {
+                    //TODO 加上日志上报，不应该经常出现这个Processing
                     continue;
                 }
+
+                //TODO 报日志
                 return onActiveDeviceFailed(queryResult);
             } else {
                 return onActivateDeviceSuccess(username, nickname, queryResult);
@@ -95,6 +99,11 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword) {
+        final String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
+        if(TextUtils.isEmpty(deviceID)){
+            return Observable.error(new DeviceIDNotSetException());
+        }
+
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         if (!AdhocNetworkUtil.isNetWrokAvaiable(context)) {
             return Observable.error(new LoginNetworkUnavailableException());
@@ -109,12 +118,10 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                     @Override
                     public Observable<DeviceStatus> call(IUserLoginResult pResult) {
                         try {
-                            if (pResult == null
-                                    || TextUtils.isEmpty(pResult.getLoginToken())) {
+                            if (pResult == null || TextUtils.isEmpty(pResult.getLoginToken())) {
                                 return Observable.error(new UserNullException());
                             }
 
-                            String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
                             getHttpService().activateUser(pResult.getLoginToken(), deviceID);
 
                             return queryActivateResultUntilTimesReach(3, deviceID, pResult);

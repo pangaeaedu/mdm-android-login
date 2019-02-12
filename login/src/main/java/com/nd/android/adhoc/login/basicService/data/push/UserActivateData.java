@@ -1,8 +1,8 @@
 package com.nd.android.adhoc.login.basicService.data.push;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserActivateData {
-    @JsonProperty("msg")
+//    @JsonProperty("msg")
     public String mMsg = "";
 }

@@ -6,7 +6,7 @@ public class LoginUserResult {
     public String result = "";
     public String username = "";
     public String nickname = "";
-    public String logintoken = "";
+    public String loginToken = "";
 
     public boolean isSuccess(){
         if(TextUtils.isEmpty(result)){

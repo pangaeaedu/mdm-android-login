@@ -2,7 +2,7 @@ package com.nd.android.adhoc.login.processOptimization.login;
 
 import android.text.TextUtils;
 
-import com.alibaba.druid.util.Base64;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDEncryptUtils;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
@@ -22,8 +22,8 @@ public class UserLoginThroughServer implements IUserLogin {
             @Override
             public void call(Subscriber<? super IUserLoginResult> pSubscriber) {
                 try {
-                    String encryptUserName = Base64.byteArrayToBase64(pUserName.getBytes());
-                    String encryptPassword = Base64.byteArrayToAltBase64(pPassword.getBytes());
+                    String encryptUserName = DeviceIDEncryptUtils.encrypt(pUserName);
+                    String encryptPassword = DeviceIDEncryptUtils.encrypt(pPassword);
 
                     LoginUserResult result = getHttpService().login(encryptUserName,
                             encryptPassword);

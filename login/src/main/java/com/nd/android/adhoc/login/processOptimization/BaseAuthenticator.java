@@ -7,7 +7,7 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.login.info.AdhocLoginInfoImpl;
 import com.nd.android.adhoc.login.info.AdhocUserInfoImpl;
 
-public abstract class BaseAuthenticator extends BaseServiceProvider {
+public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     protected IDeviceStatusListener mDeviceStatusListener = null;
 

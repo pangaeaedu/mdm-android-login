@@ -2,10 +2,6 @@ package com.nd.android.adhoc.login.processOptimization.login;
 
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
 
-/**
- * Created by Administrator on 2019/1/31 0031.
- */
-
 public class UserLoginResultImpl implements IUserLoginResult {
 
     private LoginUserResult mData = null;
@@ -25,6 +21,6 @@ public class UserLoginResultImpl implements IUserLoginResult {
 
     @Override
     public String getLoginToken() {
-        return mData.logintoken;
+        return mData.loginToken;
     }
 }

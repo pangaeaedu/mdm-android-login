@@ -9,7 +9,8 @@ public class AssistantAuthenticSystem {
 
     private IDeviceInitiator mDeviceInitiator = null;
     private IUserAuthenticator mUserAuthenticator = null;
-    private IDeviceStatusListener mPostLoginProcessor = null;
+    private IDeviceStatusListener mDeviceStatusListener = null;
+
     private AssistantAuthenticSystem() {
     }
 
@@ -17,7 +18,7 @@ public class AssistantAuthenticSystem {
         if(mDeviceInitiator == null){
             synchronized (this){
                 if(mDeviceInitiator == null){
-                    mDeviceInitiator = new DeviceInitiator(getPostLoginProcessor());
+                    mDeviceInitiator = new DeviceInitiator(getDeviceStatusListener());
                 }
             }
         }
@@ -29,7 +30,7 @@ public class AssistantAuthenticSystem {
         if(mUserAuthenticator == null){
             synchronized (this){
                 if(mUserAuthenticator == null){
-                    mUserAuthenticator = new UserAuthenticator(getPostLoginProcessor());
+                    mUserAuthenticator = new UserAuthenticator(getDeviceStatusListener());
                 }
             }
         }
@@ -37,15 +38,15 @@ public class AssistantAuthenticSystem {
         return mUserAuthenticator;
     }
 
-    private IDeviceStatusListener getPostLoginProcessor(){
-        if(mPostLoginProcessor == null){
+    private IDeviceStatusListener getDeviceStatusListener(){
+        if(mDeviceStatusListener == null){
             synchronized (this){
-                if(mPostLoginProcessor == null){
-                    mPostLoginProcessor = new DeviceStatusListenerImpl();
+                if(mDeviceStatusListener == null){
+                    mDeviceStatusListener = new DeviceStatusListenerImpl();
                 }
             }
         }
 
-        return mPostLoginProcessor;
+        return mDeviceStatusListener;
     }
 }

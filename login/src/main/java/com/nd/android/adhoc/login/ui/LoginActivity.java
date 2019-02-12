@@ -510,7 +510,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
             return;
         }
 
-        Logger.i(TAG, "begin to initEnv");
+        Logger.i(TAG, "begin to query device status");
         api.queryDeviceStatus()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

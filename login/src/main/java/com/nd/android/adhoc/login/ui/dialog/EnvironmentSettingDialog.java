@@ -19,7 +19,6 @@ import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.ui.widget.DensityUtils;
-import com.nd.android.adhoc.login.utils.EnvUtils;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import static com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils.PROPERTIES_COMMON_DIALOG_HEIGHT_SCALE;
@@ -121,7 +120,7 @@ public class EnvironmentSettingDialog extends DialogFragment
 //            spModel.putInt("env",this.position).apply();
 //            this.mOnEnvironmentSettingsListener.onSettings(this.position);
             getConfig().clearData();
-            EnvUtils.setUcEnv(position);
+//            EnvUtils.setUcEnv(position);
             MdmEvnFactory.getInstance().setCurEnvironment(position);
             MdmTransferFactory.getPushModel().start();
         }

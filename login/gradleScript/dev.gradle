@@ -27,6 +27,13 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
     }
 
+    try {
+        api project(':adhoc_util_system')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_system:$adhoc_basic_version")
+    }
+
+
     try{
         api project (':mdm_feedback_biz')
     }catch (Exception e){
@@ -47,7 +54,6 @@ dependencies {
         api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version") {
         }
     }
-
 
     try{
         api project (":assistant_sdk")
@@ -73,4 +79,7 @@ dependencies {
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+configurations {
+    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_system'
 }

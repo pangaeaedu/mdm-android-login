@@ -15,18 +15,20 @@ import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class DeviceStatusListenerImpl extends BaseServiceProvider implements IDeviceStatusListener {
+public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDeviceStatusListener {
     private static final String TAG = "DeviceStatusListener";
 
     private Subscription mSubscription = null;
 
+    // 设备状态是激活的情况下，每次都要去请求PolicySet.
+    // 前提是PushID取到了。所以如果PushID没取到，还得等着
     private void onDeviceActivated(){
         if(mSubscription == null){
             return;
         }
 
-        mSubscription =  DeviceInfoManager.getInstance().getPushIDSubject()
-                .asObservable()
+        mSubscription =  DeviceInfoManager.getInstance()
+                .getPushIDSubject().asObservable()
                 .flatMap(new Func1<String, Observable<Void>>() {
                     @Override
                     public Observable<Void> call(String pS) {
@@ -53,7 +55,6 @@ public class DeviceStatusListenerImpl extends BaseServiceProvider implements IDe
 
                     @Override
                     public void onNext(Void pVoid) {
-
                     }
                 });
     }
@@ -62,7 +63,7 @@ public class DeviceStatusListenerImpl extends BaseServiceProvider implements IDe
     public void onDeviceStatusChanged(DeviceStatus pStatus) {
         Log.w(TAG, "onDeviceStatusChanged:" + pStatus);
         DeviceInfoManager.getInstance().setCurrentStatus(pStatus);
-        if (pStatus == DeviceStatus.Activated) {
+        if (pStatus != DeviceStatus.Enrolled && pStatus != DeviceStatus.WeedOut) {
             onDeviceActivated();
             return;
         }

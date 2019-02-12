@@ -4,17 +4,18 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
-import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetTokenResult;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 
 import rx.Observable;
@@ -91,18 +92,19 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String existPushID = getConfig().getPushID();
 
         if (TextUtils.isEmpty(pushID)) {
+            // 加日志上报
             throw new Exception("get push id from push module return empty");
         }
 
-        if(pushID.equalsIgnoreCase(existPushID)){
+        if (pushID.equalsIgnoreCase(existPushID)) {
             DeviceInfoManager.getInstance().notifyPushID(pushID);
             return;
         }
 
         //Push ID 不一样以后，要先清理掉本地的PushID
         getConfig().clearPushID();
-        String serialNum = AdhocDeviceUtil.getSerialNumber();
-        String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
+        String serialNum = DeviceHelper.getSerialNumberThroughControl();
+        String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         int channelType = module.getChannelType();
 
         getHttpService().bindDeviceWithChannelType(deviceID, pushID, serialNum, channelType);
@@ -116,16 +118,22 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     @Override
                     public void call(Subscriber<? super DeviceStatus> pSubscriber) {
                         try {
-                            String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
-                            String serialNum = AdhocDeviceUtil.getSerialNumber();
+                            String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+                            String serialNum = DeviceHelper.getSerialNumberThroughControl();
 
-                            if(TextUtils.isEmpty(deviceID)){
-                                pSubscriber.onError(new ConfirmIDServerException());
+                            if (TextUtils.isEmpty(deviceID)) {
+                                pSubscriber.onError(new DeviceIDNotSetException());
                                 return;
                             }
 
-                            GetDeviceStatusResult result = getHttpService().getDeviceStatus(deviceID, serialNum);
-                            if(!result.isSuccess()){
+                            GetDeviceStatusResult result = null;
+                            try {
+                                result = getHttpService().getDeviceStatus(deviceID, serialNum);
+                                if (!result.isSuccess()) {
+                                    pSubscriber.onError(new QueryDeviceStatusServerException());
+                                    return;
+                                }
+                            } catch (Exception pE) {
                                 pSubscriber.onError(new QueryDeviceStatusServerException());
                                 return;
                             }
@@ -145,11 +153,18 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 });
     }
 
-    private Observable<String> confirmDeviceID(){
+    private Observable<String> confirmDeviceID() {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> pSubscriber) {
                 try {
+                    String memDeviceID = DeviceInfoManager.getInstance().getDeviceID();
+                    if (!TextUtils.isEmpty(memDeviceID)) {
+                        pSubscriber.onNext(memDeviceID);
+                        pSubscriber.onCompleted();
+                        return;
+                    }
+
                     String deviceID = DeviceIDSPUtils.loadDeviceIDFromSp();
                     Context context = AdhocBasicConfig.getInstance().getAppContext();
 
@@ -158,7 +173,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                         mConfirmDeviceIDSubject.onNext(deviceID);
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     } else {
-                        deviceID = confirmDeviceIDFromServerWhileIDNotFoundInSp();
+                        deviceID = loadSdDeviceIDAndConfirmFromServer();
                         DeviceInfoManager.getInstance().setDeviceID(deviceID);
                         mConfirmDeviceIDSubject.onNext(deviceID);
                         DeviceIDSPUtils.saveDeviceIDToSp(deviceID);
@@ -175,36 +190,44 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> init() {
-        if (mInitSubject == null) {
-            mInitSubject = BehaviorSubject.create();
-            confirmDeviceID()
-                    .flatMap(new Func1<String, Observable<DeviceStatus>>() {
-                        @Override
-                        public Observable<DeviceStatus> call(String pDeviceID) {
-                            return queryDeviceStatus();
-                        }
-                    })
-                    .subscribe(new Subscriber<DeviceStatus>() {
-                        @Override
-                        public void onCompleted() {
-                            mInitSubject.onCompleted();
-                            mInitSubject = null;
-                        }
+        Observable<DeviceStatus> temp;
+        synchronized (DeviceInitiator.this) {
+            if (mInitSubject == null) {
+                mInitSubject = BehaviorSubject.create();
+                confirmDeviceID()
+                        .flatMap(new Func1<String, Observable<DeviceStatus>>() {
+                            @Override
+                            public Observable<DeviceStatus> call(String pDeviceID) {
+                                return queryDeviceStatus();
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Subscriber<DeviceStatus>() {
+                            @Override
+                            public void onCompleted() {
+                                synchronized (DeviceInitiator.this) {
+                                    mInitSubject.onCompleted();
+                                }
+                            }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            mInitSubject.onError(e);
-                            mInitSubject = null;
-                        }
+                            @Override
+                            public void onError(Throwable e) {
+                                synchronized (DeviceInitiator.this) {
+                                    mInitSubject.onError(e);
+                                    mInitSubject = null;
+                                }
+                            }
 
-                        @Override
-                        public void onNext(DeviceStatus pStatus) {
-                            mInitSubject.onNext(pStatus);
-                        }
-                    });
+                            @Override
+                            public void onNext(DeviceStatus pStatus) {
+                                mInitSubject.onNext(pStatus);
+                            }
+                        });
+            }
+            temp = mInitSubject;
         }
+        return temp.asObservable();
 
-        return mInitSubject.asObservable();
     }
 
     @Override
@@ -212,35 +235,48 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
     }
 
-    private String confirmDeviceIDFromServerWhileIDNotFoundInSp() throws Exception{
+    private String loadSdDeviceIDAndConfirmFromServer() throws Exception {
+        String deviceID = loadDeviceIDFromSDCard();
+
+        GetTokenResult result = confirmDeviceIDFromServer(deviceID);
+        if (!result.isSuccess()) {
+            throw new ConfirmIDServerException();
+        }
+
+        // 如果回来跟本地的不一样，报Bugly
+        return result.getDeviceID();
+    }
+
+    private String loadDeviceIDFromSDCard(){
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         String sdCardDeviceID = DeviceIDSPUtils.loadDeviceIDFromSdCard(context);
         String deviceID = "";
-        if(TextUtils.isEmpty(sdCardDeviceID)){
+        if (!TextUtils.isEmpty(sdCardDeviceID)) {
             deviceID = sdCardDeviceID;
         } else {
             deviceID = DeviceIDSPUtils.generateDeviceID();
         }
 
-        GetTokenResult result = confirmDeviceIDFromServer(deviceID);
-        if(!result.isSuccess()){
-            throw new ConfirmIDServerException();
-        }
-
-        return result.getDeviceID();
+        return deviceID;
     }
 
-    private GetTokenResult confirmDeviceIDFromServer(String pLocalDeviceID) throws Exception{
+    private GetTokenResult confirmDeviceIDFromServer(String pLocalDeviceID) throws Exception {
+//        Context context = AdhocBasicConfig.getInstance().getAppContext();
+//        String buildSn = AdhocDeviceUtil.getBuildSN(context);
+//        String cpuSn = AdhocDeviceUtil.getCpuSN();
+//        String imei = AdhocDeviceUtil.getIMEI(context);
+//        String wifiMac = AdhocDeviceUtil.getWifiMac(context);
+//        String blueToothMac = AdhocDeviceUtil.getBloothMac();
+//        String serialNo = DeviceHelper.getSerialNumberThroughControl();
+//        String androidID = AdhocDeviceUtil.getAndroidId(context);
+//
+//        return getHttpService().confirmDeviceID(buildSn, cpuSn, imei, wifiMac,
+//                blueToothMac, serialNo, androidID,pLocalDeviceID);
 
-        String buildSn = AdhocDeviceUtil.getBuildSN(AdhocBasicConfig.getInstance().getAppContext());
-        String cpuSn = AdhocDeviceUtil.getCpuSN();
-        String imei = AdhocDeviceUtil.getIMEI(AdhocBasicConfig.getInstance().getAppContext());
-        String wifiMac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
-        String blueToothMac = AdhocDeviceUtil.getBloothMac();
-        String serialNo = AdhocDeviceUtil.getSerialNumber();
-        String androidID = "";
+        GetTokenResult result = new GetTokenResult();
+        result.device_token = pLocalDeviceID;
+        result.errcode = 0;
 
-        return getHttpService().confirmDeviceID(buildSn, cpuSn, imei, wifiMac,
-                blueToothMac, serialNo, androidID,pLocalDeviceID);
+        return result;
     }
 }

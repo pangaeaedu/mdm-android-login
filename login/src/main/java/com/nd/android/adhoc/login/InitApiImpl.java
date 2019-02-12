@@ -13,9 +13,12 @@ import rx.Observable;
 
 @Route(path = IInitApi.PATH)
 public class InitApiImpl implements IInitApi {
+
+    @Deprecated
     @Override
     public Observable<Boolean> initEnv() {
-        return LoginManager.getInstance().init();
+//        return LoginManager.getInstance().init();
+        return Observable.error(new Exception("not allow to revoke"));
     }
 
     @Override
@@ -28,6 +31,12 @@ public class InitApiImpl implements IInitApi {
     public Observable<DeviceStatus> queryDeviceStatus() {
         IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance().getDeviceInitiator();
         return initiator.queryDeviceStatus();
+    }
+
+    @Override
+    public void uninit() {
+        IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance().getDeviceInitiator();
+        initiator.uninit();
     }
 
     @Override
