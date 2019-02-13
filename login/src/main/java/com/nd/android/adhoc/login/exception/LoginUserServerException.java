@@ -1,4 +1,13 @@
 package com.nd.android.adhoc.login.exception;
 
-public class LoginUserServerException extends Exception {
+import com.nd.android.adhoc.loginapi.exception.BaseInitException;
+
+public class LoginUserServerException extends BaseInitException {
+    public LoginUserServerException(String pMsg) {
+        super(pMsg);
+    }
+
+    public LoginUserServerException(int pCode, String pMsg) {
+        super(pCode, pMsg);
+    }
 }

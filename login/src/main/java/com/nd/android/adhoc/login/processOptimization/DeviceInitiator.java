@@ -9,12 +9,12 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetTokenResult;
-import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 
@@ -237,12 +237,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
     private String loadSdDeviceIDAndConfirmFromServer() throws Exception {
         String deviceID = loadDeviceIDFromSDCard();
-
         GetTokenResult result = confirmDeviceIDFromServer(deviceID);
-        if (!result.isSuccess()) {
-            throw new ConfirmIDServerException();
-        }
-
         // 如果回来跟本地的不一样，报Bugly
         return result.getDeviceID();
     }
@@ -261,22 +256,22 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     private GetTokenResult confirmDeviceIDFromServer(String pLocalDeviceID) throws Exception {
-//        Context context = AdhocBasicConfig.getInstance().getAppContext();
-//        String buildSn = AdhocDeviceUtil.getBuildSN(context);
-//        String cpuSn = AdhocDeviceUtil.getCpuSN();
-//        String imei = AdhocDeviceUtil.getIMEI(context);
-//        String wifiMac = AdhocDeviceUtil.getWifiMac(context);
-//        String blueToothMac = AdhocDeviceUtil.getBloothMac();
-//        String serialNo = DeviceHelper.getSerialNumberThroughControl();
-//        String androidID = AdhocDeviceUtil.getAndroidId(context);
+        Context context = AdhocBasicConfig.getInstance().getAppContext();
+        String buildSn = AdhocDeviceUtil.getBuildSN(context);
+        String cpuSn = AdhocDeviceUtil.getCpuSN();
+        String imei = AdhocDeviceUtil.getIMEI(context);
+        String wifiMac = AdhocDeviceUtil.getWifiMac(context);
+        String blueToothMac = AdhocDeviceUtil.getBloothMac();
+        String serialNo = DeviceHelper.getSerialNumberThroughControl();
+        String androidID = AdhocDeviceUtil.getAndroidId(context);
+
+        return getHttpService().confirmDeviceID(buildSn, cpuSn, imei, wifiMac,
+                blueToothMac, serialNo, androidID,pLocalDeviceID);
+
+//        GetTokenResult result = new GetTokenResult();
+//        result.device_token = pLocalDeviceID;
+//        result.errcode = 0;
 //
-//        return getHttpService().confirmDeviceID(buildSn, cpuSn, imei, wifiMac,
-//                blueToothMac, serialNo, androidID,pLocalDeviceID);
-
-        GetTokenResult result = new GetTokenResult();
-        result.device_token = pLocalDeviceID;
-        result.errcode = 0;
-
-        return result;
+//        return result;
     }
 }

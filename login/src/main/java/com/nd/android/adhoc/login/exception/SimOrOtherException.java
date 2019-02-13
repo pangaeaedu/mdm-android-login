@@ -1,4 +1,13 @@
 package com.nd.android.adhoc.login.exception;
 
-public class SimOrOtherException extends Exception {
+import com.nd.android.adhoc.loginapi.exception.BaseInitException;
+
+public class SimOrOtherException extends BaseInitException {
+    public SimOrOtherException(String pMsg) {
+        super(pMsg);
+    }
+
+    public SimOrOtherException(int pCode, String pMsg) {
+        super(pCode, pMsg);
+    }
 }

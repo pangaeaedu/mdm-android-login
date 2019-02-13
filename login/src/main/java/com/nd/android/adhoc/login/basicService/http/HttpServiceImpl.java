@@ -1,5 +1,8 @@
 package com.nd.android.adhoc.login.basicService.http;
 
+import android.text.TextUtils;
+
+import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
@@ -77,10 +80,19 @@ public class HttpServiceImpl implements IHttpService {
         try {
             LoginDao dao = new LoginDao(getBaseUrl());
             LoginUserResult result = dao.loginUser(pEncryptUserName, pEncryptPassword);
+            if(!result.isSuccess()){
+                throw new LoginUserServerException(result.result);
+            }
+
+            if(TextUtils.isEmpty(result.loginToken)){
+                throw new LoginUserServerException("login token is empty");
+            }
+
             return result;
-        } catch (Exception e) {
-            throw new LoginUserServerException();
+        }catch (AdhocHttpException e){
+            throw new LoginUserServerException(e.getErrorCode(), e.getMessage());
         }
+
     }
 
     @Override
@@ -97,11 +109,14 @@ public class HttpServiceImpl implements IHttpService {
             GetTokenResult result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
                     pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
 
-            return result;
-        }catch (Exception e){
-            throw new ConfirmIDServerException();
-        }
+            if(!result.isSuccess()){
+                throw new ConfirmIDServerException("confirm id not success");
+            }
 
+            return result;
+        }catch (AdhocHttpException e){
+            throw new ConfirmIDServerException(e.getErrorCode(), e.getMessage());
+        }
     }
 
     @Override
@@ -109,10 +124,12 @@ public class HttpServiceImpl implements IHttpService {
         try {
             LoginDao dao = new LoginDao(getBaseUrl());
             GetDeviceStatusResult result = dao.getDeviceStatus(pDeviceID, pSerialNum);
-
+            if (!result.isSuccess()) {
+                throw new QueryDeviceStatusServerException("get device status not success");
+            }
             return result;
-        }catch (Exception e){
-            throw new QueryDeviceStatusServerException();
+        } catch (AdhocHttpException e) {
+            throw new QueryDeviceStatusServerException(e.getErrorCode(), e.getMessage());
         }
     }
 

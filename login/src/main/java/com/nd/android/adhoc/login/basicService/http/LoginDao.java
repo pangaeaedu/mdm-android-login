@@ -42,7 +42,7 @@ public class LoginDao extends AdhocHttpDao {
         }
     }
 
-    public GetDeviceStatusResult getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception {
+    public GetDeviceStatusResult getDeviceStatus(String pDeviceID, String pSerialNum) throws AdhocHttpException {
         Map<String, Object> map = new HashMap<>();
         map.put("device_token", pDeviceID);
         map.put("serial_num", pSerialNum);

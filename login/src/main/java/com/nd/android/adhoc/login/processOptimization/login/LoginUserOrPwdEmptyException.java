@@ -1,8 +1,9 @@
 package com.nd.android.adhoc.login.processOptimization.login;
 
-/**
- * Created by Administrator on 2019/1/30 0030.
- */
+import com.nd.android.adhoc.loginapi.exception.BaseInitException;
 
-public class LoginUserOrPwdEmptyException extends Exception {
+public class LoginUserOrPwdEmptyException extends BaseInitException {
+    public LoginUserOrPwdEmptyException(){
+        super("login user or password can not be empty");
+    }
 }

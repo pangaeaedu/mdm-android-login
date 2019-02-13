@@ -31,10 +31,6 @@ import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
 import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
-import com.nd.android.adhoc.login.exception.DeviceBindedException;
-import com.nd.android.adhoc.login.exception.UcVerificationException;
-import com.nd.android.adhoc.login.exception.UserBindedException;
-import com.nd.android.adhoc.login.exception.UserNullException;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
 import com.nd.android.adhoc.login.ui.widget.CircleImageView;
 import com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils;
@@ -44,8 +40,6 @@ import com.nd.android.adhoc.login.ui.widget.edit.action.AdHocEditAction;
 import com.nd.android.adhoc.login.ui.widget.edit.strategy.style.UnderlineStyle;
 import com.nd.android.adhoc.login.ui.widget.spinner.CommonAppCompatSpinner;
 import com.nd.android.adhoc.loginapi.IInitApi;
-import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
-import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
@@ -470,33 +464,32 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     }
 
     private void showErrorToast(Throwable pThrowable) {
-        if (pThrowable instanceof UcVerificationException
-                || pThrowable instanceof UserNullException) {
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_uc_verification));
-            return;
-        }
+//        if (pThrowable instanceof UcVerificationException) {
+//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_uc_verification));
+//            return;
+//        }
+//
+//        if (pThrowable instanceof UserBindedException) {
+//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_binded));
+//            return;
+//        }
+//
+//        if (pThrowable instanceof DeviceBindedException) {
+//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_binded));
+//            return;
+//        }
+//
+//        if (pThrowable instanceof ConfirmIDServerException) {
+//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_id_not_confirm));
+//            return;
+//        }
+//
+//        if (pThrowable instanceof QueryDeviceStatusServerException) {
+//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_query_status_error));
+//            return;
+//        }
 
-        if (pThrowable instanceof UserBindedException) {
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_binded));
-            return;
-        }
-
-        if (pThrowable instanceof DeviceBindedException) {
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_binded));
-            return;
-        }
-
-        if (pThrowable instanceof ConfirmIDServerException) {
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_id_not_confirm));
-            return;
-        }
-
-        if (pThrowable instanceof QueryDeviceStatusServerException) {
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_query_status_error));
-            return;
-        }
-
-        AdhocToastModule.getInstance().showToast(getString(R.string.login_error_other));
+        AdhocToastModule.getInstance().showToast(pThrowable.getMessage());
     }
 
     @Override

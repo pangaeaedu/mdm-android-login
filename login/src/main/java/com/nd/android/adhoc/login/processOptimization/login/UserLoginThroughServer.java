@@ -28,12 +28,6 @@ public class UserLoginThroughServer implements IUserLogin {
                     LoginUserResult result = getHttpService().login(encryptUserName,
                             encryptPassword);
 
-                    if(!result.isSuccess()){
-                        pSubscriber.onNext(null);
-                        pSubscriber.onCompleted();
-                        return;
-                    }
-
                     IUserLoginResult returnResult = new UserLoginResultImpl(result);
                     pSubscriber.onNext(returnResult);
                     pSubscriber.onCompleted();

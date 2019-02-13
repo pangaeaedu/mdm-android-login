@@ -11,21 +11,21 @@ public class LoginExceptionUtils {
 
     public static Exception convertErrorToException(ActivateUserError pActivateError) {
         if (pActivateError == ActivateUserError.UserVerifyFailed) {
-            return new UcVerificationException();
+            return new UcVerificationException(pActivateError.name());
         }
 
         if (pActivateError == ActivateUserError.UserBinded) {
-            return new UserBindedException();
+            return new UserBindedException(pActivateError.name());
         }
 
         if (pActivateError == ActivateUserError.DeviceBinded) {
-            return new DeviceBindedException();
+            return new DeviceBindedException(pActivateError.name());
         }
 
         if (pActivateError == ActivateUserError.OtherError) {
-            return new SimOrOtherException();
+            return new SimOrOtherException(pActivateError.name());
         }
 
-        return new QueryActivateUserUnknownException();
+        return new QueryActivateUserUnknownException("unknown login exception");
     }
 }

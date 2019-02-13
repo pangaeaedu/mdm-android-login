@@ -13,4 +13,8 @@ public enum ActivateUserError {
     ActivateUserError(String pValue){
         mValue = pValue;
     }
+
+    public String getValue(){
+        return mValue;
+    }
 }

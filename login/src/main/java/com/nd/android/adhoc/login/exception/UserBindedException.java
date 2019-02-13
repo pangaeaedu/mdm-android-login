@@ -1,8 +1,13 @@
 package com.nd.android.adhoc.login.exception;
 
-/**
- * Created by Administrator on 2018/8/17 0017.
- */
+import com.nd.android.adhoc.loginapi.exception.BaseInitException;
 
-public class UserBindedException extends Exception {
+public class UserBindedException extends BaseInitException {
+    public UserBindedException(String pMsg) {
+        super(pMsg);
+    }
+
+    public UserBindedException(int pCode, String pMsg) {
+        super(pCode, pMsg);
+    }
 }

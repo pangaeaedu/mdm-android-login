@@ -12,15 +12,14 @@ import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
 import com.nd.android.adhoc.login.basicService.http.IQueryActivateResult;
-import com.nd.android.adhoc.login.exception.UserNullException;
-import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
-import com.nd.android.adhoc.loginapi.exception.LoginNetworkUnavailableException;
-import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
-import com.nd.android.adhoc.loginapi.exception.QueryActivateUserTimeoutException;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLogin;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLoginResult;
+import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
 import com.nd.android.adhoc.login.processOptimization.login.UserLoginThroughServer;
 import com.nd.android.adhoc.login.processOptimization.utils.LoginExceptionUtils;
+import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
+import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
+import com.nd.android.adhoc.loginapi.exception.QueryActivateUserTimeoutException;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -106,7 +105,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         if (!AdhocNetworkUtil.isNetWrokAvaiable(context)) {
-            return Observable.error(new LoginNetworkUnavailableException());
+            return Observable.error(new NetworkUnavailableException());
         }
 
         if (TextUtils.isEmpty(pUserName) || TextUtils.isEmpty(pPassword)) {
@@ -118,10 +117,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                     @Override
                     public Observable<DeviceStatus> call(IUserLoginResult pResult) {
                         try {
-                            if (pResult == null || TextUtils.isEmpty(pResult.getLoginToken())) {
-                                return Observable.error(new UserNullException());
-                            }
-
                             getHttpService().activateUser(pResult.getLoginToken(), deviceID);
 
                             return queryActivateResultUntilTimesReach(3, deviceID, pResult);
