@@ -12,10 +12,6 @@ import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 public class DeviceIDFileUtils {
 
     public static String loadDeviceIDFromSdCard(Context pContext) {
-        if (AdhocStorageUtil.isSdCardExist()) {
-           return loadFromCacheFile(pContext);
-        }
-
         String idInCache = loadFromCacheFile(pContext);
         String idInSdFile = loadFromSDCardFile(pContext);
         if(TextUtils.isEmpty(idInCache) && !TextUtils.isEmpty(idInSdFile)){
