@@ -62,6 +62,8 @@ dependencies {
         }
     }
 
+//    api("com.nd.android.adhoc.basic:adhoc_basic_log:1.0.169.11f8fc6-hyk0.6.6.0opt-SNAPSHOT") {
+//    }
 //    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
 //        transitive = true
 //        changing = true
@@ -74,12 +76,16 @@ dependencies {
 
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
     api("com.alibaba:druid:1.0.12")
+
+    api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+    api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
+    annotationProcessor("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 }
 
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
-configurations {
-    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_system'
-}
+//configurations {
+//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_system'
+//}

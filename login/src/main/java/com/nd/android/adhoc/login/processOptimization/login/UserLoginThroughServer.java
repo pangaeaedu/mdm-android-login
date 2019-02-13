@@ -23,7 +23,7 @@ public class UserLoginThroughServer implements IUserLogin {
             public void call(Subscriber<? super IUserLoginResult> pSubscriber) {
                 try {
                     String encryptUserName = DeviceIDEncryptUtils.encrypt(pUserName);
-                    String encryptPassword = DeviceIDEncryptUtils.encrypt(pPassword);
+                    String encryptPassword = DeviceIDEncryptUtils.encryptPassword(pPassword);
 
                     LoginUserResult result = getHttpService().login(encryptUserName,
                             encryptPassword);

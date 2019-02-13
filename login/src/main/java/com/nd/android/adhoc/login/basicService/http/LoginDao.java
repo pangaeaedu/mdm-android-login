@@ -6,6 +6,7 @@ import com.nd.android.adhoc.basic.net.constant.AhdocHttpConstants;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
+import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResult;
 import com.nd.android.adhoc.login.basicService.data.http.BindResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
@@ -111,7 +112,7 @@ public class LoginDao extends AdhocHttpDao {
     }
 
     public LoginUserResult loginUser(String pEncryptUsername, String pEncryptPassword)
-            throws Exception {
+            throws AdhocHttpException {
         Map<String, Object> map = new HashMap<>();
         map.put("username", pEncryptUsername);
         map.put("passwd", pEncryptPassword);
@@ -119,12 +120,8 @@ public class LoginDao extends AdhocHttpDao {
         Gson gson = new GsonBuilder().create();
         String content = gson.toJson(map);
 
-        return postAction().post("/v1/user/login/", LoginUserResult.class,
+        return postAction().post("/v1/ucUser/login/", LoginUserResult.class,
                 content, null);
-    }
-
-    public void activateDevice(String pDeviceID, int pChannelType) throws Exception{
-
     }
 
     @Deprecated
@@ -145,6 +142,23 @@ public class LoginDao extends AdhocHttpDao {
 //
 //        return postAction().post("/v1.1/registe/activate/", ActivateHttpResult.class, request);
         return null;
+    }
+
+    public ActivateUserResult activateUser(String pUserToken, String pDeviceID,
+                                           int pChannelType, String pLoginToken) throws AdhocHttpException{
+        Map<String, Object> map = new HashMap<>();
+        map.put("user_token", pUserToken);
+        map.put("device_token", pDeviceID);
+        map.put("type", pChannelType);
+
+        Map<String, String> header = new HashMap<>();
+        map.put("Authorization", pLoginToken);
+
+        Gson gson = new GsonBuilder().create();
+        String content = gson.toJson(map);
+
+        return postAction().post("/v1.1/registe/activate/", ActivateUserResult.class,
+                content, header);
     }
 
     @Deprecated
