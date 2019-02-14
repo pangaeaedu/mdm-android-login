@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.login;
+package com.nd.android.adhoc.login.ui;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
