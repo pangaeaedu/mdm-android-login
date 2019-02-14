@@ -8,14 +8,9 @@ import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.eventListener.IUserActivateListener;
-import com.nd.android.adhoc.login.exception.DeviceBindedException;
-import com.nd.android.adhoc.login.exception.SimOrOtherException;
-import com.nd.android.adhoc.login.exception.UcVerificationException;
-import com.nd.android.adhoc.login.exception.UserBindedException;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLogin;
 import com.nd.android.adhoc.login.thirdParty.IThirdPartyLoginCallBack;
 
-import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public class UcLogin implements IThirdPartyLogin {
@@ -145,24 +140,24 @@ public class UcLogin implements IThirdPartyLogin {
 //                });
     }
 
-    private Observable<UcLoginResult> throwError(UserActivateResult pResult){
-        if (pResult.msgcode.equalsIgnoreCase
-                ("001")) {
-            return Observable.error(new UcVerificationException());
-        }
-
-        if (pResult.msgcode.equalsIgnoreCase
-                ("002")) {
-            return Observable.error(new UserBindedException());
-        }
-
-        if (pResult.msgcode.equalsIgnoreCase
-                ("003")) {
-            return Observable.error(new DeviceBindedException());
-        }
-
-        return Observable.error(new SimOrOtherException());
-    }
+//    private Observable<UcLoginResult> throwError(UserActivateResult pResult){
+//        if (pResult.msgcode.equalsIgnoreCase
+//                ("001")) {
+//            return Observable.error(new UcVerificationException());
+//        }
+//
+//        if (pResult.msgcode.equalsIgnoreCase
+//                ("002")) {
+//            return Observable.error(new UserBindedException());
+//        }
+//
+//        if (pResult.msgcode.equalsIgnoreCase
+//                ("003")) {
+//            return Observable.error(new DeviceBindedException());
+//        }
+//
+//        return Observable.error(new SimOrOtherException());
+//    }
 
     private IHttpService getHttpService() {
         return BasicServiceFactory.getInstance().getHttpService();

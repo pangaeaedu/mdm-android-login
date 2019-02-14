@@ -26,6 +26,6 @@ public class LoginExceptionUtils {
             return new SimOrOtherException(pActivateError.name());
         }
 
-        return new QueryActivateUserUnknownException("unknown login exception");
+        return new QueryActivateUserUnknownException();
     }
 }

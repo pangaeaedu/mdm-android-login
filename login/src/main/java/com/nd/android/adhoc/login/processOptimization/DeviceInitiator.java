@@ -16,7 +16,6 @@ import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetTokenResult;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
-import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -127,16 +126,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             }
 
                             GetDeviceStatusResult result = null;
-                            try {
-                                result = getHttpService().getDeviceStatus(deviceID, serialNum);
-                                if (!result.isSuccess()) {
-                                    pSubscriber.onError(new QueryDeviceStatusServerException());
-                                    return;
-                                }
-                            } catch (Exception pE) {
-                                pSubscriber.onError(new QueryDeviceStatusServerException());
-                                return;
-                            }
+                            result = getHttpService().getDeviceStatus(deviceID, serialNum);
 
                             DeviceStatus curStatus = result.getStatus();
                             if (curStatus == DeviceStatus.Activated) {
