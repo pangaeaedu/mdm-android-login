@@ -52,8 +52,20 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
     }
 
-    api project(':pushcore')
-    api project(':adhocpush')
+    try {
+        api project(':pushcore')
+    } catch (Exception ignored) {
+        api("com.nd.sdp.android:pushcore:$adhoc_push_util_version")
+    }
+
+    try {
+        api project(':adhocpush')
+    } catch (Exception ignored) {
+        api("com.nd.sdp.android:adhocpush:$adhoc_push_util_version")
+    }
+
+
+//    api project(':adhocpush')
 //    api project (":awspushchannel")
 
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
