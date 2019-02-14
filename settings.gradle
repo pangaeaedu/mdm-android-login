@@ -1,4 +1,4 @@
-include ':login', ':loginapi' ,':assistant_sdk'      // 登录 SDK、API
+include ':login',':loginui', ':loginapi' ,':assistant_sdk'      // 登录 SDK、API
 
 include ':mdm_biz_common'           // MDM 业务公共模块
 include ':mdm_env'                  // 环境配置模块
@@ -34,6 +34,7 @@ def map = [:]
 //map["adhoc-androidframework/adhoc_basic/adhoc_basic_net"] = ":adhoc_basic_net"
 //map["adhoc-androidframework/adhoc_basic/adhoc_basic_common"] = ":adhoc_basic_common"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_thread"] = ":adhoc_util_thread"
+
 
 map.each { dirPath, projectName ->
     File file = new File('../' + dirPath)
