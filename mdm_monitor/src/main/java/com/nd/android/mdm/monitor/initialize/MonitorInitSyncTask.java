@@ -8,7 +8,6 @@ import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitPriority;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitSyncAbs;
 import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
-import com.nd.android.mdm.monitor.DaemonModule;
 import com.nd.android.mdm.monitor.MonitorModule;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
@@ -26,7 +25,7 @@ public class MonitorInitSyncTask extends AdhocAppInitSyncAbs {
 //            Intent intent = new Intent(context, AssistantService.class);
 //            context.startService(intent);
 
-            DaemonModule.getInstance().init(context);
+//            DaemonModule.getInstance().init(context);
             MonitorModule.getInstance().init(context);
 
 //            SystemControFactory.getInstance().init();
