@@ -1,0 +1,24 @@
+dependencies {
+    api("com.android.support:support-v4:$androidSupportSdkVersion")
+    compile("com.android.support:design:$androidSupportSdkVersion")
+
+
+    try {
+        api project(':login')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:login:$mdm_biz_version") {
+        }
+    }
+
+    api 'de.greenrobot:eventbus:2.4.0'
+
+    annotationProcessor ("com.nd.android.adhoc.basic:adhoc-router-compiler:$adhoc_basic_version")
+//    api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+//    api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
+//    annotationProcessor("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
+}
+
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}

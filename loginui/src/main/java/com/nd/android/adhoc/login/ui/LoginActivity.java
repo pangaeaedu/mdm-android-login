@@ -28,7 +28,6 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
-import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
@@ -57,7 +56,7 @@ import rx.schedulers.Schedulers;
  * 自组网登录页面
  * //使用loaderManager处理操作逻辑
  */
-@Route(path = "/login/login_activity")
+@Route(path = LoginUiConst.LoginUIPath)
 public class LoginActivity extends AdhocBaseActivity implements View.OnClickListener,
         CommonAppCompatSpinner.OnItemSelectPopListener, ILoginPresenter.IView, IEnvChangedListener {
 

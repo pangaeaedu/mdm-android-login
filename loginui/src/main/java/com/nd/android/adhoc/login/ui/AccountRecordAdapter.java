@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.ui.widget.spinner.CommonAppCompatSpinner;
 import com.nd.android.adhoc.login.ui.widget.spinner.PopSpinnerAdapter;
 

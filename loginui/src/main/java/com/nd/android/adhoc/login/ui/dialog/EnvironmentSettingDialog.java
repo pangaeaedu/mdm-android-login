@@ -17,7 +17,7 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
-import com.nd.android.adhoc.login.R;
+import com.nd.android.adhoc.login.ui.R;
 import com.nd.android.adhoc.login.ui.widget.DensityUtils;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 

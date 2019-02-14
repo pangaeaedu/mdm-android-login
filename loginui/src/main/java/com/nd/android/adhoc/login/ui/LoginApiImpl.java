@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.login;
+package com.nd.android.adhoc.login.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.login.processOptimization.AssistantAuthenticSystem;
 import com.nd.android.adhoc.login.processOptimization.IDeviceInitiator;
 import com.nd.android.adhoc.login.processOptimization.IUserAuthenticator;
-import com.nd.android.adhoc.login.ui.LoginActivity;
 import com.nd.android.adhoc.loginapi.ILoginApi;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 

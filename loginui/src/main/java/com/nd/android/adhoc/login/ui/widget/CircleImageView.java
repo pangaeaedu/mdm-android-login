@@ -20,7 +20,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 
-import com.nd.android.adhoc.login.R;
+import com.nd.android.adhoc.login.ui.R;
 
 
 /**

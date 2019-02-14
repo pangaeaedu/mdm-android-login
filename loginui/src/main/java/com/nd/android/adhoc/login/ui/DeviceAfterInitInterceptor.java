@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.login;
+package com.nd.android.adhoc.login.ui;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -69,13 +69,12 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
     }
 
     protected String getLoginRoutePath(){
-        return "/login/login_activity";
+        return LoginUiConst.LoginUIPath;
     }
 
     private void enterLoginUI() {
         AdhocFrameFactory.getInstance().getAdhocRouter().build(getLoginRoutePath())
                 .navigation(mContext, new NavCallback() {
-
                     @Override
                     public void onInterrupt(@NonNull Postcard postcard) {
                         super.onInterrupt(postcard);

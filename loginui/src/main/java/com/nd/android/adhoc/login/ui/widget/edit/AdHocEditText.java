@@ -14,7 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
-import com.nd.android.adhoc.login.R;
+import com.nd.android.adhoc.login.ui.R;
 import com.nd.android.adhoc.login.ui.widget.edit.action.AdHocEditAction;
 import com.nd.android.adhoc.login.ui.widget.edit.action.DefaultActionInvoation;
 import com.nd.android.adhoc.login.ui.widget.edit.interceptor.Interceptor;
