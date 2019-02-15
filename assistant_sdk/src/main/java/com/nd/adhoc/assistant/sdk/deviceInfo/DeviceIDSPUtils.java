@@ -130,7 +130,7 @@ public class DeviceIDSPUtils {
     }
 
     public static String generateDeviceID(){
-        return UUID.randomUUID().toString().replace("-", "");
+        return "V3"+UUID.randomUUID().toString().replace("-", "");
     }
 
 }
