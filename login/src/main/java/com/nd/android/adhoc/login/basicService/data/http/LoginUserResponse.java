@@ -2,7 +2,7 @@ package com.nd.android.adhoc.login.basicService.data.http;
 
 import android.text.TextUtils;
 
-public class LoginUserResult {
+public class LoginUserResponse {
     public String result = "";
     public String username = "";
     public String nickname = "";

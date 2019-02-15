@@ -1,10 +1,13 @@
 package com.nd.android.adhoc.login.basicService.http;
 
-import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
+import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
+import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
+import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
+import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetTokenResult;
-import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
+import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
+import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
+import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 
 import org.json.JSONObject;
 
@@ -12,25 +15,30 @@ public interface IHttpService {
 
     void requestPolicy(String pDeviceToken, long pTime, JSONObject pData) throws Exception;
 
+    @Deprecated
     IBindResult bindDevice( String pDeviceToken, String pPushID,
                            String pSerialNum) throws Exception;
 
+    @Deprecated
     IBindResult bindDeviceWithChannelType( String pDeviceToken, String pPushID,
                             String pSerialNum, int pPushChannelType) throws Exception;
 
-    ActivateHttpResult activateUser(String pUCAccessToken, String pDeviceToken) throws Exception;
+    BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws Exception;
+
+    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
+                                      ActivateUserType pUserType, String pLoginToken) throws Exception;
 
     GetOldTokenResult getOldDeviceToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
                                         String pBlueToothMac, String pSerialNo, String pDeviceToken) throws Exception;
 
-    LoginUserResult login(String pEncryptUserName, String pEncryptPassword) throws Exception;
+    LoginUserResponse login(String pEncryptUserName, String pEncryptPassword) throws Exception;
 
-    IQueryActivateResult queryActivateResult(String pDeviceID) throws Exception;
+    GetActivateUserResultResponse queryActivateResult(String pDeviceID) throws Exception;
 
-    GetTokenResult confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                   String pBlueToothMac, String pSerialNo, String pAndroidID,
-                                   String pDeviceToken) throws Exception;
+    ConfirmDeviceIDResponse confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
+                                            String pBlueToothMac, String pSerialNo, String pAndroidID,
+                                            String pDeviceToken) throws Exception;
 
-    GetDeviceStatusResult getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception;
+    QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception;
 
 }

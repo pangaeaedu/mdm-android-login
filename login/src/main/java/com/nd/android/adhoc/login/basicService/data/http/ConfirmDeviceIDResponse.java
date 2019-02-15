@@ -7,7 +7,7 @@ import android.text.TextUtils;
     "device_token":"xxxxxxxx"  //应该使用的devicetoken
     "requestid":"xcxxxxxxxxxxxxxxxxxxxxxxxxxxx"   //唯一标识，等于sessionid
  */
-public class GetTokenResult {
+public class ConfirmDeviceIDResponse {
     public int errcode = 0;
     public String device_token = "";
     public String requestid = "";

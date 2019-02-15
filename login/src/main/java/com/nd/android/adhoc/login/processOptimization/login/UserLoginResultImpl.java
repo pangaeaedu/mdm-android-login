@@ -1,11 +1,11 @@
 package com.nd.android.adhoc.login.processOptimization.login;
 
-import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
+import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 
 public class UserLoginResultImpl implements IUserLoginResult {
 
-    private LoginUserResult mData = null;
-    public UserLoginResultImpl(LoginUserResult pData){
+    private LoginUserResponse mData = null;
+    public UserLoginResultImpl(LoginUserResponse pData){
         mData = pData;
     }
 

@@ -22,6 +22,12 @@ dependencies {
     }
 
     try {
+        api project(':adhocpush')
+    } catch (Exception ignored) {
+        api("com.nd.sdp.android:adhocpush:$adhoc_push_util_version")
+    }
+
+    try {
         api project(':adhoc_basic_frame')
     } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")

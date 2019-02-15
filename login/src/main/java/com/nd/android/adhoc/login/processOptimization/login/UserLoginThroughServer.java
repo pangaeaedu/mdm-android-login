@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDEncryptUtils;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
-import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
+import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
 
 import rx.Observable;
@@ -25,7 +25,7 @@ public class UserLoginThroughServer implements IUserLogin {
                     String encryptUserName = DeviceIDEncryptUtils.encrypt(pUserName);
                     String encryptPassword = DeviceIDEncryptUtils.encryptPassword(pPassword);
 
-                    LoginUserResult result = getHttpService().login(encryptUserName,
+                    LoginUserResponse result = getHttpService().login(encryptUserName,
                             encryptPassword);
 
                     IUserLoginResult returnResult = new UserLoginResultImpl(result);

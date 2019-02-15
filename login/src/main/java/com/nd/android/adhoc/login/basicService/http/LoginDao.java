@@ -6,12 +6,8 @@ import com.nd.android.adhoc.basic.net.constant.AhdocHttpConstants;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
-import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResult;
 import com.nd.android.adhoc.login.basicService.data.http.BindResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetTokenResult;
-import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
 
 import org.json.JSONObject;
 
@@ -42,17 +38,6 @@ public class LoginDao extends AdhocHttpDao {
         }
     }
 
-    public GetDeviceStatusResult getDeviceStatus(String pDeviceID, String pSerialNum) throws AdhocHttpException {
-        Map<String, Object> map = new HashMap<>();
-        map.put("device_token", pDeviceID);
-        map.put("serial_num", pSerialNum);
-
-        Gson gson = new GsonBuilder().create();
-        String content = gson.toJson(map);
-
-        return postAction().post("/v1.1/registe/getDeviceStatus/", GetDeviceStatusResult.class,
-                content, null);
-    }
 
     public BindResult bindDevice(String pDeviceToken,String pPushID,
                                  String pSerialNum) throws AdhocHttpException {
@@ -111,19 +96,6 @@ public class LoginDao extends AdhocHttpDao {
         }
     }
 
-    public LoginUserResult loginUser(String pEncryptUsername, String pEncryptPassword)
-            throws AdhocHttpException {
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", pEncryptUsername);
-        map.put("passwd", pEncryptPassword);
-
-        Gson gson = new GsonBuilder().create();
-        String content = gson.toJson(map);
-
-        return postAction().post("/v1/ucUser/login/", LoginUserResult.class,
-                content, null);
-    }
-
     @Deprecated
     public ActivateHttpResult activateUser(String pUserToken, String pDeviceToken)
                             throws Exception {
@@ -144,22 +116,7 @@ public class LoginDao extends AdhocHttpDao {
         return null;
     }
 
-    public ActivateUserResult activateUser(String pUserToken, String pDeviceID,
-                                           int pChannelType, String pLoginToken) throws AdhocHttpException{
-        Map<String, Object> map = new HashMap<>();
-        map.put("user_token", pUserToken);
-        map.put("device_token", pDeviceID);
-        map.put("type", pChannelType);
 
-        Map<String, String> header = new HashMap<>();
-        map.put("Authorization", pLoginToken);
-
-        Gson gson = new GsonBuilder().create();
-        String content = gson.toJson(map);
-
-        return postAction().post("/v1.1/registe/activate/", ActivateUserResult.class,
-                content, header);
-    }
 
     @Deprecated
     public ActivateHttpResult activateUserWithPushChannelType(String pUserToken, String
@@ -183,45 +140,8 @@ public class LoginDao extends AdhocHttpDao {
         return null;
     }
 
-    /*
-     "hardware":{
-       "build_sn": "08002800A8C5"  //设备唯一标识，選填
-       "cpu_sn": "08002800A8C5"  //设备唯一标识，選填
-       "imei": "08002800A8C5"  //设备唯一标识，選填
-       "wifi_mac": "08002800A8C5"  //设备唯一标识，選填
-       "btooth_mac": "08002800A8C5"  //设备唯一标识，選填
-       "android_id":"xxxxxxxx"
-       "serial_no": "08002800A8C5"  //设备唯一标识，選填
-     }
-    "device_token":"xxxxxxxx" //新的devicetoken
-     */
-    public GetTokenResult confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                          String pBlueToothMac, String pSerialNo, String pAndroidID,
-                                          String pDeviceID) throws Exception{
-        Map<String, Object> mapHardware = new HashMap<>();
-        mapHardware.put("build_sn", pBuildSn);
-        mapHardware.put("cpu_sn", pCpuSn);
-        mapHardware.put("imei", pIMEI);
-        mapHardware.put("wifi_mac", pWifiMac);
-        mapHardware.put("btooth_mac", pBlueToothMac);
-        mapHardware.put("serial_no", pSerialNo);
-        mapHardware.put("android_id", pAndroidID);
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("hardware", mapHardware);
-        data.put("device_token", pDeviceID);
-
-        try {
-            Gson gson = new GsonBuilder().create();
-            String content = gson.toJson(data);
-
-            return postAction().post("/v1.1/registe/getDeviceToken/", GetTokenResult.class,
-                    content, null);
-        } catch (RuntimeException e) {
-            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
-        }
-    }
-
+    @Deprecated
     public GetOldTokenResult getOldToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
                                          String pBlueToothMac, String pSerialNo,
                                          String pDeviceToken)

@@ -12,6 +12,7 @@ import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
 import com.nd.android.adhoc.login.basicService.http.IQueryActivateResult;
+import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLogin;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLoginResult;
 import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
@@ -19,7 +20,6 @@ import com.nd.android.adhoc.login.processOptimization.login.UserLoginThroughServ
 import com.nd.android.adhoc.login.processOptimization.utils.LoginExceptionUtils;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
-import com.nd.android.adhoc.loginapi.exception.QueryActivateUserTimeoutException;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -61,30 +61,30 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         return Observable.error(activateException);
     }
 
-    private Observable<DeviceStatus> queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
-                                                                        IUserLoginResult pResult) throws Exception {
-        String username = pResult.getUsername();
-        String nickname = pResult.getNickname();
-
-        for (int i = 0; i < pTimes; i++) {
-            Thread.sleep((i * 3 + 1) * 1000);
-
-            IQueryActivateResult queryResult = getHttpService().queryActivateResult(pDeviceID);
-            if (!queryResult.isSuccess()) {
-                if (queryResult.getActivateError() == ActivateUserError.Processing) {
-                    //TODO 加上日志上报，不应该经常出现这个Processing
-                    continue;
-                }
-
-                //TODO 报日志
-                return onActiveDeviceFailed(queryResult);
-            } else {
-                return onActivateDeviceSuccess(username, nickname, queryResult);
-            }
-        }
-
-        return Observable.error(new QueryActivateUserTimeoutException());
-    }
+//    private Observable<DeviceStatus> queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
+//                                                                        IUserLoginResult pResult) throws Exception {
+//        String username = pResult.getUsername();
+//        String nickname = pResult.getNickname();
+//
+//        for (int i = 0; i < pTimes; i++) {
+//            Thread.sleep((i * 3 + 1) * 1000);
+//
+//            IQueryActivateResult queryResult = getHttpService().queryActivateResult(pDeviceID);
+//            if (!queryResult.isSuccess()) {
+//                if (queryResult.getActivateError() == ActivateUserError.Processing) {
+//                    //TODO 加上日志上报，不应该经常出现这个Processing
+//                    continue;
+//                }
+//
+//                //TODO 报日志
+//                return onActiveDeviceFailed(queryResult);
+//            } else {
+//                return onActivateDeviceSuccess(username, nickname, queryResult);
+//            }
+//        }
+//
+//        return Observable.error(new QueryActivateUserTimeoutException());
+//    }
 
     private void saveLoginInfo(String pUserName, String pNickName) {
         getConfig().saveAccountNum(pUserName);
@@ -116,13 +116,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(IUserLoginResult pResult) {
-                        try {
-                            getHttpService().activateUser(pResult.getLoginToken(), deviceID);
-
-                            return queryActivateResultUntilTimesReach(3, deviceID, pResult);
-                        } catch (Exception e) {
-                            return Observable.error(e);
-                        }
+                        return activeUser(ActivateUserType.Uc, pResult.getLoginToken());
                     }
                 });
 

@@ -3,16 +3,18 @@ package com.nd.android.adhoc.login.basicService.http;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
-import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetDeviceStatusResult;
+import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
+import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
+import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
+import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetTokenResult;
-import com.nd.android.adhoc.login.basicService.data.http.LoginUserResult;
+import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
+import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
+import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.exception.LoginUserServerException;
+import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
-import com.nd.android.mdm.biz.env.IMdmEnvModule;
-import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONObject;
 
@@ -26,6 +28,7 @@ public class HttpServiceImpl implements IHttpService {
         dao.requestPolicySet(pDeviceToken, pTime, pData);
     }
 
+    @Deprecated
     @Override
     public IBindResult bindDevice(String pDeviceToken, String pPushID, String
             pSerialNum)
@@ -39,6 +42,7 @@ public class HttpServiceImpl implements IHttpService {
         return result;
     }
 
+    @Deprecated
     @Override
     public IBindResult bindDeviceWithChannelType(String pDeviceToken, String pPushID,
                                                  String pSerialNum, int pPushChannelType) throws Exception {
@@ -53,14 +57,28 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public ActivateHttpResult activateUser(String pUCAccessToken, String pDeviceToken) throws Exception {
-       LoginDao dao = new LoginDao(getBaseUrl());
-        ActivateHttpResult result = dao.activateUser(pUCAccessToken, pDeviceToken);
-        if(result.result.equalsIgnoreCase("success")){
-            return result;
+    public BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        BindPushIDResponse result = dao.bindDeviceIDToPushID(pDeviceID, pPushID);
+
+        if(!result.isSuccess()){
+            throw new Exception("Bind Device Failed");
         }
 
-        throw new Exception("activate user failed");
+        return result;
+    }
+
+    public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, ActivateUserType pUserType,
+                                             String pLoginToken) throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo, pUserType,
+                pLoginToken);
+
+        if (!response.isSuccess()) {
+            throw new ActivateUserServerException("active user failed");
+        }
+
+        return response;
     }
 
     @Override
@@ -76,10 +94,10 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public LoginUserResult login(String pEncryptUserName, String pEncryptPassword) throws Exception {
+    public LoginUserResponse login(String pEncryptUserName, String pEncryptPassword) throws Exception {
         try {
-            LoginDao dao = new LoginDao(getBaseUrl());
-            LoginUserResult result = dao.loginUser(pEncryptUserName, pEncryptPassword);
+            EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+            LoginUserResponse result = dao.loginUser(pEncryptUserName, pEncryptPassword);
             if(!result.isSuccess()){
                 throw new LoginUserServerException(result.result);
             }
@@ -96,17 +114,25 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public IQueryActivateResult queryActivateResult(String pDeviceID) throws Exception {
-        return null;
+    public GetActivateUserResultResponse queryActivateResult(String pDeviceID)
+            throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        GetActivateUserResultResponse result = dao.getActivateResult(pDeviceID);
+
+        if (!result.isSuccess()) {
+            throw new Exception("query activate result not success");
+        }
+
+        return result;
     }
 
     @Override
-    public GetTokenResult confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
-                                          String pWifiMac, String pBlueToothMac, String pSerialNo,
-                                          String pAndroidID, String pDeviceToken) throws Exception {
+    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
+                                                   String pWifiMac, String pBlueToothMac, String pSerialNo,
+                                                   String pAndroidID, String pDeviceToken) throws Exception {
         try {
-            LoginDao dao = new LoginDao(getBaseUrl());
-            GetTokenResult result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+            EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+            ConfirmDeviceIDResponse result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
                     pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
 
             if(!result.isSuccess()){
@@ -120,10 +146,10 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public GetDeviceStatusResult getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception {
+    public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception {
         try {
-            LoginDao dao = new LoginDao(getBaseUrl());
-            GetDeviceStatusResult result = dao.getDeviceStatus(pDeviceID, pSerialNum);
+            EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+            QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum);
             if (!result.isSuccess()) {
                 throw new QueryDeviceStatusServerException("get device status not success");
             }
@@ -134,8 +160,9 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     private String getBaseUrl(){
-        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
-        return module.getUrl();
+//        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
+//        return module.getUrl();
+        return "http://192.168.254.23:8090";
     }
 
 }
