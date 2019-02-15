@@ -46,8 +46,8 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
     }
 
     private void enterAfterLoginUI() {
-        AdhocFrameFactory.getInstance().getAdhocRouter().build( AdhocRouteConstant.PATH_AFTER_LOGIN)
-                .navigation(mContext, new NavCallback() {
+        AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(AdhocRouteConstant.PATH_AFTER_LOGIN).navigation(mContext, new NavCallback() {
 
                     @Override
                     public void onInterrupt(@NonNull Postcard postcard) {

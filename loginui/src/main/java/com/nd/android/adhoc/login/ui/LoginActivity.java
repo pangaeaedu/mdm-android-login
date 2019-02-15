@@ -24,6 +24,7 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
+import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
@@ -334,7 +335,8 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
      * 跳转至主页
      */
     private void jumpMain() {
-         AdhocFrameFactory.getInstance().getAdhocRouter().build("/component_main/main_activity")
+        AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(AdhocRouteConstant.PATH_AFTER_LOGIN)
                 .navigation(this, new NavCallback() {
 
                     @Override
@@ -444,7 +446,9 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
     @Override
     public void onLoginSuccess(DeviceStatus pStatus) {
-        if(pStatus == DeviceStatus.Unknown || pStatus == DeviceStatus.Enrolled){
+        if(pStatus == DeviceStatus.Unknown
+                || pStatus == DeviceStatus.Enrolled
+                || pStatus == DeviceStatus.Init){
             AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_not_activated));
             mLoginPanel.setVisibility(View.VISIBLE);
             mLoginStatus.setVisibility(View.GONE);
@@ -520,7 +524,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
                     @Override
                     public void onNext(DeviceStatus pStatus) {
-                        if(pStatus == DeviceStatus.Enrolled || pStatus == DeviceStatus.Unknown){
+                        if(pStatus == DeviceStatus.Enrolled || pStatus == DeviceStatus.Init){
                             return;
                         }
 
