@@ -91,12 +91,14 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String pushID = module.getDeviceId();
         String existPushID = getConfig().getPushID();
 
+        Log.e(TAG, "push id:"+pushID+" exist push id:"+existPushID);
         if (TextUtils.isEmpty(pushID)) {
             // 加日志上报
             throw new Exception("get push id from push module return empty");
         }
 
         if (pushID.equalsIgnoreCase(existPushID)) {
+            Log.e(TAG, "notify pushid exist:"+existPushID);
             DeviceInfoManager.getInstance().notifyPushID(pushID);
             return;
         }
@@ -107,6 +109,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         getHttpService().bindDeviceIDToPushID(deviceID, pushID);
         getConfig().savePushID(pushID);
+        Log.e(TAG, "notify pushid after bind:"+existPushID);
         DeviceInfoManager.getInstance().notifyPushID(pushID);
     }
 
@@ -125,6 +128,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             }
 
                             QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceID, serialNum);
+                            saveLoginInfo(result.getNickname(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
                             if (curStatus == DeviceStatus.Activated) {

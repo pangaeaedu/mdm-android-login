@@ -15,6 +15,8 @@ public class QueryDeviceStatusResponse {
     public int errcode = 0;
     public int status = 1;
     private int login_auto = 0;
+    private String nick_name = "";
+
     public String requestid = "";
 
     public boolean isSuccess(){
@@ -25,6 +27,9 @@ public class QueryDeviceStatusResponse {
         return DeviceStatus.fromValue(status);
     }
 
+    public String getNickname(){
+        return nick_name;
+    }
     public boolean isAutoLogin(){
         return login_auto == 1;
     }

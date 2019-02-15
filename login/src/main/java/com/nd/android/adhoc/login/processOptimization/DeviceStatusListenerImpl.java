@@ -23,11 +23,12 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
     // 设备状态是激活的情况下，每次都要去请求PolicySet.
     // 前提是PushID取到了。所以如果PushID没取到，还得等着
     private void onDeviceActivated(){
-        if(mSubscription == null){
+        if(mSubscription != null){
             return;
         }
 
-        mSubscription =  DeviceInfoManager.getInstance()
+        Log.e(TAG, "requestPolicySet");
+        mSubscription = DeviceInfoManager.getInstance()
                 .getPushIDSubject().asObservable()
                 .flatMap(new Func1<String, Observable<Void>>() {
                     @Override
@@ -61,7 +62,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
 
     @Override
     public void onDeviceStatusChanged(DeviceStatus pStatus) {
-        Log.w(TAG, "onDeviceStatusChanged:" + pStatus);
+        Log.e(TAG, "onDeviceStatusChanged:" + pStatus);
         DeviceInfoManager.getInstance().setCurrentStatus(pStatus);
         if (pStatus != DeviceStatus.Enrolled && pStatus != DeviceStatus.WeedOut) {
             onDeviceActivated();
@@ -73,8 +74,9 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
         try {
             String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
             long pTime = getConfig().getPolicySetTime();
-            ILoginInfoProvider provider = (ILoginInfoProvider) AdhocFrameFactory.getInstance().getAdhocRouter()
-                    .build(ILoginInfoProvider.PATH).navigation();
+
+            ILoginInfoProvider provider = (ILoginInfoProvider) AdhocFrameFactory.getInstance()
+                    .getAdhocRouter().build(ILoginInfoProvider.PATH).navigation();
             if (provider == null) {
                 throw new Exception("login info provider not exist");
             }

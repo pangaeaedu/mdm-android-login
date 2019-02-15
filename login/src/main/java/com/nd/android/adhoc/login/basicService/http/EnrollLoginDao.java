@@ -14,6 +14,8 @@ import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusRespon
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.enumConst.DeviceType;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,6 +90,21 @@ public class EnrollLoginDao extends AdhocHttpDao {
                 content, header);
     }
 
+    public void requestPolicySet(String pDeviceToken, long pTime, JSONObject pData) throws
+            AdhocHttpException {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("device_token",pDeviceToken);
+            object.put("crtime", pTime);
+            object.put("data", pData);
+            object.put("type", 1);
+            String content = object.toString();
+            String result = postAction().post("/v1.1/enroll/policyset/",
+                    String.class, content, null);
+        } catch (Exception e) {
+            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+        }
+    }
 
     public BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws AdhocHttpException {
         Map<String, Object> map = new HashMap<>();

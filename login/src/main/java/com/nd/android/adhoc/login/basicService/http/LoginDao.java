@@ -8,6 +8,7 @@ import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.http.BindResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
+import com.nd.android.adhoc.login.enumConst.DeviceType;
 
 import org.json.JSONObject;
 
@@ -22,6 +23,7 @@ public class LoginDao extends AdhocHttpDao {
         super(pBaseUrl);
     }
 
+    @Deprecated
     public void requestPolicySet(String pDeviceToken, long pTime, JSONObject pData) throws
             AdhocHttpException {
         try {
@@ -29,7 +31,7 @@ public class LoginDao extends AdhocHttpDao {
             object.put("device_token",pDeviceToken);
             object.put("crtime", pTime);
             object.put("data", pData);
-            object.put("type", 1);
+            object.put("type", DeviceType.Android.getValue());
             String content = object.toString();
             String result = postAction().post("/v1.1/registe/policyset/",
                     String.class, content, null);

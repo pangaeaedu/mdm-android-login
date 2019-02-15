@@ -24,7 +24,7 @@ public class HttpServiceImpl implements IHttpService {
 
     @Override
     public void requestPolicy(String pDeviceToken, long pTime, JSONObject pData) throws Exception {
-        LoginDao dao = new LoginDao(getBaseUrl());
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
         dao.requestPolicySet(pDeviceToken, pTime, pData);
     }
 

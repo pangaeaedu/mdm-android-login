@@ -110,10 +110,10 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 //        return Observable.error(new QueryActivateUserTimeoutException());
 //    }
 
-    private void saveLoginInfo(String pUserName, String pNickName) {
-        getConfig().saveAccountNum(pUserName);
-        getConfig().saveNickname(pNickName);
-    }
+//    private void saveLoginInfo(String pUserName, String pNickName) {
+//        getConfig().saveAccountNum(pUserName);
+//        getConfig().saveNickname(pNickName);
+//    }
 
     @NonNull
     private IUserLogin getLogin() {
