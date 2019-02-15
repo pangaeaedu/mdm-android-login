@@ -2,6 +2,7 @@ package com.nd.android.adhoc.login.processOptimization;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
@@ -23,6 +24,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     protected IDeviceStatusListener mDeviceStatusListener = null;
 
+    private static String TAG = "BaseAuthenticator";
     public BaseAuthenticator(IDeviceStatusListener pListener) {
         mDeviceStatusListener = pListener;
     }
@@ -45,7 +47,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             @Override
             public void call(Subscriber<? super DeviceStatus> pSubscriber) {
                 try {
-                    ActivateUserResponse response = null;
+
                     String deviceID = DeviceInfoManager.getInstance().getDeviceID();
                     String serialNum = DeviceHelper.getSerialNumberThroughControl();
                     if (TextUtils.isEmpty(deviceID) || TextUtils.isEmpty(serialNum)) {
@@ -53,8 +55,10 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         return;
                     }
 
-                    getHttpService().activateUser(deviceID, serialNum, pUserType, pLoginToken);
-                    queryActivateResultUntilTimesReach(3, deviceID, pSubscriber);
+                    ActivateUserResponse response = getHttpService().activateUser(deviceID,
+                            serialNum, pUserType, pLoginToken);
+                    queryActivateResultUntilTimesReach(3, deviceID, response.getRequestid(),
+                            pSubscriber);
                 } catch (Exception e) {
                     pSubscriber.onError(e);
                 }
@@ -68,17 +72,20 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     }
 
     protected void queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
-                                                      Subscriber<? super DeviceStatus> pSubscriber) throws Exception {
+                                                      String pRequestID, Subscriber<? super DeviceStatus> pSubscriber) throws Exception {
         for (int i = 0; i < pTimes; i++) {
             Thread.sleep((i * 3 + 1) * 1000);
 
-            GetActivateUserResultResponse queryResult = getHttpService().queryActivateResult(pDeviceID);
+            GetActivateUserResultResponse queryResult = getHttpService()
+                    .queryActivateResult(pDeviceID, pRequestID);
             if (!queryResult.isSuccess()) {
                 if (queryResult.isActivateStillProcessing()) {
                     //TODO 加上日志上报，不应该经常出现这个Processing
+                    Log.e(TAG, "query not finish, still processing");
                     continue;
                 }
 
+                Log.e(TAG, "query error:"+queryResult.getMsgcode());
                 //TODO 报日志
                 pSubscriber.onError(new Exception("active user error:" + queryResult.getMsgcode()));
                 return;

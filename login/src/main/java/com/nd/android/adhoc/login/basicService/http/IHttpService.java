@@ -33,7 +33,8 @@ public interface IHttpService {
 
     LoginUserResponse login(String pEncryptUserName, String pEncryptPassword) throws Exception;
 
-    GetActivateUserResultResponse queryActivateResult(String pDeviceID) throws Exception;
+    GetActivateUserResultResponse queryActivateResult(String pDeviceID, String pRequestID) throws
+            Exception;
 
     ConfirmDeviceIDResponse confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
                                             String pBlueToothMac, String pSerialNo, String pAndroidID,

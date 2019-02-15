@@ -114,14 +114,14 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     @Override
-    public GetActivateUserResultResponse queryActivateResult(String pDeviceID)
+    public GetActivateUserResultResponse queryActivateResult(String pDeviceID, String pRequestID)
             throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-        GetActivateUserResultResponse result = dao.getActivateResult(pDeviceID);
+        GetActivateUserResultResponse result = dao.getActivateResult(pDeviceID, pRequestID);
 
-        if (!result.isSuccess()) {
-            throw new Exception("query activate result not success");
-        }
+//        if (!result.isSuccess()) {
+//            throw new Exception("query activate result not success");
+//        }
 
         return result;
     }

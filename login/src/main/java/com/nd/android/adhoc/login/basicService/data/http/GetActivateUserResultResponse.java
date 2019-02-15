@@ -41,7 +41,8 @@ public class GetActivateUserResultResponse {
     }
 
     public boolean isActivateStillProcessing(){
-        if(msgcode.equalsIgnoreCase("0010")){
+        if(msgcode.equalsIgnoreCase("0010")
+                || msgcode.equalsIgnoreCase("0020")){
             return true;
         }
 

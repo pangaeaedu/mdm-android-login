@@ -10,16 +10,17 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
-import com.nd.android.adhoc.login.basicService.http.IQueryActivateResult;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLogin;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLoginResult;
 import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
 import com.nd.android.adhoc.login.processOptimization.login.UserLoginThroughServer;
-import com.nd.android.adhoc.login.processOptimization.utils.LoginExceptionUtils;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
+import com.nd.android.adhoc.router_api.facade.Postcard;
+import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -42,24 +43,47 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         api.onLogout();
 
         mDeviceStatusListener.onDeviceStatusChanged(DeviceStatus.Enrolled);
+
+        ActivityStackManager.INSTANCE.closeAllActivitys();
+        enterLogoutUI();
     }
 
-    private Observable<DeviceStatus> onActivateDeviceSuccess(String pUsername,
-                                                             String pNickName,
-                                                             IQueryActivateResult pResult){
-        DeviceStatus status = pResult.getDeviceStatus();
-        saveLoginInfo(pUsername, pNickName);
-        notifyLogin(pUsername, pNickName);
-        mDeviceStatusListener.onDeviceStatusChanged(status);
+    private void enterLogoutUI() {
+        Context context = AdhocBasicConfig.getInstance().getAppContext();
+        AdhocFrameFactory.getInstance().getAdhocRouter().build(AdhocRouteConstant.PATH_AFTER_LOGOUT)
+                .navigation(context, new NavCallback() {
+                    @Override
+                    public void onInterrupt(@NonNull Postcard postcard) {
+                        super.onInterrupt(postcard);
+                    }
 
-        return Observable.just(status);
+                    @Override
+                    public void onLost(@NonNull Postcard postcard) {
+                        super.onLost(postcard);
+                    }
+
+                    @Override
+                    public void onArrival(@NonNull Postcard postcard) {
+                    }
+                });
     }
 
-    private Observable<DeviceStatus> onActiveDeviceFailed(IQueryActivateResult pResult){
-        ActivateUserError error = pResult.getActivateError();
-        Exception activateException = LoginExceptionUtils.convertErrorToException(error);
-        return Observable.error(activateException);
-    }
+//    private Observable<DeviceStatus> onActivateDeviceSuccess(String pUsername,
+//                                                             String pNickName,
+//                                                             IQueryActivateResult pResult){
+//        DeviceStatus status = pResult.getDeviceStatus();
+//        saveLoginInfo(pUsername, pNickName);
+//        notifyLogin(pUsername, pNickName);
+//        mDeviceStatusListener.onDeviceStatusChanged(status);
+//
+//        return Observable.just(status);
+//    }
+//
+//    private Observable<DeviceStatus> onActiveDeviceFailed(IQueryActivateResult pResult){
+//        ActivateUserError error = pResult.getActivateError();
+//        Exception activateException = LoginExceptionUtils.convertErrorToException(error);
+//        return Observable.error(activateException);
+//    }
 
 //    private Observable<DeviceStatus> queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
 //                                                                        IUserLoginResult pResult) throws Exception {

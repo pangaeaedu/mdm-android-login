@@ -16,10 +16,14 @@ public class ActivateUserResponse {
             return false;
         }
 
-        if(!result.equalsIgnoreCase("success")){
-            return false;
-        }
+//        if(!result.equalsIgnoreCase("success")){
+//            return false;
+//        }
 
         return true;
+    }
+
+    public String getRequestid(){
+        return requestid;
     }
 }

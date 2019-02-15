@@ -50,9 +50,12 @@ public class EnrollLoginDao extends AdhocHttpDao {
                 content, null);
     }
 
-    public GetActivateUserResultResponse getActivateResult(String pDeviceID)throws AdhocHttpException{
+    public GetActivateUserResultResponse getActivateResult(String pDeviceID, String pRequestID)
+            throws
+            AdhocHttpException{
         Map<String, Object> map = new HashMap<>();
         map.put("device_token", pDeviceID);
+        map.put("requestid", pRequestID);
         map.put("type", DeviceType.Android.getValue());
 
         Gson gson = new GsonBuilder().create();
@@ -69,9 +72,11 @@ public class EnrollLoginDao extends AdhocHttpDao {
         map.put("type", DeviceType.Android.getValue());
 
         Map<String, String> header = null;
+        header = new HashMap<>();
+        header.put("channel", pUserType.getValue());
         if (pUserType == ActivateUserType.Uc) {
-            header = new HashMap<>();
             header.put("Authorization", pLoginToken);
+
         } else {
             map.put("serial_no", pSerialNo);
         }
