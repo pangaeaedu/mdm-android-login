@@ -1,14 +1,15 @@
 package com.nd.adhoc.assistant.sdk.deviceInfo;
 
-//"status":1  //1=入库，2=在用，3=锁定，4=丢失，5=故障，6=淘汰
+//  "status":1  //0=未知，1=入库，3=丢失,4=在用，5=故障，6=锁定，7=淘汰
 public enum DeviceStatus {
+    Init(-1),
     Unknown(0),
     Enrolled(1),
-    Activated(2),
-    Locked(3),
-    Lost(4),
+    Lost(3),
+    Activated(4),
     Malfunction(5),
-    WeedOut(6);
+    Locked(6),
+    WeedOut(7);
 
 
     private int mValue = 0;
@@ -28,7 +29,7 @@ public enum DeviceStatus {
             }
         }
 
-        return Unknown;
+        return Init;
     }
 
     @Override
