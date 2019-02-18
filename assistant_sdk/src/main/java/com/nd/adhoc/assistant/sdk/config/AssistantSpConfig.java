@@ -151,6 +151,7 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveDeviceToken("");
         saveSerialNum("");
         saveUserID("");
+        savePushID("");
     }
 
 }

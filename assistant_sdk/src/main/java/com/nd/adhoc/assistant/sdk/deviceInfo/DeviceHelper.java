@@ -23,20 +23,24 @@ public class DeviceHelper {
 
     @NonNull
     public static String getDeviceToken(){
+//        AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
+//        if(!TextUtils.isEmpty(config.getDeviceToken())){
+//            return config.getDeviceToken();
+//        }
+//
+//        return getDeviceTokenFromSystem();
+
         AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
+        return config.getDeviceID();
+    }
+
+    public static String getV2DeviceToken(){
+                AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
         if(!TextUtils.isEmpty(config.getDeviceToken())){
             return config.getDeviceToken();
         }
 
         return getDeviceTokenFromSystem();
-//        String id = getUniqueID()+getSerialNumber();
-//        try {
-//            return MD5ArithmeticUtils.getMd5(id);
-//        } catch (NoSuchAlgorithmException pE) {
-//            pE.printStackTrace();
-//        }
-//
-//        return id;
     }
 
     public static String getDeviceTokenFromSystem(){
