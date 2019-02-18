@@ -30,7 +30,20 @@ public class QueryDeviceStatusResponse {
     public String getNickname(){
         return nick_name;
     }
+
+    //由于郭文那边不会返加username,先用nickname代替
+    public String getUsername(){
+        return nick_name;
+    }
+
     public boolean isAutoLogin(){
         return login_auto == 1;
+    }
+
+    public String toString() {
+        return "errcode:" + errcode
+                + " status:" + status
+                + " login_auto:" + login_auto
+                + " nick_name:" + nick_name;
     }
 }

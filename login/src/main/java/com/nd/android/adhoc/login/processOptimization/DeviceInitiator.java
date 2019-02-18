@@ -109,7 +109,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         getHttpService().bindDeviceIDToPushID(deviceID, pushID);
         getConfig().savePushID(pushID);
-        Log.e(TAG, "notify pushid after bind:"+existPushID);
+        Log.e(TAG, "notify pushid after bind:"+pushID);
         DeviceInfoManager.getInstance().notifyPushID(pushID);
     }
 
@@ -128,6 +128,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             }
 
                             QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceID, serialNum);
+                            Log.e(TAG, "QueryDeviceStatusResponse:"+result.toString());
                             saveLoginInfo(result.getNickname(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
@@ -192,6 +193,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> init() {
+        Log.e(TAG, "calling init");
         Observable<DeviceStatus> temp;
         synchronized (DeviceInitiator.this) {
             if (mInitSubject == null) {
@@ -214,6 +216,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                             @Override
                             public void onError(Throwable e) {
+                                e.printStackTrace();
                                 synchronized (DeviceInitiator.this) {
                                     mInitSubject.onError(e);
                                     mInitSubject = null;
