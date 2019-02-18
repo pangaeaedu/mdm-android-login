@@ -32,6 +32,10 @@ public class LoginPresenterImpl implements ILoginPresenter {
         ILoginApi api = (ILoginApi) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(ILoginApi.PATH).navigation();
         if (api == null) {
+            if (mView != null) {
+                mView.cancelLoading();
+                mView.onLoginFailed(new Exception("login api not found"));
+            }
             return;
         }
 

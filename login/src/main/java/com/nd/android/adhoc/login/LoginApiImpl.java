@@ -1,28 +1,50 @@
-package com.nd.android.adhoc.login.ui;
+package com.nd.android.adhoc.login;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.login.processOptimization.AssistantAuthenticSystem;
 import com.nd.android.adhoc.login.processOptimization.IDeviceInitiator;
 import com.nd.android.adhoc.login.processOptimization.IUserAuthenticator;
 import com.nd.android.adhoc.loginapi.ILoginApi;
+import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
+import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import rx.Observable;
 import rx.functions.Func1;
 
 @Route(path = ILoginApi.PATH)
 public class LoginApiImpl implements ILoginApi {
+    private static final String TAG = "LoginApiImpl";
     @Override
     public void enterLoginUI(@NonNull Context pContext) {
-        Intent intent = new Intent(pContext, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        pContext.startActivity(intent);
+//        Intent intent = new Intent(pContext, LoginActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        pContext.startActivity(intent);
+        AdhocFrameFactory.getInstance().getAdhocRouter().build("/loginui/login_activity")
+                .navigation(pContext, new NavCallback() {
+                    @Override
+                    public void onInterrupt(@NonNull Postcard postcard) {
+                        super.onInterrupt(postcard);
+                        Logger.w(TAG, "onInterrupt");
+                    }
+
+                    @Override
+                    public void onLost(@NonNull Postcard postcard) {
+                        super.onLost(postcard);
+                        Logger.e(TAG, "onLost");
+                    }
+
+                    @Override
+                    public void onArrival(@NonNull Postcard postcard) {
+                    }
+                });
     }
 
     @Override
@@ -53,6 +75,7 @@ public class LoginApiImpl implements ILoginApi {
                         }
                     });
         }
+
 
         IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
                 .getUserAuthenticator();
