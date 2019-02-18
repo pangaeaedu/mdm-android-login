@@ -48,7 +48,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         Gson gson = new GsonBuilder().create();
         String content = gson.toJson(map);
 
-        return postAction().post("/v1/ucUser/login/", LoginUserResponse.class,
+        return postAction().post("/v1.1/enroll/login/", LoginUserResponse.class,
                 content, null);
     }
 
