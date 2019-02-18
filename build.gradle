@@ -1,5 +1,19 @@
 buildscript {
-    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config_0.6.2.0.gradle'
+    apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config.gradle'
+    ext {
+        adhoc_basic_version = '1.0.165.8f000a4'
+
+        mdm_biz_version = '0.0.30.57-0.6.2.0-SNAPSHOT'
+        device_control_version = '1.0.135.420e19f'
+        device_command_version = '1.0.65.3b28f0f'
+        location_verison = '1.0.13.7af56f3'
+
+        // 这三个需要 碧威 提供正式版本
+        adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
+        screen_capture_version = '1.3.33.2078-develop-SNAPSHOT'
+        adhoc_push_util_version = '0.3.23-develop-SNAPSHOT'
+    }
+
 
     repositories {
         maven {
@@ -16,25 +30,12 @@ buildscript {
 
         // ARouter 支持
 //        classpath 'com.alibaba:arouter-register:1.0.0'
-        classpath "com.nd.android.adhoc.basic:adhoc-router-register:$adhoc_basic_version"
+//        classpath "com.nd.android.adhoc.basic:adhoc-router-register:$adhoc_basic_version"
 
 //        classpath 'com.github.eyyoung:DexFixPlugin:1.0.0'
     }
 }
 
-ext {
-    adhoc_basic_version = '1.0.161.5947915'
-
-    mdm_biz_version = '0.0.30.57-0.6.2.0-SNAPSHOT'
-    device_control_version = '1.0.134.3549dad'
-    device_command_version = '1.0.63.884cc7e'
-    location_verison = '1.0.12.33d04af'
-
-    // 这三个需要 碧威 提供正式版本
-    adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
-    screen_capture_version = '1.3.33.2078-develop-SNAPSHOT'
-    adhoc_push_util_version = '0.3.23-develop-SNAPSHOT'
-}
 
 allprojects {
     repositories {
