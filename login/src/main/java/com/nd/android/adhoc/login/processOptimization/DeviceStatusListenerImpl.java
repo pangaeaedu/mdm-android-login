@@ -27,7 +27,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
             return;
         }
 
-        Log.e(TAG, "requestPolicySet");
+        Log.e(TAG, "onDeviceActivated");
         mSubscription = DeviceInfoManager.getInstance()
                 .getPushIDSubject().asObservable()
                 .flatMap(new Func1<String, Observable<Void>>() {
@@ -35,8 +35,10 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
                     public Observable<Void> call(String pS) {
                         try {
                             requestPolicySet();
+                            Log.e(TAG, "requestPolicySet finish");
                             return Observable.just(null);
                         } catch (Exception e) {
+                            Log.e(TAG, "requestPolicySet error:"+e.getMessage());
                             return Observable.error(e);
                         }
                     }
@@ -62,7 +64,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
 
     @Override
     public void onDeviceStatusChanged(DeviceStatus pStatus) {
-        Log.e(TAG, "onDeviceStatusChanged:" + pStatus);
+        Log.e(TAG, "onDeviceStatusChanged:"+pStatus);
         DeviceInfoManager.getInstance().setCurrentStatus(pStatus);
         if (pStatus != DeviceStatus.Enrolled && pStatus != DeviceStatus.WeedOut) {
             onDeviceActivated();

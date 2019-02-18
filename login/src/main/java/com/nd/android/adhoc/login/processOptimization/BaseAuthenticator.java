@@ -10,6 +10,8 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
@@ -78,6 +80,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
             GetActivateUserResultResponse queryResult = getHttpService()
                     .queryActivateResult(pDeviceID, pRequestID);
+            Log.e(TAG, "GetActivateUserResultResponse:"+queryResult.toString());
             if (!queryResult.isSuccess()) {
                 if (queryResult.isActivateStillProcessing()) {
                     //TODO 加上日志上报，不应该经常出现这个Processing
@@ -93,6 +96,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
             saveLoginInfo(queryResult.getUsername(), queryResult.getNickname());
             notifyLogin(queryResult.getUsername(), queryResult.getNickname());
+
             mDeviceStatusListener.onDeviceStatusChanged(queryResult.getStatus());
             pSubscriber.onNext(queryResult.getStatus());
             pSubscriber.onCompleted();
@@ -100,5 +104,32 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         }
 
         pSubscriber.onError(new QueryActivateUserTimeoutException());
+    }
+
+    protected void bindPushIDToDeviceID() throws Exception {
+        IPushModule module = MdmTransferFactory.getPushModel();
+        String pushID = module.getDeviceId();
+        String existPushID = getConfig().getPushID();
+
+        Log.e(TAG, "push id:"+pushID+" exist push id:"+existPushID);
+        if (TextUtils.isEmpty(pushID)) {
+            // 加日志上报
+            throw new Exception("get push id from push module return empty");
+        }
+
+        if (pushID.equalsIgnoreCase(existPushID)) {
+            Log.e(TAG, "notify pushid exist:"+existPushID);
+            DeviceInfoManager.getInstance().notifyPushID(pushID);
+            return;
+        }
+
+        //Push ID 不一样以后，要先清理掉本地的PushID
+        getConfig().clearPushID();
+        String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+
+        getHttpService().bindDeviceIDToPushID(deviceID, pushID);
+        getConfig().savePushID(pushID);
+        Log.e(TAG, "notify pushid after bind:"+pushID);
+        DeviceInfoManager.getInstance().notifyPushID(pushID);
     }
 }

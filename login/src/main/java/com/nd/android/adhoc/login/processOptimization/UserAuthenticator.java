@@ -23,6 +23,7 @@ import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Func1;
 
 public class UserAuthenticator extends BaseAuthenticator implements IUserAuthenticator {
@@ -136,6 +137,32 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
             return Observable.error(new LoginUserOrPwdEmptyException());
         }
 
+        // pushID被请理掉了，要先绑一下pushID
+        if(TextUtils.isEmpty(getConfig().getPushID())){
+            return Observable.create(new Observable.OnSubscribe<Boolean>() {
+                @Override
+                public void call(Subscriber<? super Boolean> pSubscriber) {
+                    try{
+                        bindPushIDToDeviceID();
+                        pSubscriber.onNext(true);
+                        pSubscriber.onCompleted();
+                    }catch (Exception e){
+                        pSubscriber.onError(e);
+                    }
+                }
+            }).flatMap(new Func1<Boolean, Observable<IUserLoginResult>>() {
+                @Override
+                public Observable<IUserLoginResult> call(Boolean pBoolean) {
+                    return getLogin().login(pUserName, pPassword);
+                }
+            }).flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
+                @Override
+                public Observable<DeviceStatus> call(IUserLoginResult pResult) {
+                    return activeUser(ActivateUserType.Uc, pResult.getLoginToken());
+                }
+            });
+        }
+
         return getLogin().login(pUserName, pPassword)
                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                     @Override
@@ -143,7 +170,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                         return activeUser(ActivateUserType.Uc, pResult.getLoginToken());
                     }
                 });
-
     }
 
 

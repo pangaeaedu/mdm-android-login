@@ -11,7 +11,6 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
-import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
@@ -86,32 +85,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         }
     };
 
-    private void bindPushIDToDeviceID() throws Exception {
-        IPushModule module = MdmTransferFactory.getPushModel();
-        String pushID = module.getDeviceId();
-        String existPushID = getConfig().getPushID();
 
-        Log.e(TAG, "push id:"+pushID+" exist push id:"+existPushID);
-        if (TextUtils.isEmpty(pushID)) {
-            // 加日志上报
-            throw new Exception("get push id from push module return empty");
-        }
-
-        if (pushID.equalsIgnoreCase(existPushID)) {
-            Log.e(TAG, "notify pushid exist:"+existPushID);
-            DeviceInfoManager.getInstance().notifyPushID(pushID);
-            return;
-        }
-
-        //Push ID 不一样以后，要先清理掉本地的PushID
-        getConfig().clearPushID();
-        String deviceID = DeviceInfoManager.getInstance().getDeviceID();
-
-        getHttpService().bindDeviceIDToPushID(deviceID, pushID);
-        getConfig().savePushID(pushID);
-        Log.e(TAG, "notify pushid after bind:"+pushID);
-        DeviceInfoManager.getInstance().notifyPushID(pushID);
-    }
 
     public Observable<DeviceStatus> queryDeviceStatus() {
         return Observable
@@ -129,9 +103,13 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                             QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceID, serialNum);
                             Log.e(TAG, "QueryDeviceStatusResponse:"+result.toString());
-                            saveLoginInfo(result.getNickname(), result.getNickname());
+                            saveLoginInfo(result.getUsername(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
+                            if(curStatus == DeviceStatus.Unknown || curStatus == DeviceStatus.Enrolled){
+                                getConfig().clearData();
+                            }
+
                             if (curStatus == DeviceStatus.Activated) {
                                 notifyLogin(getConfig().getAccountNum(), getConfig().getNickname());
                             }
