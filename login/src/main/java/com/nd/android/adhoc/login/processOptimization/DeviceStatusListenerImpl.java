@@ -29,8 +29,8 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
 
         Log.e(TAG, "onDeviceActivated");
         mSubscription = DeviceInfoManager.getInstance()
-                .getPushIDSubject().asObservable()
-                .flatMap(new Func1<String, Observable<Void>>() {
+                .getPushIDSubject().asObservable().take(1)   //取第一个，将长监听转成单次监听，
+                .flatMap(new Func1<String, Observable<Void>>() {// 这样取一次后，后续的调用流就能走到onComplete
                     @Override
                     public Observable<Void> call(String pS) {
                         try {
