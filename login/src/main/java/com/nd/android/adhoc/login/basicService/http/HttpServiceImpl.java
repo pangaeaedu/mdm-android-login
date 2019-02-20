@@ -15,6 +15,8 @@ import com.nd.android.adhoc.login.exception.LoginUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
+import com.nd.android.mdm.biz.env.IMdmEnvModule;
+import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONObject;
 
@@ -160,9 +162,8 @@ public class HttpServiceImpl implements IHttpService {
     }
 
     private String getBaseUrl(){
-//        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
-//        return module.getUrl();
-        return "http://192.168.254.23:8090";
+        IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
+        return module.getUrl();
     }
 
 }
