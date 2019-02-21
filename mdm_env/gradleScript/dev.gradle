@@ -13,7 +13,6 @@ dependencies {
 //        api project(':adhoc_basic:adhoc_util_storage')
 //    } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
         }
 //    }
 

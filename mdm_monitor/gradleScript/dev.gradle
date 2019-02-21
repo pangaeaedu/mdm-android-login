@@ -26,7 +26,6 @@ dependencies {
         api project(':adhoc_communicate')
     } catch (Exception ignored) {
         api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
         }
@@ -36,7 +35,6 @@ dependencies {
         api project(':assistant_sdk')
     } catch (Exception ignored) {
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
         }
     }
 
@@ -46,7 +44,6 @@ dependencies {
         api ("com.nd.android.adhoc:device_control_root:$device_control_version"){
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
         }
 //    }
@@ -57,7 +54,6 @@ dependencies {
         api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
             exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
 //            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
 //            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
