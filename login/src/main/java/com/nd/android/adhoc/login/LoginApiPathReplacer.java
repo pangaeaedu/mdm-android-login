@@ -3,6 +3,7 @@ package com.nd.android.adhoc.login;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.nd.android.adhoc.loginapi.IUserInfoApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
 import com.nd.android.adhoc.router_api.facade.service.PathReplaceServiceBase;
 import com.nd.sdp.android.serviceloader.annotation.Service;
@@ -22,6 +23,10 @@ public class LoginApiPathReplacer extends PathReplaceServiceBase {
 
         if(pPath.equalsIgnoreCase(LoginApiRoutePathConstants.PATH_LOGINAPI_LOGIN)){
             return LoginRoutePathConstants.PATH_LOGIN_LOGIN;
+        }
+
+        if(pPath.equalsIgnoreCase(IUserInfoApi.PATH)){
+            return LoginRoutePathConstants.PATH_USER_INFO;
         }
 
         return super.forString(pPath);
