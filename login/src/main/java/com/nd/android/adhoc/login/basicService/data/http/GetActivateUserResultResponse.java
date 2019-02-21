@@ -14,7 +14,7 @@ public class GetActivateUserResultResponse {
     private int errcode = 0;
     private String msgcode = "";
     private int status = 1;
-    private String nickname = "";
+    private String nick_name = "";
     private String requestid = "";
 
     public boolean isSuccess(){
@@ -34,7 +34,7 @@ public class GetActivateUserResultResponse {
     }
 
     public String getNickname(){
-        return nickname;
+        return nick_name;
     }
     public DeviceStatus getStatus(){
         return DeviceStatus.fromValue(status);
@@ -53,7 +53,7 @@ public class GetActivateUserResultResponse {
         return "errcode:" + errcode
                 + " msgcode:" + msgcode
                 + " status:" + status
-                + " nickname:" + nickname;
+                + " nickname:" + nick_name;
     }
 
 }
