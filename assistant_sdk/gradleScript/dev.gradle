@@ -14,7 +14,7 @@ dependencies {
     api("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
 
     try {
-        api project(':adhoc_basic_net')
+        api project(':adhoc_util_storage')
     } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
     }

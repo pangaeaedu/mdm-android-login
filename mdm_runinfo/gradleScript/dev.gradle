@@ -35,7 +35,9 @@ dependencies {
         api project(':device_control_nd3')
     } catch (Exception ignored) {
         api ("com.nd.android.adhoc:device_control_nd3:$device_control_version"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+            exclude group: 'com.nd.android.mdm.biz', module:'mdm_env'
         }
     }
 
