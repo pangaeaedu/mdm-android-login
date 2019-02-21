@@ -11,7 +11,7 @@ import com.nd.android.adhoc.router_api.facade.annotation.Route;
 
 import rx.Observable;
 
-@Route(path = IInitApi.PATH)
+@Route(path = LoginRoutePathConstants.PATH_LOGIN_INIT)
 public class InitApiImpl implements IInitApi {
 
     @Deprecated

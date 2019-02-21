@@ -12,6 +12,7 @@ import com.nd.android.adhoc.login.processOptimization.AssistantAuthenticSystem;
 import com.nd.android.adhoc.login.processOptimization.IDeviceInitiator;
 import com.nd.android.adhoc.login.processOptimization.IUserAuthenticator;
 import com.nd.android.adhoc.loginapi.ILoginApi;
+import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
@@ -19,15 +20,13 @@ import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 import rx.Observable;
 import rx.functions.Func1;
 
-@Route(path = ILoginApi.PATH)
+@Route(path = LoginRoutePathConstants.PATH_LOGIN_LOGIN)
 public class LoginApiImpl implements ILoginApi {
     private static final String TAG = "LoginApiImpl";
     @Override
     public void enterLoginUI(@NonNull Context pContext) {
-//        Intent intent = new Intent(pContext, LoginActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        pContext.startActivity(intent);
-        AdhocFrameFactory.getInstance().getAdhocRouter().build("/loginui/login_activity")
+        AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(LoginApiRoutePathConstants.PATH_LOGINAPI_LOGINUI)
                 .navigation(pContext, new NavCallback() {
                     @Override
                     public void onInterrupt(@NonNull Postcard postcard) {
