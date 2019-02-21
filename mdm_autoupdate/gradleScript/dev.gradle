@@ -4,7 +4,11 @@ dependencies {
     try {
         api project(':file_transfer')
     } catch (Exception ignored) {
-        api("com.nd.android.adhoc:file_transfer:$file_transfer_version")
+        api("com.nd.android.adhoc:file_transfer:0.0.9.1-develop-SNAPSHOT"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+            exclude group:'com.nd.android.mdm.biz' , module:'mdm_env'
+        }
     }
 
     try {
