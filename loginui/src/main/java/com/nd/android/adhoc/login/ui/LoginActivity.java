@@ -40,6 +40,7 @@ import com.nd.android.adhoc.login.ui.widget.edit.action.AdHocEditAction;
 import com.nd.android.adhoc.login.ui.widget.edit.strategy.style.UnderlineStyle;
 import com.nd.android.adhoc.login.ui.widget.spinner.CommonAppCompatSpinner;
 import com.nd.android.adhoc.loginapi.IInitApi;
+import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
@@ -57,7 +58,7 @@ import rx.schedulers.Schedulers;
  * 自组网登录页面
  * //使用loaderManager处理操作逻辑
  */
-@Route(path = LoginUiConst.LoginUIPath)
+@Route(path = LoginUiRoutePathConstants.PATH_LOGINUI_LOGINUI)
 public class LoginActivity extends AdhocBaseActivity implements View.OnClickListener,
         CommonAppCompatSpinner.OnItemSelectPopListener, ILoginPresenter.IView, IEnvChangedListener {
 
@@ -500,7 +501,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         showLoading();
 
         IInitApi api = (IInitApi) AdhocFrameFactory.getInstance().getAdhocRouter()
-                .build(IInitApi.PATH).navigation();
+                .build(LoginApiRoutePathConstants.PATH_LOGINAPI_INIT).navigation();
         if (api == null) {
             AdhocToastModule.getInstance().showToast(getString(R.string.init_api_not_found));
             return;

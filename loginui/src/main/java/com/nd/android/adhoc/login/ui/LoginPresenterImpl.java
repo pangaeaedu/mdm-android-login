@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.loginapi.ILoginApi;
+import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
 
 import rx.Observer;
 import rx.Subscription;
@@ -30,7 +31,7 @@ public class LoginPresenterImpl implements ILoginPresenter {
         mView.showLoading();
 
         ILoginApi api = (ILoginApi) AdhocFrameFactory.getInstance().getAdhocRouter()
-                .build(ILoginApi.PATH).navigation();
+                .build(LoginApiRoutePathConstants.PATH_LOGINAPI_LOGIN).navigation();
         if (api == null) {
             if (mView != null) {
                 mView.cancelLoading();

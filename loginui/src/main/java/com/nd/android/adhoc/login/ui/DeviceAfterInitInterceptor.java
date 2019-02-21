@@ -8,6 +8,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Interceptor;
 import com.nd.android.adhoc.router_api.facade.callback.InterceptorCallback;
@@ -69,7 +70,7 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
     }
 
     protected String getLoginRoutePath(){
-        return LoginUiConst.LoginUIPath;
+        return LoginApiRoutePathConstants.PATH_LOGINAPI_LOGINUI;
     }
 
     private void enterLoginUI() {
