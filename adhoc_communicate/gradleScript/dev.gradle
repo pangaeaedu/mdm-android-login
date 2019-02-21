@@ -62,9 +62,9 @@ dependencies {
         api project(':adhocpush')
     } catch (Exception ignored) {
         api("com.nd.sdp.android:adhocpush:$adhoc_push_util_version"){
-//            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
-//            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_biz_common'
-//            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_util_cmd'
+            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
+            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_biz_common'
+            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_util_cmd'
         }
     }
 
