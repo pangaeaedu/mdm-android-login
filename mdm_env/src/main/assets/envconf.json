@@ -28,6 +28,13 @@
       "puship": "aws.ndmdm.site",
       "pushport": 59000,
       "url": "http://mdmaws.ndmdm.site"
+    },
+    {
+      "name": "Egypt",
+      "org": "MDM",
+      "puship": "mdm.push.egypt.sdp",
+      "pushport": 8760,
+      "url": "http://mdm.backend.egypt.sdp"
     }
   ]
 }

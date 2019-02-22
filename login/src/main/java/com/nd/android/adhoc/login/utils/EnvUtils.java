@@ -2,6 +2,7 @@ package com.nd.android.adhoc.login.utils;
 
 import com.nd.smartcan.accountclient.UCEnv;
 import com.nd.smartcan.accountclient.UCManager;
+import com.nd.smartcan.content.base.CsBaseManager;
 
 public class EnvUtils {
 
@@ -9,6 +10,9 @@ public class EnvUtils {
         switch (pIndex) {
             case 3:
                 UCManager.getInstance().setEnv(UCEnv.AWS);
+                break;
+            case 4:
+                setEgyptEnv();
                 break;
             case 0:
             case 1:
@@ -18,4 +22,20 @@ public class EnvUtils {
                 break;
         }
     }
+
+
+    private static void setEgyptEnv() {
+        //UC初始化
+        UCManager.getInstance().setBaseUrl("http://101uccenter.mdm.egypt.sdp/v0.93/");
+        UCManager.getInstance().setCSSessionUrl("http://cscommon.mdm.egypt.sdp/v0.1/");
+        UCManager.getInstance().setCaptchaBaseUrl("http://uc-captcha.mdm.egypt.sdp/v0.1/");
+        UCManager.getInstance().setCSBaseUrl("http://egcs.mdm.egypt.sdp/v0.1/");
+        //CS初始化
+//        CsManager.setContentBaseUrl("http://egcs.mdm.egypt.sdp/v0.1/");
+        CsBaseManager.setContentBaseUrl("http://egcs.mdm.egypt.sdp/v0.1/");
+//        CsManager.setContentDownBaseUrl("http://egcs.mdm.egypt.sdp/v0.1/");
+        CsBaseManager.setDownloadBaseUrl("http://egcs.mdm.egypt.sdp/v0.1/");
+//        Monet.get(getContext()).setKeyGenerator(RedirectKeyGenerator.create().register("pic_fansway", "egcs.mdm.egypt.sdp".split(",")));
+    }
+
 }
