@@ -322,7 +322,7 @@ class PushModule implements IPushModule {
         }
 
         String pCmdMsg = new String(pCmdMsgBytes);
-        SDKLogUtil.v("【PushModule】doCmdReceived: on cmd arrive %s", pCmdMsg);
+        Logger.v(TAG, "doCmdReceived: on cmd arrive " + pCmdMsg);
         mCmdReceiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_DRM, AdhocCmdFromTo.MDM_CMD_DRM);
 
     }

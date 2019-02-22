@@ -7,7 +7,6 @@ dependencies {
     api 'org.apache.commons:commons-lang3:3.6'
     api 'commons-net:commons-net:3.5'
 
-    api 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0'
 
 
 //    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"

@@ -9,7 +9,7 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
-import com.tbruyelle.rxpermissions.RxPermissions;
+import com.nd.android.adhoc.basic.util.permission.AdhocRxPermissions;
 
 import java.util.UUID;
 
@@ -24,7 +24,7 @@ public class DeviceIDSPUtils {
     // DeviceID不一样，报日志
     public static void startNewThreadToCheckDeviceIDIntegrity(final Context pContext,
                                                               final String pDeviceID) {
-        RxPermissions.getInstance(pContext)
+        AdhocRxPermissions.getInstance(pContext)
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .map(new Func1<Boolean, Boolean>() {
                     @Override

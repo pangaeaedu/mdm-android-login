@@ -11,8 +11,8 @@ import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.util.permission.AdhocRxPermissions;
 import com.nd.android.adhoc.basic.util.thread.rx.AdhocActionSubscriber;
-import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -35,7 +35,7 @@ public class SDKLogUtil {
     static List<String> lastLogs = new ArrayList<String>();
 
     static {
-        RxPermissions.getInstance(AdhocBasicConfig.getInstance().getAppContext())
+        AdhocRxPermissions.getInstance(AdhocBasicConfig.getInstance().getAppContext())
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new AdhocActionSubscriber<>(new Action1<Boolean>() {
                     @Override
