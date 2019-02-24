@@ -55,6 +55,7 @@ import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 import com.nd.android.mdm.biz.env.IEnvChangedListener;
 import com.nd.android.mdm.biz.env.IMdmEnvModule;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
+import com.nd.smartcan.accountclient.core.AccountException;
 
 import de.greenrobot.event.EventBus;
 import rx.Observable;
@@ -462,6 +463,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     @Override
     public void onLoginFailed(Throwable pThrowable) {
         Log.e(TAG, "onLoginFailed:"+pThrowable);
+        String msg = pThrowable.getMessage();
         if(pThrowable instanceof UcVerificationException
                 || pThrowable instanceof UcUserNullException){
             AdhocToastModule.getInstance().showToast(getString(R.string.login_error_uc_verification));
@@ -469,8 +471,12 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
             AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_binded));
         } else if(pThrowable instanceof DeviceBindedException){
             AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_binded));
+        } else if(pThrowable instanceof AccountException){
+            String ucError = getString(R.string.login_uc_error);
+            ucError += ":"+ msg;
+            AdhocToastModule.getInstance().showToast(ucError);
         } else {
-            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_other));
+            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_other)+":"+msg);
         }
 
         mLoginPanel.setVisibility(View.VISIBLE);
