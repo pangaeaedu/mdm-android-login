@@ -31,6 +31,7 @@ import com.nd.android.adhoc.login.utils.Constants;
 import com.nd.android.adhoc.login.utils.EnvUtils;
 import com.nd.android.adhoc.loginapi.ILoginInfoProvider;
 import com.nd.android.adhoc.loginapi.ILoginResult;
+import com.nd.android.mdm.biz.common.util.SDKLogUtil;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.mdm_feedback_biz.MdmFeedbackReceiveFactory;
 import com.nd.smartcan.accountclient.UCManager;
@@ -370,6 +371,7 @@ public class LoginManager {
         IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
         if (api == null) {
+            SDKLogUtil.d("IAdhocLoginStatusNotifier not found");
             return;
         }
 

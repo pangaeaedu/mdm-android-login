@@ -9,6 +9,7 @@ import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpRequest;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateHttpResult;
 import com.nd.android.adhoc.login.basicService.data.http.BindResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
+import com.nd.android.mdm.biz.common.util.SDKLogUtil;
 import com.nd.android.smartcan.network.Method;
 import com.nd.smartcan.core.security.SecurityDelegate;
 
@@ -60,9 +61,13 @@ public class LoginDao extends AdhocHttpDao {
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
 
-            return postAction().post("/v1.1/registe/pushid/", BindResult.class, content, null);
+            SDKLogUtil.d("bind device id request:"+content);
+            BindResult result = postAction().post("/v1.1/registe/pushid/", BindResult.class,
+                    content, null);
+            SDKLogUtil.d("bind device result:"+result.isSuccess());
+            return result;
         } catch (RuntimeException e) {
-
+            SDKLogUtil.d("bind device id result:"+e.getMessage());
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }

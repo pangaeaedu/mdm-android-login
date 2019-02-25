@@ -67,6 +67,7 @@ class PushModule implements IPushModule {
 
     @Override
     public void start() {
+        SDKLogUtil.d("start push sdk");
         PushSdk.getInstance().stop();
 
         Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
@@ -89,6 +90,7 @@ class PushModule implements IPushModule {
                             String pushSrvIp = MdmEvnFactory.getInstance().getCurEnvironment().getPushIp();
                             int pushSrvPort = MdmEvnFactory.getInstance().getCurEnvironment().getPushPort();
 //        CmdFactory.enableFactory(true);
+                            SDKLogUtil.d("start push sdk ip:"+pushSrvIp+" port:"+pushSrvPort);
                             PushSdk.getInstance().startPushSdk(mContext, "mdm", null, pushSrvIp, pushSrvPort, mPushSdkCallback);
                         }
                     }
@@ -149,6 +151,7 @@ class PushModule implements IPushModule {
 
         @Override
         public void onPushStatus(final boolean isConnected) {
+            SDKLogUtil.d("onPushStatus: isConnected = " + isConnected);
             Logger.d("HYK", "onPushStatus: isConnected = " + isConnected);
 //            EventBus.getDefault().post(new PushConnectStatusEvent(isConnected));
             notifyConnectStatus(isConnected);
