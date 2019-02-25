@@ -19,8 +19,9 @@ import android.text.TextUtils;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
+import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
+import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.command.normal.response.ResponseLocation;
@@ -54,6 +55,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by yaoyue1019 on 9-12.
@@ -138,29 +143,26 @@ public class MonitorModule implements IMonitor {
                 new IMdmWifiInfoUpdateListener() {
                     @Override
                     public void onInfoUpdated(MdmWifiInfo pWifiInfo) {
-                        try {
-//                            IResponse_MDM response =
-//                                    MdmResponseHelper.createResponseBase(
-//                                            "postdeviceinfo",
-//                                            "",
-//                                            UUID.randomUUID().toString(),
-//                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-//                                            System.currentTimeMillis());
-//
-//                            response.setJsonData(getDevInfoJson());
-//                            response.post();
 
-                            ResponseBase responseBase = new ResponseBase("postdeviceinfo",
-                                    UUID.randomUUID().toString(),
-                                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                                    "",
-                                    System.currentTimeMillis());
-                            responseBase.setJsonData(getDevInfoJson());
-                            responseBase.postAsync();
+                        AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
+                            @Override
+                            public void call(Subscriber<? super Void> subscriber) {
+                                try {
+                                    ResponseBase responseBase = new ResponseBase("postdeviceinfo",
+                                            UUID.randomUUID().toString(),
+                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                                            "",
+                                            System.currentTimeMillis());
+                                    responseBase.setJsonData(getDevInfoJson());
+                                    responseBase.postAsync();
 
-                        } catch (JSONException e) {
-                            Logger.e(TAG, "onInfoUpdated, do response error: " + e);
-                        }
+                                } catch (JSONException e) {
+                                    Logger.e(TAG, "onInfoUpdated, do response error: " + e);
+                                }
+                                subscriber.onCompleted();
+                            }
+                        }).subscribeOn(Schedulers.io()));
+
                     }
                 }
         );
