@@ -20,8 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
-import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
@@ -29,8 +27,6 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
-import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
-import com.nd.android.adhoc.login.basicService.http.IHttpService;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
 import com.nd.android.adhoc.login.ui.widget.CircleImageView;
 import com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils;
@@ -475,31 +471,6 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     }
 
     private void showErrorToast(Throwable pThrowable) {
-//        if (pThrowable instanceof UcVerificationException) {
-//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_uc_verification));
-//            return;
-//        }
-//
-//        if (pThrowable instanceof UserBindedException) {
-//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_binded));
-//            return;
-//        }
-//
-//        if (pThrowable instanceof DeviceBindedException) {
-//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_binded));
-//            return;
-//        }
-//
-//        if (pThrowable instanceof ConfirmIDServerException) {
-//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_device_id_not_confirm));
-//            return;
-//        }
-//
-//        if (pThrowable instanceof QueryDeviceStatusServerException) {
-//            AdhocToastModule.getInstance().showToast(getString(R.string.login_error_query_status_error));
-//            return;
-//        }
-
         AdhocToastModule.getInstance().showToast(pThrowable.getMessage());
     }
 
@@ -540,72 +511,6 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
                     }
                 });
     }
-
-//    private Observable<Boolean> isDeviceBinded(final IMdmEnvModule pNew){
-//        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-//            @Override
-//            public void call(Subscriber<? super Boolean> pSubscriber) {
-//                Log.e(TAG, "onEnvironmentChanged:"+pNew.getName()+" org:"+pNew.getOrg());
-//                String buildSn = AdhocDeviceUtil.getBuildSN(AdhocBasicConfig.getInstance().getAppContext());
-//                String cpuSn = AdhocDeviceUtil.getCpuSN();
-//                String imei = AdhocDeviceUtil.getIMEI(AdhocBasicConfig.getInstance().getAppContext());
-//                String wifiMac = AdhocDeviceUtil.getWifiMac(AdhocBasicConfig.getInstance().getAppContext());
-//                String blueToothMac = AdhocDeviceUtil.getBloothMac();
-//                String serialNo = AdhocDeviceUtil.getSerialNumber();
-//                String Token = DeviceHelper.getDeviceTokenFromSystem();
-//
-//                GetOldTokenResult oldTokenResult = null;
-//                try {
-//                    oldTokenResult = getHttpService().getOldDeviceToken(buildSn,
-//                            cpuSn, imei, wifiMac, blueToothMac, serialNo, Token);
-//                    String oldToken = oldTokenResult.getOld_device_token();
-//                    getConfig().saveOldDeviceToken(oldToken);
-//                    getConfig().saveOldTokenStatus(2);
-//
-//                    Log.e(TAG, "onEnvironmentChanged OldToken:" + oldTokenResult.getOld_device_token()
-//                            + " " + "Status:" + oldTokenResult.getStatus()
-//                            + " nickname:" + oldTokenResult.getNick_name()
-//                            + " pushID:" + oldTokenResult.getPush_id());
-//                    if(TextUtils.isEmpty(oldToken)){
-//                        pSubscriber.onNext(false);
-//                        pSubscriber.onCompleted();
-//                        return;
-//                    }
-//
-//                    getConfig().saveNickname(oldTokenResult.getNick_name());
-//                    getConfig().saveActivated(true);
-//
-//                    IPushModule pushModule = MdmTransferFactory.getPushModel();
-//                    String pushID = pushModule.getDeviceId();
-//
-//                    if(!pushID.equalsIgnoreCase(oldTokenResult.getPush_id())){
-//                        IBindResult result = getHttpService().bindDeviceWithChannelType(oldToken, pushID, DeviceHelper
-//                                .getSerialNumber(), pushModule.getChannelType());
-//                        getConfig().saveAutoLogin(result.isAutoLogin());
-//                    }
-//
-//                    pSubscriber.onNext(true);
-//                    pSubscriber.onCompleted();
-//                } catch (Exception pE) {
-//                    pSubscriber.onError(pE);
-//                }
-//            }
-//        });
-//    }
-
-    private AssistantSpConfig getConfig() {
-        return AssistantBasicServiceFactory.getInstance().getSpConfig();
-    }
-
-    private IHttpService getHttpService() {
-        return BasicServiceFactory.getInstance().getHttpService();
-    }
-
-
-//    @Override
-//    public void onSettings(int position) {
-//        this.envIndex = position;
-//    }
 }
 
 
