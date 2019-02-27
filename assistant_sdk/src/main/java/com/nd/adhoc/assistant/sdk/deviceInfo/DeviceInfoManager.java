@@ -56,4 +56,11 @@ public class DeviceInfoManager {
     private static AssistantSpConfig getConfig() {
         return AssistantBasicServiceFactory.getInstance().getSpConfig();
     }
+
+    public void reset(){
+        mDeviceID = "";
+        mDeviceStatus = null;
+        mPushIDSubject.onCompleted();
+        mPushIDSubject = BehaviorSubject.create();
+    }
 }
