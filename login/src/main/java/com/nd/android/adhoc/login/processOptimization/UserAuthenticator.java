@@ -35,7 +35,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
     public void logout() {
         getConfig().clearData();
-        DeviceInfoManager.getInstance().reset();
 
         IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
@@ -45,7 +44,9 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
         api.onLogout();
 
-        mDeviceStatusListener.onDeviceStatusChanged(DeviceStatus.Enrolled);
+        //登出的时候，不要清掉DeviceID。DeviceID只有在切换环境的时候才会被清理
+        DeviceInfoManager.getInstance().resetStatusAndPushIDSubject();
+        mDeviceStatusListener.onDeviceStatusChanged(DeviceStatus.Init);
 
         ActivityStackManager.INSTANCE.closeAllActivitys();
         enterLogoutUI();
@@ -70,53 +71,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                     }
                 });
     }
-
-//    private Observable<DeviceStatus> onActivateDeviceSuccess(String pUsername,
-//                                                             String pNickName,
-//                                                             IQueryActivateResult pResult){
-//        DeviceStatus status = pResult.getDeviceStatus();
-//        saveLoginInfo(pUsername, pNickName);
-//        notifyLogin(pUsername, pNickName);
-//        mDeviceStatusListener.onDeviceStatusChanged(status);
-//
-//        return Observable.just(status);
-//    }
-//
-//    private Observable<DeviceStatus> onActiveDeviceFailed(IQueryActivateResult pResult){
-//        ActivateUserError error = pResult.getActivateError();
-//        Exception activateException = LoginExceptionUtils.convertErrorToException(error);
-//        return Observable.error(activateException);
-//    }
-
-//    private Observable<DeviceStatus> queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
-//                                                                        IUserLoginResult pResult) throws Exception {
-//        String username = pResult.getUsername();
-//        String nickname = pResult.getNickname();
-//
-//        for (int i = 0; i < pTimes; i++) {
-//            Thread.sleep((i * 3 + 1) * 1000);
-//
-//            IQueryActivateResult queryResult = getHttpService().queryActivateResult(pDeviceID);
-//            if (!queryResult.isSuccess()) {
-//                if (queryResult.getActivateError() == ActivateUserError.Processing) {
-//                    //TODO 加上日志上报，不应该经常出现这个Processing
-//                    continue;
-//                }
-//
-//                //TODO 报日志
-//                return onActiveDeviceFailed(queryResult);
-//            } else {
-//                return onActivateDeviceSuccess(username, nickname, queryResult);
-//            }
-//        }
-//
-//        return Observable.error(new QueryActivateUserTimeoutException());
-//    }
-
-//    private void saveLoginInfo(String pUserName, String pNickName) {
-//        getConfig().saveAccountNum(pUserName);
-//        getConfig().saveNickname(pNickName);
-//    }
 
     @NonNull
     private IUserLogin getLogin() {
