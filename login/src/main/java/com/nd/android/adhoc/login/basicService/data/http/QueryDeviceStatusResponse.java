@@ -16,7 +16,7 @@ public class QueryDeviceStatusResponse {
     public int status = 1;
     private int login_auto = 0;
     private String nick_name = "";
-
+    private String jobnum  = "";
     public String requestid = "";
 
     public boolean isSuccess(){
@@ -36,6 +36,9 @@ public class QueryDeviceStatusResponse {
         return nick_name;
     }
 
+    public String getJobnum(){
+        return jobnum;
+    }
     public boolean isAutoLogin(){
         return login_auto == 1;
     }
@@ -44,6 +47,7 @@ public class QueryDeviceStatusResponse {
         return "errcode:" + errcode
                 + " status:" + status
                 + " login_auto:" + login_auto
-                + " nick_name:" + nick_name;
+                + " nick_name:" + nick_name
+                + " jobnum:" + jobnum;
     }
 }
