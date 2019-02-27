@@ -2,7 +2,6 @@ package com.nd.adhoc.assistant.sdk.deviceInfo;
 
 import android.Manifest;
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
@@ -69,24 +68,24 @@ public class DeviceIDSPUtils {
                 });
     }
 
-    public static String loadDeviceIDFromSp(){
-        String deviceID = loadThirdVersionDeviceIDFromSp();
-        if(!TextUtils.isEmpty(deviceID)){
-            return deviceID;
-        }
-
-        deviceID = loadSecondVersionDeviceIDFromSp();
-        if(!TextUtils.isEmpty(deviceID)){
-            return deviceID;
-        }
-
-        deviceID = loadFirstVersionDeviceIDFromSp();
-        if(!TextUtils.isEmpty(deviceID)){
-            return deviceID;
-        }
-
-        return "";
-    }
+//    public static String loadDeviceIDFromSp(){
+//        String deviceID = loadThirdVersionDeviceIDFromSp();
+//        if(!TextUtils.isEmpty(deviceID)){
+//            return deviceID;
+//        }
+//
+//        deviceID = loadSecondVersionDeviceIDFromSp();
+//        if(!TextUtils.isEmpty(deviceID)){
+//            return deviceID;
+//        }
+//
+//        deviceID = loadFirstVersionDeviceIDFromSp();
+//        if(!TextUtils.isEmpty(deviceID)){
+//            return deviceID;
+//        }
+//
+//        return "";
+//    }
 
     public static void saveDeviceIDToSp(String pDeviceID){
         saveDeviceIDToThirdVersionSp(pDeviceID);
@@ -95,32 +94,32 @@ public class DeviceIDSPUtils {
     }
 
 
-    private static String loadFirstVersionDeviceIDFromSp(){
+    public static String loadFirstVersionDeviceIDFromSp(){
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         return SharedPreferenceFactory.getInstance().getModel(context).getString("devtoken", null);
     }
 
-    private static void saveDeviceIDToFirstVersionSp(String pDeviceID){
+    public static void saveDeviceIDToFirstVersionSp(String pDeviceID){
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         SharedPreferenceFactory.getInstance().getModel(context).putString("devtoken", pDeviceID);
     }
 
-    private static String loadSecondVersionDeviceIDFromSp(){
+    public static String loadSecondVersionDeviceIDFromSp(){
         AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
         return config.getDeviceToken();
     }
 
-    private static void saveDeviceIDToSecondVersionSp(String pDeviceID){
+    public static void saveDeviceIDToSecondVersionSp(String pDeviceID){
         AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
         config.saveDeviceToken(pDeviceID);
     }
 
-    private static String loadThirdVersionDeviceIDFromSp(){
+    public static String loadThirdVersionDeviceIDFromSp(){
         AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
         return config.getDeviceID();
     }
 
-    private static void saveDeviceIDToThirdVersionSp(String pDeviceID){
+    public static void saveDeviceIDToThirdVersionSp(String pDeviceID){
         AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
         config.saveDeviceID(pDeviceID);
     }
