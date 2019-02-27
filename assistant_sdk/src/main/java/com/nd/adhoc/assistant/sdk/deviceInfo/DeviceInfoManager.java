@@ -59,6 +59,10 @@ public class DeviceInfoManager {
 
     public void reset(){
         mDeviceID = "";
+        resetStatusAndPushIDSubject();
+    }
+
+    public void resetStatusAndPushIDSubject(){
         mDeviceStatus = null;
         mPushIDSubject.onCompleted();
         mPushIDSubject = BehaviorSubject.create();
