@@ -2,7 +2,7 @@ package com.nd.android.adhoc.loginapi.exception;
 
 public class ConfirmIDServerException extends BaseInitException {
     public ConfirmIDServerException(String pMsg) {
-        super("ConfirmIDServerException:"+pMsg);
+        this(0,pMsg);
     }
 
     public ConfirmIDServerException(int pCode, String pMsg) {
