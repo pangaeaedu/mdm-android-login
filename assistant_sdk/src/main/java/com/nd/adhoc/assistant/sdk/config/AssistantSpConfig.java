@@ -35,8 +35,9 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveInt(KEY_DEVICE_STATUS_VALUE, pStatusValue);
     }
 
+    //默认值为-1
     public int getDeviceStatus(){
-        return getInt(KEY_DEVICE_STATUS_VALUE, 0);
+        return getInt(KEY_DEVICE_STATUS_VALUE, -1);
     }
 
     public String getDeviceID() {
@@ -139,7 +140,7 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getString(KEY_USER_ID);
     }
 
-
+    // 清理数据的时候，不要清理pushID
     public void clearData(){
         saveAccountNum("");
         saveNickname("");
@@ -151,7 +152,7 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveDeviceToken("");
         saveSerialNum("");
         saveUserID("");
-        savePushID("");
+        saveDeviceStatus(-1);
     }
 
 }
