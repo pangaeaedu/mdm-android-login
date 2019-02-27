@@ -41,6 +41,7 @@ import com.nd.android.adhoc.login.ui.widget.edit.strategy.style.UnderlineStyle;
 import com.nd.android.adhoc.login.ui.widget.spinner.CommonAppCompatSpinner;
 import com.nd.android.adhoc.loginapi.IInitApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
+import com.nd.android.adhoc.loginapi.exception.AutoLoginMeetUserLoginException;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
@@ -461,6 +462,12 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
     @Override
     public void onLoginFailed(Throwable pThrowable) {
+        if(pThrowable instanceof AutoLoginMeetUserLoginException){
+            showErrorToast(pThrowable);
+            jumpMain();
+            return;
+        }
+
         Log.e(TAG, "onLoginFailed:" + pThrowable);
         showErrorToast(pThrowable);
         mLoginPanel.setVisibility(View.VISIBLE);
