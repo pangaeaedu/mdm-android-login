@@ -43,6 +43,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
         public void onConnected() {
+            Log.e(TAG, "push sdk onConnected");
             if (mSubBindPushID != null) {
                 return;
             }
@@ -81,7 +82,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         @Override
         public void onDisconnected() {
-            Log.e(TAG, "push sdk disconnected");
+            Log.e(TAG, "push sdk onDisconnected");
         }
     };
 
