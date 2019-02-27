@@ -89,6 +89,11 @@ public class LoginApiImpl implements ILoginApi {
     }
 
     @Override
+    public Observable<String> getNickName() {
+        return null;
+    }
+
+    @Override
     public void init(@NonNull Context pContext) {
 
     }
