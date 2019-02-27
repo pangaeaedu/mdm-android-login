@@ -14,9 +14,11 @@ import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
+import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.info.AdhocLoginInfoImpl;
 import com.nd.android.adhoc.login.info.AdhocUserInfoImpl;
+import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.QueryActivateUserTimeoutException;
 
 import rx.Observable;
@@ -41,6 +43,44 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         AdhocUserInfoImpl userInfo = new AdhocUserInfoImpl(pAccountNum, pNickName);
         AdhocLoginInfoImpl loginInfo = new AdhocLoginInfoImpl(userInfo, null);
         api.onLogin(loginInfo);
+    }
+
+
+    protected Observable<QueryDeviceStatusResponse> queryDeviceStatusFromServer(final String pDeviceID){
+        return Observable
+                .create(new Observable.OnSubscribe<QueryDeviceStatusResponse>() {
+                    @Override
+                    public void call(Subscriber<? super QueryDeviceStatusResponse> pSubscriber) {
+                        try {
+                            String serialNum = DeviceHelper.getSerialNumberThroughControl();
+
+                            if (TextUtils.isEmpty(pDeviceID) || TextUtils.isEmpty(serialNum)) {
+                                pSubscriber.onError(new DeviceIDNotSetException());
+                                return;
+                            }
+
+                            QueryDeviceStatusResponse result = getHttpService()
+                                    .getDeviceStatus(pDeviceID, serialNum);
+                            Log.e(TAG, "QueryDeviceStatusResponse:" + result.toString());
+                            saveLoginInfo(result.getUsername(), result.getNickname());
+
+                            DeviceStatus curStatus = result.getStatus();
+                            if (curStatus == DeviceStatus.Unknown || curStatus == DeviceStatus.Enrolled) {
+                                getConfig().clearData();
+                            }
+
+                            if (curStatus == DeviceStatus.Activated) {
+                                notifyLogin(getConfig().getAccountNum(), getConfig().getNickname());
+                            }
+
+                            mDeviceStatusListener.onDeviceStatusChanged(curStatus);
+                            pSubscriber.onNext(result);
+                            pSubscriber.onCompleted();
+                        } catch (Exception e) {
+                            pSubscriber.onError(e);
+                        }
+                    }
+                });
     }
 
     protected Observable<DeviceStatus> activeUser(final ActivateUserType pUserType,

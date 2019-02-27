@@ -15,7 +15,7 @@ import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
-import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
+import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -85,43 +85,8 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         }
     };
 
-
-
-    public Observable<DeviceStatus> queryDeviceStatus() {
-        return Observable
-                .create(new Observable.OnSubscribe<QueryDeviceStatusResponse>() {
-                    @Override
-                    public void call(Subscriber<? super QueryDeviceStatusResponse> pSubscriber) {
-                        try {
-                            String deviceID = DeviceInfoManager.getInstance().getDeviceID();
-                            String serialNum = DeviceHelper.getSerialNumberThroughControl();
-
-                            if (TextUtils.isEmpty(deviceID)) {
-                                pSubscriber.onError(new DeviceIDNotSetException());
-                                return;
-                            }
-
-                            QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceID, serialNum);
-                            Log.e(TAG, "QueryDeviceStatusResponse:"+result.toString());
-                            saveLoginInfo(result.getUsername(), result.getNickname());
-
-                            DeviceStatus curStatus = result.getStatus();
-                            if(curStatus == DeviceStatus.Unknown || curStatus == DeviceStatus.Enrolled){
-                                getConfig().clearData();
-                            }
-
-                            if (curStatus == DeviceStatus.Activated) {
-                                notifyLogin(getConfig().getAccountNum(), getConfig().getNickname());
-                            }
-
-                            mDeviceStatusListener.onDeviceStatusChanged(curStatus);
-                            pSubscriber.onNext(result);
-                            pSubscriber.onCompleted();
-                        } catch (Exception e) {
-                            pSubscriber.onError(e);
-                        }
-                    }
-                })
+    public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
+        return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
@@ -132,6 +97,21 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                         return Observable.just(pResponse.getStatus());
                     }
                 });
+    }
+
+    public Observable<DeviceStatus> queryDeviceStatus() {
+        final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+        if (TextUtils.isEmpty(deviceID)) {
+            return confirmDeviceID()
+                    .flatMap(new Func1<String, Observable<DeviceStatus>>() {
+                        @Override
+                        public Observable<DeviceStatus> call(String pConfirmedDeviceID) {
+                            return actualQueryDeviceStatus(pConfirmedDeviceID);
+                        }
+                    });
+        }
+
+        return actualQueryDeviceStatus(deviceID);
     }
 
     private Observable<String> confirmDeviceID() {
@@ -146,7 +126,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                         return;
                     }
 
-                    String deviceID = DeviceIDSPUtils.loadDeviceIDFromSp();
+                    String deviceID = DeviceIDSPUtils.loadThirdVersionDeviceIDFromSp();
                     Context context = AdhocBasicConfig.getInstance().getAppContext();
 
                     if (!TextUtils.isEmpty(deviceID)) {
@@ -154,8 +134,17 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                         mConfirmDeviceIDSubject.onNext(deviceID);
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     } else {
-                        deviceID = loadSdDeviceIDAndConfirmFromServer();
-                        DeviceInfoManager.getInstance().setDeviceID(deviceID);
+                        deviceID = loadDeviceIDFromPrevSpOrSDCard();
+                        ConfirmDeviceIDResponse result = confirmDeviceIDFromServer(deviceID);
+
+                        if(!result.isSuccess()){
+                            pSubscriber.onError(new ConfirmIDServerException("result not success"));
+                            return;
+                        }
+
+                        getConfig().clearData();
+                        DeviceInfoManager.getInstance().setDeviceID(result.getDeviceID());
+
                         mConfirmDeviceIDSubject.onNext(deviceID);
                         DeviceIDSPUtils.saveDeviceIDToSp(deviceID);
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
@@ -189,6 +178,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             public void onCompleted() {
                                 synchronized (DeviceInitiator.this) {
                                     mInitSubject.onCompleted();
+                                    mInitSubject = null;
                                 }
                             }
 
@@ -218,11 +208,20 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
     }
 
-    private String loadSdDeviceIDAndConfirmFromServer() throws Exception {
-        String deviceID = loadDeviceIDFromSDCard();
-        ConfirmDeviceIDResponse result = confirmDeviceIDFromServer(deviceID);
-        // 如果回来跟本地的不一样，报Bugly
-        return result.getDeviceID();
+    private String loadDeviceIDFromPrevSpOrSDCard() throws Exception {
+        String secondVersionID = DeviceIDSPUtils.loadSecondVersionDeviceIDFromSp();
+        String firstVersionID = DeviceIDSPUtils.loadFirstVersionDeviceIDFromSp();
+
+        // 之前版本不存在。
+        if(TextUtils.isEmpty(secondVersionID) && TextUtils.isEmpty(firstVersionID)) {
+            return loadDeviceIDFromSDCard();
+        }
+
+        if (!TextUtils.isEmpty(secondVersionID)) {
+            return secondVersionID;
+        }
+
+        return firstVersionID;
     }
 
     private String loadDeviceIDFromSDCard(){
