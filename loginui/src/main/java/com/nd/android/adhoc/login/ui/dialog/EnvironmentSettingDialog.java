@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.login.ui.R;
@@ -120,6 +121,7 @@ public class EnvironmentSettingDialog extends DialogFragment
 //            spModel.putInt("env",this.position).apply();
 //            this.mOnEnvironmentSettingsListener.onSettings(this.position);
             getConfig().clearData();
+            DeviceInfoManager.getInstance().reset();
 //            EnvUtils.setUcEnv(position);
             MdmEvnFactory.getInstance().setCurEnvironment(position);
             MdmTransferFactory.getPushModel().start();
