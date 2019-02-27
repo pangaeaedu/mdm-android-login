@@ -13,6 +13,7 @@ import com.nd.android.adhoc.login.processOptimization.IDeviceInitiator;
 import com.nd.android.adhoc.login.processOptimization.IUserAuthenticator;
 import com.nd.android.adhoc.loginapi.ILoginApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
+import com.nd.android.adhoc.loginapi.exception.AutoLoginMeetUserLoginException;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
@@ -60,7 +61,7 @@ public class LoginApiImpl implements ILoginApi {
     @Override
     public Observable<DeviceStatus> login(@NonNull final String pUserName, @NonNull final String pPassword) {
         //如果device id没有设置上去，说明初始化没有完成，则要先走一次初始化的动作
-        if (TextUtils.isEmpty( DeviceInfoManager.getInstance().getDeviceID())) {
+        if (TextUtils.isEmpty(DeviceInfoManager.getInstance().getDeviceID())) {
             IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance()
                     .getDeviceInitiator();
 
@@ -68,9 +69,15 @@ public class LoginApiImpl implements ILoginApi {
                     .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
                         @Override
                         public Observable<DeviceStatus> call(DeviceStatus pStatus) {
-                            IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
-                                    .getUserAuthenticator();
-                            return authenticator.login(pUserName, pPassword);
+                            if(pStatus == DeviceStatus.Init || pStatus == DeviceStatus.Unknown
+                                    || pStatus == DeviceStatus.Enrolled) {
+                                IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                                        .getUserAuthenticator();
+                                return authenticator.login(pUserName, pPassword);
+                            }
+
+                            return Observable.error(new AutoLoginMeetUserLoginException("this " +
+                                    "device is auto login, actual username maybe different"));
                         }
                     });
         }
