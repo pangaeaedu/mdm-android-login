@@ -12,18 +12,19 @@ import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
+import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLogin;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLoginResult;
 import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
 import com.nd.android.adhoc.login.processOptimization.login.UserLoginThroughServer;
+import com.nd.android.adhoc.loginapi.exception.AutoLoginMeetUserLoginException;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Func1;
 
 public class UserAuthenticator extends BaseAuthenticator implements IUserAuthenticator {
@@ -34,6 +35,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
     public void logout() {
         getConfig().clearData();
+        DeviceInfoManager.getInstance().reset();
 
         IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
@@ -123,8 +125,8 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword) {
-        final String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
-        if(TextUtils.isEmpty(deviceID)){
+        final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+        if (TextUtils.isEmpty(deviceID)) {
             return Observable.error(new DeviceIDNotSetException());
         }
 
@@ -133,34 +135,13 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
             return Observable.error(new NetworkUnavailableException());
         }
 
-        if (TextUtils.isEmpty(pUserName) || TextUtils.isEmpty(pPassword)) {
-            return Observable.error(new LoginUserOrPwdEmptyException());
+        DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
+        if (status == DeviceStatus.Init) {
+            return queryDeviceStatusThenLogin(deviceID, pUserName, pPassword);
         }
 
-        // pushID被请理掉了，要先绑一下pushID
-        if(TextUtils.isEmpty(getConfig().getPushID())){
-            return Observable.create(new Observable.OnSubscribe<Boolean>() {
-                @Override
-                public void call(Subscriber<? super Boolean> pSubscriber) {
-                    try{
-                        bindPushIDToDeviceID();
-                        pSubscriber.onNext(true);
-                        pSubscriber.onCompleted();
-                    }catch (Exception e){
-                        pSubscriber.onError(e);
-                    }
-                }
-            }).flatMap(new Func1<Boolean, Observable<IUserLoginResult>>() {
-                @Override
-                public Observable<IUserLoginResult> call(Boolean pBoolean) {
-                    return getLogin().login(pUserName, pPassword);
-                }
-            }).flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
-                @Override
-                public Observable<DeviceStatus> call(IUserLoginResult pResult) {
-                    return activeUser(ActivateUserType.Uc, pResult.getLoginToken());
-                }
-            });
+        if (TextUtils.isEmpty(pUserName) || TextUtils.isEmpty(pPassword)) {
+            return Observable.error(new LoginUserOrPwdEmptyException());
         }
 
         return getLogin().login(pUserName, pPassword)
@@ -172,5 +153,40 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                 });
     }
 
+    private Observable<DeviceStatus> queryDeviceStatusThenLogin(String pDeviceID,
+                                                                final String pUserName,
+                                                                final String pPassword){
+        return queryDeviceStatusFromServer(pDeviceID)
+                .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
+                    @Override
+                    public Observable<DeviceStatus> call(final QueryDeviceStatusResponse pResponse) {
+                        if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
+                            return activeUser(ActivateUserType.AutoLogin, "")
+                                    .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
+                                        @Override
+                                        public Observable<DeviceStatus> call(DeviceStatus pStatus) {
+                                            if (TextUtils.isEmpty(pResponse.getJobnum())) {
+                                                return Observable.error(new
+                                                        AutoLoginMeetUserLoginException(""));
+                                            } else {
+                                                return Observable.error(new
+                                                        AutoLoginMeetUserLoginException
+                                                        ("autual username is:" + pResponse
+                                                                .getJobnum()));
+                                            }
+                                        }
+                                    });
+                        }
+
+                        return getLogin().login(pUserName, pPassword)
+                                .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
+                                    @Override
+                                    public Observable<DeviceStatus> call(IUserLoginResult pResult) {
+                                        return activeUser(ActivateUserType.Uc, pResult.getLoginToken());
+                                    }
+                                });
+                    }
+                });
+    }
 
 }
