@@ -4,10 +4,10 @@ import com.nd.android.adhoc.loginapi.exception.BaseInitException;
 
 public class UserBindedException extends BaseInitException {
     public UserBindedException(String pMsg) {
-        super(pMsg);
+        super("UserBindedException:"+pMsg);
     }
 
     public UserBindedException(int pCode, String pMsg) {
-        super(pCode, pMsg);
+        super(pCode, "UserBindedException:"+pMsg);
     }
 }

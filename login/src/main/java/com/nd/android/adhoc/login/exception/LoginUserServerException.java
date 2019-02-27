@@ -4,10 +4,10 @@ import com.nd.android.adhoc.loginapi.exception.BaseInitException;
 
 public class LoginUserServerException extends BaseInitException {
     public LoginUserServerException(String pMsg) {
-        super(pMsg);
+        super("LoginUserServerException:"+pMsg);
     }
 
     public LoginUserServerException(int pCode, String pMsg) {
-        super(pCode, pMsg);
+        super(pCode, "LoginUserServerException:"+pMsg);
     }
 }
