@@ -13,6 +13,10 @@ import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.enumConst.DeviceType;
+import com.nd.android.adhoc.login.exception.LoginUserServerException;
+import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
+import com.nd.android.adhoc.loginapi.exception.BindPushIDServerException;
+import com.nd.android.adhoc.loginapi.exception.QueryActivateUserResultException;
 
 import org.json.JSONObject;
 
@@ -40,54 +44,69 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
 
     public LoginUserResponse loginUser(String pEncryptUsername, String pEncryptPassword)
-            throws AdhocHttpException {
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", pEncryptUsername);
-        map.put("passwd", pEncryptPassword);
+            throws Exception {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("username", pEncryptUsername);
+            map.put("passwd", pEncryptPassword);
 
-        Gson gson = new GsonBuilder().create();
-        String content = gson.toJson(map);
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
 
-        return postAction().post("/v1.1/enroll/login/", LoginUserResponse.class,
-                content, null);
+            return postAction().post("/v1.1/enroll/login/", LoginUserResponse.class,
+                    content, null);
+        }catch (Exception pE){
+            throw new LoginUserServerException(pE.getMessage());
+        }
+
     }
 
     public GetActivateUserResultResponse getActivateResult(String pDeviceID, String pRequestID)
-            throws
-            AdhocHttpException{
-        Map<String, Object> map = new HashMap<>();
-        map.put("device_token", pDeviceID);
-        map.put("requestid", pRequestID);
-        map.put("type", DeviceType.Android.getValue());
+            throws Exception{
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("device_token", pDeviceID);
+            map.put("requestid", pRequestID);
+            map.put("type", DeviceType.Android.getValue());
 
-        Gson gson = new GsonBuilder().create();
-        String content = gson.toJson(map);
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
 
-        return postAction().post("/v1.1/enroll/getActivateResult/", GetActivateUserResultResponse.class,
-                content, null);
+            return postAction().post("/v1.1/enroll/getActivateResult/", GetActivateUserResultResponse.class,
+                    content, null);
+        }catch (Exception pE){
+            throw new QueryActivateUserResultException(pE.getMessage());
+        }
+
     }
 
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
-                                             ActivateUserType pUserType, String pLoginToken) throws AdhocHttpException {
-        Map<String, Object> map = new HashMap<>();
-        map.put("device_token", pDeviceID);
-        map.put("type", DeviceType.Android.getValue());
+                                             ActivateUserType pUserType, String pLoginToken)
+            throws Exception {
+       try {
+           Map<String, Object> map = new HashMap<>();
+           map.put("device_token", pDeviceID);
+           map.put("type", DeviceType.Android.getValue());
 
-        Map<String, String> header = null;
-        header = new HashMap<>();
-        header.put("channel", pUserType.getValue());
-        if (pUserType == ActivateUserType.Uc) {
-            header.put("Authorization", pLoginToken);
+           Map<String, String> header = null;
+           header = new HashMap<>();
+           header.put("channel", pUserType.getValue());
+           if (pUserType == ActivateUserType.Uc) {
+               header.put("Authorization", pLoginToken);
 
-        } else {
-            map.put("serial_no", pSerialNo);
-        }
+           } else {
+               map.put("serial_no", pSerialNo);
+           }
 
-        Gson gson = new GsonBuilder().create();
-        String content = gson.toJson(map);
+           Gson gson = new GsonBuilder().create();
+           String content = gson.toJson(map);
 
-        return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
-                content, header);
+           return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
+                   content, header);
+       }catch (Exception pE){
+           throw new ActivateUserServerException(pE.getMessage());
+       }
+
     }
 
     public void requestPolicySet(String pDeviceToken, long pTime, JSONObject pData) throws
@@ -106,20 +125,20 @@ public class EnrollLoginDao extends AdhocHttpDao {
         }
     }
 
-    public BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws AdhocHttpException {
-        Map<String, Object> map = new HashMap<>();
-        map.put("device_token", pDeviceID);
-        map.put("type", DeviceType.Android.getValue());
-        map.put("pushid", pPushID);
-
+    public BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws Exception {
         try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("device_token", pDeviceID);
+            map.put("type", DeviceType.Android.getValue());
+            map.put("pushid", pPushID);
+
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
 
             return postAction().post("/v1.1/enroll/pushid/", BindPushIDResponse.class, content, null);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
 
-            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+            throw new BindPushIDServerException(e.getMessage());
         }
     }
 
