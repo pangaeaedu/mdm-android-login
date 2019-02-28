@@ -10,6 +10,8 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.CrashAnalytics;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
@@ -77,6 +79,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             pSubscriber.onNext(result);
                             pSubscriber.onCompleted();
                         } catch (Exception e) {
+                            CrashAnalytics.INSTANCE.reportException(e);
                             pSubscriber.onError(e);
                         }
                     }
@@ -92,7 +95,10 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     String deviceID = DeviceInfoManager.getInstance().getDeviceID();
                     String serialNum = DeviceHelper.getSerialNumberThroughControl();
                     if (TextUtils.isEmpty(deviceID) || TextUtils.isEmpty(serialNum)) {
-                        pSubscriber.onError(new Exception("deviceID:" + deviceID + " serial num:" + serialNum));
+                        Exception exception = new Exception("deviceID:" + deviceID + " serial " +
+                                "num:" + serialNum);
+                        CrashAnalytics.INSTANCE.reportException(exception);
+                        pSubscriber.onError(exception);
                         return;
                     }
 
@@ -101,6 +107,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     queryActivateResultUntilTimesReach(3, deviceID, response.getRequestid(),
                             pSubscriber);
                 } catch (Exception e) {
+                    CrashAnalytics.INSTANCE.reportException(e);
                     pSubscriber.onError(e);
                 }
             }
@@ -119,17 +126,17 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
             GetActivateUserResultResponse queryResult = getHttpService()
                     .queryActivateResult(pDeviceID, pRequestID);
-            Log.e(TAG, "GetActivateUserResultResponse:"+queryResult.toString());
             if (!queryResult.isSuccess()) {
+                Logger.e(TAG, "GetActivateUserResultResponse:"+queryResult.toString());
                 if (queryResult.isActivateStillProcessing()) {
-                    //TODO 加上日志上报，不应该经常出现这个Processing
-                    Log.e(TAG, "query not finish, still processing");
+                    CrashAnalytics.INSTANCE.reportException(new Exception("queryActivateResult not finish, still processing"));
                     continue;
                 }
 
-                Log.e(TAG, "query error:"+queryResult.getMsgcode());
-                //TODO 报日志
-                pSubscriber.onError(new Exception("active user error:" + queryResult.getMsgcode()));
+                Exception exception = new Exception("queryActivateResult error," +
+                        queryResult.getMsgcode());
+                CrashAnalytics.INSTANCE.reportException(exception);
+                pSubscriber.onError(exception);
                 return;
             }
 
@@ -150,14 +157,15 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         String pushID = module.getDeviceId();
         String existPushID = getConfig().getPushID();
 
-        Log.e(TAG, "push id:"+pushID+" exist push id:"+existPushID);
+        Logger.e(TAG, "push id:"+pushID+" exist push id:"+existPushID);
         if (TextUtils.isEmpty(pushID)) {
-            // 加日志上报
-            throw new Exception("get push id from push module return empty");
+            Exception exception = new Exception("get push id from push module return empty");
+            CrashAnalytics.INSTANCE.reportException(exception);
+            throw exception;
         }
 
         if (pushID.equalsIgnoreCase(existPushID)) {
-            Log.e(TAG, "notify pushid exist:"+existPushID);
+            Logger.e(TAG, "notify pushid exist:"+existPushID);
             DeviceInfoManager.getInstance().notifyPushID(pushID);
             return;
         }
@@ -168,7 +176,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
         getHttpService().bindDeviceIDToPushID(deviceID, pushID);
         getConfig().savePushID(pushID);
-        Log.e(TAG, "notify pushid after bind:"+pushID);
+        Logger.e(TAG, "notify pushid after bind:"+pushID);
         DeviceInfoManager.getInstance().notifyPushID(pushID);
     }
 }

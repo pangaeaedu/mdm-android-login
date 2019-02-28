@@ -161,7 +161,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> init() {
-        Log.e(TAG, "calling init");
         Observable<DeviceStatus> temp;
         synchronized (DeviceInitiator.this) {
             if (mInitSubject == null) {

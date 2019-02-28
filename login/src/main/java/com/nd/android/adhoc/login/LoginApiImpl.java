@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.CrashAnalytics;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
 import com.nd.android.adhoc.login.exception.GetUserInfoServerException;
@@ -114,8 +115,12 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
                         return;
                     }
 
-                    pSubscriber.onError(new GetUserInfoServerException("" + response.getMsgcode()));
+                    GetUserInfoServerException exception = new GetUserInfoServerException("" +
+                            response.getMsgcode());
+                    CrashAnalytics.INSTANCE.reportException(exception);
+                    pSubscriber.onError(exception);
                 } catch (Exception pE) {
+                    CrashAnalytics.INSTANCE.reportException(pE);
                     pSubscriber.onError(pE);
                 }
 

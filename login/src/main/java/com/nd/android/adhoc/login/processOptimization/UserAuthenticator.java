@@ -125,7 +125,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                                             } else {
                                                 return Observable.error(new
                                                         AutoLoginMeetUserLoginException
-                                                        ("autual username is:" + pResponse
+                                                        ("actual username is:" + pResponse
                                                                 .getJobnum()));
                                             }
                                         }

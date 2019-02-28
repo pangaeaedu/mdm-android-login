@@ -3,6 +3,7 @@ package com.nd.android.adhoc.login.processOptimization.login;
 import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDEncryptUtils;
+import com.nd.android.adhoc.basic.log.CrashAnalytics;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
@@ -32,6 +33,7 @@ public class UserLoginThroughServer implements IUserLogin {
                     pSubscriber.onNext(returnResult);
                     pSubscriber.onCompleted();
                 }catch (Exception e){
+                    CrashAnalytics.INSTANCE.reportException(e);
                     pSubscriber.onError(e);
                 }
             }
