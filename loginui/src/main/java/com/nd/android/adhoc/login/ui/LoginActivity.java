@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
@@ -469,7 +470,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     }
 
     private void showErrorToast(Throwable pThrowable) {
-        AdhocToastModule.getInstance().showToast(pThrowable.getMessage());
+        Toast.makeText(this, pThrowable.getMessage(), Toast.LENGTH_LONG).show();;
     }
 
     @Override
