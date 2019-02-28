@@ -89,7 +89,6 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             @Override
             public void call(Subscriber<? super DeviceStatus> pSubscriber) {
                 try {
-
                     String deviceID = DeviceInfoManager.getInstance().getDeviceID();
                     String serialNum = DeviceHelper.getSerialNumberThroughControl();
                     if (TextUtils.isEmpty(deviceID) || TextUtils.isEmpty(serialNum)) {
