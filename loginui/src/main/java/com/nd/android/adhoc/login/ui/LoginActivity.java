@@ -444,9 +444,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
     @Override
     public void onLoginSuccess(DeviceStatus pStatus) {
-        if(pStatus == DeviceStatus.Unknown
-                || pStatus == DeviceStatus.Enrolled
-                || pStatus == DeviceStatus.Init){
+        if(DeviceStatus.isStatusUnLogin(pStatus)){
             AdhocToastModule.getInstance().showToast(getString(R.string.login_error_user_not_activated));
             mLoginPanel.setVisibility(View.VISIBLE);
             mLoginStatus.setVisibility(View.GONE);
@@ -503,7 +501,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
                     @Override
                     public void onNext(DeviceStatus pStatus) {
-                        if(pStatus == DeviceStatus.Enrolled || pStatus == DeviceStatus.Init){
+                        if(DeviceStatus.isStatusUnLogin(pStatus)){
                             return;
                         }
 

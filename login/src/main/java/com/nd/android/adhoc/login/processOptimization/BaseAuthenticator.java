@@ -65,7 +65,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             saveLoginInfo(result.getUsername(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
-                            if (curStatus == DeviceStatus.Unknown || curStatus == DeviceStatus.Enrolled) {
+                            if (DeviceStatus.isStatusUnLogin(curStatus)) {
                                 getConfig().clearData();
                             }
 

@@ -37,7 +37,7 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
 
         DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
 
-        if(status == DeviceStatus.Unknown || status == DeviceStatus.Enrolled){
+        if(DeviceStatus.isStatusUnLogin(status)){
             enterLoginUI();
         } else {
             enterAfterLoginUI();

@@ -37,4 +37,12 @@ public enum DeviceStatus {
         return super.toString();
 
     }
+
+    public static boolean isStatusUnLogin(DeviceStatus pStatus){
+        if(pStatus == Init || pStatus == Unknown || pStatus == Enrolled){
+            return true;
+        }
+
+        return false;
+    }
 }

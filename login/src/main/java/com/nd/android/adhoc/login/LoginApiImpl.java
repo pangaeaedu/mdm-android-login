@@ -69,8 +69,7 @@ public class LoginApiImpl implements ILoginApi {
                     .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
                         @Override
                         public Observable<DeviceStatus> call(DeviceStatus pStatus) {
-                            if(pStatus == DeviceStatus.Init || pStatus == DeviceStatus.Unknown
-                                    || pStatus == DeviceStatus.Enrolled) {
+                            if(DeviceStatus.isStatusUnLogin(pStatus)) {
                                 IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
                                         .getUserAuthenticator();
                                 return authenticator.login(pUserName, pPassword);
