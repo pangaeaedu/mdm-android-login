@@ -116,10 +116,9 @@ public class EnrollLoginDao extends AdhocHttpDao {
            header.put("channel", pUserType.getValue());
            if (pUserType == ActivateUserType.Uc) {
                header.put("Authorization", pLoginToken);
-
-           } else {
-               map.put("serial_no", pSerialNo);
            }
+
+           map.put("serial_no", pSerialNo);
 
            Gson gson = new GsonBuilder().create();
            String content = gson.toJson(map);
