@@ -2,12 +2,12 @@ package com.nd.android.adhoc.login.basicService.http;
 
 import android.text.TextUtils;
 
-import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
+import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
@@ -97,21 +97,17 @@ public class HttpServiceImpl implements IHttpService {
 
     @Override
     public LoginUserResponse login(String pEncryptUserName, String pEncryptPassword) throws Exception {
-        try {
-            EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-            LoginUserResponse result = dao.loginUser(pEncryptUserName, pEncryptPassword);
-            if(!result.isSuccess()){
-                throw new LoginUserServerException(result.result);
-            }
-
-            if(TextUtils.isEmpty(result.loginToken)){
-                throw new LoginUserServerException("login token is empty");
-            }
-
-            return result;
-        }catch (AdhocHttpException e){
-            throw new LoginUserServerException(e.getErrorCode(), e.getMessage());
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        LoginUserResponse result = dao.loginUser(pEncryptUserName, pEncryptPassword);
+        if (!result.isSuccess()) {
+            throw new LoginUserServerException(result.result);
         }
+
+        if (TextUtils.isEmpty(result.loginToken)) {
+            throw new LoginUserServerException("login token is empty");
+        }
+
+        return result;
 
     }
 
@@ -121,10 +117,6 @@ public class HttpServiceImpl implements IHttpService {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
         GetActivateUserResultResponse result = dao.getActivateResult(pDeviceID, pRequestID);
 
-//        if (!result.isSuccess()) {
-//            throw new Exception("query activate result not success");
-//        }
-
         return result;
     }
 
@@ -132,33 +124,31 @@ public class HttpServiceImpl implements IHttpService {
     public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
                                                    String pWifiMac, String pBlueToothMac, String pSerialNo,
                                                    String pAndroidID, String pDeviceToken) throws Exception {
-        try {
-            EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-            ConfirmDeviceIDResponse result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
-                    pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        ConfirmDeviceIDResponse result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+                pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
 
-            if(!result.isSuccess()){
-                throw new ConfirmIDServerException("confirm id not success");
-            }
-
-            return result;
-        }catch (AdhocHttpException e){
-            throw new ConfirmIDServerException(e.getErrorCode(), e.getMessage());
+        if (!result.isSuccess()) {
+            throw new ConfirmIDServerException("confirm id not success");
         }
+
+        return result;
     }
 
     @Override
     public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception {
-        try {
-            EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-            QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum);
-            if (!result.isSuccess()) {
-                throw new QueryDeviceStatusServerException("get device status not success");
-            }
-            return result;
-        } catch (AdhocHttpException e) {
-            throw new QueryDeviceStatusServerException(e.getErrorCode(), e.getMessage());
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum);
+        if (!result.isSuccess()) {
+            throw new QueryDeviceStatusServerException("get device status not success");
         }
+        return result;
+    }
+
+    @Override
+    public GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        return dao.getUserInfo(pDeviceID);
     }
 
     private String getBaseUrl(){

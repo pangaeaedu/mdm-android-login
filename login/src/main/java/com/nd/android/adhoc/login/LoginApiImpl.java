@@ -8,7 +8,10 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
+import com.nd.android.adhoc.login.exception.GetUserInfoServerException;
 import com.nd.android.adhoc.login.processOptimization.AssistantAuthenticSystem;
+import com.nd.android.adhoc.login.processOptimization.BaseAbilityProvider;
 import com.nd.android.adhoc.login.processOptimization.IDeviceInitiator;
 import com.nd.android.adhoc.login.processOptimization.IUserAuthenticator;
 import com.nd.android.adhoc.loginapi.ILoginApi;
@@ -19,10 +22,11 @@ import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Func1;
 
 @Route(path = LoginRoutePathConstants.PATH_LOGIN_LOGIN)
-public class LoginApiImpl implements ILoginApi {
+public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
     private static final String TAG = "LoginApiImpl";
     @Override
     public void enterLoginUI(@NonNull Context pContext) {
@@ -89,7 +93,34 @@ public class LoginApiImpl implements ILoginApi {
 
     @Override
     public Observable<String> getNickName() {
-        return null;
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> pSubscriber) {
+                String nickname = getConfig().getNickname();
+                if (!TextUtils.isEmpty(nickname)) {
+                    pSubscriber.onNext(nickname);
+                    pSubscriber.onCompleted();
+                    return;
+                }
+
+                try {
+                    String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+                    GetUserInfoResponse response = getHttpService().getUserInfo(deviceID);
+
+                    if (response.isSuccess()) {
+                        getConfig().saveNickname(response.getNickName());
+                        pSubscriber.onNext(response.getNickName());
+                        pSubscriber.onCompleted();
+                        return;
+                    }
+
+                    pSubscriber.onError(new GetUserInfoServerException("" + response.getMsgcode()));
+                } catch (Exception pE) {
+                    pSubscriber.onError(pE);
+                }
+
+            }
+        });
     }
 
     @Override

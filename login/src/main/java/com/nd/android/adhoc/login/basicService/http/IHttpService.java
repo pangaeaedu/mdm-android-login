@@ -5,6 +5,7 @@ import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
+import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
@@ -42,4 +43,5 @@ public interface IHttpService {
 
     QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception;
 
+    GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception;
 }

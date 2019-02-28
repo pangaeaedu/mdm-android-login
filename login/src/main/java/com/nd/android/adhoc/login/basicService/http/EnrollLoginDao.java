@@ -9,14 +9,18 @@ import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
+import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.enumConst.DeviceType;
+import com.nd.android.adhoc.login.exception.GetUserInfoServerException;
 import com.nd.android.adhoc.login.exception.LoginUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
 import com.nd.android.adhoc.loginapi.exception.BindPushIDServerException;
+import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 import com.nd.android.adhoc.loginapi.exception.QueryActivateUserResultException;
+import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 
 import org.json.JSONObject;
 
@@ -28,20 +32,39 @@ public class EnrollLoginDao extends AdhocHttpDao {
         super(pBaseUrl);
     }
 
+    public GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception{
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("device_token", pDeviceID);
+            map.put("type", DeviceType.Android.getValue());
 
-    public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum) throws AdhocHttpException {
-        Map<String, Object> map = new HashMap<>();
-        map.put("device_token", pDeviceID);
-        map.put("serial_no", pSerialNum);
-        map.put("type", DeviceType.Android.getValue());
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
 
-        Gson gson = new GsonBuilder().create();
-        String content = gson.toJson(map);
-
-        return postAction().post("/v1.1/enroll/getDeviceStatus/", QueryDeviceStatusResponse.class,
-                content, null);
+            return postAction().post("/v1.1/enroll/getUserInfo/", GetUserInfoResponse.class,
+                    content, null);
+        }catch (Exception pE){
+            throw new GetUserInfoServerException(pE.getMessage());
+        }
     }
 
+    public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum)
+            throws Exception {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("device_token", pDeviceID);
+            map.put("serial_no", pSerialNum);
+            map.put("type", DeviceType.Android.getValue());
+
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+
+            return postAction().post("/v1.1/enroll/getDeviceStatus/", QueryDeviceStatusResponse.class,
+                    content, null);
+        }catch (Exception pE){
+            throw new QueryDeviceStatusServerException(pE.getMessage());
+        }
+    }
 
     public LoginUserResponse loginUser(String pEncryptUsername, String pEncryptPassword)
             throws Exception {
@@ -118,7 +141,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             object.put("data", pData);
             object.put("type", 1);
             String content = object.toString();
-            String result = postAction().post("/v1.1/enroll/policyset/",
+            postAction().post("/v1.1/enroll/policyset/",
                     String.class, content, null);
         } catch (Exception e) {
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
@@ -137,7 +160,6 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/pushid/", BindPushIDResponse.class, content, null);
         } catch (Exception e) {
-
             throw new BindPushIDServerException(e.getMessage());
         }
     }
@@ -178,8 +200,9 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/getDeviceToken/", ConfirmDeviceIDResponse.class,
                     content, null);
-        } catch (RuntimeException e) {
-            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
+        } catch (Exception e) {
+            throw new ConfirmIDServerException(e.getMessage());
+//            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }
 }
