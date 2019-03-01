@@ -43,39 +43,51 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
         @Override
         public void onConnected() {
-            Log.e(TAG, "push sdk onConnected");
+            Log.e("yhq", "push sdk onConnected");
             if (mSubBindPushID != null) {
                 return;
             }
 
-            mSubBindPushID = mConfirmDeviceIDSubject
+            Log.e("yhq", "before call subject");
+            mSubBindPushID = mConfirmDeviceIDSubject.take(1)
                     .flatMap(new Func1<String, Observable<Boolean>>() {
                         @Override
                         public Observable<Boolean> call(String pDeviceID) {
-                            try {
-                                bindPushIDToDeviceID();
-                                return Observable.just(true);
-                            } catch (Exception e) {
-                                return Observable.error(e);
-                            }
+                            return Observable.create(new Observable.OnSubscribe<Boolean>() {
+                                @Override
+                                public void call(Subscriber<? super Boolean> pSubscriber) {
+                                    try {
+                                        Log.e("yhq", "before call bindPushIDToDeviceID");
+                                        bindPushIDToDeviceID();
+                                        pSubscriber.onNext(true);
+                                        pSubscriber.onCompleted();
+                                    } catch (Exception e) {
+                                        pSubscriber.onError(e);
+                                    }
+                                }
+                            });
+
                         }
                     })
                     .subscribeOn(Schedulers.io())
                     .subscribe(new Subscriber<Boolean>() {
                         @Override
                         public void onCompleted() {
+                            Log.e("yhq", "bind push id complete");
                             mSubBindPushID = null;
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
+                            Log.e("yhq", "bind push id error:" + e.getMessage());
                             mSubBindPushID = null;
                         }
 
                         @Override
                         public void onNext(Boolean pO) {
-
+                            Log.e("yhq", "bind push id onNext");
+                            mSubBindPushID = null;
                         }
                     });
         }
@@ -87,6 +99,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     };
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
+        Log.e("yhq", "actualQueryDeviceStatus");
         return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
@@ -101,6 +114,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> queryDeviceStatus() {
+        Log.e("yhq", "queryDeviceStatus");
         final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         if (TextUtils.isEmpty(deviceID)) {
             return confirmDeviceID()
@@ -116,6 +130,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     private Observable<String> confirmDeviceID() {
+        Log.e("yhq", "confirmDeviceID");
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> pSubscriber) {
@@ -177,6 +192,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             @Override
                             public void onCompleted() {
                                 synchronized (DeviceInitiator.this) {
+                                    Log.e("yhq", "init complete");
                                     mInitSubject.onCompleted();
                                     mInitSubject = null;
                                 }
@@ -184,6 +200,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                             @Override
                             public void onError(Throwable e) {
+                                Log.e("yhq", "init error:"+e.getMessage());
                                 e.printStackTrace();
                                 synchronized (DeviceInitiator.this) {
                                     mInitSubject.onError(e);
