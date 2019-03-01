@@ -49,6 +49,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
 
     protected Observable<QueryDeviceStatusResponse> queryDeviceStatusFromServer(final String pDeviceID){
+        Log.e("yhq", "queryDeviceStatusFromServer");
         return Observable
                 .create(new Observable.OnSubscribe<QueryDeviceStatusResponse>() {
                     @Override
@@ -63,7 +64,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
                             QueryDeviceStatusResponse result = getHttpService()
                                     .getDeviceStatus(pDeviceID, serialNum);
-                            Log.e(TAG, "QueryDeviceStatusResponse:" + result.toString());
+                            Log.e("yhq", "QueryDeviceStatusResponse:" + result.toString());
                             saveLoginInfo(result.getUsername(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
@@ -79,6 +80,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             pSubscriber.onNext(result);
                             pSubscriber.onCompleted();
                         } catch (Exception e) {
+                            Log.e("yhq", "queryDeviceStatusFromServer error:"+e.getMessage());
                             CrashAnalytics.INSTANCE.reportException(e);
                             pSubscriber.onError(e);
                         }
@@ -88,6 +90,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     protected Observable<DeviceStatus> activeUser(final ActivateUserType pUserType,
                                                   final String pLoginToken) {
+        Log.e("yhq", "activeUser:"+pUserType.getValue());
         return Observable.create(new Observable.OnSubscribe<DeviceStatus>() {
             @Override
             public void call(Subscriber<? super DeviceStatus> pSubscriber) {
@@ -107,6 +110,9 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     queryActivateResultUntilTimesReach(3, deviceID, response.getRequestid(),
                             pSubscriber);
                 } catch (Exception e) {
+                    // 如果激活用户异常，要把本地的状态更改成Init状态
+                    DeviceInfoManager.getInstance().setCurrentStatus(DeviceStatus.Init);
+                    Log.e("yhq", "activate user error:"+e.getMessage());
                     CrashAnalytics.INSTANCE.reportException(e);
                     pSubscriber.onError(e);
                 }
@@ -121,6 +127,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     protected void queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
                                                       String pRequestID, Subscriber<? super DeviceStatus> pSubscriber) throws Exception {
+        Log.e("yhq", "queryActivateResultUntilTimesReach");
         for (int i = 0; i < pTimes; i++) {
             Thread.sleep((i * 3 + 1) * 1000);
 
@@ -157,7 +164,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         String pushID = module.getDeviceId();
         String existPushID = getConfig().getPushID();
 
-        Logger.e(TAG, "push id:"+pushID+" exist push id:"+existPushID);
+        Log.e("yhq", "push id:"+pushID+" exist push id:"+existPushID);
         if (TextUtils.isEmpty(pushID)) {
             Exception exception = new Exception("get push id from push module return empty");
             CrashAnalytics.INSTANCE.reportException(exception);
@@ -165,7 +172,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         }
 
         if (pushID.equalsIgnoreCase(existPushID)) {
-            Logger.e(TAG, "notify pushid exist:"+existPushID);
+            Log.e("yhq", "notify pushid exist:"+existPushID);
             DeviceInfoManager.getInstance().notifyPushID(pushID);
             return;
         }
@@ -176,7 +183,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
         getHttpService().bindDeviceIDToPushID(deviceID, pushID);
         getConfig().savePushID(pushID);
-        Logger.e(TAG, "notify pushid after bind:"+pushID);
+        Log.e("yhq", "notify pushid after bind:"+pushID);
         DeviceInfoManager.getInstance().notifyPushID(pushID);
     }
 }
