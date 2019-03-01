@@ -20,7 +20,6 @@ import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
 import com.nd.android.adhoc.communicate.receiver.IFeedbackMsgReceiver;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.android.mdm.biz.common.MsgCode;
-import com.nd.android.mdm.biz.common.util.SDKLogUtil;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
 import org.json.JSONObject;
@@ -54,6 +53,7 @@ class PushModule implements IPushModule {
     private IPushChannelConnectListener mChannelConnectListener = new IPushChannelConnectListener() {
         @Override
         public void onConnectStatusChanged(IPushChannel pChannel, PushConnectStatus pStatus) {
+            Log.e("yhq", "onConnectStatusChanged:"+pStatus);
             for (IPushConnectListener listener : mConnectListeners) {
                 if (pStatus == PushConnectStatus.Connected) {
                     listener.onConnected();
