@@ -3,6 +3,7 @@ package com.nd.android.adhoc.login.processOptimization;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
@@ -34,6 +35,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     public void logout() {
+        Log.e("yhq", "logout");
         getConfig().clearData();
 
         IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
@@ -79,6 +81,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword) {
+        Log.e("yhq", "login");
         final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         if (TextUtils.isEmpty(deviceID)) {
             return Observable.error(new DeviceIDNotSetException());
@@ -98,6 +101,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
             return Observable.error(new LoginUserOrPwdEmptyException());
         }
 
+        Log.e("yhq", "direct login");
         return getLogin().login(pUserName, pPassword)
                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                     @Override
@@ -110,6 +114,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     private Observable<DeviceStatus> queryDeviceStatusThenLogin(String pDeviceID,
                                                                 final String pUserName,
                                                                 final String pPassword){
+        Log.e("yhq", "queryDeviceStatusThenLogin");
         return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override

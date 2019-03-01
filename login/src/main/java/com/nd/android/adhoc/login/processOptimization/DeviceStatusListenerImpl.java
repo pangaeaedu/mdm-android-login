@@ -27,7 +27,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
             return;
         }
 
-        Log.e(TAG, "onDeviceActivated");
+        Log.e("yhq", "onDeviceActivated");
         mSubscription = DeviceInfoManager.getInstance()
                 .getPushIDSubject().asObservable().take(1)   //取第一个，将长监听转成单次监听，
                 .flatMap(new Func1<String, Observable<Void>>() {// 这样取一次后，后续的调用流就能走到onComplete
@@ -35,10 +35,10 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
                     public Observable<Void> call(String pS) {
                         try {
                             requestPolicySet();
-                            Log.e(TAG, "requestPolicySet finish");
+                            Log.e("yhq", "requestPolicySet finish");
                             return Observable.just(null);
                         } catch (Exception e) {
-                            Log.e(TAG, "requestPolicySet error:"+e.getMessage());
+                            Log.e("yhq", "requestPolicySet error:"+e.getMessage());
                             return Observable.error(e);
                         }
                     }
