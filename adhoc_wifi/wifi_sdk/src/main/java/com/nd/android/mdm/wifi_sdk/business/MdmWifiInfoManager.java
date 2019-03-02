@@ -16,7 +16,8 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
-import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.IMdmWifiStatusReceiverCallback;
+import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.IMdmWifiStatusListener;
+import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.MdmWifiStatusListenerManager;
 import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.MdmWifiStatusReceiver;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
 import com.nd.android.mdm.wifi_sdk.business.basic.listener.MdmWifiListenerManager;
@@ -34,6 +35,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 
@@ -59,6 +61,8 @@ public final class MdmWifiInfoManager {
 //    private AtomicBoolean mIsKeepRun = new AtomicBoolean(false);
 
 
+    private MdmWifiStatusReceiver mWifiStatusReceiver;
+
     private WifiManager mWifiManager;
     private MdmWifiListenerManager mWifiListenerManager;
 
@@ -67,8 +71,6 @@ public final class MdmWifiInfoManager {
     private Subscription mStateTimerSub;
 
     private Subscription mGetVendorInfo;
-
-    private MdmWifiStatusReceiver mWifiStatusReceiver;
 
 
     private Subscription mInitWifiInfoSub;
@@ -80,9 +82,7 @@ public final class MdmWifiInfoManager {
     private PublishSubject<NetworkInfo.DetailedState> mNetworkStatePublish = PublishSubject.create();
     private PublishSubject<SupplicantState> mSupplicantStatePublish = PublishSubject.create();
 
-
-    @SuppressWarnings("FieldCanBeLocal")
-    private IMdmWifiStatusReceiverCallback mReceiverCallback = new IMdmWifiStatusReceiverCallback() {
+    private IMdmWifiStatusListener mWifiStatusListener = new IMdmWifiStatusListener() {
         @Override
         public void onScanResultsAvailable() {
             mScanResultsPublish.onNext(null);
@@ -101,6 +101,7 @@ public final class MdmWifiInfoManager {
             }
         }
     };
+
 
     public static MdmWifiInfoManager getInstance() {
         if (sInstance == null) {
@@ -121,10 +122,14 @@ public final class MdmWifiInfoManager {
 
         initNetworkStateSub();
         initSupplicantStateSub();
-        mWifiStatusReceiver = new MdmWifiStatusReceiver(mReceiverCallback);
-        mWifiStatusReceiver.registerReceiver();
+
+        MdmWifiStatusListenerManager.getInstance().addListener(mWifiStatusListener);
 
         initScanResultsSub();
+
+        mWifiStatusReceiver = new MdmWifiStatusReceiver();
+        mWifiStatusReceiver.registerReceiver();
+
     }
 
     @SuppressLint("WifiManagerLeak")
@@ -175,9 +180,12 @@ public final class MdmWifiInfoManager {
      * 回收
      */
     public void release() {
+        MdmWifiStatusListenerManager.getInstance().removeListener(mWifiStatusListener);
+
         if (mWifiStatusReceiver != null) {
             mWifiStatusReceiver.unregisterReceiver();
         }
+
         if (mWifiListenerManager != null) {
             mWifiListenerManager.release();
         }
@@ -208,7 +216,7 @@ public final class MdmWifiInfoManager {
                                 }
                                 return null;
                             }
-                        }).compose(AdhocRxJavaUtil.<ScanResult>applyDefaultSchedulers())
+                        }).subscribeOn(Schedulers.io())
                         .subscribe(new Subscriber<ScanResult>() {
                             @Override
                             public void onCompleted() {
@@ -217,7 +225,7 @@ public final class MdmWifiInfoManager {
 
                             @Override
                             public void onError(Throwable throwable) {
-                                Logger.w(TAG, "ScanResultsSub onError: " + throwable.toString());
+                                Logger.w(TAG, "initScanResultsSub onError: " + throwable.toString());
                                 AdhocRxJavaUtil.doUnsubscribe(mScanResultsSub);
                                 initScanResultsSub();
                             }
@@ -242,7 +250,7 @@ public final class MdmWifiInfoManager {
         }
 
         mNetworkStateSub = mNetworkStatePublish.asObservable().throttleLast(sNotifyStateChangeDuration, TimeUnit.SECONDS)
-                .compose(AdhocRxJavaUtil.<NetworkInfo.DetailedState>applyDefaultSchedulers())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<NetworkInfo.DetailedState>() {
                     @Override
                     public void onCompleted() {
@@ -250,7 +258,7 @@ public final class MdmWifiInfoManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.w(TAG, "NetworkStateSub onError: " + e.toString());
+                        Logger.w(TAG, "initNetworkStateSub onError: " + e.toString());
                         AdhocRxJavaUtil.doUnsubscribe(mNetworkStateSub);
                         initNetworkStateSub();
                     }
@@ -264,28 +272,11 @@ public final class MdmWifiInfoManager {
                                 updateVendorInfo();
                                 mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.CONNECTED);
                                 break;
-                            case DISCONNECTED:
+                            default:
                                 mIsWiFiConnected.set(false);
                                 mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.DISCONNECT);
-                                resetConnectedInfo();
-                            case SCANNING:
-
-                            case CONNECTING:
-                                mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.CONNECTING);
-                                updateCurWifiInfo();
-                            case AUTHENTICATING:
-                                mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.AUTHENTICATING);
-                            case OBTAINING_IPADDR:
-                                mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.OBTAINING_IPADDR);
-                            case FAILED:
-                            case CAPTIVE_PORTAL_CHECK:
-                                mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.CAPTIVE_PORTAL_CHECK);
-                                mIsWiFiConnected.set(false);
                                 stopStateTimer();
                                 resetConnectedInfo();
-                                break;
-                            default:
-                                stopStateTimer();
                                 break;
                         }
                     }
@@ -452,7 +443,7 @@ public final class MdmWifiInfoManager {
     private void notifyInfoupdated() {
 //        if (mIsKeepRun.get()) {
 //            EventBus.getDefault().post(new WiFiInfoUpdateEvent());
-            mWifiListenerManager.noticeInfoUpdated(mWifiInfo);
+        mWifiListenerManager.noticeInfoUpdated(mWifiInfo);
 //        }
     }
 
