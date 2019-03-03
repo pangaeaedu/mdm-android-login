@@ -31,6 +31,7 @@ ext {
     device_command_version = '1.1.87.24dfc01-hyk0.6.6.0opt-SNAPSHOT'
 
     location_verison = '1.0.13.7af56f3'
+    file_transfer_version = '1.0.28.217c4c2'
 
     // 下面这三个后续也需要发布为正式版本
     adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
