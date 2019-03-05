@@ -21,6 +21,7 @@ import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.info.AdhocLoginInfoImpl;
 import com.nd.android.adhoc.login.info.AdhocUserInfoImpl;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
+import com.nd.android.adhoc.loginapi.exception.QueryActivateUserResultException;
 import com.nd.android.adhoc.loginapi.exception.QueryActivateUserTimeoutException;
 
 import rx.Observable;
@@ -140,8 +141,8 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     continue;
                 }
 
-                Exception exception = new Exception("queryActivateResult error," +
-                        queryResult.getMsgcode());
+
+                Exception exception = new QueryActivateUserResultException(queryResult.getMsgcode());;
                 CrashAnalytics.INSTANCE.reportException(exception);
                 pSubscriber.onError(exception);
                 return;
