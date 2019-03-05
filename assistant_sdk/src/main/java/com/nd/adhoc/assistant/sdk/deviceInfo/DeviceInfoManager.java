@@ -23,8 +23,11 @@ public class DeviceInfoManager {
 
     private BehaviorSubject<String> mPushIDSubject = BehaviorSubject.create();
 
+    private BehaviorSubject<String> mConfirmDeviceIDSubject = BehaviorSubject.create();
+
     public void setDeviceID(@NonNull String pDeviceID) {
         mDeviceID = pDeviceID;
+        notifyDeviceID(mDeviceID);
     }
 
     public String getDeviceID() {
@@ -53,12 +56,25 @@ public class DeviceInfoManager {
         mPushIDSubject.onNext(pPushID);
     }
 
+    public BehaviorSubject<String> getConfirmDeviceIDSubject(){
+        return mConfirmDeviceIDSubject;
+    }
+
+    public void notifyDeviceID(String pDeviceID) {
+        mConfirmDeviceIDSubject.onNext(pDeviceID);
+    }
+
+
     private static AssistantSpConfig getConfig() {
         return AssistantBasicServiceFactory.getInstance().getSpConfig();
     }
 
     public void reset(){
         mDeviceID = "";
+
+        mConfirmDeviceIDSubject.onCompleted();
+        mConfirmDeviceIDSubject = BehaviorSubject.create();
+
         resetStatusAndPushIDSubject();
     }
 

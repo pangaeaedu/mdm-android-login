@@ -28,7 +28,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
     private static final String TAG = "DeviceInitiator";
 
-    private BehaviorSubject<String> mConfirmDeviceIDSubject = BehaviorSubject.create();
+
 
     private BehaviorSubject<DeviceStatus> mInitSubject = null;
     private Subscription mSubBindPushID = null;
@@ -49,7 +49,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
             }
 
             Log.e("yhq", "before call subject");
-            mSubBindPushID = mConfirmDeviceIDSubject.take(1)
+            mSubBindPushID = DeviceInfoManager.getInstance().getConfirmDeviceIDSubject().take(1)
                     .flatMap(new Func1<String, Observable<Boolean>>() {
                         @Override
                         public Observable<Boolean> call(String pDeviceID) {
@@ -147,7 +147,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                     if (!TextUtils.isEmpty(deviceID)) {
                         DeviceInfoManager.getInstance().setDeviceID(deviceID);
-                        mConfirmDeviceIDSubject.onNext(deviceID);
+
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     } else {
                         deviceID = loadDeviceIDFromPrevSpOrSDCard();
@@ -161,7 +161,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                         getConfig().clearData();
                         DeviceInfoManager.getInstance().setDeviceID(result.getDeviceID());
 
-                        mConfirmDeviceIDSubject.onNext(deviceID);
                         DeviceIDSPUtils.saveDeviceIDToSp(deviceID);
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     }
@@ -169,6 +168,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     pSubscriber.onNext(deviceID);
                     pSubscriber.onCompleted();
                 } catch (Exception e) {
+                    Log.e("yhq", e.getMessage());
                     pSubscriber.onError(e);
                 }
             }
