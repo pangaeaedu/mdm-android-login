@@ -69,9 +69,11 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             saveLoginInfo(result.getUsername(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
-                            if (DeviceStatus.isStatusUnLogin(curStatus)) {
-                                getConfig().clearData();
-                            }
+
+                            //未登录状态，不要应该清除数据，会导致DeviceID被清掉
+//                            if (DeviceStatus.isStatusUnLogin(curStatus)) {
+//                                getConfig().clearData();
+//                            }
 
                             if (curStatus == DeviceStatus.Activated) {
                                 notifyLogin(getConfig().getAccountNum(), getConfig().getNickname());

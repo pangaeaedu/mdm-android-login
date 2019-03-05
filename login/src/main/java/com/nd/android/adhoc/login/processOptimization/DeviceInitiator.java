@@ -264,7 +264,12 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String serialNo = DeviceHelper.getSerialNumberThroughControl();
         String androidID = AdhocDeviceUtil.getAndroidId(context);
 
-        return getHttpService().confirmDeviceID(buildSn, cpuSn, imei, wifiMac,
-                blueToothMac, serialNo, androidID,pLocalDeviceID);
+//        Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
+//        +" wifiMac:"+wifiMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
+//        +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
+        ConfirmDeviceIDResponse response =  getHttpService().confirmDeviceID(buildSn, cpuSn, imei,
+                wifiMac, blueToothMac, serialNo, androidID,pLocalDeviceID);
+//        Log.e("yhq", "deviceID response:"+response.getDeviceID());
+        return response;
     }
 }
