@@ -80,8 +80,7 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
                                 return authenticator.login(pUserName, pPassword);
                             }
 
-                            return Observable.error(new AutoLoginMeetUserLoginException("this " +
-                                    "device is auto login, actual username maybe different"));
+                            return Observable.error(new AutoLoginMeetUserLoginException("unknown"));
                         }
                     });
         }
