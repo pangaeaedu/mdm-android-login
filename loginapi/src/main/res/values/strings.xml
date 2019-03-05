@@ -4,5 +4,29 @@
     <string name="login_error_query_status_error">Query device status failed</string>
     <string name="login_error_user_not_activated">Device not activated</string>
 
-    <string name="init_api_not_found">Init Api接口未找到</string>
+    <string name="init_api_not_found">Init Api not found</string>
+
+    <string name="exception_activate_user_010">still processing</string>
+    <string name="exception_activate_user_020">mdm exception</string>
+    <string name="exception_activate_user_030">auto activate invalid</string>
+    <string name="exception_activate_user_040">device used</string>
+    <string name="exception_activate_user_050">user used</string>
+
+    <string name="exception_network_unavailable">network not available</string>
+    <string name="exception_activate_user_server">active user error:%s</string>
+
+    <string name="exception_login_user_auto">this device is auto login, real account:%s</string>
+
+    <string name="exception_bind_push_id">bind push id error:%s</string>
+    <string name="exception_confirm_device_id">confirm device id error:%s</string>
+
+    <string name="exception_device_id_not_set">DeviceID not confirm</string>
+
+    <string name="exception_activate_user_timeout">activate user timeout</string>
+
+    <string name="exception_query_status">query device status error：%s</string>
+
+    <string name="exception_login_user">login user error：%s</string>
+
+    <string name="exception_get_user_info">get user info error：%s</string>
 </resources>
