@@ -43,6 +43,8 @@ public class DeviceIDSPUtils {
                             boolean bOK = DeviceIDFileUtils.saveDeviceIDToSdFile(pContext, encrypt);
                             if(!bOK){
                                 Log.e(TAG, "SaveDeviceIDToSdFile failed");
+                            } else {
+                                Log.e("yhq", "SaveDeviceIDToSdFile success:"+pDeviceID);
                             }
                         }
 

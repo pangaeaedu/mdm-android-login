@@ -99,7 +99,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     };
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
-        Log.e("yhq", "actualQueryDeviceStatus");
+        Log.e("yhq", "actualQueryDeviceStatus:"+pDeviceID);
         return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
@@ -145,12 +145,14 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     String deviceID = DeviceIDSPUtils.loadThirdVersionDeviceIDFromSp();
                     Context context = AdhocBasicConfig.getInstance().getAppContext();
 
+                    Log.e("yhq", "third sp device id:"+deviceID);
                     if (!TextUtils.isEmpty(deviceID)) {
                         DeviceInfoManager.getInstance().setDeviceID(deviceID);
 
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     } else {
                         deviceID = loadDeviceIDFromPrevSpOrSDCard();
+
                         ConfirmDeviceIDResponse result = confirmDeviceIDFromServer(deviceID);
 
                         if(!result.isSuccess()){
@@ -158,9 +160,9 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             return;
                         }
 
+                        deviceID = result.getDeviceID();
                         getConfig().clearData();
-                        DeviceInfoManager.getInstance().setDeviceID(result.getDeviceID());
-
+                        DeviceInfoManager.getInstance().setDeviceID(deviceID);
                         DeviceIDSPUtils.saveDeviceIDToSp(deviceID);
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     }
@@ -231,13 +233,17 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         // 之前版本不存在。
         if(TextUtils.isEmpty(secondVersionID) && TextUtils.isEmpty(firstVersionID)) {
-            return loadDeviceIDFromSDCard();
+            String sd = loadDeviceIDFromSDCard();
+
+            return sd;
         }
 
         if (!TextUtils.isEmpty(secondVersionID)) {
+            Log.e("yhq", "use second version:"+secondVersionID);
             return secondVersionID;
         }
 
+        Log.e("yhq", "use first version:"+firstVersionID);
         return firstVersionID;
     }
 
@@ -246,9 +252,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String sdCardDeviceID = DeviceIDSPUtils.loadDeviceIDFromSdCard(context);
         String deviceID = "";
         if (!TextUtils.isEmpty(sdCardDeviceID)) {
+            Log.e("yhq", "sd card device id:"+sdCardDeviceID);
             deviceID = sdCardDeviceID;
         } else {
             deviceID = DeviceIDSPUtils.generateDeviceID();
+            Log.e("yhq", "generate device id:"+deviceID);
         }
 
         return deviceID;
@@ -264,12 +272,12 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String serialNo = DeviceHelper.getSerialNumberThroughControl();
         String androidID = AdhocDeviceUtil.getAndroidId(context);
 
-//        Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
-//        +" wifiMac:"+wifiMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
-//        +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
+        Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
+        +" wifiMac:"+wifiMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
+        +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
         ConfirmDeviceIDResponse response =  getHttpService().confirmDeviceID(buildSn, cpuSn, imei,
                 wifiMac, blueToothMac, serialNo, androidID,pLocalDeviceID);
-//        Log.e("yhq", "deviceID response:"+response.getDeviceID());
+        Log.e("yhq", "deviceID response:"+response.getDeviceID());
         return response;
     }
 }
