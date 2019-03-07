@@ -9,6 +9,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.CrashAnalytics;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.login.LoginRoutePathConstants;
 import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
 import com.nd.android.adhoc.login.exception.GetUserInfoServerException;
 import com.nd.android.adhoc.login.processOptimization.AssistantAuthenticSystem;
