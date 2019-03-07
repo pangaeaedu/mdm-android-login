@@ -21,6 +21,7 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
+import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
 import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
@@ -55,6 +56,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by yaoyue1019 on 9-12.
