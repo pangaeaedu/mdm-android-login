@@ -1,25 +1,27 @@
 <resources>
-    <string name="user_connecting_str">正在登陆中...</string>
-    <string name="source_user_name">王小明</string>
+    <string name="user_connecting_str">Logging in…</string>
 
-    <string name="login_commit">确认</string>
-    <string name="login_auto">自动</string>
-    <string name="login_clear">清除</string>
-    <string name="login_delete_device">删除设备</string>
-    <string name="login_input_name">请输入账号</string>
-    <string name="login_input_pwd">请输入密码</string>
-    <string name="login_loading">正在登陆中</string>
-    <string name="login_psd">正在登陆中</string>
-    <string name="login_remember_psd">记住密码</string>
+    <string name="login_commit">OK</string>
+    <string name="login_auto">Auto</string>
+    <string name="login_clear">Clear</string>
+    <string name="login_delete_device">Delete</string>
+    <string name="login_input_name">Please enter your account</string>
+    <string name="login_input_pwd">Please enter your password</string>
+    <string name="login_loading">Logging in</string>
+    <string name="login_psd">Password</string>
 
 
-    <string name="submit">Login</string>
+    <string name="submit">LOG IN</string>
     <string name="record_passwd">Record</string>
     <string name="auto_login">Auto Login</string>
 
 
     <string name="login_error_uc_verification">UC verification failed</string>
-    <string name="login_error_user_binded">user binded</string>
-    <string name="login_error_device_binded">device binded</string>
-    <string name="login_error_other">login user failed</string>
+    <string name="login_error_user_binded">The account has been bound</string>
+    <string name="login_error_device_binded">The device has been bound</string>
+    <string name="login_error_other">Failed to activate the account</string>
+    <string name="current_environment">The current environment</string>
+    <string name="please_environment">Switch the environment</string>
+    <string name="environment_settings">Setting</string>
+    <string name="mdm_name_str">101 MDM</string>
 </resources>

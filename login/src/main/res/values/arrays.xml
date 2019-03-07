@@ -6,8 +6,8 @@
         <item>@string/environment_china</item>
         <item>@string/environment_aws</item>
     </string-array>
-    <string name="environment_test">Test</string>
-    <string name="environment_dev">Develop</string>
-    <string name="environment_china">China</string>
-    <string name="environment_aws">WholeWorld</string>
+    <string name="environment_test" translatable="false">Test</string>
+    <string name="environment_dev" translatable="false">Develop</string>
+    <string name="environment_china" translatable="false">China</string>
+    <string name="environment_aws" translatable="false">AWS</string>
 </resources>

@@ -21,7 +21,6 @@
 
     <TextView
         android:id="@+id/tv_usernickname_login"
-        android:text="@string/source_user_name"
         android:layout_below="@+id/profile_image_status"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/icon_user_nickname_top_login_status"
