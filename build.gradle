@@ -23,7 +23,7 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.1.205.7481cbd-hyk0.6.7.0opt-SNAPSHOT'
+    adhoc_basic_version = '1.1.216.5ca04a0-hyk0.6.7.0opt-SNAPSHOT'
 
 
     mdm_biz_version = '1.1.234.228d45c-yhq0.6.6.0reengineering-SNAPSHOT'

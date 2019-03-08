@@ -2,25 +2,9 @@ dependencies {
 //    implementation  fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     try {
-        api project(':file_transfer')
+        api project(':mdm_biz_common')
     } catch (Exception ignored) {
-        api("com.nd.android.adhoc:file_transfer:0.0.9.1-develop-SNAPSHOT"){
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
-            exclude group:'com.nd.android.mdm.biz' , module:'mdm_env'
-        }
-    }
-
-    try {
-        api project(':adhoc_communicate')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version")
-    }
-
-    try {
-        api project(':adhoc_basic_frame')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
+        api("com.nd.android.mdm.biz:mdm_biz_common:$mdm_biz_version")
     }
 
     try {
@@ -29,6 +13,15 @@ dependencies {
         api "com.nd.android.adhoc:device_control:$device_control_version"
     }
 
+    try {
+        api project(':adhoc_basic_update')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_update:$adhoc_basic_version")
+    }
+
+    api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+    api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
+    annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 }
 
 
