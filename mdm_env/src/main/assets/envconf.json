@@ -34,7 +34,7 @@
       "org": "MDM",
       "puship": "mdm.push.egypt.sdp",
       "pushport": 8760,
-      "url": "http://mdm.backend.egypt.sdp"
+      "url": "https://mdm.backend.egypt.sdp"
     }
   ]
 }
