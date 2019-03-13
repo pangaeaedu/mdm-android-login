@@ -3,6 +3,8 @@ package com.nd.android.adhoc.login.ui;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.login.BuildConfig;
 import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
@@ -120,6 +123,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         //初始化控件ID
         initView();
         addListener();
+        initEnvBtn();
 
         mPresenter = new LoginPresenterImpl(this);
 
@@ -157,6 +161,25 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         mStatusBar.setLayoutParams(params);
         mStatusBar.setBackground(getResources().getDrawable(R.drawable.bg_statusbar));
 //        setImageResource(getResources().getDrawable(R.drawable.btn_selector_settings_toolbar));
+
+    }
+
+    private void initEnvBtn() {
+        boolean isLocalEnv;
+        try {
+            ApplicationInfo appInfo = getPackageManager().getApplicationInfo(getPackageName(),
+                    PackageManager.GET_META_DATA);
+            if (!appInfo.metaData.containsKey("LOCAL_ENV")) {
+                throw new IllegalArgumentException("The LOCAL_ENV value of the META_DATA configuration in the manifest file does not exist.");
+            }
+            isLocalEnv = appInfo.metaData.getBoolean("LOCAL_ENV");
+        } catch (PackageManager.NameNotFoundException e) {
+            isLocalEnv = false;
+        }
+        if (!BuildConfig.DEBUG || !isLocalEnv) {
+            mEnvironmentSetting.setVisibility(View.INVISIBLE);
+            mEnvironmentSetting.setOnClickListener(null);
+        }
     }
 
     private void addListener() {
