@@ -26,7 +26,7 @@ public class MonitorInitSyncTask extends AdhocAppInitSyncAbs {
 //            Intent intent = new Intent(context, AssistantService.class);
 //            context.startService(intent);
 
-            DaemonModule.getInstance().init(context);
+//            DaemonModule.getInstance().init(context);
             MonitorModule.getInstance().init(context);
 
 //            SystemControFactory.getInstance().init();
