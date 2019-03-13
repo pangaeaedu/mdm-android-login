@@ -2,37 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
+
     <LinearLayout
-        android:layout_weight="0.60"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="0.60"
         android:orientation="vertical">
         <!--            android:drawablePadding="15dp" -->
-        <TextView
-            android:id="@+id/tv_icon_device_login"
-            android:layout_marginStart="@dimen/title_land_app_margin_left_login"
-            android:layout_marginTop="@dimen/title_land_app_margin_right_login"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/icon_mdm_login"
-            android:text="@string/mdm_name_str"
-            android:textColor="@color/large_size_color_shader"
-            android:textSize="@dimen/title_land_app_font_size_login"/>
+            android:layout_marginStart="@dimen/title_land_app_margin_left_login"
+            android:layout_marginTop="@dimen/title_land_app_margin_right_login"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/title_land_app_font_size_login"
+                android:layout_height="@dimen/title_land_app_font_size_login"
+                android:background="@drawable/icon_mdm_login" />
+
+            <TextView
+                android:id="@+id/tv_icon_device_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mdm_name_str"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/large_size_color_shader"
+                android:textSize="@dimen/icon_user_nickname_font_size_login_status" />
+        </LinearLayout>
         <!-- 左侧图片-->
         <ImageView
             android:layout_width="@dimen/bg_guide_app_width_login"
             android:layout_height="@dimen/bg_guide_app_height_login"
-            android:scaleType="fitCenter"
             android:layout_marginStart="@dimen/bg_guide_app_margin_left_login"
+            android:scaleType="fitCenter"
             android:src="@drawable/bg_im_login" />
     </LinearLayout>
 
     <include
-        android:layout_weight="0.40"
-        android:layout_width="0dp"
         layout="@layout/panel_login"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-         />
+        android:layout_weight="0.40" />
 </LinearLayout>
