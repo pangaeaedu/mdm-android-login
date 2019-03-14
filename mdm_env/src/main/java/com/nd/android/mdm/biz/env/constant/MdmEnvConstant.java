@@ -20,6 +20,9 @@ public final  class MdmEnvConstant {
     // 全球
     public static final int ENV_INDEX_WHOLEWORLD = 3;
 
+    // 最大值
+    public static final int ENV_INDEX_MAX = 4;
+
     // 預設值改成測試環境
     public static final int DEFAULT_ENV_INDEX = 1;
 

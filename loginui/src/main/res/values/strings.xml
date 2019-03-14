@@ -24,4 +24,6 @@
     <string name="please_environment">Switch the environment</string>
     <string name="environment_settings">Setting</string>
     <string name="mdm_name_str">101 MDM</string>
+
+    <string name="login_uc_error">Failed to login uc</string>
 </resources>

@@ -2,6 +2,7 @@ package com.nd.android.adhoc.login.basicService.http;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.constant.AhdocHttpConstants;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
@@ -18,6 +19,8 @@ import java.util.Map;
 //http://wiki.sdp.nd/
 // index.php?title=Mdm#.5BPOST.5D.2Fv1.1.2Fregiste.2Factivate.2F_.E8.AE.BE.E5.A4.87.E8.AF.B7.E6.B1.82.E6.BF.80.E6.B4.BB
 public class LoginDao extends AdhocHttpDao {
+
+    private static final String TAG = "LoginDao";
 
     public LoginDao(String pBaseUrl) {
         super(pBaseUrl);
@@ -53,8 +56,13 @@ public class LoginDao extends AdhocHttpDao {
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
 
-            return postAction().post("/v1.1/registe/pushid/", BindResult.class, content, null);
+            Logger.d(TAG,"bind device id request:"+content);
+            BindResult result = postAction().post("/v1.1/registe/pushid/", BindResult.class,
+                    content, null);
+            Logger.d(TAG,"bind device result:"+result.isSuccess());
+            return result;
         } catch (RuntimeException e) {
+            Logger.d(TAG,"bind device id result:"+e.getMessage());
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }

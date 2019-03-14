@@ -5,9 +5,11 @@
         <item>@string/environment_test </item>
         <item>@string/environment_china</item>
         <item>@string/environment_aws</item>
+        <item>@string/environment_egypt</item>
     </string-array>
     <string name="environment_test" translatable="false">Test</string>
     <string name="environment_dev" translatable="false">Develop</string>
     <string name="environment_china" translatable="false">China</string>
     <string name="environment_aws" translatable="false">AWS</string>
+    <string name="environment_egypt" translatable="false">Egypt</string>
 </resources>

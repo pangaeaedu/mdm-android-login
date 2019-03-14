@@ -68,7 +68,7 @@ public final class MdmEvnFactory {
 
             mCurIndexk = appInfo.metaData.getInt("ENV_INDEX");
 
-            if (mCurIndexk < MdmEnvConstant.ENV_INDEX_DEVELOP || mCurIndexk > MdmEnvConstant.ENV_INDEX_WHOLEWORLD) {
+            if (mCurIndexk < MdmEnvConstant.ENV_INDEX_DEVELOP || mCurIndexk > MdmEnvConstant.ENV_INDEX_MAX) {
                 throw new IllegalArgumentException("The ENV_INDEX value of the META_DATA configuration in the manifest file is invalid: " + mCurIndexk);
             }
 
