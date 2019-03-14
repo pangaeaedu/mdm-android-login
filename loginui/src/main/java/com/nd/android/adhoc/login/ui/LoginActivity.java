@@ -152,14 +152,16 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
     private void initEnvBtn() {
         if (AdhocAppUtil.isDebuggable(this)) {
-            mEnvironmentSetting.setVisibility(View.INVISIBLE);
+            mEnvironmentSetting.setVisibility(View.VISIBLE);
+            mEnvironmentSetting.setOnClickListener(this);
+        } else {
+            mEnvironmentSetting.setVisibility(View.GONE);
             mEnvironmentSetting.setOnClickListener(null);
         }
     }
 
     private void addListener() {
         btnSubmitUserLogin.setOnClickListener(this);
-        mEnvironmentSetting.setOnClickListener(this);
         cilvUserLogin.setEditStyle(new UnderlineStyle());
         cilvPasswdLogin.setEditStyle(new UnderlineStyle());
 
