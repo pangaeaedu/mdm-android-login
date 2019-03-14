@@ -30,6 +30,7 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
+import com.nd.android.adhoc.basic.util.app.AdhocAppUtil;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
 import com.nd.android.adhoc.login.ui.widget.CircleImageView;
 import com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils;
@@ -48,7 +49,6 @@ import com.nd.android.mdm.biz.env.IEnvChangedListener;
 import com.nd.android.mdm.biz.env.IMdmEnvModule;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
-import de.greenrobot.event.EventBus;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -151,18 +151,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     }
 
     private void initEnvBtn() {
-        boolean isLocalEnv;
-        try {
-            ApplicationInfo appInfo = getPackageManager().getApplicationInfo(getPackageName(),
-                    PackageManager.GET_META_DATA);
-            if (!appInfo.metaData.containsKey("LOCAL_ENV")) {
-                throw new IllegalArgumentException("The LOCAL_ENV value of the META_DATA configuration in the manifest file does not exist.");
-            }
-            isLocalEnv = appInfo.metaData.getBoolean("LOCAL_ENV");
-        } catch (PackageManager.NameNotFoundException e) {
-            isLocalEnv = false;
-        }
-        if (!BuildConfig.DEBUG || !isLocalEnv) {
+        if (AdhocAppUtil.isDebuggable(this)) {
             mEnvironmentSetting.setVisibility(View.INVISIBLE);
             mEnvironmentSetting.setOnClickListener(null);
         }
@@ -171,7 +160,6 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     private void addListener() {
         btnSubmitUserLogin.setOnClickListener(this);
         mEnvironmentSetting.setOnClickListener(this);
-//        EventBus.getDefault().register(this);
         cilvUserLogin.setEditStyle(new UnderlineStyle());
         cilvPasswdLogin.setEditStyle(new UnderlineStyle());
 
@@ -336,9 +324,6 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
 
     @Override
     public void onDestroy() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
         mInputAnimation.onDestory();
         cilvUserLogin.addAction(null);
         cilvPasswdLogin.addAction(null);

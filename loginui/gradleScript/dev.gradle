@@ -9,8 +9,11 @@ dependencies {
         api("com.nd.android.mdm.biz:login:$mdm_biz_version") {
         }
     }
-
-    api 'de.greenrobot:eventbus:2.4.0'
+    try{
+        api project(':adhoc_util_app')
+    }catch (Exception ignored){
+        api("com.nd.android.adhoc.basic:adhoc_util_app:$adhoc_basic_version")
+    }
 
     annotationProcessor ("com.nd.android.adhoc.basic:adhoc-router-compiler:$adhoc_basic_version")
 
