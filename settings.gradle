@@ -10,7 +10,7 @@ include ':mdm_util_cmd'             // 通讯模块，包含 pushsdk、 自组�
 include ":mdm_feedback_biz"         // 请求回报处理模块
 
 
-include ":mdm_event_define"         // 一些 Event 事件的定义（用于 EventBus，后续慢慢移除）
+//include ":mdm_event_define"         // 一些 Event 事件的定义（用于 EventBus，后续慢慢移除）
 
 include ":adhoc_rtmp"               // rtmp 流媒体相关
 
