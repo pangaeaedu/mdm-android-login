@@ -64,7 +64,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
 
     @Override
     public void onDeviceStatusChanged(DeviceStatus pStatus) {
-        Log.e(TAG, "onDeviceStatusChanged:"+pStatus);
+        Log.e("yhq", "onDeviceStatusChanged:"+pStatus);
         DeviceInfoManager.getInstance().setCurrentStatus(pStatus);
         if (pStatus == DeviceStatus.Activated) {
             onDeviceActivated();

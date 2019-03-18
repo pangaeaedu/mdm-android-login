@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 
 import rx.subjects.BehaviorSubject;
 
@@ -44,6 +45,7 @@ public class DeviceInfoManager {
     }
 
     public void setCurrentStatus(DeviceStatus pStatus) {
+        Logger.e("yhq", "setCurrentStatus:"+pStatus.getValue());
         mDeviceStatus = pStatus;
         getConfig().saveDeviceStatus(pStatus.getValue());
     }

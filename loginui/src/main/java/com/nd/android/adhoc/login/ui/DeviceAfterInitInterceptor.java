@@ -29,6 +29,7 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
 
     @Override
     public void process(@NonNull Postcard pPostcard, @NonNull InterceptorCallback pCallback) {
+        Logger.e("yhq", "DeviceAfterInitInterceptor:"+pPostcard.getPath());
         // 不是登录的跳转，直接返回
         if (!AdhocRouteConstant.PATH_AFTER_INIT.equals(pPostcard.getPath())) {
             pCallback.onContinue(pPostcard);
@@ -36,7 +37,7 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
         }
 
         DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
-
+        Logger.e("yhq", "DeviceAfterInit status:"+status.getValue());
         if(DeviceStatus.isStatusUnLogin(status)){
             enterLoginUI();
         } else {
@@ -47,6 +48,7 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
     }
 
     private void enterAfterLoginUI() {
+        Logger.e("yhq", "enterAfterLoginUI");
         AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(AdhocRouteConstant.PATH_AFTER_LOGIN).navigation(mContext, new NavCallback() {
 
@@ -74,6 +76,7 @@ public class DeviceAfterInitInterceptor implements IInterceptor {
     }
 
     private void enterLoginUI() {
+        Logger.e("yhq", "enterLoginUI");
         AdhocFrameFactory.getInstance().getAdhocRouter().build(getLoginRoutePath())
                 .navigation(mContext, new NavCallback() {
                     @Override
