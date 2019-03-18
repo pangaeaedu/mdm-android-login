@@ -31,6 +31,7 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
+import com.nd.android.adhoc.basic.util.app.AdhocAppUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.login.BuildConfig;
@@ -165,26 +166,13 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
     }
 
     private void initEnvBtn() {
-        boolean isLocalEnv;
-        try {
-            ApplicationInfo appInfo = getPackageManager().getApplicationInfo(getPackageName(),
-                    PackageManager.GET_META_DATA);
-            if (!appInfo.metaData.containsKey("LOCAL_ENV")) {
-                throw new IllegalArgumentException("The LOCAL_ENV value of the META_DATA configuration in the manifest file does not exist.");
-            }
-            isLocalEnv = appInfo.metaData.getBoolean("LOCAL_ENV");
-        } catch (PackageManager.NameNotFoundException e) {
-            isLocalEnv = false;
-        }
-        if (!BuildConfig.DEBUG || !isLocalEnv) {
-            mEnvironmentSetting.setVisibility(View.INVISIBLE);
-            mEnvironmentSetting.setOnClickListener(null);
-        }
+        boolean isDebug = AdhocAppUtil.isDebuggable(this);
+        mEnvironmentSetting.setVisibility(isDebug ? View.VISIBLE : View.GONE);
+        mEnvironmentSetting.setOnClickListener(isDebug ? this : null);
     }
 
     private void addListener() {
         btnSubmitUserLogin.setOnClickListener(this);
-        mEnvironmentSetting.setOnClickListener(this);
 //        EventBus.getDefault().register(this);
         cilvUserLogin.setEditStyle(new UnderlineStyle());
         cilvPasswdLogin.setEditStyle(new UnderlineStyle());

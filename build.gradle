@@ -1,7 +1,7 @@
 buildscript {
     apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config.gradle'
     ext {
-        adhoc_basic_version = '1.0.165.8f000a4'
+        adhoc_basic_version = '1.0.176.9eb3943'
 
         mdm_biz_version = '1.0.184.d63f9ee'
         device_control_version = '1.0.136.31f11ba'
