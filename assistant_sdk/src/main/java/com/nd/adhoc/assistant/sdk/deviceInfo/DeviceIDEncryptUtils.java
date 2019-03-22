@@ -1,6 +1,6 @@
 package com.nd.adhoc.assistant.sdk.deviceInfo;
 
-import com.nd.adhoc.assistant.sdk.utils.AES256Cipher;
+import com.nd.adhoc.assistant.sdk.utils.DesUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,8 +10,14 @@ public class DeviceIDEncryptUtils {
 
     private static final String MDM_KEY = "903f76ef705ff1da2c19bd9f34482093";
     private static final SimpleDateFormat formatter  = new SimpleDateFormat("yyyyMMddHHmmss");
-    public static String encrypt(String pOrigin){
-        return AES256Cipher.getEncryptResult(pOrigin, MDM_KEY);
+    public static String encrypt(String pOrigin) {
+        try {
+            return DesUtils.encrypt(pOrigin, MDM_KEY);
+        } catch (Exception pE) {
+            pE.printStackTrace();
+        }
+
+        return "";
     }
 
     public static String encryptPassword(String pPassword){
@@ -24,6 +30,12 @@ public class DeviceIDEncryptUtils {
     }
 
     public static String decrypt(String pEncrypted){
-        return AES256Cipher.getDecryptResult(pEncrypted, MDM_KEY);
+        try {
+            return DesUtils.decrypt(pEncrypted, MDM_KEY);
+        } catch (Exception pE) {
+            pE.printStackTrace();
+        }
+
+        return "";
     }
 }
