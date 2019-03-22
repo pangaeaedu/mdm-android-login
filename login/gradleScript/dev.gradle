@@ -74,7 +74,7 @@ dependencies {
     api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
 
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
-    api("com.alibaba:druid:1.0.12")
+//    api("com.alibaba:druid:1.0.12")
 
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
     api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
