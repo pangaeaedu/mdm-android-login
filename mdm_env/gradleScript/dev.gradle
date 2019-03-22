@@ -3,19 +3,18 @@ dependencies {
 
     api('com.google.code.gson:gson:2.8.0')
 
-    try {
-        api project(':adhoc_basic:adhoc_basic_sp')
-    } catch (Exception ignored) {
+//    try {
+//        api project(':adhoc_basic:adhoc_basic_sp')
+//    } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
-    }
+//    }
 
-    try {
-        api project(':adhoc_basic:adhoc_util_storage')
-    } catch (Exception ignored) {
+//    try {
+//        api project(':adhoc_basic:adhoc_util_storage')
+//    } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
         }
-    }
+//    }
 
 //    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
 //        transitive = true

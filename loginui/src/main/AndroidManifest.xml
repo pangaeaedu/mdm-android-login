@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.nd.android.adhoc.login.ui">
+
+    <application>
+        <activity
+            android:name="com.nd.android.adhoc.login.ui.LoginActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
+    </application>
+
+</manifest>

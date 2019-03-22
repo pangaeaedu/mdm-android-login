@@ -2,7 +2,7 @@ package com.nd.android.adhoc.login.basicService.data;
 
 import com.nd.android.adhoc.login.basicService.http.IActivateArgument;
 import com.nd.android.adhoc.login.enumConst.DeviceType;
-import com.nd.smartcan.accountclient.CurrentUser;
+//import com.nd.smartcan.accountclient.CurrentUser;
 
 public class ActivateArgument implements IActivateArgument {
 
@@ -10,12 +10,12 @@ public class ActivateArgument implements IActivateArgument {
     private String mDeviceToken = "";
     private DeviceType mType = DeviceType.Android;
 
-    private CurrentUser mUser = null;
+//    private CurrentUser mUser = null;
 
-    public ActivateArgument(String pUserToken, String pDeviceToken, CurrentUser pUser){
+    public ActivateArgument(String pUserToken, String pDeviceToken){
         mUserToken = pUserToken;
         mDeviceToken = pDeviceToken;
-        mUser = pUser;
+//        mUser = pUser;
     }
 
     @Override

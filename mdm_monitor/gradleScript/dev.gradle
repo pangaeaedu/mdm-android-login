@@ -1,5 +1,4 @@
 dependencies {
-//    implementation  fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
 
 
@@ -14,7 +13,7 @@ dependencies {
         exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
     }
 
-    compile ("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
+    compile("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
     try{
         api project(':adhoc_wifi:wifi_sdk')
@@ -26,7 +25,8 @@ dependencies {
         api project(':adhoc_communicate')
     } catch (Exception ignored) {
         api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
         }
     }
 
@@ -34,47 +34,17 @@ dependencies {
         api project(':assistant_sdk')
     } catch (Exception ignored) {
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
         }
     }
 
-    try {
-        api project(':device_control_root')
-    } catch (Exception ignored) {
-        api ("com.nd.android.adhoc:device_control_root:$device_control_version"){
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
-        }
+    api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version")
+
+    api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
+        exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+        exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
+        exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
     }
 
-    try {
-        api project(':device_command_basic')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
-            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
-            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
-            exclude group: 'com.nd.android.adhoc', module: 'cmd_log'
-        }
-    }
-
-    try {
-        api project(':device_command_normal')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc:device_command_normal:$device_command_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.adhoc', module: 'device_command_basic'
-            exclude group: 'com.nd.android.adhoc', module: 'device_control'
-            exclude group: 'com.nd.android.adhoc', module: 'device_control_root'
-            exclude group: 'com.nd.android.adhoc', module: 'device_control_nd3'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_monitor'
-            exclude group: 'com.nd.android.mdm.biz', module: 'wifi_sdk'
-        }
-    }
 
     try{
         api project(':location_api')
@@ -99,9 +69,9 @@ dependencies {
 
 
 
-    api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
-    api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
-    annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
+    api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+    api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
+    annotationProcessor("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 
 }
 

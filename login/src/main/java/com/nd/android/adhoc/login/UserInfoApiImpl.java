@@ -12,7 +12,7 @@ import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Route(path = IUserInfoApi.PATH)
+@Route(path = LoginRoutePathConstants.PATH_USER_INFO)
 public class UserInfoApiImpl implements IUserInfoApi {
     private List<ICdmUserIDListener> mCdmUserIDListeners = new CopyOnWriteArrayList<>();
 

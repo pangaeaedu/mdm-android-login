@@ -1,0 +1,31 @@
+<resources>
+    <string name="login_error_device_id_not_confirm">设备ID未确认，请确保服务端接口的正确性</string>
+    <string name="login_error_query_status_error">查询状态失败</string>
+    <string name="login_error_user_not_activated">设备未激活</string>
+
+    <string name="init_api_not_found">Init Api接口未找到</string>
+
+    <string name="exception_activate_user_010">激活进行中</string>
+    <string name="exception_activate_user_020">mdm异常</string>
+    <string name="exception_activate_user_030">自动激活失效</string>
+    <string name="exception_activate_user_040">该设备已经被用</string>
+    <string name="exception_activate_user_050">该用户已经被用</string>
+
+    <string name="exception_network_unavailable">网络未连接</string>
+    <string name="exception_activate_user_server">激活用户服务端错误:%s</string>
+
+    <string name="exception_login_user_auto">该设备属于自动登录，真实账号为:%s</string>
+
+    <string name="exception_bind_push_id">绑定PushID出错:%s</string>
+    <string name="exception_confirm_device_id">确认DeviceID出错:%s</string>
+
+    <string name="exception_device_id_not_set">DeviceID未确认</string>
+
+    <string name="exception_activate_user_timeout">激活用户超时</string>
+
+    <string name="exception_query_status">查询设备状态出错：%s</string>
+
+    <string name="exception_login_user">登录用户出错：%s</string>
+
+    <string name="exception_get_user_info">查询用户昵称出错：%s</string>
+</resources>

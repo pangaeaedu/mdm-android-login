@@ -3,17 +3,17 @@ dependencies {
 
 //    api project(':module_cmd_basic')
 
-    try {
-        api project(':cmd_log')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc:cmd_log:$cmd_log_version") {
-//            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
-//            exclude group: 'com.nd.android.adhoc', module: 'file_transfer_api'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
-            exclude group: 'com.nd.android.mdm.biz', module:'adhoc_communicate'
-        }
-    }
+//    try {
+//        api project(':cmd_log')
+//    } catch (Exception ignored) {
+//        api('com.nd.android.adhoc:cmd_log:0.0.9.2-develop-SNAPSHOT') {
+////            exclude group: 'com.nd.android.adhoc', module: 'file_transfer'
+////            exclude group: 'com.nd.android.adhoc', module: 'file_transfer_api'
+//            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+//            exclude group: 'com.nd.android.mdm.biz', module:'mdm_env'
+//            exclude group: 'com.nd.android.mdm.biz', module:'adhoc_communicate'
+//        }
+//    }
 
 
     try {

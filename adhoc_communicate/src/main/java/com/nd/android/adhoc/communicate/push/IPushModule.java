@@ -10,13 +10,15 @@ public interface IPushModule {
 
     boolean isConnected();
 
+    int getChannelType();
+
     void start();
 
     void stop();
 
     String getDeviceId();
 
-    String getUid();
+//    String getUid();
 
     void fireConnectatusEvent();
 

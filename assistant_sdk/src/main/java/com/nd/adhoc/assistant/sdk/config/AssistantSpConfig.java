@@ -21,11 +21,31 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     private static final String KEY_POLICYSET_TIME = "policyset_time";
 
-
     private static final String KEY_USER_ID = "user_id";
+
+
+    private static final String KEY_DEVICE_STATUS_VALUE = "device_status_value";
+    private static final String KEY_DEVICE_ID = "device_id";
 
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
+    }
+
+    public void saveDeviceStatus(int pStatusValue){
+        saveInt(KEY_DEVICE_STATUS_VALUE, pStatusValue);
+    }
+
+    //默认值为-1
+    public int getDeviceStatus(){
+        return getInt(KEY_DEVICE_STATUS_VALUE, -1);
+    }
+
+    public String getDeviceID() {
+        return getString(KEY_DEVICE_ID);
+    }
+
+    public void saveDeviceID(String pDeviceID) {
+        saveString(KEY_DEVICE_ID, pDeviceID);
     }
 
     public boolean isActivated() {
@@ -66,6 +86,10 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     public void savePushID(String pPushID) {
         saveString(KEY_PUSH_ID, pPushID);
+    }
+
+    public void clearPushID(){
+        savePushID("");
     }
 
     public String getSerialNum() {
@@ -116,18 +140,20 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getString(KEY_USER_ID);
     }
 
+    // 清理数据的时候，不要清理pushID
     public void clearData(){
         saveAccountNum("");
         saveNickname("");
         saveAutoLogin(false);
         saveActivated(false);
-        savePushID("");
         savePolicySetTime(0);
         saveOldTokenStatus(0);
         saveOldDeviceToken("");
         saveDeviceToken("");
+        saveDeviceID("");
         saveSerialNum("");
         saveUserID("");
+        saveDeviceStatus(-1);
     }
 
 }

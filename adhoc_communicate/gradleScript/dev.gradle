@@ -7,19 +7,16 @@ dependencies {
     api 'org.apache.commons:commons-lang3:3.6'
     api 'commons-net:commons-net:3.5'
 
-    api 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0'
 
 
-    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
-    compile ("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
+//    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
+    compile("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
-    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version") {
-        exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
-    }
+    api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_app:$adhoc_basic_version")
 
     try {
@@ -34,17 +31,17 @@ dependencies {
         api("com.nd.android.mdm.biz:mdm_biz_common:$mdm_biz_version")
     }
 
-    try {
-        api project(':mdm_util_cmd')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_util_cmd:$mdm_biz_version")
-    }
+//    try {
+//        api project(':mdm_util_cmd')
+//    } catch (Exception ignored) {
+//        api("com.nd.android.mdm.biz:mdm_util_cmd:$mdm_biz_version")
+//    }
 
-    try {
-        api project(':file_transfer')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc:file_transfer:$file_transfer_version")
-    }
+//    try {
+//        api project(':file_transfer')
+//    } catch (Exception ignored) {
+//        api("com.nd.android.adhoc:file_transfer:$file_transfer_version")
+//    }
 
     try {
         api project(':adhoc_basic_frame')
@@ -52,10 +49,28 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
     }
 
+//    try {
+//        api project(':pushcore')
+//    } catch (Exception ignored) {
+//        api("com.nd.sdp.android:pushcore:$adhoc_push_util_version")
+//    }
 
-    api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
-    api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
-    annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
+    try {
+        api project(':adhocpush')
+    } catch (Exception ignored) {
+        api("com.nd.sdp.android:adhocpush:$adhoc_push_util_version"){
+            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
+            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_biz_common'
+        }
+    }
+
+
+//    api project(':adhocpush')
+//    api project (":awspushchannel")
+
+    api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+    api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
+    annotationProcessor("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 
 }
 

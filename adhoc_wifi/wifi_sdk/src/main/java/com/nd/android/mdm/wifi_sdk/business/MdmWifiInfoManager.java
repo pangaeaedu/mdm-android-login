@@ -415,7 +415,7 @@ public final class MdmWifiInfoManager {
                     && dnseq
                     && gatewayeq
                     && signaleq) {
-                Logger.e(TAG, "updateWifiInfo return false");
+//                Logger.e(TAG, "updateWifiInfo return false");
                 return false;
             }
 
@@ -436,7 +436,7 @@ public final class MdmWifiInfoManager {
                 + ", SSID = " + mWifiInfo.getSsid()
                 + ", APMAC = " + mWifiInfo.getApMac()
         );
-        Logger.e(TAG, "updateWifiInfo return true");
+//        Logger.e(TAG, "updateWifiInfo return true");
         return true;
     }
 
@@ -502,7 +502,7 @@ public final class MdmWifiInfoManager {
                     @Override
                     public Boolean call(Long aLong) {
                         boolean result = updateWifiInfo();
-                        Logger.e(TAG, "starStateTimer, updateWifiInfo result = " + result);
+//                        Logger.e(TAG, "starStateTimer, updateWifiInfo result = " + result);
                         return result;
                     }
                 })

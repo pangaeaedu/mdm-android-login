@@ -41,4 +41,13 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
+configurations {
+//    all*.exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+//    all*.exclude group: 'com.nd.android.mdm.biz', module: 'mdm_util_cmd'
+//    all*.exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+//    all*.exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
+//    all*.exclude group: 'com.nd.android.mdm.biz', module: 'mdm_basic_cmd'
+//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_basic_frame'
+}
+
 tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
