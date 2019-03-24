@@ -26,7 +26,7 @@ public class MdmAutoUpdateInitAsync extends AdhocAppInitAsyncAbs {
             @Override
             public boolean installPackage(Context context, String strApkPath) {
                 IControl_Apk control_apk = ControlFactory.getInstance().getControl(IControl_Apk.class);
-                return null != control_apk && ErrorCode.SUCCESS == control_apk.install(strApkPath);
+                return null != control_apk && ErrorCode.SUCCESS == control_apk.install(strApkPath, false);
             }
         });
         AdhocUpdateVersionManager.getInstance().autoUpdate(AdhocBasicConfig.getInstance().getAppContext(), configuration);

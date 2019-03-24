@@ -27,7 +27,7 @@ ext {
 
 
     mdm_biz_version = '1.1.234.228d45c-yhq0.6.6.0reengineering-SNAPSHOT'
-    device_control_version = '1.2.219.cfa4f64-hyk0.6.7.0opt-SNAPSHOT'
+    device_control_version = '1.2.245.3903d21-hyk0.6.7.0opt-SNAPSHOT'
     device_command_version = '1.1.87.24dfc01-hyk0.6.6.0opt-SNAPSHOT'
 
     location_verison = '1.1.16.a3cf46e-hyk0.6.7.0opt-SNAPSHOT'
