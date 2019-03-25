@@ -32,7 +32,7 @@
     {
       "name": "Egypt",
       "org": "MDM",
-      "puship": "mdm-push.test.moe.gov.eg",
+      "puship": "mdm-pushaccess.test.moe.gov.eg",
       "pushport": 8752,
       "url": "http://mdm-backend.test.moe.gov.eg"
     }
