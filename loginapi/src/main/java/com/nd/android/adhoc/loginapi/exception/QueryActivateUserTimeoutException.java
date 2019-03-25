@@ -9,6 +9,6 @@ public class QueryActivateUserTimeoutException extends BaseInitException {
 
     @Override
     public String getMessage() {
-        return getContext().getString(R.string.exception_device_id_not_set);
+        return getContext().getString(R.string.exception_activate_user_timeout);
     }
 }
