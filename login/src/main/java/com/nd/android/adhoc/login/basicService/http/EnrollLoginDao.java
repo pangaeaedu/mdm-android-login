@@ -1,5 +1,7 @@
 package com.nd.android.adhoc.login.basicService.http;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nd.android.adhoc.basic.net.constant.AhdocHttpConstants;
@@ -180,13 +182,34 @@ public class EnrollLoginDao extends AdhocHttpDao {
                                                    String pBlueToothMac, String pSerialNo, String pAndroidID,
                                                    String pDeviceID) throws Exception{
         Map<String, Object> mapHardware = new HashMap<>();
-        mapHardware.put("build_sn", pBuildSn);
-        mapHardware.put("cpu_sn", pCpuSn);
-        mapHardware.put("imei", pIMEI);
-        mapHardware.put("wifi_mac", pWifiMac);
-        mapHardware.put("btooth_mac", pBlueToothMac);
-        mapHardware.put("serial_no", pSerialNo);
-        mapHardware.put("android_id", pAndroidID);
+
+        if(!TextUtils.isEmpty(pBuildSn)) {
+            mapHardware.put("build_sn", pBuildSn);
+        }
+
+        if(!TextUtils.isEmpty(pCpuSn)){
+            mapHardware.put("cpu_sn", pCpuSn);
+        }
+
+        if(!TextUtils.isEmpty(pIMEI)) {
+            mapHardware.put("imei", pIMEI);
+        }
+
+        if(!TextUtils.isEmpty(pWifiMac)) {
+            mapHardware.put("wifi_mac", pWifiMac);
+        }
+
+        if(!TextUtils.isEmpty(pBlueToothMac)) {
+            mapHardware.put("btooth_mac", pBlueToothMac);
+        }
+
+        if(!TextUtils.isEmpty(pSerialNo)){
+            mapHardware.put("serial_no", pSerialNo);
+        }
+
+        if(!TextUtils.isEmpty(pAndroidID)) {
+            mapHardware.put("android_id", pAndroidID);
+        }
 
         Map<String, Object> data = new HashMap<>();
         data.put("hardware", mapHardware);
