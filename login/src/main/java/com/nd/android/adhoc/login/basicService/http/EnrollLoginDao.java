@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.login.basicService.http;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,6 +47,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/getUserInfo/", GetUserInfoResponse.class,
                     content, null);
         }catch (Exception pE){
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
             throw new GetUserInfoServerException(pE.getMessage());
         }
     }
@@ -64,6 +67,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/getDeviceStatus/", QueryDeviceStatusResponse.class,
                     content, null);
         }catch (Exception pE){
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/getDeviceStatus/"+" " + "Msg:"+pE.getMessage());
             throw new QueryDeviceStatusServerException(pE.getMessage());
         }
     }
@@ -81,6 +86,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/login/", LoginUserResponse.class,
                     content, null);
         }catch (Exception pE){
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/login/"+" " + "Msg:"+pE.getMessage());
             throw new LoginUserServerException(pE.getMessage());
         }
 
@@ -100,6 +107,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/getActivateResult/", GetActivateUserResultResponse.class,
                     content, null);
         }catch (Exception pE){
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/getActivateResult/"+" " + "Msg:"+pE.getMessage());
             throw new QueryActivateUserResultException(pE.getMessage());
         }
 
@@ -128,6 +137,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
            return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
                    content, header);
        }catch (Exception pE){
+           Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                   +"/v1.1/enroll/activate/"+" " + "Msg:"+pE.getMessage());
            throw new ActivateUserServerException(pE.getMessage());
        }
 
@@ -145,6 +156,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
             postAction().post("/v1.1/enroll/policyset/",
                     String.class, content, null);
         } catch (Exception e) {
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/policyset/"+" " + "Msg:"+e.getMessage());
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }
@@ -161,6 +174,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/pushid/", BindPushIDResponse.class, content, null);
         } catch (Exception e) {
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/pushid/"+" " + "Msg:"+e.getMessage());
             throw new BindPushIDServerException(e.getMessage());
         }
     }
@@ -223,6 +238,9 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/getDeviceToken/", ConfirmDeviceIDResponse.class,
                     content, null);
         } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/getDeviceToken/"+" " + "Msg:"+e.getMessage());
             throw new ConfirmIDServerException(e.getMessage());
 //            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
