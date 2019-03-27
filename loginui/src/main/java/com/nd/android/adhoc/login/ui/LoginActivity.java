@@ -29,7 +29,6 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 import com.nd.android.adhoc.basic.ui.util.AdhocActivityUtils;
 import com.nd.android.adhoc.basic.util.app.AdhocAppUtil;
-import com.nd.android.adhoc.login.R;
 import com.nd.android.adhoc.login.ui.dialog.EnvironmentSettingDialog;
 import com.nd.android.adhoc.login.ui.widget.CircleImageView;
 import com.nd.android.adhoc.login.ui.widget.SystemPropertiesUtils;
