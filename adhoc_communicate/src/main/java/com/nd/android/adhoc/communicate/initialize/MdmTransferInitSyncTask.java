@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.communicate.initialize;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
@@ -19,6 +20,7 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
     @Override
     public void doInitSync(@NonNull IAdhocInitCallback pCallback) {
         try {
+            Log.e("yhq", "init Transfer lib");
             libadhoc.setContext(AdhocBasicConfig.getInstance().getAppContext());
             MdmTransferFactory.getCommunicationModule().startAdhoc();
             MdmTransferFactory.getPushModel().start();
