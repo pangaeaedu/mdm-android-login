@@ -34,6 +34,6 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
 
     @Override
     public AdhocAppInitPriority getInitPriority() {
-        return AdhocAppInitPriority.LOW;
+        return AdhocAppInitPriority.LOWEST;
     }
 }
