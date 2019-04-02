@@ -68,6 +68,23 @@ dependencies {
     }
 
 
+    try {
+        api project(':adhoc_util_system')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_system:$adhoc_basic_version")
+    }
+
+    try {
+        api project(':adhoc_util_root')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_root:$adhoc_basic_version")
+    }
+
+    try {
+        api project(':adhoc_util_net')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
+    }
 
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
     api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
@@ -78,6 +95,8 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_system'
+//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_net'
 }
 
 configurations.all {
