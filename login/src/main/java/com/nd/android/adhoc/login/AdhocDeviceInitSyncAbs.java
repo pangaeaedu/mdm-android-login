@@ -21,7 +21,7 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
 
     @Override
     public AdhocAppInitPriority getInitPriority() {
-        return AdhocAppInitPriority.HEIGHT;
+        return AdhocAppInitPriority.LOW;
     }
 
     @Override
