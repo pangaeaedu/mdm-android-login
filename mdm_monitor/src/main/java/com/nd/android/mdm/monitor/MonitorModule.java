@@ -353,7 +353,10 @@ public class MonitorModule implements IMonitor {
 
     private void updateBattery(Intent intent, boolean forceUpdate) {
         int curLevel = intent.getIntExtra("level", -1);
-        boolean curCharging = intent.getIntExtra("status", -1) == BatteryManager.BATTERY_STATUS_CHARGING;
+//        boolean curCharging = intent.getIntExtra("status", -1) == BatteryManager.BATTERY_STATUS_CHARGING;
+        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+        boolean curCharging = plugged != -1 && plugged != 0;
+
         if (!((curLevel == batteryLevel) && (curCharging == batteryIsCharging)) || forceUpdate) {
             new BatteryChangeMessage(curLevel, curCharging, "").send();
         }
