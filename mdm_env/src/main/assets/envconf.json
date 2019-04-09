@@ -35,6 +35,13 @@
       "puship": "mdm-pushaccess.test.moe.gov.eg",
       "pushport": 8760,
       "url": "http://mdm-backend.test.moe.gov.eg"
+    },
+    {
+      "name": "EgyptDrill",
+      "org": "MDM",
+      "puship": "mdm.pushaccess.egypt.sdp",
+      "pushport": 8760,
+      "url": "https://mdm-backend.beta.101.com"
     }
   ]
 }
