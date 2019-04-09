@@ -147,26 +147,7 @@ public class MonitorModule implements IMonitor {
                 new IMdmWifiInfoUpdateListener() {
                     @Override
                     public void onInfoUpdated(MdmWifiInfo pWifiInfo) {
-
-                        AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
-                            @Override
-                            public void call(Subscriber<? super Void> subscriber) {
-                                try {
-                                    ResponseBase responseBase = new ResponseBase("postdeviceinfo",
-                                            UUID.randomUUID().toString(),
-                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                                            "",
-                                            System.currentTimeMillis());
-                                    responseBase.setJsonData(getDevInfoJson());
-                                    responseBase.postAsync();
-
-                                } catch (JSONException e) {
-                                    Logger.e(TAG, "onInfoUpdated, do response error: " + e);
-                                }
-                                subscriber.onCompleted();
-                            }
-                        }).subscribeOn(Schedulers.io()));
-
+                        responseDevInfo();
                     }
                 }
         );
@@ -178,32 +159,31 @@ public class MonitorModule implements IMonitor {
                         if(MdmWifiStatus.CONNECTED != pStatus){
                             return;
                         }
-
-                        try {
-//                            IResponse_MDM response =
-//                                    MdmResponseHelper.createResponseBase(
-//                                            "postdeviceinfo",
-//                                            "",
-//                                            UUID.randomUUID().toString(),
-//                                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-//                                            System.currentTimeMillis());
-//                            response.setJsonData(getDevInfoJson());
-//                            response.post();
-
-                            ResponseBase responseBase = new ResponseBase("postdeviceinfo",
-                                    UUID.randomUUID().toString(),
-                                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                                    "",
-                                    System.currentTimeMillis());
-                            responseBase.setJsonData(getDevInfoJson());
-                            responseBase.postAsync();
-
-                        } catch (JSONException e) {Logger.e(TAG, "onWifiStatusChange, do response error: " + e);
-                        }
-
+                        responseDevInfo();
                     }
                 }
         );
+    }
+
+    private void responseDevInfo() {
+        AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    ResponseBase responseBase = new ResponseBase("postdeviceinfo",
+                            UUID.randomUUID().toString(),
+                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                            "",
+                            System.currentTimeMillis());
+                    responseBase.setJsonData(getDevInfoJson());
+                    responseBase.postAsync();
+
+                } catch (JSONException e) {
+                    Logger.e(TAG, "responseDevInfo, do response error: " + e);
+                }
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.io()));
     }
 
     public static MonitorModule getInstance() {
