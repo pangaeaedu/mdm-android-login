@@ -12,7 +12,6 @@ public class AdhocMemoryInfo {
     public AdhocMemoryInfo(long[] info) {
         totalMemory = info[0];
         usedMemory = info[4];
-//        freeMemory = totalMemory - usedMemory;
-        freeMemory = (totalMemory - usedMemory) / totalMemory;
+        freeMemory = totalMemory - usedMemory;
     }
 }
