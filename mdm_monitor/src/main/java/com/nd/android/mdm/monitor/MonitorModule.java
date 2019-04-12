@@ -21,7 +21,7 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
-import com.nd.android.adhoc.basic.util.root.AdhocRootUtil;
+import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
@@ -533,7 +533,7 @@ public class MonitorModule implements IMonitor {
         //系统、软件信息
         data.put("sys_version", Build.VERSION.RELEASE);
         data.put("language", Locale.getDefault().getDisplayLanguage());
-        data.put("isRooted", AdhocRootUtil.checkIsRoot() ? 1 : 0);
+        data.put("isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
         IControl_DeviceSerial control_deviceSerial = ControlFactory.getInstance().getControl(IControl_DeviceSerial.class);
         if (control_deviceSerial != null) {
             try {
