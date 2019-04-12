@@ -506,8 +506,16 @@ public class MonitorModule implements IMonitor {
         //网络类型
         data.put("netType", AdhocNetworkUtil.getNetWorkStateString());
         //SIM卡信息
-        data.put("carrier", AdhocNetworkUtil.getNetworkOperatorName());
-        data.put("sim", AdhocDeviceUtil.getSimLine1Numeber());
+        String strTemp = AdhocNetworkUtil.getNetworkOperatorName();
+        if(null == strTemp){
+            strTemp = "";
+        }
+        data.put("carrier", strTemp);
+        strTemp = AdhocDeviceUtil.getSimLine1Numeber();
+        if(null == strTemp){
+            strTemp = "";
+        }
+        data.put("sim", strTemp);
 
         //设备信息
         data.put("model", Build.MODEL);
