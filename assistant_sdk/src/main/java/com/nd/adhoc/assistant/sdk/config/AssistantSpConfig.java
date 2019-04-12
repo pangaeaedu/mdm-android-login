@@ -156,9 +156,10 @@ public class AssistantSpConfig extends BaseSpConfig {
         savePolicySetTime(0);
         saveOldTokenStatus(0);
         saveOldDeviceToken("");
-        saveDeviceToken("");
-        saveDeviceID("");
-        saveSerialNum("");
+        // 清理数据的时候，不要清掉DeviceID。因为这三个值不会变的
+//        saveDeviceToken("");
+//        saveDeviceID("");
+//        saveSerialNum("");
         saveUserID("");
         saveDeviceStatus(-1);
     }
