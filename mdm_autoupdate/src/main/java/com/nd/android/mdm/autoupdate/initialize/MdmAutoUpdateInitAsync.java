@@ -27,31 +27,6 @@ public class MdmAutoUpdateInitAsync extends AdhocAppInitAsyncAbs {
 
     private static final String TAG = "MdmAutoUpdateInitAsync";
 
-    /**
-     * 决定没有配置channel时，是否要抛异常，　这个方法　好几个地方用了，可以搞成通用
-     * @return
-     */
-    private boolean getNeedToToastWhenNoChannel(){
-        Context appContext = AdhocBasicConfig.getInstance().getAppContext();
-        boolean isLocalEnv;
-        try {
-            ApplicationInfo appInfo = appContext.getPackageManager().getApplicationInfo(appContext.getPackageName(),
-                    PackageManager.GET_META_DATA);
-            if (!appInfo.metaData.containsKey("LOCAL_ENV")) {
-                throw new IllegalArgumentException("The LOCAL_ENV value of the META_DATA configuration in the manifest file does not exist.");
-            }
-            isLocalEnv = appInfo.metaData.getBoolean("LOCAL_ENV");
-        } catch (PackageManager.NameNotFoundException e) {
-            isLocalEnv = false;
-        }
-
-        if (!AdhocAppUtil.isDebuggable(appContext) || !isLocalEnv) {
-            return false;
-        }else {
-            return true;
-        }
-    }
-
     @Override
     public void doInitAsync(){
         final Context context = AdhocBasicConfig.getInstance().getAppContext();
@@ -68,7 +43,7 @@ public class MdmAutoUpdateInitAsync extends AdhocAppInitAsyncAbs {
             Logger.e(TAG, "no channel");
         }
 
-        if(TextUtils.isEmpty(configuration.getChannel()) && getNeedToToastWhenNoChannel()){
+        if(TextUtils.isEmpty(configuration.getChannel()) && AdhocAppUtil.isDebuggable(context)){
             AdhocMainLooper.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
