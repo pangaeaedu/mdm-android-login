@@ -22,7 +22,7 @@
                 android:id="@+id/iv_login_logo"
                 android:layout_width="@dimen/title_land_app_font_size_login"
                 android:layout_height="@dimen/title_land_app_font_size_login"
-                android:background="@drawable/icon_mdm_login" />
+                />
 
             <TextView
                 android:id="@+id/tv_icon_device_login"

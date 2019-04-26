@@ -147,7 +147,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         mStatusBar.setBackground(getResources().getDrawable(R.drawable.bg_statusbar));
 //        setImageResource(getResources().getDrawable(R.drawable.btn_selector_settings_toolbar));
 
-        ((ImageView)findViewById(R.id.iv_login_logo)).setImageResource(R.mipmap.ic_launcher);
+        ((ImageView)findViewById(R.id.iv_login_logo)).setBackgroundResource(R.mipmap.ic_launcher);
     }
 
     private void initEnvBtn() {
