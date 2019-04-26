@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -146,6 +147,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         mStatusBar.setBackground(getResources().getDrawable(R.drawable.bg_statusbar));
 //        setImageResource(getResources().getDrawable(R.drawable.btn_selector_settings_toolbar));
 
+        ((ImageView)findViewById(R.id.iv_login_logo)).setImageResource(R.mipmap.ic_launcher);
     }
 
     private void initEnvBtn() {
