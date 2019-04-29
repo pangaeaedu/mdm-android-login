@@ -355,19 +355,28 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
                     public void onInterrupt(@NonNull Postcard postcard) {
                         super.onInterrupt(postcard);
                         Logger.w(TAG, "onInterrupt");
+                        protectFinish();
                     }
 
                     @Override
                     public void onLost(@NonNull Postcard postcard) {
                         super.onLost(postcard);
                         Logger.e(TAG, "onLost");
+                        protectFinish();
                     }
 
                     @Override
                     public void onArrival(@NonNull Postcard postcard) {
-                        finish();
+                        Logger.w(TAG, "onInterrupt");
+                        protectFinish();
                     }
                 });
+    }
+
+    private void protectFinish(){
+        if(!isFinishing()){
+            finish();
+        }
     }
 
 //    public void onEventMainThread(final LoginMdmDebugEvent event) {
