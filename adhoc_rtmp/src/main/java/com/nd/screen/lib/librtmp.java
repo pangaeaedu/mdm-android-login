@@ -141,6 +141,10 @@ public class librtmp implements ScreenCaptureDataCallback {
         return connret;
     }
 
+    public boolean isStarted(){
+        return mStarted.get();
+    }
+
     public void stop() {
         mStarted.set(false);
         mExecutor.submit(new Runnable() {
