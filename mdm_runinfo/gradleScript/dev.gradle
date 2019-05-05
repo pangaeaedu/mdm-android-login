@@ -6,6 +6,19 @@ dependencies {
 
 //    compile ("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
+    try {
+        api project(':adhoc_basic_control')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version"){
+            exclude group: 'com.nd.android.adhoc', module: 'device_control_normal_aidl'
+        }
+    }
+
+    try {
+        api project(':device_control_normal_aidl')
+    } catch (Exception ignored) {
+        api "com.nd.android.adhoc:device_control_normal_aidl:$device_control_version"
+    }
 
     try {
         api project(':device_control_nd3')
