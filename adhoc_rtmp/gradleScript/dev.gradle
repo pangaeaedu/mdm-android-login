@@ -4,8 +4,10 @@ dependencies {
 
     api ("com.android.support:appcompat-v7:$androidSupportSdkVersion")
 
-    api("com.nd.sdp.adhoc:screen-capture:$screen_capture_version") {
-        exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
+    try {
+        api project(':screen-capture')
+    } catch (Exception ignored) {
+        api("com.nd.sdp.adhoc:screen-capture:$screen_capture_version")
     }
 }
 

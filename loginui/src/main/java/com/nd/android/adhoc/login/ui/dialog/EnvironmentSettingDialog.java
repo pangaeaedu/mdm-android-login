@@ -122,7 +122,6 @@ public class EnvironmentSettingDialog extends DialogFragment
 //            this.mOnEnvironmentSettingsListener.onSettings(this.position);
             getConfig().clearData();
             DeviceInfoManager.getInstance().reset();
-//            EnvUtils.setUcEnv(position);
             MdmEvnFactory.getInstance().setCurEnvironment(position);
             MdmTransferFactory.getPushModel().start();
         }

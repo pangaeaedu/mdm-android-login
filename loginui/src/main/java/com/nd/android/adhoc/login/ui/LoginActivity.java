@@ -3,8 +3,6 @@ package com.nd.android.adhoc.login.ui;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -148,6 +147,11 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
         mStatusBar.setBackground(getResources().getDrawable(R.drawable.bg_statusbar));
 //        setImageResource(getResources().getDrawable(R.drawable.btn_selector_settings_toolbar));
 
+        //只有横屏的情况下，才有这个Logo
+        ImageView logo = findViewById(R.id.iv_login_logo);
+        if(logo != null){
+            logo.setBackgroundResource(R.mipmap.ic_launcher);
+        }
     }
 
     private void initEnvBtn() {
@@ -351,19 +355,28 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
                     public void onInterrupt(@NonNull Postcard postcard) {
                         super.onInterrupt(postcard);
                         Logger.w(TAG, "onInterrupt");
+                        protectFinish();
                     }
 
                     @Override
                     public void onLost(@NonNull Postcard postcard) {
                         super.onLost(postcard);
                         Logger.e(TAG, "onLost");
+                        protectFinish();
                     }
 
                     @Override
                     public void onArrival(@NonNull Postcard postcard) {
-                        finish();
+                        Logger.w(TAG, "onInterrupt");
+                        protectFinish();
                     }
                 });
+    }
+
+    private void protectFinish(){
+        if(!isFinishing()){
+            finish();
+        }
     }
 
 //    public void onEventMainThread(final LoginMdmDebugEvent event) {

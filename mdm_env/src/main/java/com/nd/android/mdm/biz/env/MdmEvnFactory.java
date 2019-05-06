@@ -68,9 +68,9 @@ public final class MdmEvnFactory {
 
             mCurIndexk = appInfo.metaData.getInt("ENV_INDEX");
 
-            if (mCurIndexk < MdmEnvConstant.ENV_INDEX_DEVELOP || mCurIndexk > MdmEnvConstant.ENV_INDEX_MAX) {
-                throw new IllegalArgumentException("The ENV_INDEX value of the META_DATA configuration in the manifest file is invalid: " + mCurIndexk);
-            }
+//            if (mCurIndexk < MdmEnvConstant.ENV_INDEX_DEVELOP || mCurIndexk > MdmEnvConstant.ENV_INDEX_MAX) {
+//                throw new IllegalArgumentException("The ENV_INDEX value of the META_DATA configuration in the manifest file is invalid: " + mCurIndexk);
+//            }
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -176,6 +176,8 @@ public final class MdmEvnFactory {
         mCurIndexk = index;
         mCurMdmEnvModule = getMdmEnvModel(index);
         mPreferenceModel.putInt("env",mCurIndexk).apply();
+
+        EnvUtils.setUcEnv(mCurIndexk);
 
         notifyEnvChanged(old, mCurMdmEnvModule);
     }

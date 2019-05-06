@@ -8,7 +8,8 @@ public class AdhocMemoryInfo {
     public long totalMemory;
     public long usedMemory;
     public long freeMemory;
-    public AdhocMemoryInfo(long[] info){
+
+    public AdhocMemoryInfo(long[] info) {
         totalMemory = info[0];
         usedMemory = info[4];
         freeMemory = totalMemory - usedMemory;

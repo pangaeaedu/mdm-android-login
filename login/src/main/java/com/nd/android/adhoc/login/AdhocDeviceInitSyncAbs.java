@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.login;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
@@ -20,7 +21,7 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
 
     @Override
     public AdhocAppInitPriority getInitPriority() {
-        return AdhocAppInitPriority.HEIGHT;
+        return AdhocAppInitPriority.LOW;
     }
 
     @Override
@@ -32,8 +33,7 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
             return;
         }
 
-//        IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance().getDeviceInitiator();
-//        initiator.init()
+        Log.e("yhq", "init Device");
         api.initDevice()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<DeviceStatus>() {

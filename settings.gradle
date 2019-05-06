@@ -34,6 +34,8 @@ def map = [:]
 //map["adhoc-androidframework/adhoc_basic/adhoc_basic_net"] = ":adhoc_basic_net"
 //map["adhoc-androidframework/adhoc_basic/adhoc_basic_common"] = ":adhoc_basic_common"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_thread"] = ":adhoc_util_thread"
+//map["adhoc-androidframework/adhoc_basic/adhoc_util_system"] = ":adhoc_util_system"
+//map["adhoc-androidframework/adhoc_basic/adhoc_util_net"] = ":adhoc_util_net"
 
 
 map.each { dirPath, projectName ->

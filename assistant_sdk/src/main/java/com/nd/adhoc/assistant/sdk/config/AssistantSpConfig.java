@@ -4,6 +4,8 @@ package com.nd.adhoc.assistant.sdk.config;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+
 public class AssistantSpConfig extends BaseSpConfig {
     private static final String KEY_ACTIVATED = "activated";
 
@@ -49,7 +51,12 @@ public class AssistantSpConfig extends BaseSpConfig {
     }
 
     public boolean isActivated() {
-        return getBoolean(KEY_ACTIVATED);
+        DeviceStatus status = DeviceStatus.fromValue(getDeviceStatus());
+        if(DeviceStatus.isStatusUnLogin(status)){
+            return false;
+        }
+
+        return true;
     }
 
     public void saveActivated(boolean pActivated) {
@@ -149,9 +156,10 @@ public class AssistantSpConfig extends BaseSpConfig {
         savePolicySetTime(0);
         saveOldTokenStatus(0);
         saveOldDeviceToken("");
-        saveDeviceToken("");
-        saveDeviceID("");
-        saveSerialNum("");
+        // 清理数据的时候，不要清掉DeviceID。因为这三个值不会变的
+//        saveDeviceToken("");
+//        saveDeviceID("");
+//        saveSerialNum("");
         saveUserID("");
         saveDeviceStatus(-1);
     }
