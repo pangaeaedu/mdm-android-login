@@ -67,6 +67,11 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
     }
 
+    try {
+        api project(':adhoc_util_app')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_util_app:$adhoc_basic_version")
+    }
 
     try {
         api project(':adhoc_util_system')
@@ -95,6 +100,9 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_app'
+//    all*.exclude group: 'com.nd.android.adhoc', module: 'device_control'
+//    all*.exclude group: 'com.nd.android.adhoc', module: 'device_control_normal'
 //    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_system'
 //    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_net'
 }

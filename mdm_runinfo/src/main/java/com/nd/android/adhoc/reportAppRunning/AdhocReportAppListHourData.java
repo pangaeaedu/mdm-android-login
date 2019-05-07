@@ -1,7 +1,5 @@
 package com.nd.android.adhoc.reportAppRunning;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -30,9 +28,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -148,12 +148,13 @@ public class AdhocReportAppListHourData {
         if(bImmediately){
             reportToServer(jsonData);
         }else {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    reportToServer(jsonData);
-                }
-            }, getRandomDelaySeconds() * 1000);
+            Observable.timer(getRandomDelaySeconds() * 1000, TimeUnit.MILLISECONDS)
+                    .subscribe(new Action1<Long>() {
+                        @Override
+                        public void call(Long aLong) {
+                            reportToServer(jsonData);
+                        }
+                    });
         }
     }
 
@@ -253,9 +254,6 @@ public class AdhocReportAppListHourData {
         Logger.i(TAG, "will report "+ lSecondsDelay + " seconds later");
         return lSecondsDelay;
     }
-
-
-    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     public void reportToServer(final JSONObject jsonData){
         if (null != jsonData && 0 != jsonData.length()) {
