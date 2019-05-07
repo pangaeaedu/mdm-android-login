@@ -3,8 +3,12 @@ package com.nd.adhoc.assistant.sdk.config;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.assistant.sdk.utils.StringUtils;
+
+import java.util.List;
 
 public class AssistantSpConfig extends BaseSpConfig {
     private static final String KEY_ACTIVATED = "activated";
@@ -28,6 +32,8 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     private static final String KEY_DEVICE_STATUS_VALUE = "device_status_value";
     private static final String KEY_DEVICE_ID = "device_id";
+
+    private static final String KEY_PREVIOUS_LOGIN_ACCOUNT = "previous_login_account";
 
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
@@ -147,6 +153,32 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getString(KEY_USER_ID);
     }
 
+    public List<String> getAllPreviousLoginAccount(){
+        String accounts = getString(KEY_PREVIOUS_LOGIN_ACCOUNT);
+
+        return StringUtils.splitString(accounts, ",");
+    }
+
+    public void addAccountNameToPreviousList(@NonNull String pAccountNum) {
+        if (TextUtils.isEmpty(pAccountNum)) {
+            return;
+        }
+
+        List<String> accounts = getAllPreviousLoginAccount();
+        if (accounts.contains(pAccountNum)) {
+            return;
+        }
+
+        accounts.add(pAccountNum);
+        String s = StringUtils.mergeStringList(accounts, ",");
+        savePreviousLoginAccount(s);
+    }
+
+    private void savePreviousLoginAccount(String pAccounts){
+        saveString(KEY_PREVIOUS_LOGIN_ACCOUNT,  pAccounts);
+    }
+
+
     // 清理数据的时候，不要清理pushID
     public void clearData(){
         saveAccountNum("");
@@ -163,5 +195,7 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveUserID("");
         saveDeviceStatus(-1);
     }
+
+
 
 }

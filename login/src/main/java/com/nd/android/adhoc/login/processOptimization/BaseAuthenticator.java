@@ -125,6 +125,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     protected void saveLoginInfo(String pUserName, String pNickName) {
         getConfig().saveAccountNum(pUserName);
+        getConfig().addAccountNameToPreviousList(pUserName);
         getConfig().saveNickname(pNickName);
     }
 
