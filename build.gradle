@@ -23,11 +23,11 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.1.259.bed6cee-hyk0.6.7.0opt-SNAPSHOT'
+    adhoc_basic_version = '1.1.357.12ed696'
 
 
     mdm_biz_version = '1.3.354.15511a4-yhq0.6.7.1-SNAPSHOT'
-    device_control_version = '1.3.334.de2ac06-lsj0.6.7.2egypt-SNAPSHOT'
+    device_control_version = '1.3.339.114301f'
     device_command_version = '1.3.129.a7602e8-lsj0.6.7.2egypt-SNAPSHOT'
 
     location_verison = '1.1.16.a3cf46e-hyk0.6.7.0opt-SNAPSHOT'
