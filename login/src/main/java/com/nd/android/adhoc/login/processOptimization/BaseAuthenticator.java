@@ -152,6 +152,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             }
 
             saveLoginInfo(queryResult.getUsername(), queryResult.getNickname());
+            getConfig().saveUserID(queryResult.getUserid());
             notifyLogin(queryResult.getUsername(), queryResult.getNickname());
 
             mDeviceStatusListener.onDeviceStatusChanged(queryResult.getStatus());
