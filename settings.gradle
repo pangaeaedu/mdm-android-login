@@ -33,6 +33,9 @@ def map = [:]
 
 //map["adhoc-androidframework/adhoc_basic/adhoc_basic_net"] = ":adhoc_basic_net"
 //map["adhoc-androidframework/adhoc_basic/adhoc_basic_common"] = ":adhoc_basic_common"
+//map["adhoc-device-control/device_control"] = ":device_control"
+//map["adhoc-device-control/device_control_normal"] = ":device_control_normal"
+//map["adhoc-androidframework/adhoc_basic/adhoc_util_app"] = ":adhoc_util_app"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_thread"] = ":adhoc_util_thread"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_system"] = ":adhoc_util_system"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_net"] = ":adhoc_util_net"

@@ -1,7 +1,6 @@
 package com.nd.android.mdm.monitor;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
-import com.nd.android.adhoc.basic.common.exception.AdhocException;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
@@ -29,9 +28,9 @@ import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
 import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
+import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
-import com.nd.android.adhoc.control.define.IControl_DeviceSerial;
 import com.nd.android.adhoc.location.ILocationNavigation;
 import com.nd.android.adhoc.location.dataDefine.ILocation;
 import com.nd.android.adhoc.location.locationCallBack.ILocationChangeListener;
@@ -374,20 +373,9 @@ public class MonitorModule implements IMonitor {
                 packageInfos.addAll(pm.getInstalledPackages(0));
             }
         } else if (type == TYPE_RUNNING_APP) {
-            ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-            List<ActivityManager.RunningAppProcessInfo> runningTasks = am.getRunningAppProcesses();
-            List<String> packageNameList = new ArrayList<String>();
-            for (int i = 0; i < runningTasks.size(); i++) {
-                String packageName = runningTasks.get(i).processName.replaceAll("(:.+)?", "");
-                if (!packageNameList.contains(packageName)) {
-                    packageNameList.add(packageName);
-                    PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(mContext, packageName);
-                    if (packageInfo == null) {
-                        Logger.w(TAG, String.format("monitor module getApplication: get package:%s result is null", packageName));
-                    } else {
-                        packageInfos.add(packageInfo);
-                    }
-                }
+            IControl_AppList control_appList = ControlFactory.getInstance().getControl(IControl_AppList.class);
+            if(null != control_appList){
+                return control_appList.getRunningAppList();
             }
         }
         return packageInfos;
@@ -522,7 +510,7 @@ public class MonitorModule implements IMonitor {
         data.put("battery", batteryLevel);
         data.put("charge", batteryIsCharging);
         data.put("cpu_rate", (int) MonitorUtil.getCpuInfo()[8]);
-        data.put("serialnum", AdhocDeviceUtil.getSerialNumber());
+        data.put("serialnum", DeviceHelper.getSerialNumberThroughControl());
         data.put("terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
         data.put("resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
         data.put("bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
@@ -534,13 +522,7 @@ public class MonitorModule implements IMonitor {
         data.put("sys_version", Build.VERSION.RELEASE);
         data.put("language", Locale.getDefault().getDisplayLanguage());
         data.put("isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
-        IControl_DeviceSerial control_deviceSerial = ControlFactory.getInstance().getControl(IControl_DeviceSerial.class);
-        if (control_deviceSerial != null) {
-            try {
-                data.put("panelId", control_deviceSerial.getSerialNumber());
-            } catch (AdhocException ignored) {
-            }
-        }
+        data.put("panelId", DeviceHelper.getSerialNumberThroughControl());
         IControl_DeviceRomName control_deviceRomName = ControlFactory.getInstance().getControl(IControl_DeviceRomName.class);
         if (control_deviceRomName != null) {
             data.put("romName", control_deviceRomName.getRomName());

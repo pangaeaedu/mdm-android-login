@@ -14,6 +14,7 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+//    all*.exclude group: 'com.nd.sdp.adhoc', module: 'screen-capture'
 }
 
 configurations.all {

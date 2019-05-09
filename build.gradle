@@ -23,19 +23,19 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.1.262.29de6d2'
+    adhoc_basic_version = '1.1.357.12ed696'
 
 
-    mdm_biz_version = '1.1.333.fdc54fa-yhq0.6.7.1-SNAPSHOT'
-    device_control_version = '1.2.245.3903d21-hyk0.6.7.0opt-SNAPSHOT'
-    device_command_version = '1.1.87.24dfc01-hyk0.6.6.0opt-SNAPSHOT'
+    mdm_biz_version = '1.3.354.15511a4-yhq0.6.7.1-SNAPSHOT'
+    device_control_version = '1.3.339.114301f'
+    device_command_version = '1.3.129.a7602e8-lsj0.6.7.2egypt-SNAPSHOT'
 
     location_verison = '1.1.16.a3cf46e-hyk0.6.7.0opt-SNAPSHOT'
     file_transfer_version = '1.1.33.5a40d16-hyk0.6.7.0limit-SNAPSHOT'
 
     // 下面这三个后续也需要发布为正式版本
     adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
-    screen_capture_version = '1.3.36.2086.241.50dd6cd-develop-SNAPSHOT'
+    screen_capture_version = '1.3.37.2086.242.6bc521f-develop-SNAPSHOT'
     adhoc_push_util_version = '0.3.25.87.cbdc409-yhq0.6.7.0-SNAPSHOT'
 }
 
