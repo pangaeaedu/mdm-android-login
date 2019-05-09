@@ -28,7 +28,7 @@ ext {
 
     mdm_biz_version = '1.3.357.81bc239'
     device_control_version = '1.5.344.eaafd97'
-    device_command_version = '1.3.129.a7602e8-lsj0.6.7.2egypt-SNAPSHOT'
+    device_command_version = '1.5.135.1faa1c9'
 
     location_verison = '1.1.23.4ac8ca1'
     file_transfer_version = '1.1.34.3cff954'
