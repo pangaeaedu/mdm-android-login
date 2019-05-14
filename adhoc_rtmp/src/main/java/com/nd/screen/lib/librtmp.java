@@ -178,15 +178,7 @@ public class librtmp implements ScreenCaptureDataCallback {
                 FloatCamera.show(mContext, type, mWidth, mHeight, mFrameRate, mBitRate, mQuality, sSendCallback);
                 return;
             case TYPE_SCREEN:
-                if (sysVersion >= Build.VERSION_CODES.LOLLIPOP) {
-                    ScreencastActivity.getInstance().start(mWidth, mHeight, mFrameRate, mBitRate, sSendCallback);
-                } else {
-                    if (sScreenCaptureCallbacks.size() > 0) {
-                        for (ScreenCaptureCallback screenCaptureCallback : sScreenCaptureCallbacks) {
-                            screenCaptureCallback.start(mWidth, mHeight, mFrameRate, mBitRate, this);
-                        }
-                    }
-                }
+                notifyStart();
                 postDesktopResolution();
         }
     }
@@ -198,24 +190,41 @@ public class librtmp implements ScreenCaptureDataCallback {
                 return;
             case TYPE_SCREEN:
 //                Log4jLogger.d(TAG,"stop screencast");
-                if (sysVersion >= Build.VERSION_CODES.LOLLIPOP) {
-                    ScreencastActivity.getInstance().stop(sSendCallback);
-                } else {
-                    if (sScreenCaptureCallbacks.size() > 0) {
-                        for (ScreenCaptureCallback screenCaptureCallback : sScreenCaptureCallbacks) {
-                            screenCaptureCallback.stop();
-                        }
-                    }
-                }
+                notifyStop();
                 break;
             case TYPE_CAMERA_BACK:
             case TYPE_CAMERA_FRONT:
 //                    NativeVideoCapture.JNIStopVideoCapture();
 //                Log4jLogger.d(TAG,"stop camera");
                 FloatCamera.hide();
+                notifyStop();
                 break;
         }
         mType = TYPE_NONE;
+    }
+
+    private void notifyStart() {
+        if (sysVersion >= Build.VERSION_CODES.LOLLIPOP) {
+            ScreencastActivity.getInstance().start(mWidth, mHeight, mFrameRate, mBitRate, sSendCallback);
+        }// else {
+        if (sScreenCaptureCallbacks.size() > 0) {
+            for (ScreenCaptureCallback screenCaptureCallback : sScreenCaptureCallbacks) {
+                screenCaptureCallback.start(mWidth, mHeight, mFrameRate, mBitRate, this);
+            }
+        }
+//        }
+    }
+
+    private void notifyStop() {
+        if (sysVersion >= Build.VERSION_CODES.LOLLIPOP) {
+            ScreencastActivity.getInstance().stop(sSendCallback);
+        } //else {
+        if (sScreenCaptureCallbacks.size() > 0) {
+            for (ScreenCaptureCallback screenCaptureCallback : sScreenCaptureCallbacks) {
+                screenCaptureCallback.stop();
+            }
+        }
+//        }
     }
 
     private void doDisconnect() {
