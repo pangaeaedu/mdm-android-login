@@ -20,14 +20,14 @@
       "org": "mdm_pre",
       "puship": "www.ndmdm.site",
       "pushport": 59000,
-      "url": "http://mdm.ndmdm.site"
+      "url": "https://mdm.ndmdm.site"
     },
     {
       "name": "WholeWorld",
       "org": "ndtest",
       "puship": "aws.ndmdm.site",
       "pushport": 59000,
-      "url": "http://mdmaws.ndmdm.site"
+      "url": "https://mdmaws.ndmdm.site"
     },
     {
       "name": "Egypt",
