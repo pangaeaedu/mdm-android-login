@@ -142,14 +142,14 @@ public class MonitorModule implements IMonitor {
             locationNavigation.addLocationListener(mLocationChangeListener);
         }
 
-        MdmWifiInfoManager.getInstance().getWifiListenerManager().addInfoUpdateListener(
-                new IMdmWifiInfoUpdateListener() {
-                    @Override
-                    public void onInfoUpdated(MdmWifiInfo pWifiInfo) {
-                        responseDevInfo();
-                    }
-                }
-        );
+//        MdmWifiInfoManager.getInstance().getWifiListenerManager().addInfoUpdateListener(
+//                new IMdmWifiInfoUpdateListener() {
+//                    @Override
+//                    public void onInfoUpdated(MdmWifiInfo pWifiInfo) {
+//                        responseDevInfo();
+//                    }
+//                }
+//        );
 
         MdmWifiInfoManager.getInstance().getWifiListenerManager().addStatusChangeListener(
                 new IMdmWifiStatusChangeListener() {
