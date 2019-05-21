@@ -156,11 +156,12 @@ public final class MdmEvnFactory {
         setCurEnvironment(env);
     }
 
+    @Nullable
     public IMdmEnvModule getMdmEnvModel(int index) {
         if (index < mMdmEnvModules.size() && index >= 0) {
             return mMdmEnvModules.get(index);
         } else {
-            return new MdmEnvModuleDefault();
+            return null;
         }
     }
 
