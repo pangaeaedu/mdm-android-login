@@ -1,6 +1,7 @@
 package com.nd.android.mdm.biz.env;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -180,8 +181,17 @@ public final class MdmEvnFactory {
         EnvUtils.setUcEnv(mCurIndexk);
 
         notifyEnvChanged(old, mCurMdmEnvModule);
+        broadcastNewEnv(index);
     }
 
+    private void broadcastNewEnv(int pIndex){
+        Context context = AdhocBasicConfig.getInstance().getAppContext();
+        Intent intent = new Intent(context, MdmEnvBroadcastReceiver.class);
+        intent.setAction(MdmEnvBroadcastReceiver.ACTION_NAME);
+        intent.putExtra(MdmEnvBroadcastReceiver.ENV_VALUE, pIndex);
+
+        context.sendBroadcast(intent);
+    }
 
 
     @NonNull

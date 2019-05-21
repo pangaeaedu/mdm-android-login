@@ -15,4 +15,6 @@ public interface IMdmEnvModule {
     String getPushIp();
 
     int getPushPort();
+
+    String getDownloadServiceName();
 }

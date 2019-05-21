@@ -22,6 +22,9 @@ class MdmEnvModule implements IMdmEnvModule{
     @SerializedName("pushport")
     int mPushPort;
 
+    @SerializedName("downloadservicename")
+    String mDownloadServiceName;
+
     public MdmEnvModule() {
     }
 
@@ -43,6 +46,11 @@ class MdmEnvModule implements IMdmEnvModule{
 
     public int getPushPort() {
         return mPushPort;
+    }
+
+    @Override
+    public String getDownloadServiceName() {
+        return mDownloadServiceName;
     }
 
 

@@ -20,6 +20,11 @@ dependencies {
         transitive = true
         changing = true
     }
+
+    api('com.nd.android.smartcan:content:1.4.4.2.cs.release'){
+        transitive = true
+        changing = true
+    }
 }
 
 

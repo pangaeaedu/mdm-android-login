@@ -6,42 +6,48 @@
       "org": "mdm",
       "puship": "172.24.140.51",
       "pushport": 39000,
-      "url": "http://drms.dev.web.nd"
+      "url": "http://drms.dev.web.nd",
+      "downloadservicename":"dev_content_drms"
     },
     {
       "name": "Test",
       "org": "mdm_pre",
       "puship": "test.ndmdm.site",
       "pushport": 59000,
-      "url": "http://drms.debug.web.nd"
+      "url": "http://drms.debug.web.nd",
+      "downloadservicename":"prepub_content_mdm"
     },
     {
       "name": "China",
       "org": "mdm_pre",
       "puship": "www.ndmdm.site",
       "pushport": 59000,
-      "url": "https://mdm.ndmdm.site"
+      "url": "https://mdm.ndmdm.site",
+      "downloadservicename":"production_content_mdm"
     },
     {
       "name": "WholeWorld",
       "org": "ndtest",
       "puship": "aws.ndmdm.site",
       "pushport": 59000,
-      "url": "https://mdmaws.ndmdm.site"
+      "url": "https://mdmaws.ndmdm.site",
+      "downloadservicename":"drms"
     },
     {
       "name": "Egypt",
       "org": "MDM",
       "puship": "mdm-pushaccess.test.moe.gov.eg",
       "pushport": 8760,
-      "url": "http://mdm-backend.test.moe.gov.eg"
+      "url": "http://mdm-backend.test.moe.gov.eg",
+      "downloadservicename":"drms"
     },
     {
       "name": "EgyptDrill",
       "org": "MDM",
       "puship": "mdm.pushaccess.egypt.sdp",
       "pushport": 8760,
-      "url": "https://mdm-backend.beta.101.com"
+      "url": "https://mdm-backend.beta.101.com",
+      "downloadservicename":"drms"
     }
   ]
 }
