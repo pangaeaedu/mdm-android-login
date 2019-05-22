@@ -26,7 +26,6 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version") {
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
         }
     }
 
@@ -41,7 +40,6 @@ dependencies {
 
     api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
         exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
-        exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
         exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
     }
 

@@ -28,6 +28,7 @@ import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
 import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
+import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
@@ -35,6 +36,7 @@ import com.nd.android.adhoc.location.ILocationNavigation;
 import com.nd.android.adhoc.location.dataDefine.ILocation;
 import com.nd.android.adhoc.location.locationCallBack.ILocationChangeListener;
 import com.nd.android.mdm.basic.ControlFactory;
+import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
 import com.nd.android.mdm.monitor.info.AdhocCpuInfo;
 import com.nd.android.mdm.monitor.info.AdhocMemoryInfo;
@@ -44,7 +46,6 @@ import com.nd.android.mdm.monitor.message.BatteryChangeMessage;
 import com.nd.android.mdm.monitor.message.UsbAttachMessage;
 import com.nd.android.mdm.wifi_sdk.business.MdmWifiInfoManager;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
-import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiInfoUpdateListener;
 import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiStatusChangeListener;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiVendor;
@@ -175,7 +176,8 @@ public class MonitorModule implements IMonitor {
                             "",
                             System.currentTimeMillis());
                     responseBase.setJsonData(getDevInfoJson());
-                    responseBase.postAsync();
+//                    responseBase.postAsync();
+                    HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/deviceinfo", responseBase.toString());
 
                 } catch (JSONException e) {
                     Logger.e(TAG, "responseDevInfo, do response error: " + e);
