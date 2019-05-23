@@ -234,7 +234,7 @@ public class AdhocReportAppListHourData {
         String strHost = getHost();
 //        String strHost = "http://192.168.252.45:8080";
         StringBuilder sb = new StringBuilder(strHost);
-        sb.append("/v1/device/appruninfo/");
+        sb.append("/v1/device/appruninfo");
 
         return sb.toString();
     }

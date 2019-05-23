@@ -28,6 +28,7 @@ import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
 import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
+import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
@@ -35,6 +36,7 @@ import com.nd.android.adhoc.location.ILocationNavigation;
 import com.nd.android.adhoc.location.dataDefine.ILocation;
 import com.nd.android.adhoc.location.locationCallBack.ILocationChangeListener;
 import com.nd.android.mdm.basic.ControlFactory;
+import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
 import com.nd.android.mdm.monitor.info.AdhocCpuInfo;
 import com.nd.android.mdm.monitor.info.AdhocMemoryInfo;
@@ -44,7 +46,6 @@ import com.nd.android.mdm.monitor.message.BatteryChangeMessage;
 import com.nd.android.mdm.monitor.message.UsbAttachMessage;
 import com.nd.android.mdm.wifi_sdk.business.MdmWifiInfoManager;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
-import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiInfoUpdateListener;
 import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiStatusChangeListener;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiVendor;
@@ -642,37 +643,37 @@ public class MonitorModule implements IMonitor {
 
     private ILocationChangeListener mLocationChangeListener = new ILocationChangeListener() {
         @Override
-        public void onLocationChange(ILocation location) {
-//            ResponseLocation responseLocation = new ResponseLocation(
-//                    "",
-//                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-//                    mContext.getString(R.string.cmd_location),
-//                    System.currentTimeMillis());
-//            responseLocation.mapType = location.getMapType();
-//            responseLocation.netEnvr = location.getNetEnv();
-//            responseLocation.lat = location.getLat();
-//            responseLocation.lon = location.getLon();
-//            responseLocation.address = location.getAddress();
-//            responseLocation.post();
+        public void onLocationChange(final ILocation location) {
+            AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
+                @Override
+                public void call(Subscriber<? super Void> subscriber) {
+                    try {
+                        IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
+                                "location",
+                                "",
+                                "",
+                                AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                                System.currentTimeMillis());
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("net_envrm", location.getNetEnv());
+                            data.put("maptype", location.getMapType());
+                            data.put("lat", location.getLat());
+                            data.put("lon", location.getLon());
+                            data.put("address", location.getAddress());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-            IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
-                    "location",
-                    "",
-                    "",
-                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                    System.currentTimeMillis());
-            JSONObject data = new JSONObject();
-            try {
-                data.put("net_envrm", location.getNetEnv());
-                data.put("maptype", location.getMapType());
-                data.put("lat", location.getLat());
-                data.put("lon", location.getLon());
-                data.put("address", location.getAddress());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                        response_mdm.setJsonData(data).post();
 
-            response_mdm.setJsonData(data).post();
+                        HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/location", response_mdm.toString());
+                    } catch (Exception e) {
+                        Logger.e(TAG, "responseLocation, do response error: " + e.getMessage());
+                    }
+                    subscriber.onCompleted();
+                }
+            }).subscribeOn(Schedulers.io()));
         }
 
         @Override
