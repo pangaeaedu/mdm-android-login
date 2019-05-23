@@ -43,7 +43,7 @@ public class RunningPackageInfo {
     }
 
     public void onOpen(){
-        mbIsRunning.set(true);;
+        mbIsRunning.set(true);
         mLastOpenTime = System.currentTimeMillis();
         miRunCount++;
     }
@@ -71,32 +71,32 @@ public class RunningPackageInfo {
      */
     public void onClose(){
         if(mbIsRunning.compareAndSet(true, false)){
-            refreshUseTime();
+            refreshUseTime(System.currentTimeMillis());
         }
     }
 
     /**
      * 写缓存或是上报的时候，填充正在运行APP的时长
      */
-    public void fillUseTime(){
+    public void fillUseTime(long lDeadTimeToMinus){
         if(mbIsRunning.compareAndSet(true, true)){
-            refreshUseTime();
+            refreshUseTime(lDeadTimeToMinus);
         }
     }
 
-    private void refreshUseTime(){
-        mlRunTime += System.currentTimeMillis() - mLastOpenTime;
-        mlRunTime = Math.min(3600 * 1000L, mlRunTime);
+    private void refreshUseTime(long lDeadTimeToMinus){
+        mlRunTime += lDeadTimeToMinus - mLastOpenTime;
+        mlRunTime = Math.min(24 * 3600 * 1000L, mlRunTime);
         mLastOpenTime = System.currentTimeMillis();
     }
 
     /**
-     * 跨小时，调整数据
+     * 跨天，调整数据
      */
-    public void switchToNextHour(){
+    public void switchToNextDay(){
         miRunCount = 0;
         mlRunTime = 0;
-        mLastOpenTime = AppRunInfoReportUtils.getCurrentHourTimeStamp();
+        mLastOpenTime = AppRunInfoReportUtils.getCurrentDayTimeStamp();
     }
 
     public boolean isMbRunningListContainsThis() {

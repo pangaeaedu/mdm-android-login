@@ -24,6 +24,20 @@ public class AppRunInfoReportUtils {
     }
 
     /**
+     * 获取当前的dayofyear
+     * @return
+     */
+    public static int getCurrentDayOfYear(){
+        return getDayOfYearOfSpecifyTime(System.currentTimeMillis());
+    }
+
+    public static int getDayOfYearOfSpecifyTime(long lTime){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(lTime));
+        return calendar.get(Calendar.DAY_OF_YEAR);
+    }
+
+    /**
      * 获取当前的分钟数
      * @return
      */
@@ -72,5 +86,29 @@ public class AppRunInfoReportUtils {
         int iMs = calendar.get(Calendar.MILLISECOND);
 
         return lTime - iMinute * 60 * 1000L - iSecond * 1000L - iMs;
+    }
+
+    /**
+     * 获取当天的时间戳
+     * @return
+     */
+    public static long getCurrentDayTimeStamp(){
+        long lCurTimeStamp = System.currentTimeMillis();
+        return getSpecifyTimeDayStamp(lCurTimeStamp);
+    }
+
+    /**
+     * 获取指定小时的小时时间戳
+     * @return
+     */
+    public static long getSpecifyTimeDayStamp(long lTime){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(lTime));
+        int iHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int iMinute = calendar.get(Calendar.MINUTE);
+        int iSecond = calendar.get(Calendar.SECOND);
+        int iMs = calendar.get(Calendar.MILLISECOND);
+
+        return lTime - iHour * 3600 * 1000L - iMinute * 60 * 1000L - iSecond * 1000L - iMs;
     }
 }

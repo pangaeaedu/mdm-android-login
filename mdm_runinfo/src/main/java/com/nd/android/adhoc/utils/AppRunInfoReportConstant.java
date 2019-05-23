@@ -10,6 +10,8 @@ public class AppRunInfoReportConstant {
     public static final String OPS_SP_KEY_CACHE_RUNNING_APP_MAP = "OPS_SP_KEY_CACHE_RUNNING_APP_MAP";
     /**缓存当前时段的APP运行情况*/
     public static final String OPS_SP_KEY_CACHE_APP_LIST = "OPS_SP_KEY_CACHE_APP_LIST";
+    /**写本地缓存时间点的KEY*/
+    public static final String OPS_SP_KEY_CACHE_TIME = "OPS_SP_KEY_CACHE_TIME";
     /**上报失败，存到这里*/
     public static final String OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST = "OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST";
     /**缓存需要上报的数据的KEY*/
