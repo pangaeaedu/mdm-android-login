@@ -45,7 +45,7 @@ public class AdhocReportAppListHourData {
 
     private Random mRandom;
 
-    private static final String TAG = "OpsReportAppListHourData";
+    private static final String TAG = "AdhocReportAppListHourData";
     /**超过这个数，当成垃圾数据，否则可能引起推栈爆满*/
     private static int s_MAX_CACHE_DATA_SIZE = 512 * 1000;
 
@@ -54,7 +54,7 @@ public class AdhocReportAppListHourData {
 
     @Expose
     @SerializedName("time")
-    private long mlMsOfCurHour;
+    private long mlMsOfCurDay;
 
     /**存储了所有这个时间段内运行的APP*/
     @Expose
@@ -70,7 +70,7 @@ public class AdhocReportAppListHourData {
     }
 
     public AdhocReportAppListHourData(){
-        mlMsOfCurHour = AppRunInfoReportUtils.getCurrentHourTimeStamp();
+        mlMsOfCurDay = AppRunInfoReportUtils.getCurrentDayTimeStamp();
         mGson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         mRandom = new Random(RANDOM_SECONDS_SEED);
     }
@@ -92,7 +92,7 @@ public class AdhocReportAppListHourData {
             //当前时段与上次上报(形成上报数据时间点)不在同一个小时段，立即上报一次
             ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
             long lLastReportTime = spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0);
-            if(AppRunInfoReportUtils.getCurrentHour() != AppRunInfoReportUtils.getHourOfSpecifyTime(lLastReportTime)){
+            if(AppRunInfoReportUtils.getCurrentDayOfYear() != AppRunInfoReportUtils.getDayOfYearOfSpecifyTime(lLastReportTime)){
                 Logger.i(TAG, "report after load cache");
                 dealReportToServer(true);
             }
@@ -102,10 +102,10 @@ public class AdhocReportAppListHourData {
     /**
      * 跨小时，调整数据
      */
-    private void switchToNextHour(){
-        mlMsOfCurHour = AppRunInfoReportUtils.getCurrentHourTimeStamp();
+    private void switchToNextDay(){
+        mlMsOfCurDay = AppRunInfoReportUtils.getCurrentDayTimeStamp();
 
-        //跨过一个小时段，把关闭的移除掉
+        //跨过一天，把关闭的移除掉
         Iterator<RunningPackageInfo> iterator = mlistApps.iterator();
         while (iterator.hasNext()){
             RunningPackageInfo packageInfo = iterator.next();
@@ -113,7 +113,7 @@ public class AdhocReportAppListHourData {
                 iterator.remove();
                 mMapAppsToReport.remove(packageInfo.getPackageName());
             }else {
-                packageInfo.switchToNextHour();
+                packageInfo.switchToNextDay();
             }
         }
     }
@@ -122,11 +122,12 @@ public class AdhocReportAppListHourData {
         mlistApps.clear();
         mlistApps.addAll(mMapAppsToReport.values());
         for (RunningPackageInfo packageInfoWithTag : mlistApps) {
-            packageInfoWithTag.fillUseTime();
+            packageInfoWithTag.fillUseTime(System.currentTimeMillis());
         }
 
         ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
         spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_APP_LIST, mGson.toJson(this));
+        spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, System.currentTimeMillis());
     }
 
     /**
@@ -136,12 +137,20 @@ public class AdhocReportAppListHourData {
     public void dealReportToServer(boolean bImmediately){
         mlistApps.clear();
         mlistApps.addAll(mMapAppsToReport.values());
-        for (RunningPackageInfo packageInfoWithTag : mlistApps) {
-            packageInfoWithTag.fillUseTime();
+
+        long lDeadTimeToMinus = System.currentTimeMillis();
+        if(bImmediately){
+            //如果是马上上报，则是缓存里的数据，这里截止时间就要用最后一次写缓存的时间来减
+            ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
+            lDeadTimeToMinus = spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, System.currentTimeMillis());
         }
+        for (RunningPackageInfo packageInfoWithTag : mlistApps) {
+            packageInfoWithTag.fillUseTime(lDeadTimeToMinus);
+        }
+
         final String strRuninfoCurHour = mGson.toJson(this);
         final JSONObject jsonData = generateRespJson(strRuninfoCurHour);
-        switchToNextHour();
+        switchToNextDay();
         ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
         spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, jsonData.toString());
         spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, System.currentTimeMillis());
@@ -225,7 +234,7 @@ public class AdhocReportAppListHourData {
         String strHost = getHost();
 //        String strHost = "http://192.168.252.45:8080";
         StringBuilder sb = new StringBuilder(strHost);
-        sb.append("/v1/device/cmdresult/");
+        sb.append("/v1/device/appruninfo");
 
         return sb.toString();
     }
@@ -244,19 +253,65 @@ public class AdhocReportAppListHourData {
         return strHost;
     }
 
-    public void setMlMsOfCurHour(long mlMsOfCurHour) {
-        this.mlMsOfCurHour = mlMsOfCurHour;
+    public void setMlMsOfCurHour(long lMsOfCurDay) {
+        this.mlMsOfCurDay = lMsOfCurDay;
     }
-
 
     private long getRandomDelaySeconds(){
         long lSecondsDelay = mRandom.nextInt(RANDOM_SECONDS_BOUND);
         Logger.i(TAG, "will report "+ lSecondsDelay + " seconds later");
-        return lSecondsDelay;
+        return 0;
+    }
+
+    private JSONObject filterData(JSONObject jsonData){
+        return removeDataLessThan3Minutes(jsonData);
+    }
+
+    private JSONObject removeDataLessThan3Minutes(JSONObject jsonData){
+        try {
+            JSONObject data = jsonData.optJSONObject("data");
+            if(null == data){
+                return jsonData;
+            }
+
+            JSONArray arrRuninfoList = data.optJSONArray("runinfolist");
+            if(null == arrRuninfoList){
+                return jsonData;
+            }
+
+            for(int index = 0; index < arrRuninfoList.length(); index++){
+                JSONObject object = arrRuninfoList.optJSONObject(index);
+                if(null == object) {
+                    continue;
+                }
+                JSONArray arrInfos = object.optJSONArray("info");
+                if(null == arrInfos){
+                    continue;
+                }
+
+                JSONArray newArrInfos = new JSONArray();
+                for(int indexInfos = 0; indexInfos < arrInfos.length(); indexInfos++){
+                    JSONObject appInfo = arrInfos.optJSONObject(indexInfos);
+                    if(null != appInfo){
+                        long lRunTime = appInfo.optLong("runtime");
+                        //17的版本没有remove，只能new 一个，把适合的都put进去
+                        if(lRunTime >= 3 * 60 * 1000L){
+                            newArrInfos.put(appInfo);
+                        }
+                    }
+                }
+                object.put("info", newArrInfos);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return jsonData;
     }
 
     public void reportToServer(final JSONObject jsonData){
         if (null != jsonData && 0 != jsonData.length()) {
+            filterData(jsonData);
             Observable.create(new Observable.OnSubscribe<RunInfoReportResult>() {
                 @Override
                 public void call(Subscriber<? super RunInfoReportResult> subscriber) {

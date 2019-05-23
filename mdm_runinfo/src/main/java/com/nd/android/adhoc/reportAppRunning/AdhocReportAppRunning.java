@@ -32,7 +32,7 @@ import java.util.Map;
  * APP运行统计类
  */
 public class AdhocReportAppRunning {
-    private static final String TAG = "OpsReportAppRunning";
+    private static final String TAG = "AdhocReportAppRunning";
     private static AdhocReportAppRunning instance;
 
     /**上一次检查完，正在运行的APP*/
@@ -81,10 +81,11 @@ public class AdhocReportAppRunning {
                     (0 == mlLastWriteCacheTime || iCurrentMinute != AppRunInfoReportUtils.getMinuteOfSpecifyTime(mlLastWriteCacheTime))) {
                 writeCacheToLocal();
             }
-            //如果时间段跨过新的一个小时段，且与上次上报不是同一小时段(这个条件用于避免同一分钟重复上报)，上报到服务端
-            if(AppRunInfoReportUtils.getCurrentMinute() == 0 &&
+            //如果时间段跨过新的一天，且与上次上报不是同一小时段(这个条件用于避免同一分钟重复上报)，上报到服务端
+            if(AppRunInfoReportUtils.getCurrentHour() == 0 &&
+                    AppRunInfoReportUtils.getCurrentMinute() == 0 &&
                     (0 == mlLastReportTime ||
-                        AppRunInfoReportUtils.getCurrentHour() != AppRunInfoReportUtils.getHourOfSpecifyTime(mlLastReportTime))){
+                        AppRunInfoReportUtils.getCurrentDayOfYear() != AppRunInfoReportUtils.getDayOfYearOfSpecifyTime(mlLastReportTime))){
                 reportToServer();
             }
 

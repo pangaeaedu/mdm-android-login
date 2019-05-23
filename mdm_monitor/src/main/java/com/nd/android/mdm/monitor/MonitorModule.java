@@ -644,37 +644,37 @@ public class MonitorModule implements IMonitor {
 
     private ILocationChangeListener mLocationChangeListener = new ILocationChangeListener() {
         @Override
-        public void onLocationChange(ILocation location) {
-//            ResponseLocation responseLocation = new ResponseLocation(
-//                    "",
-//                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-//                    mContext.getString(R.string.cmd_location),
-//                    System.currentTimeMillis());
-//            responseLocation.mapType = location.getMapType();
-//            responseLocation.netEnvr = location.getNetEnv();
-//            responseLocation.lat = location.getLat();
-//            responseLocation.lon = location.getLon();
-//            responseLocation.address = location.getAddress();
-//            responseLocation.post();
+        public void onLocationChange(final ILocation location) {
+            AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
+                @Override
+                public void call(Subscriber<? super Void> subscriber) {
+                    try {
+                        IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
+                                "location",
+                                "",
+                                "",
+                                AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                                System.currentTimeMillis());
+                        JSONObject data = new JSONObject();
+                        try {
+                            data.put("net_envrm", location.getNetEnv());
+                            data.put("maptype", location.getMapType());
+                            data.put("lat", location.getLat());
+                            data.put("lon", location.getLon());
+                            data.put("address", location.getAddress());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-            IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
-                    "location",
-                    "",
-                    "",
-                    AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                    System.currentTimeMillis());
-            JSONObject data = new JSONObject();
-            try {
-                data.put("net_envrm", location.getNetEnv());
-                data.put("maptype", location.getMapType());
-                data.put("lat", location.getLat());
-                data.put("lon", location.getLon());
-                data.put("address", location.getAddress());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                        response_mdm.setJsonData(data).post();
 
-            response_mdm.setJsonData(data).post();
+                        HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/location", response_mdm.toString());
+                    } catch (Exception e) {
+                        Logger.e(TAG, "responseLocation, do response error: " + e.getMessage());
+                    }
+                    subscriber.onCompleted();
+                }
+            }).subscribeOn(Schedulers.io()));
         }
 
         @Override
