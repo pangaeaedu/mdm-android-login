@@ -260,7 +260,7 @@ public class AdhocReportAppListHourData {
     private long getRandomDelaySeconds(){
         long lSecondsDelay = mRandom.nextInt(RANDOM_SECONDS_BOUND);
         Logger.i(TAG, "will report "+ lSecondsDelay + " seconds later");
-        return 0;
+        return lSecondsDelay;
     }
 
     private JSONObject filterData(JSONObject jsonData){
