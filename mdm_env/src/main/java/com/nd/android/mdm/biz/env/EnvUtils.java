@@ -17,6 +17,9 @@ public class EnvUtils {
             case 5:
                 setEgyptDrillEnv();
                 break;
+            case 6:
+                setShanxiEnv();
+                break;
             case 0:
             case 1:
                 setDevAndTestEnv();
@@ -26,6 +29,11 @@ public class EnvUtils {
                 setChinaEnv();
                 break;
         }
+    }
+
+    private static void setShanxiEnv(){
+        CsManager.setContentBaseUrl("https://sdpcs.sneduyun.com.cn/v0.1/");
+        CsManager.setContentDownBaseUrl("https://sdpcs.sneduyun.com.cn/v0.1/");
     }
 
     private static void setChinaEnv(){
