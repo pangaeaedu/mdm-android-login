@@ -310,64 +310,67 @@ public class AdhocReportAppListHourData {
     }
 
     public void reportToServer(final JSONObject jsonData){
-        if (null != jsonData && 0 != jsonData.length()) {
-            filterData(jsonData);
-            Observable.create(new Observable.OnSubscribe<RunInfoReportResult>() {
-                @Override
-                public void call(Subscriber<? super RunInfoReportResult> subscriber) {
-                    try {
-                        RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
-                                RunInfoReportResult.class, jsonData.toString());
-                        if (null == result || 0 != result.getMiErrorCode()) {
-                            subscriber.onError(new AdhocException("report not success"));
-                        }else {
-                            subscriber.onNext(result);
-                        }
-                    } catch (AdhocHttpException e) {
-                        subscriber.onError(e);
-                    }
-                }
-            }).subscribeOn(Schedulers.io())
-                    .subscribe(new Subscriber<RunInfoReportResult>() {
-                        @Override
-                        public void onCompleted() {
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Logger.e(TAG, e.getMessage());
-                            e.printStackTrace();
-                            //存到补报缓存里
-                            writeReportFailedCache(jsonData);
-
-                            if(curReportTheSameWithCache(jsonData)){
-                                ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-                                spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
-                            }
-                        }
-
-                        @Override
-                        public void onNext(RunInfoReportResult result) {
-                            //成功了，清除需要补报的缓存
-                            Logger.i(TAG, "上报成功");
-                            ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-                            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST, "");
-
-                            if(curReportTheSameWithCache(jsonData)){
-                                spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
-                            }
-                        }
-                    });
+        if(null == jsonData || 0 == jsonData.length()){
+            return;
         }
+
+        final String strWholeData = jsonData.toString();
+        filterData(jsonData);
+        Observable.create(new Observable.OnSubscribe<RunInfoReportResult>() {
+            @Override
+            public void call(Subscriber<? super RunInfoReportResult> subscriber) {
+                try {
+                    RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
+                            RunInfoReportResult.class, jsonData.toString());
+                    if (null == result || 0 != result.getMiErrorCode()) {
+                        subscriber.onError(new AdhocException("report not success"));
+                    }else {
+                        subscriber.onNext(result);
+                    }
+                } catch (AdhocHttpException e) {
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<RunInfoReportResult>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.e(TAG, e.getMessage());
+                        e.printStackTrace();
+                        //存到补报缓存里
+                        writeReportFailedCache(jsonData);
+
+                        if(curReportTheSameWithCache(strWholeData)){
+                            ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
+                            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
+                        }
+                    }
+
+                    @Override
+                    public void onNext(RunInfoReportResult result) {
+                        //成功了，清除需要补报的缓存
+                        Logger.i(TAG, "上报成功");
+                        ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
+                        spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST, "");
+
+                        if(curReportTheSameWithCache(strWholeData)){
+                            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
+                        }
+                    }
+                });
     }
 
-    private boolean curReportTheSameWithCache(JSONObject jsonData){
+    private boolean curReportTheSameWithCache(String strWholeData){
         boolean bRet = false;
-        if(null == jsonData){
+        if(TextUtils.isEmpty(strWholeData)){
             bRet = true;
         }else {
             ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-            bRet = jsonData.toString().equals(spModel.getString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, ""));
+            bRet = strWholeData.equals(spModel.getString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, ""));
         }
         Logger.i(TAG,"the same as cache ? " + bRet );
         return bRet;
