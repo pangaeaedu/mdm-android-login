@@ -158,7 +158,7 @@ public final class MdmWifiInfoManager {
 //        mIsKeepRun.set(true);
         if (mIsWiFiConnected.get()) {
             updateCurWifiInfo();
-            updateVendorInfo();
+//            updateVendorInfo();
         }
     }
 
@@ -268,8 +268,12 @@ public final class MdmWifiInfoManager {
                         switch (detailedState) {
                             case CONNECTED:
                                 mIsWiFiConnected.set(true);
-                                updateCurWifiInfo();
-                                updateVendorInfo();
+//                                updateCurWifiInfo();
+                                updateWifiInfo();
+                                updateConnectedInfo();
+
+//                                updateVendorInfo();
+                                starStateTimer();
                                 mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.CONNECTED);
                                 break;
                             default:
@@ -312,42 +316,42 @@ public final class MdmWifiInfoManager {
                 });
     }
 
-    private void updateVendorInfo() {
-        // 获取厂商信息
-        // 原来这里先异步调用 RX去获取 Vendor 的信息，然后直接就去通知界面更新了，可能会有问题
-        AdhocRxJavaUtil.doUnsubscribe(mGetVendorInfo);
-
-        mGetVendorInfo = MdmWifiBizServiceFactory.getInstance().getMdmWifiVendorBizService()
-                .getWifiVendor(mWifiManager.getConnectionInfo().getBSSID())
-                .filter(new Func1<MdmWifiVendor, Boolean>() {
-                    @Override
-                    public Boolean call(MdmWifiVendor mdmWifiVendor) {
-                        // 过滤条件，用于判断是否需要更新 并且通知 厂商信息变更
-                        if (mdmWifiVendor == null) {
-                            return false;
-                        }
-                        MdmWifiVendor oldVender = mWifiInfo.getVendor();
-                        return !mdmWifiVendor.equals(oldVender);
-                    }
-                })
-                .compose(AdhocRxJavaUtil.<MdmWifiVendor>applyDefaultSchedulers())
-                .subscribe(new Subscriber<MdmWifiVendor>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onNext(MdmWifiVendor vendor) {
-                        starStateTimer();
-                        mWifiInfo.setVendor(vendor);
-                        notifyInfoupdated();
-                    }
-                });
-    }
+//    private void updateVendorInfo() {
+//        // 获取厂商信息
+//        // 原来这里先异步调用 RX去获取 Vendor 的信息，然后直接就去通知界面更新了，可能会有问题
+//        AdhocRxJavaUtil.doUnsubscribe(mGetVendorInfo);
+//
+//        mGetVendorInfo = MdmWifiBizServiceFactory.getInstance().getMdmWifiVendorBizService()
+//                .getWifiVendor(mWifiManager.getConnectionInfo().getBSSID())
+//                .filter(new Func1<MdmWifiVendor, Boolean>() {
+//                    @Override
+//                    public Boolean call(MdmWifiVendor mdmWifiVendor) {
+//                        // 过滤条件，用于判断是否需要更新 并且通知 厂商信息变更
+//                        if (mdmWifiVendor == null) {
+//                            return false;
+//                        }
+//                        MdmWifiVendor oldVender = mWifiInfo.getVendor();
+//                        return !mdmWifiVendor.equals(oldVender);
+//                    }
+//                })
+//                .compose(AdhocRxJavaUtil.<MdmWifiVendor>applyDefaultSchedulers())
+//                .subscribe(new Subscriber<MdmWifiVendor>() {
+//                    @Override
+//                    public void onCompleted() {
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                    }
+//
+//                    @Override
+//                    public void onNext(MdmWifiVendor vendor) {
+//                        starStateTimer();
+//                        mWifiInfo.setVendor(vendor);
+////                        notifyInfoupdated();
+//                    }
+//                });
+//    }
 
 
     private void updateConnectedInfo() {
@@ -386,6 +390,10 @@ public final class MdmWifiInfoManager {
         final String dns = dhcpInfo == null ? "" : AdhocNetworkIpUtil.formatIpAddress(dhcpInfo.dns1);
         final String gateway = dhcpInfo == null ? "" : AdhocNetworkIpUtil.formatIpAddress(dhcpInfo.gateway);
 
+        MdmWifiVendor vendor = MdmWifiBizServiceFactory.getInstance().getMdmWifiVendorBizService()
+                .getWifiVendor(mWifiManager.getConnectionInfo().getBSSID()).toBlocking().first();
+
+
         synchronized (mWifiInfo) {
             boolean ipeq = mWifiInfo.getIp().equals(ip);
             boolean ssideq = mWifiInfo.getSsid().equals(ssid);
@@ -397,6 +405,9 @@ public final class MdmWifiInfoManager {
             boolean gatewayeq = mWifiInfo.getGateway().equals(gateway);
             boolean signaleq = mWifiInfo.getSignalLevel() == signalLevel;
 
+            boolean vendoreq = vendor == null ? mWifiInfo.getVendor() == null : vendor.equals(mWifiInfo.getVendor());
+
+
             Logger.d(TAG, "ipeq = " + ipeq
                     + ", ssideq = " + ssideq
                     + ", rssieq = " + rssieq
@@ -405,7 +416,9 @@ public final class MdmWifiInfoManager {
                     + ", speedeq = " + speedeq
                     + ", dnseq = " + dnseq
                     + ", gatewayeq = " + gatewayeq
-                    + ", signaleq = " + signaleq);
+                    + ", signaleq = " + signaleq
+                    + ", vendoreq = " + vendoreq
+            );
 
             if (ipeq && ssideq
                     && rssieq
@@ -414,7 +427,8 @@ public final class MdmWifiInfoManager {
                     && speedeq
                     && dnseq
                     && gatewayeq
-                    && signaleq) {
+                    && signaleq
+                    && vendoreq) {
 //                Logger.e(TAG, "updateWifiInfo return false");
                 return false;
             }
@@ -428,6 +442,7 @@ public final class MdmWifiInfoManager {
             mWifiInfo.setDns(dns);
             mWifiInfo.setGateway(gateway);
             mWifiInfo.setSignalLevel(signalLevel);
+            mWifiInfo.setVendor(vendor);
 
         }
 
