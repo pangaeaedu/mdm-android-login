@@ -104,11 +104,8 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
                 }
 
                 try {
-                    String deviceID = DeviceInfoManager.getInstance().getDeviceID();
-                    GetUserInfoResponse response = getHttpService().getUserInfo(deviceID);
-
+                    GetUserInfoResponse response = fetchUserInfoAndSaveToSp();
                     if (response.isSuccess()) {
-                        getConfig().saveNickname(response.getNickName());
                         pSubscriber.onNext(response.getNickName());
                         pSubscriber.onCompleted();
                         return;
@@ -120,6 +117,51 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
                     pSubscriber.onError(exception);
                 } catch (Exception pE) {
                     CrashAnalytics.INSTANCE.reportException(pE);
+                    pSubscriber.onError(pE);
+                }
+
+            }
+        });
+    }
+
+    private GetUserInfoResponse fetchUserInfoAndSaveToSp() throws Exception {
+        String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+        GetUserInfoResponse response = getHttpService().getUserInfo(deviceID);
+
+        if (response.isSuccess()) {
+            getConfig().saveNickname(response.getNickName());
+            getConfig().saveUserID(response.getUser_id());
+
+        }
+
+        return response;
+
+    }
+
+    @Override
+    public Observable<String> getUserID() {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> pSubscriber) {
+                String userID = getConfig().getUserID();
+                if (!TextUtils.isEmpty(userID)) {
+                    pSubscriber.onNext(userID);
+                    pSubscriber.onCompleted();
+                    return;
+                }
+
+                try {
+                    GetUserInfoResponse response = fetchUserInfoAndSaveToSp();
+                    if (response.isSuccess()) {
+                        pSubscriber.onNext(response.getUser_id());
+                        pSubscriber.onCompleted();
+                        return;
+                    }
+
+                    GetUserInfoServerException exception = new GetUserInfoServerException("" +
+                            response.getMsgcode());
+                    pSubscriber.onError(exception);
+                } catch (Exception pE) {
                     pSubscriber.onError(pE);
                 }
 

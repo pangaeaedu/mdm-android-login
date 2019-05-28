@@ -18,4 +18,6 @@ public interface ILoginApi extends IProvider {
                                    @NonNull final String pPassword);
 
     Observable<String> getNickName();
+
+    Observable<String> getUserID();
 }

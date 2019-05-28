@@ -9,11 +9,17 @@ package com.nd.android.adhoc.login.basicService.data.http;
 public class GetUserInfoResponse {
     public String requestid = "";
     public String nick_name = "";
+    public String user_id = "";
+
     public int errcode = 0;
     public int msgcode = 0;
 
     public String getNickName(){
         return nick_name;
+    }
+
+    public String getUser_id(){
+        return user_id;
     }
 
     public boolean isSuccess(){
