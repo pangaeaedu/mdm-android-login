@@ -137,11 +137,11 @@ public class MonitorModule implements IMonitor {
 
 
     private MonitorModule() {
-        ILocationNavigation locationNavigation =
-                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
-        if (locationNavigation != null) {
-            locationNavigation.addLocationListener(mLocationChangeListener);
-        }
+//        ILocationNavigation locationNavigation =
+//                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
+//        if (locationNavigation != null) {
+//            locationNavigation.addLocationListener(mLocationChangeListener);
+//        }
 
 //        MdmWifiInfoManager.getInstance().getWifiListenerManager().addInfoUpdateListener(
 //                new IMdmWifiInfoUpdateListener() {
@@ -228,11 +228,11 @@ public class MonitorModule implements IMonitor {
     public void release() {
 //        mBackgroundHandler.removeCallbacks(null);
 //        mBackgroundThread.quit();
-        ILocationNavigation locationNavigation =
-                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
-        if (locationNavigation != null) {
-            locationNavigation.removeLocationListener(mLocationChangeListener);
-        }
+//        ILocationNavigation locationNavigation =
+//                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
+//        if (locationNavigation != null) {
+//            locationNavigation.removeLocationListener(mLocationChangeListener);
+//        }
         mContext.unregisterReceiver(mBroadcastReceiver);
     }
 
@@ -642,44 +642,44 @@ public class MonitorModule implements IMonitor {
 //        }
 //    };
 
-    private ILocationChangeListener mLocationChangeListener = new ILocationChangeListener() {
-        @Override
-        public void onLocationChange(final ILocation location) {
-            AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
-                @Override
-                public void call(Subscriber<? super Void> subscriber) {
-                    try {
-                        IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
-                                "location",
-                                "",
-                                "",
-                                AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-                                System.currentTimeMillis());
-                        JSONObject data = new JSONObject();
-                        try {
-                            data.put("net_envrm", location.getNetEnv());
-                            data.put("maptype", location.getMapType());
-                            data.put("lat", location.getLat());
-                            data.put("lon", location.getLon());
-                            data.put("address", location.getAddress());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        response_mdm.setJsonData(data).post();
-
-                        HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/location", response_mdm.toString());
-                    } catch (Exception e) {
-                        Logger.e(TAG, "responseLocation, do response error: " + e.getMessage());
-                    }
-                    subscriber.onCompleted();
-                }
-            }).subscribeOn(Schedulers.io()));
-        }
-
-        @Override
-        public void onException(int errCode, String errStr) {
-
-        }
-    };
+//    private ILocationChangeListener mLocationChangeListener = new ILocationChangeListener() {
+//        @Override
+//        public void onLocationChange(final ILocation location) {
+//            AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
+//                @Override
+//                public void call(Subscriber<? super Void> subscriber) {
+//                    try {
+//                        IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
+//                                "location",
+//                                "",
+//                                "",
+//                                AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+//                                System.currentTimeMillis());
+//                        JSONObject data = new JSONObject();
+//                        try {
+//                            data.put("net_envrm", location.getNetEnv());
+//                            data.put("maptype", location.getMapType());
+//                            data.put("lat", location.getLat());
+//                            data.put("lon", location.getLon());
+//                            data.put("address", location.getAddress());
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                        response_mdm.setJsonData(data).post();
+//
+//                        HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/location", response_mdm.toString());
+//                    } catch (Exception e) {
+//                        Logger.e(TAG, "responseLocation, do response error: " + e.getMessage());
+//                    }
+//                    subscriber.onCompleted();
+//                }
+//            }).subscribeOn(Schedulers.io()));
+//        }
+//
+//        @Override
+//        public void onException(int errCode, String errStr) {
+//
+//        }
+//    };
 }
