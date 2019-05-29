@@ -3,6 +3,7 @@ package com.nd.android.adhoc.communicate.impl;
 import android.content.Context;
 import android.util.Log;
 
+import com.nd.adhoc.push.adhoc.sdk.PushSdkModule;
 import com.nd.adhoc.push.core.IPushChannel;
 import com.nd.adhoc.push.core.IPushChannelConnectListener;
 import com.nd.adhoc.push.core.IPushChannelDataListener;
@@ -309,6 +310,11 @@ class PushModule implements IPushModule {
         if (!AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)) {
             mConnectListeners.clear();
         }
+    }
+
+    @Override
+    public int sendUpStreamMsg(String msgid, long ttlSeconds, String contentType, String content) {
+        return PushSdkModule.getInstance().sendUpStreamMsg(msgid, ttlSeconds, contentType, content);
     }
 
     private void doCmdReceived(byte[] pCmdMsgBytes) throws AdhocException {

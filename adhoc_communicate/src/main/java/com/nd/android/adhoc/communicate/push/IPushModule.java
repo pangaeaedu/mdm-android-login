@@ -28,4 +28,6 @@ public interface IPushModule {
 
     void release();
 
+    int sendUpStreamMsg(String msgid, long ttlSeconds, String contentType, String content);
+
 }
