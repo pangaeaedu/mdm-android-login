@@ -54,7 +54,7 @@
       "org": "mdm",
       "puship": "113.137.41.5",
       "pushport": 8760,
-      "url": "https://drms.sneduyun.com.cn/",
+      "url": "https://drms.sneduyun.com.cn",
       "downloadservicename":"wjt_content_mdm"
     }
   ]
