@@ -17,6 +17,7 @@ import com.nd.android.adhoc.login.processOptimization.IDeviceInitiator;
 import com.nd.android.adhoc.login.processOptimization.IUserAuthenticator;
 import com.nd.android.adhoc.loginapi.ILoginApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
+import com.nd.android.adhoc.loginapi.UserInfo;
 import com.nd.android.adhoc.loginapi.exception.AutoLoginMeetUserLoginException;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
@@ -29,6 +30,7 @@ import rx.functions.Func1;
 @Route(path = LoginRoutePathConstants.PATH_LOGIN_LOGIN)
 public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
     private static final String TAG = "LoginApiImpl";
+
     @Override
     public void enterLoginUI(@NonNull Context pContext) {
         AdhocFrameFactory.getInstance().getAdhocRouter()
@@ -56,7 +58,7 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
     public void logout() {
         IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
                 .getUserAuthenticator();
-        if(authenticator == null){
+        if (authenticator == null) {
             return;
         }
 
@@ -74,7 +76,7 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
                     .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
                         @Override
                         public Observable<DeviceStatus> call(DeviceStatus pStatus) {
-                            if(DeviceStatus.isStatusUnLogin(pStatus)) {
+                            if (DeviceStatus.isStatusUnLogin(pStatus)) {
                                 IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
                                         .getUserAuthenticator();
                                 return authenticator.login(pUserName, pPassword);
@@ -154,6 +156,40 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
                     GetUserInfoResponse response = fetchUserInfoAndSaveToSp();
                     if (response.isSuccess()) {
                         pSubscriber.onNext(response.getUser_id());
+                        pSubscriber.onCompleted();
+                        return;
+                    }
+
+                    GetUserInfoServerException exception = new GetUserInfoServerException("" +
+                            response.getMsgcode());
+                    pSubscriber.onError(exception);
+                } catch (Exception pE) {
+                    pSubscriber.onError(pE);
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public Observable<UserInfo> getUserInfo() {
+        return Observable.create(new Observable.OnSubscribe<UserInfo>() {
+            @Override
+            public void call(Subscriber<? super UserInfo> pSubscriber) {
+                String userID = getConfig().getUserID();
+                String username = getConfig().getNickname();
+                if (!TextUtils.isEmpty(userID) && !TextUtils.isEmpty(userID)) {
+                    UserInfo info = new UserInfo(username, userID, "");
+                    pSubscriber.onNext(info);
+                    pSubscriber.onCompleted();
+                    return;
+                }
+
+                try {
+                    GetUserInfoResponse response = fetchUserInfoAndSaveToSp();
+                    if (response.isSuccess()) {
+                        UserInfo info = new UserInfo(response.getNickName(), response.getUser_id(), "");
+                        pSubscriber.onNext(info);
                         pSubscriber.onCompleted();
                         return;
                     }

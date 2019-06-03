@@ -20,4 +20,6 @@ public interface ILoginApi extends IProvider {
     Observable<String> getNickName();
 
     Observable<String> getUserID();
+
+    Observable<UserInfo> getUserInfo();
 }
