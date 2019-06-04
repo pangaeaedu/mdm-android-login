@@ -14,6 +14,8 @@ dependencies {
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
+
     api("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")

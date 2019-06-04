@@ -13,6 +13,8 @@ public class MdmTransferFactory {
     private volatile static IPushModule mPushModel;
     private volatile static IAdhocConnectModule mCommunicationModule;
 
+    private volatile static
+
     static {
         init();
     }
@@ -39,5 +41,7 @@ public class MdmTransferFactory {
         mPushModel.release();
         mCommunicationModule.release();
     }
+
+
 
 }
