@@ -1,9 +1,12 @@
 package com.nd.adhoc.assistant.sdk.deviceInfo;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 
 import rx.subjects.BehaviorSubject;
@@ -72,13 +75,23 @@ public class DeviceInfoManager {
     }
 
     public void reset(){
-        mDeviceID = "";
+        clearDeviceID();
 
         mConfirmDeviceIDSubject.onCompleted();
         mConfirmDeviceIDSubject = BehaviorSubject.create();
 
         resetStatusAndPushIDSubject();
     }
+
+    private void clearDeviceID(){
+        Log.e("yhq", "clearDeviceID");
+        mDeviceID = "";
+        Context context = AdhocBasicConfig.getInstance().getAppContext();
+        DeviceIDSPUtils.saveDeviceIDToSp("");
+        DeviceIDFileUtils.saveDeviceIDToSdFile(context, "");
+        DeviceIDFileUtils.saveDeviceIDToCacheFile(context, "");
+    }
+
 
     public void resetStatusAndPushIDSubject(){
         mDeviceStatus = null;
