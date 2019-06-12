@@ -11,5 +11,6 @@ public class MdmEnvModuleDefault extends MdmEnvModule {
         mPushIp = "test.ndmdm.site";
         mPushPort = 59000;
         mUrl = "http://drms.debug.web.nd";
+        mApmServer = "http://qc-report-collection.debug.web.nd/v1";
     }
 }
