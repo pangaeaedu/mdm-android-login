@@ -19,4 +19,6 @@ public interface IMdmEnvModule {
     String getDownloadServiceName();
 
     String getApmServer();
+
+    String getExceptionReportHostName();
 }

@@ -8,7 +8,8 @@
       "pushport": 39000,
       "url": "http://drms.dev.web.nd",
       "downloadservicename":"dev_content_drms",
-      "apm_server":"http://qc-report-collection.dev.web.nd/v1"
+      "apm_server":"http://qc-report-collection.dev.web.nd/v1",
+      "exception_report_host_name":"DEV"
     },
     {
       "name": "Test",
@@ -17,7 +18,8 @@
       "pushport": 59000,
       "url": "http://drms.debug.web.nd",
       "downloadservicename":"prepub_content_mdm",
-      "apm_server":"http://qc-report-collection.debug.web.nd/v1"
+      "apm_server":"http://qc-report-collection.debug.web.nd/v1",
+      "exception_report_host_name":"DEBUG"
     },
     {
       "name": "China",
@@ -26,7 +28,8 @@
       "pushport": 59000,
       "url": "https://mdm.ndmdm.site",
       "downloadservicename":"production_content_mdm",
-      "apm_server":"https://qc-report-collection.sdp.101.com/v1"
+      "apm_server":"https://qc-report-collection.sdp.101.com/v1",
+      "exception_report_host_name":"PRODUCT"
     },
     {
       "name": "WholeWorld",
@@ -35,7 +38,8 @@
       "pushport": 59000,
       "url": "https://mdmaws.ndmdm.site",
       "downloadservicename":"drms",
-      "apm_server":""
+      "apm_server":"",
+      "exception_report_host_name":"AWS"
     },
     {
       "name": "Egypt",

@@ -12,5 +12,6 @@ public class MdmEnvModuleDefault extends MdmEnvModule {
         mPushPort = 59000;
         mUrl = "http://drms.debug.web.nd";
         mApmServer = "http://qc-report-collection.debug.web.nd/v1";
+        mExceptionReportHostName = "DEBUG";
     }
 }

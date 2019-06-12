@@ -28,6 +28,9 @@ class MdmEnvModule implements IMdmEnvModule{
     @SerializedName("apm_server")
     String mApmServer;
 
+    @SerializedName("exception_report_host_name")
+    String mExceptionReportHostName;
+
     public MdmEnvModule() {
     }
 
@@ -59,5 +62,10 @@ class MdmEnvModule implements IMdmEnvModule{
     @Override
     public String getApmServer() {
         return mApmServer;
+    }
+
+    @Override
+    public String getExceptionReportHostName() {
+        return mExceptionReportHostName;
     }
 }
