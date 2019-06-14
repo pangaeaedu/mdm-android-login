@@ -48,7 +48,8 @@
       "pushport": 8760,
       "url": "http://mdm-backend.test.moe.gov.eg",
       "downloadservicename":"drms",
-      "apm_server":""
+      "apm_server":"",
+      "exception_report_host_name":""
     },
     {
       "name": "EgyptDrill",
@@ -57,7 +58,8 @@
       "pushport": 8760,
       "url": "https://mdm-backend.beta.101.com",
       "downloadservicename":"drms",
-      "apm_server":""
+      "apm_server":"",
+      "exception_report_host_name":""
     },
     {
       "name": "ShanXi",
@@ -66,7 +68,8 @@
       "pushport": 8760,
       "url": "https://drms.sneduyun.com.cn",
       "downloadservicename":"wjt_content_mdm",
-      "apm_server":""
+      "apm_server":"",
+      "exception_report_host_name":""
     }
   ]
 }
