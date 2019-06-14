@@ -3,6 +3,8 @@ package com.nd.android.adhoc.communicate.impl;
 import com.nd.android.adhoc.communicate.connect.IAdhocConnectModule;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * MDM 通信传输层 工厂类
  * <p>
@@ -13,7 +15,7 @@ public class MdmTransferFactory {
     private volatile static IPushModule mPushModel;
     private volatile static IAdhocConnectModule mCommunicationModule;
 
-    private volatile static
+    private static AtomicBoolean mPushChannel = new AtomicBoolean(true);
 
     static {
         init();
@@ -29,6 +31,14 @@ public class MdmTransferFactory {
         }
     }
 
+    public static void setPushChannel(boolean pPushChannel) {
+        mPushChannel.set(pPushChannel);
+    }
+
+    public static boolean getPushChannel() {
+        return mPushChannel.get();
+    }
+
     public static IPushModule getPushModel() {
         return mPushModel;
     }
@@ -41,7 +51,6 @@ public class MdmTransferFactory {
         mPushModel.release();
         mCommunicationModule.release();
     }
-
 
 
 }
