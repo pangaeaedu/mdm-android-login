@@ -23,6 +23,7 @@ import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
+import com.nd.android.adhoc.command.basic.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.adhoc.control.define.IControl_AppList;
@@ -165,7 +166,7 @@ public class MonitorModule implements IMonitor {
                 try {
                     ResponseBase responseBase = new ResponseBase("postdeviceinfo",
                             UUID.randomUUID().toString(),
-                            2,
+                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
                             "",
                             System.currentTimeMillis());
                     responseBase.setJsonData(getDevInfoJson());
