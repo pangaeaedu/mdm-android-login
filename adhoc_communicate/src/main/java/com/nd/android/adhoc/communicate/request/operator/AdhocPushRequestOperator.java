@@ -14,7 +14,9 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MediaType;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Func1;
@@ -54,19 +56,17 @@ public class AdhocPushRequestOperator {
         return mPushFeedbackSub.asObservable()
                 .filter(new Func1<String, Boolean>() {
                     @Override
-                    public Boolean call(String content) {
+                    public Boolean call(String result) {
                         // HYK: 这里要去解析判断 返回的 消息 id，是否在 mRequestIds 队列当中
 
                         // 内容为空，直接过滤掉
-                        if (TextUtils.isEmpty(content)) {
+                        if (TextUtils.isEmpty(result)) {
                             return false;
                         }
 
                         try {
-                            JSONObject jsonObject = new JSONObject(content);
-
+                            JSONObject jsonObject = new JSONObject(result);
                             String resultMsgId = jsonObject.optString("msgid");
-
                             // msgid 在 请求的列表中，才返回 true，继续执行，并且移除自身
 
                             if (mRequestIds.contains(resultMsgId)) {
@@ -87,11 +87,23 @@ public class AdhocPushRequestOperator {
                 // 这里把返回的结果转为 Response
                 .map(new Func1<String, Response>() {
                     @Override
-                    public Response call(String s) {
-                        Response.Builder builder = new Response.Builder();
+                    public Response call(String result) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            String content = jsonObject.optString("content");
+                            Logger.d(TAG, "content = " + content);
+                            Response.Builder builder = new Response.Builder();
+                            builder.body(ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), content));
+//                                    .code()
+//                                    .message()
 //                        builder.message().code()...
 
-                        return builder.build();
+                            return builder.build();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        return null;
                     }
                 })
                 // 订阅之后再发起请求，以免 先发起再订阅，会丢失返回结果

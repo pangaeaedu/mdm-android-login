@@ -17,6 +17,7 @@ import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
 import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
@@ -25,7 +26,6 @@ import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
-import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
@@ -171,9 +171,12 @@ public class MonitorModule implements IMonitor {
                             System.currentTimeMillis());
                     responseBase.setJsonData(getDevInfoJson());
 //                    responseBase.postAsync();
-                    HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/deviceinfo", responseBase.toString());
+//                    HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/deviceinfo", responseBase.toString());
+                    new AdhocHttpDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl())
+                            .postAction()
+                            .post("/v1/device/deviceinfo", String.class, responseBase.toString());
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     Logger.e(TAG, "responseDevInfo, do response error: " + e);
                 }
                 subscriber.onCompleted();

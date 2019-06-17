@@ -13,14 +13,13 @@ import android.text.TextUtils;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.adhoc.basic.util.storage.ZipCompressorUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
-import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.connect.IAdhocConnectModule;
 import com.nd.android.adhoc.communicate.connect.callback.AdhocCallbackImpl;
-import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.eci.sdk.IAdhoc;
 import com.nd.eci.sdk.service.AdhocService;
 
@@ -291,16 +290,16 @@ class AdhocConnectModule implements IAdhocConnectModule {
 //        sendMessage(event.toString());
 //    }
 
-    @Override
-    public void doHttpPost(final String pUrl, final String pContent) {
-        AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                HttpUtil.post(pUrl, pContent);
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(Schedulers.io()));
-    }
+//    @Override
+//    public void doHttpPost(final String pUrl, final String pContent) {
+//        AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
+//            @Override
+//            public void call(Subscriber<? super Void> subscriber) {
+//                HttpUtil.post(pUrl, pContent);
+//                subscriber.onCompleted();
+//            }
+//        }).subscribeOn(Schedulers.io()));
+//    }
 
 //    @Override
 //    public void setAdocFileTransferListener(IAdocFileTransferListener pListener) {
