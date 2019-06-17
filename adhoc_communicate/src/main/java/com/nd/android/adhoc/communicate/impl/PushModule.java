@@ -1,7 +1,6 @@
 package com.nd.android.adhoc.communicate.impl;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.nd.adhoc.push.adhoc.sdk.PushSdkModule;
 import com.nd.adhoc.push.core.IPushChannel;
@@ -10,17 +9,11 @@ import com.nd.adhoc.push.core.IPushChannelDataListener;
 import com.nd.adhoc.push.core.IPushRecvData;
 import com.nd.adhoc.push.core.enumConst.PushConnectStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
-import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
-import com.nd.android.adhoc.communicate.constant.AdhocPushMsgType;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
-import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
-import com.nd.android.adhoc.communicate.receiver.IFeedbackMsgReceiver;
-import com.nd.android.mdm.biz.common.ErrorCode;
-import com.nd.android.mdm.biz.common.MsgCode;
+import com.nd.android.adhoc.communicate.receiver.IPushDataOperator;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
 import org.json.JSONObject;
@@ -43,9 +36,10 @@ class PushModule implements IPushModule {
 
     private Context mContext;
 
-    private ICmdMsgReceiver mCmdReceiver;
+    private List<IPushDataOperator> mPushDataOperators = new CopyOnWriteArrayList<>();
 
-    private IFeedbackMsgReceiver mFeedbackReceiver;
+//    private ICmdMsgReceiver mCmdReceiver;
+//    private IFeedbackMsgReceiver mFeedbackReceiver;
 
     private List<IPushConnectListener> mConnectListeners;
 
@@ -54,7 +48,7 @@ class PushModule implements IPushModule {
     private IPushChannelConnectListener mChannelConnectListener = new IPushChannelConnectListener() {
         @Override
         public void onConnectStatusChanged(IPushChannel pChannel, PushConnectStatus pStatus) {
-            Log.e("yhq", "onConnectStatusChanged:"+pStatus);
+            Logger.e("yhq", "onConnectStatusChanged:"+pStatus);
             for (IPushConnectListener listener : mConnectListeners) {
                 if (pStatus == PushConnectStatus.Connected) {
                     listener.onConnected();
@@ -68,27 +62,42 @@ class PushModule implements IPushModule {
     private IPushChannelDataListener mChannelDataListener = new IPushChannelDataListener() {
         @Override
         public void onPushDataArrived(IPushChannel pChannel, IPushRecvData pData) {
+
+
+
             try {
-                byte[] content = pData.getContent();
                 String data = new String(pData.getContent());
                 Logger.e(TAG, "onPushMessage:" + data);
                 JSONObject object = new JSONObject(data);
                 int type = object.optInt("msgtype");
-                if (type == AdhocPushMsgType.Feedback.getValue()) {
-                    doFeedbackCmdReceived(content);
-                } else {
-                    doCmdReceived(content);
+
+                for (IPushDataOperator pushDataOperator : mPushDataOperators) {
+                    if(pushDataOperator == null){
+                        continue;
+                    }
+
+                    if (pushDataOperator.isPushMsgTypeMatche(type)) {
+                        pushDataOperator.onPushDataArrived(data);
+                        break;
+                    }
+
                 }
+
+//                if (type == AdhocPushMsgType.Feedback.getValue()) {
+//                    doFeedbackCmdReceived(content);
+//                } else {
+//                    doCmdReceived(content);
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
-                Logger.e(TAG, "get error:" + e.toString() +
+                Logger.e(TAG, "onPushDataArrived error:" + e.toString() +
                         "\n with messege:" + new String(pData.getContent()));
             }
         }
     };
 
     PushModule() {
-        Log.e(TAG, "init push module");
+        Logger.d(TAG, "init push module");
         mContext = AdhocBasicConfig.getInstance().getAppContext();
         mConnectListeners = new CopyOnWriteArrayList<>();
 
@@ -97,15 +106,10 @@ class PushModule implements IPushModule {
     }
 
     private void initMessageReceiver() {
-        Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
-        if (receiverIterator.hasNext()) {
-            mCmdReceiver = receiverIterator.next();
-        }
+        Iterator<IPushDataOperator> operatorIterator = AnnotationServiceLoader.load(IPushDataOperator.class).iterator();
 
-        Iterator<IFeedbackMsgReceiver> feedbackIterator = AnnotationServiceLoader
-                .load(IFeedbackMsgReceiver.class).iterator();
-        if (feedbackIterator.hasNext()) {
-            mFeedbackReceiver = feedbackIterator.next();
+        while (operatorIterator.hasNext()){
+            mPushDataOperators.add(operatorIterator.next());
         }
     }
 
@@ -123,7 +127,7 @@ class PushModule implements IPushModule {
         }
 
         mPushChannel = channels.get(0);
-        Log.e(TAG, "initPushChannel :" + mPushChannel.getClass().getCanonicalName());
+        Logger.d(TAG, "initPushChannel :" + mPushChannel.getClass().getCanonicalName());
         mPushChannel.addConnectListener(mChannelConnectListener);
         mPushChannel.addDataListener(mChannelDataListener);
         mPushChannel.init(mContext)
@@ -141,7 +145,7 @@ class PushModule implements IPushModule {
 
                     @Override
                     public void onNext(Boolean pBoolean) {
-                        Log.e(TAG, "init push channel result:"+pBoolean);
+                        Logger.d(TAG, "init push channel result:"+pBoolean);
                     }
                 });
     }
@@ -194,9 +198,6 @@ class PushModule implements IPushModule {
         return mPushChannel.getPushID();
     }
 
-    private void doFeedbackCmdReceived(byte[] pContent) {
-        mFeedbackReceiver.onCmdReceived(new String(pContent));
-    }
 
     @Override
     public void fireConnectatusEvent() {
@@ -305,8 +306,13 @@ class PushModule implements IPushModule {
 
     @Override
     public void release() {
-        mCmdReceiver = null;
-        mFeedbackReceiver = null;
+//        mCmdReceiver = null;
+//        mFeedbackReceiver = null;
+        if (!AdhocDataCheckUtils.isCollectionEmpty(mPushDataOperators)) {
+            mPushDataOperators.clear();
+            mPushDataOperators = null;
+        }
+
         if (!AdhocDataCheckUtils.isCollectionEmpty(mConnectListeners)) {
             mConnectListeners.clear();
         }
@@ -317,21 +323,21 @@ class PushModule implements IPushModule {
         return PushSdkModule.getInstance().sendUpStreamMsg(msgid, ttlSeconds, contentType, content);
     }
 
-    private void doCmdReceived(byte[] pCmdMsgBytes) throws AdhocException {
-        if (pCmdMsgBytes == null || pCmdMsgBytes.length <= 0) {
-            throw new AdhocException("PushModule doCmdReceived: Cmd message bytes is null", ErrorCode.FAILED, MsgCode.ERROR_PARAMETER);
-        }
-
-        if (mCmdReceiver == null) {
-            Logger.w(TAG, "mCmdReceiver is null");
-            return;
-        }
-
-        String pCmdMsg = new String(pCmdMsgBytes);
-        Logger.v(TAG, "doCmdReceived: on cmd arrive " + pCmdMsg);
-        mCmdReceiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_DRM, AdhocCmdFromTo.MDM_CMD_DRM);
-
-    }
+//    private void doCmdReceived(byte[] pCmdMsgBytes) throws AdhocException {
+//        if (pCmdMsgBytes == null || pCmdMsgBytes.length <= 0) {
+//            throw new AdhocException("PushModule doCmdReceived: Cmd message bytes is null", ErrorCode.FAILED, MsgCode.ERROR_PARAMETER);
+//        }
+//
+//        if (mCmdReceiver == null) {
+//            Logger.w(TAG, "mCmdReceiver is null");
+//            return;
+//        }
+//
+//        String pCmdMsg = new String(pCmdMsgBytes);
+//        Logger.v(TAG, "doCmdReceived: on cmd arrive " + pCmdMsg);
+//        mCmdReceiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_DRM, AdhocCmdFromTo.MDM_CMD_DRM);
+//
+//    }
 
     private synchronized void notifyConnectStatus() {
         PushConnectStatus status = mPushChannel.getCurrentStatus();

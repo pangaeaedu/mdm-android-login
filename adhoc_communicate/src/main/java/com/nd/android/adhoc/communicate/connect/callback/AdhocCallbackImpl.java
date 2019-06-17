@@ -7,8 +7,6 @@ import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
-import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
-import com.nd.android.adhoc.communicate.receiver.ICmdMsgReceiver;
 import com.nd.android.adhoc.communicate.utils.BroadcastUtil;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.eci.sdk.IAdhocCallback;
@@ -35,7 +33,7 @@ public class AdhocCallbackImpl implements IAdhocCallback {
     private Map<Long, String> fileNames = new ConcurrentHashMap<>();
     private AtomicBoolean mAdhocConnect = new AtomicBoolean(false);
 
-    private ICmdMsgReceiver mCmdReceiver;
+    private IAdhocCmdReceiver mAdhocCmdReceiver;
 
     private List<IAdhocConnectListener> mConnectListeners = new CopyOnWriteArrayList<>();
     private List<IAdocFileTransferListener> mFileTransferListeners = new CopyOnWriteArrayList<>();
@@ -48,8 +46,8 @@ public class AdhocCallbackImpl implements IAdhocCallback {
     }
 
     private void loadCmdMsgReceiver() {
-        Iterator<ICmdMsgReceiver> receiverIterator = AnnotationServiceLoader.load(ICmdMsgReceiver.class).iterator();
-        mCmdReceiver = receiverIterator.next();
+        Iterator<IAdhocCmdReceiver> receiverIterator = AnnotationServiceLoader.load(IAdhocCmdReceiver.class).iterator();
+        mAdhocCmdReceiver = receiverIterator.next();
     }
 
     private void loadFileTransferListeners() {
@@ -290,7 +288,7 @@ public class AdhocCallbackImpl implements IAdhocCallback {
 
     private void doCmdReceived(byte[] pCmdMsgBytes) {
 
-        if (mCmdReceiver == null) {
+        if (mAdhocCmdReceiver == null) {
             Logger.w(TAG, "mCmdReceiver is null");
             return;
         }
@@ -299,6 +297,6 @@ public class AdhocCallbackImpl implements IAdhocCallback {
             return;
         }
 
-        mCmdReceiver.onCmdReceived(new String(pCmdMsgBytes), AdhocCmdFromTo.MDM_CMD_ADHOC, AdhocCmdFromTo.MDM_CMD_ADHOC);
+        mAdhocCmdReceiver.onCmdReceived(new String(pCmdMsgBytes));
     }
 }

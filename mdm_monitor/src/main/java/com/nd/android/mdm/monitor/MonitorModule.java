@@ -16,7 +16,6 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
-import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
@@ -24,17 +23,11 @@ import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
-import com.nd.android.adhoc.command.basic.response.IResponse_MDM;
-import com.nd.android.adhoc.command.basic.response.MdmResponseHelper;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
-import com.nd.android.adhoc.communicate.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.communicate.utils.HttpUtil;
 import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
-import com.nd.android.adhoc.location.ILocationNavigation;
-import com.nd.android.adhoc.location.dataDefine.ILocation;
-import com.nd.android.adhoc.location.locationCallBack.ILocationChangeListener;
 import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
@@ -172,7 +165,7 @@ public class MonitorModule implements IMonitor {
                 try {
                     ResponseBase responseBase = new ResponseBase("postdeviceinfo",
                             UUID.randomUUID().toString(),
-                            AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
+                            2,
                             "",
                             System.currentTimeMillis());
                     responseBase.setJsonData(getDevInfoJson());

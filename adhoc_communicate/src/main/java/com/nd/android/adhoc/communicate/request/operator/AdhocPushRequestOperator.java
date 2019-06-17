@@ -34,6 +34,15 @@ public class AdhocPushRequestOperator {
     private static PublishSubject<String> mPushFeedbackSub = PublishSubject.create();
 
 
+    /**
+     * 执行请求
+     *
+     * @param msgid       消息ID，如果不传，默认随机生成 UUID
+     * @param ttlSeconds  超时时间，必填
+     * @param contentType 内容类型，选填
+     * @param content     请求内容，必填
+     * @return Observable<Response>
+     */
     public static Observable<Response> doRequest(String msgid, final long ttlSeconds, final String contentType, @NonNull final String content) {
         if (TextUtils.isEmpty(msgid)) {
             msgid = UUID.randomUUID().toString();
@@ -79,9 +88,10 @@ public class AdhocPushRequestOperator {
                 .map(new Func1<String, Response>() {
                     @Override
                     public Response call(String s) {
+                        Response.Builder builder = new Response.Builder();
+//                        builder.message().code()...
 
-
-                        return null;
+                        return builder.build();
                     }
                 })
                 // 订阅之后再发起请求，以免 先发起再订阅，会丢失返回结果
@@ -94,7 +104,10 @@ public class AdhocPushRequestOperator {
     }
 
 
-    public static void receiveFeedback(String pContent) {
+    static void receiveFeedback(String pContent) {
+        if (TextUtils.isEmpty(pContent)) {
+            return;
+        }
         mPushFeedbackSub.onNext(pContent);
     }
 
