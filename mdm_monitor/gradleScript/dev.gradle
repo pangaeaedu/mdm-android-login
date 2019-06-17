@@ -18,10 +18,7 @@ dependencies {
     try{
         api project(':adhoc_wifi:wifi_sdk')
     }catch (Exception ignored){
-        api ("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version"){
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
-        }
+        api ("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version")
     }
 
     try {
@@ -34,23 +31,9 @@ dependencies {
     }
 
     try {
-        api project(':mdm_env')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version")
-    }
-
-    try {
-        api project(':mdm_biz_common')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_biz_common:$mdm_biz_version")
-    }
-
-    try {
         api project(':assistant_sdk')
     } catch (Exception ignored) {
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
-            exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
         }
     }
 
@@ -59,6 +42,8 @@ dependencies {
     api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
         exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
         exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+        exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
+        exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
     }
 
 
