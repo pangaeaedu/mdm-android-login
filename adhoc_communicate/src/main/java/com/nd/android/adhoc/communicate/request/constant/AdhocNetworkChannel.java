@@ -6,14 +6,14 @@ import android.support.annotation.NonNull;
  * Created by HuangYK on 2019/6/4.
  */
 
-public enum AdhocRequestType {
+public enum AdhocNetworkChannel {
 
-    ADHOC_REQUEST_HTTP(1),
-    ADHOC_REQUEST_PUSH(2);
+    CHANNEL_HTTP(0),
+    CHANNEL_PUSH(1);
 
     private int mValue;
 
-    AdhocRequestType(int pValue) {
+    AdhocNetworkChannel(int pValue) {
         mValue = pValue;
     }
 
@@ -29,13 +29,13 @@ public enum AdhocRequestType {
      * @return MdmCmdFromTo
      */
     @NonNull
-    public static AdhocRequestType getTypeByValue(int pValue) {
-        AdhocRequestType[] array = AdhocRequestType.values();
-        for (AdhocRequestType flag : array) {
+    public static AdhocNetworkChannel getTypeByValue(int pValue) {
+        AdhocNetworkChannel[] array = AdhocNetworkChannel.values();
+        for (AdhocNetworkChannel flag : array) {
             if (flag.mValue == pValue) {
                 return flag;
             }
         }
-        return ADHOC_REQUEST_HTTP;
+        return CHANNEL_HTTP;
     }
 }

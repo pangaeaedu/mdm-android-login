@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.communicate.request.operator.AdhocPushRequestOperator;
 
 import java.io.IOException;
@@ -38,7 +39,7 @@ class AdhocPushOptInterceptor implements Interceptor {
         Request request = chain.request();
 
         // 如果不需要走 push，直接走原先的 通道
-        if(!MdmTransferFactory.getPushChannel()){
+        if (AdhocNetworkChannel.CHANNEL_HTTP == MdmTransferFactory.getNetworkChannel()) {
             return chain.proceed(request);
         }
 
