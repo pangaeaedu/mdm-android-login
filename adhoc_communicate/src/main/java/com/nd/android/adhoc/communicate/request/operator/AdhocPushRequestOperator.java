@@ -50,6 +50,8 @@ public class AdhocPushRequestOperator {
             msgid = UUID.randomUUID().toString();
         }
 
+        Logger.d(TAG, "doRequest: msgid = " + msgid + ", content = " + content);
+
         mRequestIds.add(msgid);
 
         final String finalMsgid = msgid;

@@ -51,12 +51,16 @@ import okhttp3.Request;
             return null;
         }
 
+        StringBuilder action = new StringBuilder();
+        for (String pathSegment : pathSegments) {
+            action.append("/").append(pathSegment);
+        }
+
         Set<String> parameterNames = httpUrl.queryParameterNames();
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("version", pathSegments.get(0));
-            jsonObject.put("action", pathSegments.get(pathSegments.size() - 1));
+            jsonObject.put("action", action.toString());
 
             JSONObject content = new JSONObject();
             if (!AdhocDataCheckUtils.isCollectionEmpty(parameterNames)) {
