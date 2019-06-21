@@ -15,6 +15,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
+import okhttp3.Protocol;
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import rx.Observable;
@@ -28,12 +30,15 @@ import rx.subjects.PublishSubject;
 
 public class AdhocPushRequestOperator {
 
-
     private static final String TAG = "AdhocPushRequestOperator";
 
-    private static List<String> mRequestIds = new CopyOnWriteArrayList<>();
+    private static final int DEFAULT_ERROR_CODE = -9999;
 
+
+    private static List<String> mRequestIds = new CopyOnWriteArrayList<>();
     private static PublishSubject<String> mPushFeedbackSub = PublishSubject.create();
+
+
 
 
     /**
@@ -56,32 +61,29 @@ public class AdhocPushRequestOperator {
 
         final String finalMsgid = msgid;
         return mPushFeedbackSub.asObservable()
-                .filter(new Func1<String, Boolean>() {
+                .map(new Func1<String, String>() {
                     @Override
-                    public Boolean call(String result) {
-                        // HYK: 这里要去解析判断 返回的 消息 id，是否在 mRequestIds 队列当中
-
+                    public String call(String result) {
                         // 内容为空，直接过滤掉
                         if (TextUtils.isEmpty(result)) {
-                            return false;
+                            return null;
                         }
 
                         try {
                             JSONObject jsonObject = new JSONObject(result);
-                            String resultMsgId = jsonObject.optString("msgid");
-                            // msgid 在 请求的列表中，才返回 true，继续执行，并且移除自身
+                            String resultMsgId = jsonObject.optString("message_id");
+                            // message_id 在 请求的列表中，才返回 true，继续执行，并且移除自身
 
                             if (mRequestIds.contains(resultMsgId)) {
                                 mRequestIds.remove(resultMsgId);
-                                return true;
+                                return result;
                             }
 
                         } catch (JSONException e) {
                             Logger.w(TAG, "doRequest, on filter error: " + e);
                         }
 
-                        return false;
-
+                        return null;
                     }
                 })
                 // 规定时间内还没有收到 有效的请求，就按照超时处理
@@ -90,22 +92,49 @@ public class AdhocPushRequestOperator {
                 .map(new Func1<String, Response>() {
                     @Override
                     public Response call(String result) {
+
+                        String resultContent = "";
+                        String message;
+                        int code;
+
                         try {
-                            JSONObject jsonObject = new JSONObject(result);
-                            String content = jsonObject.optString("content");
-                            Logger.d(TAG, "content = " + content);
+
+                            if (TextUtils.isEmpty(result)) {
+                                code = -9999;
+                                message = "result is null";
+                            } else {
+                                JSONObject jsonObject = new JSONObject(result);
+                                resultContent = jsonObject.optString("content");
+                                code = jsonObject.optInt("code", DEFAULT_ERROR_CODE);
+                                message = jsonObject.optString("message");
+                                if (DEFAULT_ERROR_CODE == code && TextUtils.isEmpty(message)) {
+                                    message = "unknow result message...";
+                                }
+                            }
+
+                            Logger.d(TAG, "code = " + code + ", message = " + message + ", resultContent = " + resultContent);
+
                             Response.Builder builder = new Response.Builder();
-                            builder.body(ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), content));
-//                                    .code()
-//                                    .message()
-//                        builder.message().code()...
+                            builder.body(ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), resultContent))
+                                    .code(code)
+                                    .message(message)
+                                    .protocol(Protocol.HTTP_1_1)
+                                    .request(new Request.Builder().url("http://localhost/").build());
 
                             return builder.build();
                         } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                            Logger.w(TAG, "parsing result error: " + e);
 
-                        return null;
+                            Response.Builder builder = new Response.Builder();
+                            builder.body(ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), result))
+                                    .code(DEFAULT_ERROR_CODE)
+                                    .message("parsing result error: " + e)
+                                    .protocol(Protocol.HTTP_1_1)
+                                    .request(new Request.Builder().url("http://localhost/").build());
+
+                            return builder.build();
+
+                        }
                     }
                 })
                 // 订阅之后再发起请求，以免 先发起再订阅，会丢失返回结果
@@ -124,35 +153,4 @@ public class AdhocPushRequestOperator {
         }
         mPushFeedbackSub.onNext(pContent);
     }
-
-
-//    try
-//    {
-//        Response<ResponseBody> response = call.execute();
-//        if (response.isSuccessful()) {
-//            String resultStr = response.body().string();
-//            R resultModel;
-//            if (String.class.equals(pResultClass)) {
-//                resultModel = (R) resultStr;
-//            } else {
-//                Gson gson = new GsonBuilder().create();
-//                resultModel = gson.fromJson(resultStr, pResultClass);
-//            }
-//
-//            return resultModel;
-//        }
-//
-//        ResponseBody body = response.body();
-//        if (body == null || TextUtils.isEmpty(body.string())) {
-//            throw new AdhocHttpException(response.message(), response.code());
-//        } else {
-//            throw new AdhocHttpException(body.string(), response.code());
-//        }
-//
-//    } catch(RuntimeException |
-//    IOException e)
-//
-//    {
-//        throw new AdhocHttpException(e.getMessage(), AhdocHttpConstants.ADHOC_HTTP_ERROR);
-//    }
 }

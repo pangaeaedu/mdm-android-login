@@ -24,8 +24,8 @@ class AdhocPushOptInterceptor implements Interceptor {
 
     private static final String TAG = "AdhocPushOptInterceptor";
 
-    private static final List<IAdhocRequestInfoStrategy> sRequestInfoStrategies =
-            new CopyOnWriteArrayList<IAdhocRequestInfoStrategy>() {
+    private static final List<AdhocRequestInfoStrategyBasic> sRequestInfoStrategies =
+            new CopyOnWriteArrayList<AdhocRequestInfoStrategyBasic>() {
                 {
                     add(new AdhocRequestInfoStrategy_Get());
                     add(new AdhocRequestInfoStrategy_Post());
@@ -48,10 +48,9 @@ class AdhocPushOptInterceptor implements Interceptor {
         if (TextUtils.isEmpty(method)) {
             return null;
         }
-
         String content = null;
 
-        for (IAdhocRequestInfoStrategy requestInfoStrategy : sRequestInfoStrategies) {
+        for (AdhocRequestInfoStrategyBasic requestInfoStrategy : sRequestInfoStrategies) {
             if (method.equalsIgnoreCase(requestInfoStrategy.getMethod())) {
                 content = requestInfoStrategy.makeContent(request);
                 break;
@@ -63,6 +62,6 @@ class AdhocPushOptInterceptor implements Interceptor {
             return null;
         }
 
-        return AdhocPushRequestOperator.doRequest(UUID.randomUUID().toString(), 20, "", content).toBlocking().first();
+        return AdhocPushRequestOperator.doRequest(UUID.randomUUID().toString(), 60, "", content).toBlocking().first();
     }
 }

@@ -31,7 +31,7 @@ class AdhocRequestUtil {
      */
     public static String readRequestBody(Request request) throws Exception {
         if (request.body() == null) {
-            return null;
+            return "";
         }
         try {
             RequestBody body = request.body();
