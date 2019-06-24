@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.communicate.impl;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.nd.adhoc.push.adhoc.sdk.PushSdkModule;
 import com.nd.adhoc.push.core.IPushChannel;
@@ -12,6 +13,7 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.push.IPushModule;
+import com.nd.android.adhoc.communicate.push.UpStreamData;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.communicate.receiver.IPushDataOperator;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import rx.Observer;
 import rx.schedulers.Schedulers;
@@ -37,9 +41,10 @@ class PushModule implements IPushModule {
     private Context mContext;
 
     private List<IPushDataOperator> mPushDataOperators = new CopyOnWriteArrayList<>();
-
+    private final ExecutorService mExecutorService =  Executors.newFixedThreadPool(5);
 //    private ICmdMsgReceiver mCmdReceiver;
 //    private IFeedbackMsgReceiver mFeedbackReceiver;
+    private List<UpStreamData> mUpStreamMsgCache = new CopyOnWriteArrayList<>();
 
     private List<IPushConnectListener> mConnectListeners;
 
@@ -62,9 +67,6 @@ class PushModule implements IPushModule {
     private IPushChannelDataListener mChannelDataListener = new IPushChannelDataListener() {
         @Override
         public void onPushDataArrived(IPushChannel pChannel, IPushRecvData pData) {
-
-
-
             try {
                 String data = new String(pData.getContent());
                 Logger.e(TAG, "onPushMessage:" + data);
@@ -168,7 +170,7 @@ class PushModule implements IPushModule {
     @Override
     public void start() {
         mPushChannel.start()
-                .observeOn(Schedulers.io())
+                .observeOn(Schedulers.from(mExecutorService))
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onCompleted() {
@@ -320,7 +322,21 @@ class PushModule implements IPushModule {
 
     @Override
     public int sendUpStreamMsg(String msgid, long ttlSeconds, String contentType, String content) {
+        PushConnectStatus status = mPushChannel.getCurrentStatus();
+        if(status != PushConnectStatus.Connected){
+            cacheUpStreamMsg(msgid, ttlSeconds, contentType, content);
+            start();
+            return 0;
+        }
+
         return PushSdkModule.getInstance().sendUpStreamMsg(msgid, ttlSeconds, contentType, content);
+    }
+
+    private void cacheUpStreamMsg(String msgid, long ttlSeconds, String contentType,
+                                  String content){
+        UpStreamData data = new UpStreamData(System.currentTimeMillis(), msgid, ttlSeconds,
+                contentType, content);
+        mUpStreamMsgCache.add(data);
     }
 
 //    private void doCmdReceived(byte[] pCmdMsgBytes) throws AdhocException {
@@ -340,14 +356,41 @@ class PushModule implements IPushModule {
 //    }
 
     private synchronized void notifyConnectStatus() {
+        discardTimeoutMsg();
+
         PushConnectStatus status = mPushChannel.getCurrentStatus();
         for (IPushConnectListener listener : mConnectListeners) {
             if (status == PushConnectStatus.Connected) {
                 listener.onConnected();
+                resendMsgThenClearCache();
             } else {
                 listener.onDisconnected();
             }
         }
     }
 
+    private void discardTimeoutMsg(){
+       Iterator<UpStreamData> iterator = mUpStreamMsgCache.iterator();
+        while (iterator.hasNext()){
+             UpStreamData data = iterator.next();
+             if(System.currentTimeMillis() - data.getSendTime() > 1000*60){
+                 Log.e(TAG, "discardTimeoutMsg id:"+data.getMsgID());
+                 iterator.remove();
+             }
+        }
+    }
+
+    private void resendMsgThenClearCache(){
+        Iterator<UpStreamData> iterator = mUpStreamMsgCache.iterator();
+        while (iterator.hasNext()){
+            UpStreamData data = iterator.next();
+            if(System.currentTimeMillis() - data.getSendTime() < 1000*60){
+                Log.e(TAG, "resend msg id:"+data.getMsgID());
+                sendUpStreamMsg(data.getMsgID(), data.getTTLSeconds(), data.getContentType(),
+                        data.getContent());
+            }
+        }
+
+        mUpStreamMsgCache.clear();
+    }
 }
