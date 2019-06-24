@@ -96,6 +96,7 @@ public class AdhocPushRequestOperator {
                         String resultContent = "";
                         String message;
                         int code;
+                        String message_id = "";
 
                         try {
 
@@ -104,6 +105,7 @@ public class AdhocPushRequestOperator {
                                 message = "result is null";
                             } else {
                                 JSONObject jsonObject = new JSONObject(result);
+                                message_id = jsonObject.optString("message_id");
                                 resultContent = jsonObject.optString("content");
                                 code = jsonObject.optInt("code", DEFAULT_ERROR_CODE);
                                 message = jsonObject.optString("message");
@@ -112,7 +114,7 @@ public class AdhocPushRequestOperator {
                                 }
                             }
 
-                            Logger.d(TAG, "code = " + code + ", message = " + message + ", resultContent = " + resultContent);
+                            Logger.d(TAG, "message_id = " + message_id + ", code = " + code + ", message = " + message + ", resultContent = " + resultContent);
 
                             Response.Builder builder = new Response.Builder();
                             builder.body(ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), resultContent))
