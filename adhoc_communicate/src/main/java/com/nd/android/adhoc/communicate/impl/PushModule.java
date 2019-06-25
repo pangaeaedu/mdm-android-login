@@ -44,7 +44,7 @@ class PushModule implements IPushModule {
     private final ExecutorService mExecutorService =  Executors.newFixedThreadPool(5);
 //    private ICmdMsgReceiver mCmdReceiver;
 //    private IFeedbackMsgReceiver mFeedbackReceiver;
-    private List<UpStreamData> mUpStreamMsgCache = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<UpStreamData> mUpStreamMsgCache = new CopyOnWriteArrayList<>();
 
     private List<IPushConnectListener> mConnectListeners;
 
@@ -370,13 +370,12 @@ class PushModule implements IPushModule {
     }
 
     private void discardTimeoutMsg(){
-       Iterator<UpStreamData> iterator = mUpStreamMsgCache.iterator();
-        while (iterator.hasNext()){
-             UpStreamData data = iterator.next();
-             if(System.currentTimeMillis() - data.getSendTime() > 1000*60){
-                 Log.e(TAG, "discardTimeoutMsg id:"+data.getMsgID());
-                 iterator.remove();
-             }
+        //CopyOnWriteArrayList不能通过　iterator删除，直接边循环边删除
+        for (UpStreamData data : mUpStreamMsgCache){
+            if(null != data && System.currentTimeMillis() - data.getSendTime() > 1000*60){
+                Log.e(TAG, "discardTimeoutMsg id:"+data.getMsgID());
+                mUpStreamMsgCache.remove(data);
+            }
         }
     }
 
