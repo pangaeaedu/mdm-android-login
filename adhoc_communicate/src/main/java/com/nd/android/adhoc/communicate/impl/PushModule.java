@@ -380,9 +380,7 @@ class PushModule implements IPushModule {
     }
 
     private void resendMsgThenClearCache(){
-        Iterator<UpStreamData> iterator = mUpStreamMsgCache.iterator();
-        while (iterator.hasNext()){
-            UpStreamData data = iterator.next();
+        for (UpStreamData data : mUpStreamMsgCache) {
             if(System.currentTimeMillis() - data.getSendTime() < 1000*60){
                 Log.e(TAG, "resend msg id:"+data.getMsgID());
                 sendUpStreamMsg(data.getMsgID(), data.getTTLSeconds(), data.getContentType(),
