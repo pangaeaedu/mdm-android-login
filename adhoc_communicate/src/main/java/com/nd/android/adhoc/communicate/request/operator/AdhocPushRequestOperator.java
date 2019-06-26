@@ -3,15 +3,15 @@ package com.nd.android.adhoc.communicate.request.operator;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.log.CrashAnalytics;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.communicate.constant.AdhocCommunicateConstant;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -34,11 +34,7 @@ public class AdhocPushRequestOperator {
 
     private static final int DEFAULT_ERROR_CODE = -9999;
 
-
-    private static List<String> mRequestIds = new CopyOnWriteArrayList<>();
     private static PublishSubject<String> mPushFeedbackSub = PublishSubject.create();
-
-
 
 
     /**
@@ -57,36 +53,53 @@ public class AdhocPushRequestOperator {
 
         Logger.d(TAG, "doRequest: msgid = " + msgid + ", content = " + content);
 
-        mRequestIds.add(msgid);
-
         final String finalMsgid = msgid;
         return mPushFeedbackSub.asObservable()
-                .map(new Func1<String, String>() {
+                .filter(new Func1<String, Boolean>() {
                     @Override
-                    public String call(String result) {
-                        // 内容为空，直接过滤掉
-                        if (TextUtils.isEmpty(result)) {
-                            return null;
-                        }
+                    public Boolean call(String result) {
 
                         try {
                             JSONObject jsonObject = new JSONObject(result);
                             String resultMsgId = jsonObject.optString("message_id");
                             // message_id 在 请求的列表中，才返回 true，继续执行，并且移除自身
 
-                            if (mRequestIds.contains(resultMsgId)) {
-                                mRequestIds.remove(resultMsgId);
-                                return result;
+                            if (finalMsgid.equals(resultMsgId)) {
+                                return true;
                             }
 
                         } catch (JSONException e) {
                             Logger.w(TAG, "doRequest, on filter error: " + e);
                         }
 
-                        return null;
+                        return false;
                     }
                 })
-                // 规定时间内还没有收到 有效的请求，就按照超时处理
+//                .map(new Func1<String, String>() {
+//                    @Override
+//                    public String call(String result) {
+//                        // 内容为空，直接过滤掉
+//                        if (TextUtils.isEmpty(result)) {
+//                            return null;
+//                        }
+//
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(result);
+//                            String resultMsgId = jsonObject.optString("message_id");
+//                            // message_id 在 请求的列表中，才返回 true，继续执行，并且移除自身
+//
+//                            if (finalMsgid.equals(resultMsgId)) {
+//                                return result;
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            Logger.w(TAG, "doRequest, on filter error: " + e);
+//                        }
+//
+//                        return null;
+//                    }
+//                })
+//                // 规定时间内还没有收到 有效的请求，就按照超时处理
                 .timeout(ttlSeconds, TimeUnit.SECONDS)
                 // 这里把返回的结果转为 Response
                 .map(new Func1<String, Response>() {
@@ -96,7 +109,6 @@ public class AdhocPushRequestOperator {
                         String resultContent = "";
                         String message;
                         int code;
-                        String message_id = "";
 
                         try {
 
@@ -105,7 +117,6 @@ public class AdhocPushRequestOperator {
                                 message = "result is null";
                             } else {
                                 JSONObject jsonObject = new JSONObject(result);
-                                message_id = jsonObject.optString("message_id");
                                 resultContent = jsonObject.optString("content");
                                 code = jsonObject.optInt("code", DEFAULT_ERROR_CODE);
                                 message = jsonObject.optString("message");
@@ -114,7 +125,7 @@ public class AdhocPushRequestOperator {
                                 }
                             }
 
-                            Logger.d(TAG, "message_id = " + message_id + ", code = " + code + ", message = " + message + ", resultContent = " + resultContent);
+                            Logger.d(TAG, "message_id = " + finalMsgid + ", code = " + code + ", message = " + message + ", resultContent = " + result);
 
                             Response.Builder builder = new Response.Builder();
                             builder.body(ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), resultContent))
@@ -151,6 +162,12 @@ public class AdhocPushRequestOperator {
 
     static void receiveFeedback(String pContent) {
         if (TextUtils.isEmpty(pContent)) {
+            CrashAnalytics.INSTANCE.reportException(
+                    AdhocCommunicateConstant.CMP_NAME,
+                    "-9999",
+                    "receiveFeedback content is empty",
+                    new Exception("receiveFeedback content is empty"),
+                    null);
             return;
         }
         mPushFeedbackSub.onNext(pContent);
