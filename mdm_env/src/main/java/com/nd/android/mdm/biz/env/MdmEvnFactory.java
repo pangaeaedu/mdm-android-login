@@ -186,12 +186,12 @@ public final class MdmEvnFactory {
     }
 
     private void broadcastNewEnv(int pIndex){
-        Context context = AdhocBasicConfig.getInstance().getAppContext();
-        Intent intent = new Intent(context, MdmEnvBroadcastReceiver.class);
-        intent.setAction(MdmEnvBroadcastReceiver.ACTION_NAME);
-        intent.putExtra(MdmEnvBroadcastReceiver.ENV_VALUE, pIndex);
-
-        context.sendBroadcast(intent);
+//        Context context = AdhocBasicConfig.getInstance().getAppContext();
+//        Intent intent = new Intent(context, MdmEnvBroadcastReceiver.class);
+//        intent.setAction(MdmEnvBroadcastReceiver.ACTION_NAME);
+//        intent.putExtra(MdmEnvBroadcastReceiver.ENV_VALUE, pIndex);
+//
+//        context.sendBroadcast(intent);
     }
 
 
