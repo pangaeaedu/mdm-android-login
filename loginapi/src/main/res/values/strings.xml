@@ -29,4 +29,6 @@
     <string name="exception_login_user">login user error：%s</string>
 
     <string name="exception_get_user_info">get user info error：%s</string>
+
+    <string name="exception_check_user_type">this type user not allow login</string>
 </resources>

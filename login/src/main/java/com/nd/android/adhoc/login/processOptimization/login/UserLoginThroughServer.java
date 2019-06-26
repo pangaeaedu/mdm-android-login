@@ -1,12 +1,17 @@
 package com.nd.android.adhoc.login.processOptimization.login;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDEncryptUtils;
-import com.nd.android.adhoc.basic.log.CrashAnalytics;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
+import com.nd.android.adhoc.loginapi.IUserLoginInterceptor;
+import com.nd.android.adhoc.loginapi.exception.UserLoginInterruptException;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
+
+import java.util.Iterator;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -30,10 +35,32 @@ public class UserLoginThroughServer implements IUserLogin {
                             encryptPassword);
 
                     IUserLoginResult returnResult = new UserLoginResultImpl(result);
-                    pSubscriber.onNext(returnResult);
-                    pSubscriber.onCompleted();
-                }catch (Exception e){
-                    CrashAnalytics.INSTANCE.reportException(e);
+
+                    Iterator<IUserLoginInterceptor> interceptors = AnnotationServiceLoader
+                            .load(IUserLoginInterceptor.class).iterator();
+                    if (!interceptors.hasNext()) {
+                        Log.e("UserIntercept", "interceptor not found");
+                        pSubscriber.onNext(returnResult);
+                        pSubscriber.onCompleted();
+                        return;
+                    }
+
+                    IUserLoginInterceptor firstInterceptor = interceptors.next();
+                    boolean needContinue = firstInterceptor.isNeedContinueLogin(pUserName,
+                            pPassword);
+                    Log.e("UserIntercept", "interceptor found");
+                    if(needContinue){
+                        pSubscriber.onNext(returnResult);
+                        pSubscriber.onCompleted();
+                        return;
+                    }
+
+                    pSubscriber.onError(new UserLoginInterruptException());
+//                    pSubscriber.onNext(returnResult);
+//                    pSubscriber.onCompleted();
+                } catch (Exception e) {
+                    e.printStackTrace();
+//                    CrashAnalytics.INSTANCE.reportException(e);
                     pSubscriber.onError(e);
                 }
             }

@@ -28,4 +28,6 @@
     <string name="exception_login_user">登录用户出错：%s</string>
 
     <string name="exception_get_user_info">查询用户昵称出错：%s</string>
+
+    <string name="exception_check_user_type">此用户类型不允许登录</string>
 </resources>
