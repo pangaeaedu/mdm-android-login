@@ -53,14 +53,16 @@ class PushModule implements IPushModule {
     private IPushChannelConnectListener mChannelConnectListener = new IPushChannelConnectListener() {
         @Override
         public void onConnectStatusChanged(IPushChannel pChannel, PushConnectStatus pStatus) {
-            Logger.e("yhq", "onConnectStatusChanged:"+pStatus);
-            for (IPushConnectListener listener : mConnectListeners) {
-                if (pStatus == PushConnectStatus.Connected) {
-                    listener.onConnected();
-                } else {
-                    listener.onDisconnected();
-                }
-            }
+//            Logger.e("yhq", "onConnectStatusChanged:"+pStatus);
+//            for (IPushConnectListener listener : mConnectListeners) {
+//                if (pStatus == PushConnectStatus.Connected) {
+//                    listener.onConnected();
+//                } else {
+//                    listener.onDisconnected();
+//                }
+//            }
+
+            notifyConnectStatus();
         }
     };
 
@@ -169,6 +171,8 @@ class PushModule implements IPushModule {
 
     @Override
     public void start() {
+
+        Logger.d(TAG, "do start");
         mPushChannel.start()
                 .observeOn(Schedulers.from(mExecutorService))
                 .subscribe(new Observer<Boolean>() {
@@ -334,6 +338,7 @@ class PushModule implements IPushModule {
 
     private void cacheUpStreamMsg(String msgid, long ttlSeconds, String contentType,
                                   String content){
+        Logger.d(TAG, "cacheUpStreamMsg: msgid =  " + msgid);
         UpStreamData data = new UpStreamData(System.currentTimeMillis(), msgid, ttlSeconds,
                 contentType, content);
         mUpStreamMsgCache.add(data);
@@ -356,6 +361,8 @@ class PushModule implements IPushModule {
 //    }
 
     private synchronized void notifyConnectStatus() {
+        Logger.d(TAG, "notifyConnectStatus");
+
         discardTimeoutMsg();
 
         PushConnectStatus status = mPushChannel.getCurrentStatus();
@@ -371,20 +378,33 @@ class PushModule implements IPushModule {
 
     private void discardTimeoutMsg(){
         //CopyOnWriteArrayList不能通过　iterator删除，直接边循环边删除
-        for (UpStreamData data : mUpStreamMsgCache){
-            if(null != data && System.currentTimeMillis() - data.getSendTime() > 1000*60){
+        Logger.d(TAG, "discardTimeoutMsg: mUpStreamMsgCache.size = " + mUpStreamMsgCache.size());
+        for (UpStreamData data : mUpStreamMsgCache) {
+            if (data == null) {
+                continue;
+            }
+
+            if(System.currentTimeMillis() - data.getSendTime() > 1000 * 60){
                 Log.e(TAG, "discardTimeoutMsg id:"+data.getMsgID());
                 mUpStreamMsgCache.remove(data);
+            }else{
+                Log.e(TAG, "do not need discardTimeoutMsg: msg id:"+data.getMsgID());
             }
         }
     }
 
     private void resendMsgThenClearCache(){
+        Logger.d(TAG, "resendMsgThenClearCache: mUpStreamMsgCache.size = " + mUpStreamMsgCache.size());
         for (UpStreamData data : mUpStreamMsgCache) {
+            if (data == null) {
+                continue;
+            }
             if(System.currentTimeMillis() - data.getSendTime() < 1000*60){
-                Log.e(TAG, "resend msg id:"+data.getMsgID());
+                Log.e(TAG, "resendMsgThenClearCache: msg id:"+data.getMsgID());
                 sendUpStreamMsg(data.getMsgID(), data.getTTLSeconds(), data.getContentType(),
                         data.getContent());
+            }else{
+                Log.e(TAG, "do not need resendMsgThenClearCache: msg id:"+data.getMsgID());
             }
         }
 
