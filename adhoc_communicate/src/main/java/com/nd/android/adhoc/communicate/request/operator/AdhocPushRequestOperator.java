@@ -164,7 +164,7 @@ public class AdhocPushRequestOperator {
         if (TextUtils.isEmpty(pContent)) {
             CrashAnalytics.INSTANCE.reportException(
                     AdhocCommunicateConstant.CMP_NAME,
-                    "-9999",
+                    String.valueOf(DEFAULT_ERROR_CODE),
                     "receiveFeedback content is empty",
                     new Exception("receiveFeedback content is empty"),
                     null);
