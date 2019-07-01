@@ -19,7 +19,9 @@ import com.nd.android.mdm.wifi_sdk.sdk.dataService.db.service.intfc.IMdmWifiVend
 import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * wifi 厂商信息 数据库服务实现类
@@ -31,6 +33,8 @@ class MdmWifiVendorDbServiceImpl implements IMdmWifiVendorDbService {
     private static final String TAG = "MdmWifiVendorDbService";
 
     private Dao<IMdmWifiVendorEntity, String> mMdmWifiVendorDao = null;
+
+    private Map<String,IMdmWifiVendorEntity> mWifiVendorEntityMap = new ConcurrentHashMap<>();
 
     /**
      * 创建服务实体
@@ -109,13 +113,19 @@ class MdmWifiVendorDbServiceImpl implements IMdmWifiVendorDbService {
     @Override
     public IMdmWifiVendorEntity getMdmWifiVendorEntity(String pMacPrefix) {
         try {
+
+            if(mWifiVendorEntityMap.containsKey(pMacPrefix)){
+                return mWifiVendorEntityMap.get(pMacPrefix);
+            }
             QueryBuilder<IMdmWifiVendorEntity, String> queryBuilder = mMdmWifiVendorDao.queryBuilder();
             queryBuilder.where().eq(IMdmWifiVendorEntity.FIELD_MAC_PREFIX, pMacPrefix);
             List<IMdmWifiVendorEntity> entityList = queryBuilder.query();
             if (AdhocDataCheckUtils.isCollectionEmpty(entityList)) {
                 return null;
             }
-            return entityList.get(0);
+            IMdmWifiVendorEntity entity =  entityList.get(0);
+            mWifiVendorEntityMap.put(pMacPrefix,entity);
+            return entity;
         } catch (SQLException e) {
             Logger.e(TAG, "getMdmWifiVendorEntity: " + e);
         }
