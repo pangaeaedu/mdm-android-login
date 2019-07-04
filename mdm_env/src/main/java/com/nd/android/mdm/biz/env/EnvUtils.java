@@ -72,9 +72,9 @@ public class EnvUtils {
 //        UCManager.getInstance().setCaptchaBaseUrl("http://uc-captcha-mdm.test.moe.gov.eg/v0.1/");
 //        UCManager.getInstance().setCSBaseUrl("http://egcs-mdm.test.moe.gov.eg/v0.1/");
         //CS初始化
-        CsManager.setContentBaseUrl("http://egcs-mdm.beta.101.com/v0.1/");
+        CsManager.setContentBaseUrl("https://egcs-mdm.beta.101.com/v0.1/");
         CsBaseManager.setContentBaseUrl("https://egcs-mdm.beta.101.com/v0.1/");
-        CsManager.setContentDownBaseUrl("http://egcs-mdm.beta.101.com/v0.1/");
+        CsManager.setContentDownBaseUrl("https://egcs-mdm.beta.101.com/v0.1/");
         CsBaseManager.setDownloadBaseUrl("https://egcs-mdm.beta.101.com/v0.1/");
 //        Monet.get(getContext()).setKeyGenerator(RedirectKeyGenerator.create().register("pic_fansway", "egcs.mdm.egypt.sdp".split(",")));
     }
