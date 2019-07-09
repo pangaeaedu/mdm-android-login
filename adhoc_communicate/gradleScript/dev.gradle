@@ -71,6 +71,12 @@ dependencies {
         }
     }
 
+    try {
+        api project(':adhoc_policy_api')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc:adhoc_policy_api:$policy_version")
+    }
+
 
 //    api project(':adhocpush')
 //    api project (":awspushchannel")
