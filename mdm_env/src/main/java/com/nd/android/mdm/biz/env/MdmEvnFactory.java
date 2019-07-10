@@ -13,6 +13,7 @@ import com.google.gson.GsonBuilder;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
+import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.mdm.biz.env.constant.MdmEnvConstant;
 
 import org.json.JSONArray;
@@ -85,6 +86,7 @@ public final class MdmEvnFactory {
     }
 
     private void init(@NonNull Context context) {
+        mPreferenceModel = SharedPreferenceFactory.getInstance().getModel(context, context.getPackageName());
         InputStream inputStream = null;
         BufferedReader br = null;
         try {
