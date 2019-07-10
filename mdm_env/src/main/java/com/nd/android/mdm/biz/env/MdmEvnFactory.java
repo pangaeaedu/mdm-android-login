@@ -1,7 +1,6 @@
 package com.nd.android.mdm.biz.env;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -15,17 +14,12 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
-import com.nd.android.adhoc.basic.util.storage.AdhocFileReadUtil;
-import com.nd.android.adhoc.basic.util.storage.AdhocFileWriteUtil;
-import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
 import com.nd.android.mdm.biz.env.constant.MdmEnvConstant;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,8 +33,6 @@ public final class MdmEvnFactory {
 
     private static final String TAG = "MdmEvnFactory";
 
-    private static final String KEY_ENV_CONFIG = "env_config";
-    private static final String FORMAT_CONFIG_PATH = "%s/%s/config.json";
     private static final String CONFIG_FILE_NAME = "envconf.json";
     private volatile static MdmEvnFactory sInstance = null;
     private final List<IMdmEnvModule> mMdmEnvModules = new CopyOnWriteArrayList<>();
@@ -53,6 +45,7 @@ public final class MdmEvnFactory {
 
     private MdmEvnFactory() {
         Context context = AdhocBasicConfig.getInstance().getAppContext();
+        mPreferenceModel = SharedPreferenceFactory.getInstance().getModel(context, context.getPackageName());
         loadManifestConfig(context);
         init(context);
     }
@@ -75,7 +68,7 @@ public final class MdmEvnFactory {
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
 
@@ -94,34 +87,21 @@ public final class MdmEvnFactory {
     }
 
     private void init(@NonNull Context context) {
-        mPreferenceModel = SharedPreferenceFactory.getInstance().getModel(context, context.getPackageName());
-        boolean envConfig = mPreferenceModel.getBoolean(KEY_ENV_CONFIG, false);
-        final String sdPath = AdhocStorageUtil.getSdCardPath();
-        String filePath = String.format(FORMAT_CONFIG_PATH, sdPath, context.getPackageName());
-        File confFile = new File(filePath);
         InputStream inputStream = null;
+        BufferedReader br = null;
         try {
-            boolean fileExists = false;
             AssetManager am = context.getAssets();
             inputStream = am.open(CONFIG_FILE_NAME);
             if (inputStream == null) {
                 return;
             }
-            if (!confFile.exists() || !envConfig) {
-                fileExists = AdhocFileWriteUtil.writeFile(confFile, inputStream) && confFile.exists() && confFile.length() > 0;
-            }
 
             StringBuilder strBuilder;
-            if (fileExists) {
-                strBuilder = AdhocFileReadUtil.readFile(filePath, "utf-8");
-            } else {
-                BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-                strBuilder = new StringBuilder();
-                while ((line = in.readLine()) != null) {
-                    strBuilder.append(line);
-                }
-                in.close();
+            br = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            strBuilder = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                strBuilder.append(line);
             }
 
             if (!TextUtils.isEmpty(strBuilder)) {
@@ -133,25 +113,27 @@ public final class MdmEvnFactory {
                     IMdmEnvModule mdmEnvModule = gson.fromJson(String.valueOf(jsonEnvs.get(i)), MdmEnvModule.class);
                     mMdmEnvModules.add(mdmEnvModule);
                 }
-//                if (!jsonObject.isNull("envs_index")) {
-//                    mCurIndexk = jsonObject.getInt("envs_index");
-//                }
             }
-        } catch (IOException e) {
-            Logger.e(TAG, "EnvUtil read assets file failed:" + e.getMessage());
-        } catch (JSONException e) {
-            Logger.e(TAG, "EnvUtil read json file exception:" + e.getMessage());
+        } catch (Exception e) {
+            Logger.e(TAG, "init, read assets file error:" + e.getMessage());
         } finally {
-            try {
-                if (inputStream != null) {
+            if (inputStream != null) {
+                try {
                     inputStream.close();
+                } catch (IOException e) {
+                    Logger.e(TAG, "init, close inputstream error:" + e.getMessage());
                 }
-            } catch (IOException e) {
-                Logger.e(TAG, "EnvUtil read close inputstream failed:" + e.getMessage());
+            }
+
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    Logger.e(TAG, "init, close bufferedReader error:" + e.getMessage());
+                }
             }
         }
 
-        mPreferenceModel.applyPutBoolean(KEY_ENV_CONFIG, true);
         int env = mPreferenceModel.getInt("env", mCurIndexk);
         setCurEnvironment(env);
     }
@@ -177,7 +159,7 @@ public final class MdmEvnFactory {
         IMdmEnvModule old = getMdmEnvModel(mCurIndexk);
         mCurIndexk = index;
         mCurMdmEnvModule = getMdmEnvModel(index);
-        mPreferenceModel.putInt("env",mCurIndexk).apply();
+        mPreferenceModel.putInt("env", mCurIndexk).apply();
 
         EnvUtils.setUcEnv(mCurIndexk);
 
@@ -185,7 +167,7 @@ public final class MdmEvnFactory {
         broadcastNewEnv(index);
     }
 
-    private void broadcastNewEnv(int pIndex){
+    private void broadcastNewEnv(int pIndex) {
 //        Context context = AdhocBasicConfig.getInstance().getAppContext();
 //        Intent intent = new Intent(context, MdmEnvBroadcastReceiver.class);
 //        intent.setAction(MdmEnvBroadcastReceiver.ACTION_NAME);
@@ -208,15 +190,15 @@ public final class MdmEvnFactory {
         return mCurIndexk;
     }
 
-    public void addEnvChangedListener(@NonNull IEnvChangedListener pListener){
+    public void addEnvChangedListener(@NonNull IEnvChangedListener pListener) {
         mEnvChangedListeners.add(pListener);
     }
 
-    public void removeEnvChangedListener(@NonNull IEnvChangedListener pListener){
+    public void removeEnvChangedListener(@NonNull IEnvChangedListener pListener) {
         mEnvChangedListeners.remove(pListener);
     }
 
-    public void notifyEnvChanged(@Nullable IMdmEnvModule pOld, @NonNull IMdmEnvModule pNew){
+    public void notifyEnvChanged(@Nullable IMdmEnvModule pOld, @NonNull IMdmEnvModule pNew) {
         for (IEnvChangedListener listener : mEnvChangedListeners) {
             listener.onEnvironmentChanged(pOld, pNew);
         }
