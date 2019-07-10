@@ -45,6 +45,7 @@ public final class MdmEvnFactory {
 
     private MdmEvnFactory() {
         Context context = AdhocBasicConfig.getInstance().getAppContext();
+        mPreferenceModel = SharedPreferenceFactory.getInstance().getModel(context, context.getPackageName());
         loadManifestConfig(context);
         init(context);
     }
@@ -86,7 +87,6 @@ public final class MdmEvnFactory {
     }
 
     private void init(@NonNull Context context) {
-        mPreferenceModel = SharedPreferenceFactory.getInstance().getModel(context, context.getPackageName());
         InputStream inputStream = null;
         BufferedReader br = null;
         try {
