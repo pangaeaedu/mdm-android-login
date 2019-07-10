@@ -13,12 +13,6 @@ buildscript {
         classpath "com.android.tools.build:gradle:$gradlePluginVersion"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:$sonar_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // ARouter 支持
-//        classpath 'com.alibaba:arouter-register:1.0.0'
-//        classpath "com.nd.android.adhoc.basic:adhoc-router-register:$adhoc_basic_version"
-
-//        classpath 'com.github.eyyoung:DexFixPlugin:1.0.0'
     }
 }
 
