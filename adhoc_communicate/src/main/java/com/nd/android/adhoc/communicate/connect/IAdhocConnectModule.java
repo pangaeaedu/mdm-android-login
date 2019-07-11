@@ -25,7 +25,7 @@ public interface IAdhocConnectModule {
 
     void sendMessage(@NonNull final String pMessage);
 
-    void doHttpPost(final String pUrl, final String pContent);
+//    void doHttpPost(final String pUrl, final String pContent);
 
 //    void setAdocFileTransferListener(IAdocFileTransferListener pListener);
 

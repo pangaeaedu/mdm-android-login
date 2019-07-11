@@ -3,14 +3,13 @@
 
     <application>
 
-        <receiver android:name=".MdmEnvBroadcastReceiver"
-            android:exported="true"
-            android:enabled="true"
-            android:process=":sdp_download_startalone">
-            <intent-filter>
-                <action android:name="com.nd.mdm.env.switch" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".MdmEnvBroadcastReceiver"-->
+            <!--android:exported="true"-->
+            <!--android:enabled="true">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.nd.mdm.env.switch" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
     </application>
 
 </manifest>

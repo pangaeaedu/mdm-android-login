@@ -42,12 +42,12 @@ dependencies {
     }
 
 
-    try{
-        api project (':mdm_feedback_biz')
-    }catch (Exception e){
-        api("com.nd.android.mdm.biz:mdm_feedback_biz:$mdm_biz_version") {
-        }
-    }
+//    try{
+//        api project (':mdm_feedback_biz')
+//    }catch (Exception e){
+//        api("com.nd.android.mdm.biz:mdm_feedback_biz:$mdm_biz_version") {
+//        }
+//    }
 
     try{
         api project (':loginapi')

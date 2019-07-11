@@ -7,7 +7,9 @@
       "puship": "172.24.140.51",
       "pushport": 39000,
       "url": "http://drms.dev.web.nd",
-      "downloadservicename":"dev_content_drms"
+      "downloadservicename":"dev_content_drms",
+      "apm_server":"http://qc-report-collection.dev.web.nd/v1",
+      "exception_report_host_name":"DEV"
     },
     {
       "name": "Test",
@@ -15,7 +17,9 @@
       "puship": "test.ndmdm.site",
       "pushport": 59000,
       "url": "http://drms.debug.web.nd",
-      "downloadservicename":"prepub_content_mdm"
+      "downloadservicename":"prepub_content_mdm",
+      "apm_server":"http://qc-report-collection.debug.web.nd/v1",
+      "exception_report_host_name":"DEBUG"
     },
     {
       "name": "China",
@@ -23,7 +27,9 @@
       "puship": "www.ndmdm.site",
       "pushport": 59000,
       "url": "https://mdm.ndmdm.site",
-      "downloadservicename":"production_content_mdm"
+      "downloadservicename":"production_content_mdm",
+      "apm_server":"https://qc-report-collection.sdp.101.com/v1",
+      "exception_report_host_name":"PRODUCT"
     },
     {
       "name": "WholeWorld",
@@ -31,7 +37,9 @@
       "puship": "aws.ndmdm.site",
       "pushport": 59000,
       "url": "https://mdmaws.ndmdm.site",
-      "downloadservicename":"drms"
+      "downloadservicename":"drms",
+      "apm_server":"",
+      "exception_report_host_name":"AWS"
     },
     {
       "name": "Egypt",
@@ -39,7 +47,9 @@
       "puship": "mdm-pushaccess.test.moe.gov.eg",
       "pushport": 8760,
       "url": "http://mdm-backend.test.moe.gov.eg",
-      "downloadservicename":"drms"
+      "downloadservicename":"drms",
+      "apm_server":"",
+      "exception_report_host_name":""
     },
     {
       "name": "EgyptDrill",
@@ -47,7 +57,9 @@
       "puship": "mdm.pushaccess.egypt.sdp",
       "pushport": 8760,
       "url": "https://mdm-backend.beta.101.com",
-      "downloadservicename":"drms"
+      "downloadservicename":"drms",
+      "apm_server":"",
+      "exception_report_host_name":""
     },
     {
       "name": "ShanXi",
@@ -55,7 +67,9 @@
       "puship": "113.137.41.5",
       "pushport": 8760,
       "url": "https://drms.sneduyun.com.cn",
-      "downloadservicename":"wjt_content_mdm"
+      "downloadservicename":"wjt_content_mdm",
+      "apm_server":"",
+      "exception_report_host_name":""
     }
   ]
 }
