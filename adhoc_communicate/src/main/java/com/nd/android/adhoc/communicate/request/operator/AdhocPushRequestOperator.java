@@ -54,7 +54,9 @@ public class AdhocPushRequestOperator {
         Logger.d(TAG, "doRequest: msgid = " + msgid + ", content = " + content);
 
         final String finalMsgid = msgid;
-        return mPushFeedbackSub.asObservable().delay(500,TimeUnit.MILLISECONDS)
+        return mPushFeedbackSub.asObservable()
+                .onBackpressureBuffer()
+                .delay(500,TimeUnit.MILLISECONDS)
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String result) {
