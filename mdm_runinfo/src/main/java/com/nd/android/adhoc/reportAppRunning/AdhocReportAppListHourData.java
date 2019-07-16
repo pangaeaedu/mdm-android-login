@@ -334,6 +334,7 @@ public class AdhocReportAppListHourData {
                         subscriber.onError(new AdhocException("report not success"));
                     }else {
                         subscriber.onNext(result);
+                        subscriber.onCompleted();
                     }
                 } catch (AdhocHttpException e) {
                     subscriber.onError(e);
