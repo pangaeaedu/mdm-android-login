@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferConfig;
-import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.communicate.request.operator.AdhocPushRequestOperator;
 
@@ -63,6 +62,6 @@ class AdhocPushOptInterceptor implements Interceptor {
             return null;
         }
 
-        return AdhocPushRequestOperator.doRequest(UUID.randomUUID().toString(), 60, "", content).toBlocking().first();
+        return AdhocPushRequestOperator.doRequest(UUID.randomUUID().toString(), MdmTransferConfig.getRequestTimeout(), "", content).toBlocking().first();
     }
 }

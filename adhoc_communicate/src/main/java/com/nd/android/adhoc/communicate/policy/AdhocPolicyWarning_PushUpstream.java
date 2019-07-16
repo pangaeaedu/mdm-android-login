@@ -34,8 +34,10 @@ public class AdhocPolicyWarning_PushUpstream extends AdhocPolicyTaskAbs {
 
             // 1 = push上行，0 = http/https，默认 1
             int enable = jsonObject.optInt("enable", 1);
+            long timeout = jsonObject.optLong("timeout", MdmTransferConfig.getRequestTimeout());
 
             MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.getTypeByValue(enable));
+            MdmTransferConfig.setRequestTimeout(timeout);
 
         } catch (Exception e) {
             Logger.w(TAG, "runTask error: " + e);
