@@ -49,6 +49,10 @@ public class AdhocReportAppRunning {
 
     private Gson mGson;
 
+    private boolean mbIsWathcing = false;
+
+    private final Object mSyncObject = new Object();
+
     public synchronized static AdhocReportAppRunning getInstance() {
         if (instance == null) {
             instance = new AdhocReportAppRunning();
@@ -67,9 +71,44 @@ public class AdhocReportAppRunning {
     }
 
     public void deal(){
-        loadCache();
-        RunningAppWatchManager.getInstance().addListeners(mAppListListenner);
-        RunningAppWatchManager.getInstance().watch();
+        synchronized (mSyncObject){
+            if(!mbIsWathcing){
+                loadCache();
+                RunningAppWatchManager.getInstance().addListeners(mAppListListenner);
+                RunningAppWatchManager.getInstance().watch();
+                mbIsWathcing = true;
+            }
+        }
+    }
+
+    public void stopWatching(){
+        synchronized (mSyncObject){
+            if(!mbIsWathcing){
+                return;
+            }
+            //移除监听
+            RunningAppWatchManager.getInstance().removeListeners(mAppListListenner);
+
+            //取消上报
+            getCurrentToReportHourData().stopReporting();
+            destroyCurToReportHourData();
+
+            //清除缓存
+            ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
+            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP, "");
+            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_APP_LIST, "");
+            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, 0);
+            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST, "");
+            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
+            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0);
+
+            //重置内存
+            mlLastWriteCacheTime = 0;
+            mlLastReportTime = 0;
+            mMapRunningApps.clear();
+
+            mbIsWathcing = false;
+        }
     }
 
     private IAppListListenner mAppListListenner = new IAppListListenner() {
@@ -172,6 +211,10 @@ public class AdhocReportAppRunning {
             }
         }
 //        Logger.i(TAG, "内存中记录结束");
+    }
+
+    private void destroyCurToReportHourData(){
+        mToReportHourData = null;
     }
 
     private AdhocReportAppListHourData mToReportHourData;

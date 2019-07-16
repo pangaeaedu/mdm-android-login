@@ -7,7 +7,7 @@ import com.nd.sdp.android.serviceloader.annotation.Service;
 /**
  * Created by linsj on 2018/12/8.
  */
-@Service(AdhocAppInitAsyncAbs.class)
+//@Service(AdhocAppInitAsyncAbs.class)
 public class AppRunInfoInitAsync extends AdhocAppInitAsyncAbs {
 
     @Override

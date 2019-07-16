@@ -36,7 +36,7 @@ public class RunningAppWatchManager {
 
     private static RunningAppWatchManager instance;
 
-    private List<IAppListListenner> mListeners = new ArrayList<>();
+    private final List<IAppListListenner> mListeners = new ArrayList<>();
 
     public synchronized static RunningAppWatchManager getInstance() {
         if (instance == null) {
@@ -72,6 +72,13 @@ public class RunningAppWatchManager {
         }
     }
 
+    public void stopWatching(){
+        Logger.i(TAG, "stop watching");
+        AdhocAppListenerManager.getInstance().removePakcageListener(mAdhocAppListener);
+        AdhocRxJavaUtil.doUnsubscribe(mSubscription);
+        AdhocReportAppRunning.getInstance().stopWatching();
+    }
+
     private void deal(){
         Logger.i(TAG, "system service installed, deal with it");
         AdhocReportAppRunning.getInstance().deal();
@@ -94,7 +101,6 @@ public class RunningAppWatchManager {
 
         @Override
         public void onPackageRemoved(String pPackageName) {
-
         }
     };
 

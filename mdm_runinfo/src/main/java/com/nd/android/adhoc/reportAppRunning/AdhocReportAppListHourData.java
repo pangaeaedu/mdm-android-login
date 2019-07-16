@@ -14,6 +14,7 @@ import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
+import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.utils.AppRunInfoReportConstant;
 import com.nd.android.adhoc.utils.AppRunInfoReportUtils;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -65,6 +67,8 @@ public class AdhocReportAppListHourData {
 
     private Gson mGson;
 
+    private Subscription mDelayReportSubscription;
+
     public void setListApps(List<RunningPackageInfo> listApps){
         mlistApps = listApps;
     }
@@ -97,6 +101,10 @@ public class AdhocReportAppListHourData {
                 dealReportToServer(true);
             }
         }
+    }
+
+    public void stopReporting(){
+        AdhocRxJavaUtil.doUnsubscribe(mDelayReportSubscription);
     }
 
     /**
@@ -157,7 +165,7 @@ public class AdhocReportAppListHourData {
         if(bImmediately){
             reportToServer(jsonData);
         }else {
-            Observable.timer(getRandomDelaySeconds() * 1000, TimeUnit.MILLISECONDS)
+            mDelayReportSubscription = Observable.timer(getRandomDelaySeconds() * 1000, TimeUnit.MILLISECONDS)
                     .subscribe(new Action1<Long>() {
                         @Override
                         public void call(Long aLong) {
