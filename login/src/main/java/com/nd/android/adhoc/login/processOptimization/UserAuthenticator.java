@@ -22,11 +22,15 @@ import com.nd.android.adhoc.login.processOptimization.login.UserLoginThroughServ
 import com.nd.android.adhoc.loginapi.exception.AutoLoginMeetUserLoginException;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
+import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class UserAuthenticator extends BaseAuthenticator implements IUserAuthenticator {
 
@@ -52,6 +56,48 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
         ActivityStackManager.INSTANCE.closeAllActivitys();
         enterLogoutUI();
+
+        clearPolicy();
+    }
+
+    private void clearPolicy() {
+        Observable
+                .create(new Observable.OnSubscribe<Void>() {
+                    @Override
+                    public void call(Subscriber<? super Void> pSubscriber) {
+                        try {
+                            IAdhocPolicyLifeCycleProvider policyLifeCycleProvider =
+                                    (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
+                                            .getAdhocRouter().build(IAdhocPolicyLifeCycleProvider.ROUTE_PATH).navigation();
+                            if (policyLifeCycleProvider != null) {
+                                policyLifeCycleProvider.clearPolicy();
+                                pSubscriber.onNext(null);
+                                pSubscriber.onCompleted();
+                            }
+                        } catch (Exception pE) {
+                            pSubscriber.onError(pE);
+                        }
+
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Void pVoid) {
+
+                    }
+                });
+
     }
 
     private void enterLogoutUI() {

@@ -5,9 +5,7 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
-import com.nd.android.adhoc.loginapi.ILoginInfoProvider;
-
-import org.json.JSONObject;
+import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 
 import rx.Observable;
 import rx.Observer;
@@ -34,7 +32,8 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
                     @Override
                     public Observable<Void> call(String pS) {
                         try {
-                            requestPolicySet();
+                            updatePolicy();
+//                            requestPolicySet();
                             Log.e("yhq", "requestPolicySet finish");
                             return Observable.just(null);
                         } catch (Exception e) {
@@ -72,21 +71,31 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
         }
     }
 
-    private void requestPolicySet() {
-        try {
-            String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
-            long pTime = getConfig().getPolicySetTime();
+//    private void requestPolicySet() {
+//        try {
+//            String deviceID =  DeviceInfoManager.getInstance().getDeviceID();
+//            long pTime = getConfig().getPolicySetTime();
+//
+//            ILoginInfoProvider provider = (ILoginInfoProvider) AdhocFrameFactory.getInstance()
+//                    .getAdhocRouter().build(ILoginInfoProvider.PATH).navigation();
+//            if (provider == null) {
+//                throw new Exception("login info provider not exist");
+//            }
+//
+//            JSONObject object = provider.getDeviceInfo();
+//            getHttpService().requestPolicy(deviceID, pTime, object);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
 
-            ILoginInfoProvider provider = (ILoginInfoProvider) AdhocFrameFactory.getInstance()
-                    .getAdhocRouter().build(ILoginInfoProvider.PATH).navigation();
-            if (provider == null) {
-                throw new Exception("login info provider not exist");
-            }
-
-            JSONObject object = provider.getDeviceInfo();
-            getHttpService().requestPolicy(deviceID, pTime, object);
-        }catch (Exception e){
-            e.printStackTrace();
+    private void updatePolicy(){
+        IAdhocPolicyLifeCycleProvider policyLifeCycleProvider =
+                (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
+                        .getAdhocRouter().build(IAdhocPolicyLifeCycleProvider.ROUTE_PATH).navigation();
+        if (policyLifeCycleProvider == null) {
+            return;
         }
+        policyLifeCycleProvider.updatePolicy();
     }
 }
