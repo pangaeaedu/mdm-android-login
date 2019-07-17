@@ -36,6 +36,6 @@ public enum AdhocNetworkChannel {
                 return flag;
             }
         }
-        return CHANNEL_HTTP;
+        return CHANNEL_PUSH;
     }
 }

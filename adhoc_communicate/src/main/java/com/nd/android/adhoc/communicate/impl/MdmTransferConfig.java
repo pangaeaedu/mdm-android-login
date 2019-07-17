@@ -2,6 +2,8 @@ package com.nd.android.adhoc.communicate.impl;
 
 import android.support.annotation.NonNull;
 
+import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
+import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -12,12 +14,30 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public final class MdmTransferConfig {
 
-    private static AdhocNetworkChannel sNetworkChannel = AdhocNetworkChannel.CHANNEL_PUSH;
+    private static AdhocNetworkChannel sNetworkChannel;
 
-    private static AtomicLong sRequestTimeout = new AtomicLong(30);
+    private static final String SP_REQUEST_TIMEOUT = "push_request_timeout";
+    private static final String SP_REQUEST_CHANNEL = "network_request_channel";
+
+    private static AtomicLong sRequestTimeout;
+
+    static {
+        ISharedPreferenceModel sharedPreferenceModel =
+                SharedPreferenceFactory.getInstance().getModel();
+
+        long timeout = sharedPreferenceModel.getLong(SP_REQUEST_TIMEOUT, 20);
+        sRequestTimeout = new AtomicLong(timeout);
+
+        int networkChannel = sharedPreferenceModel.getInt(SP_REQUEST_CHANNEL, AdhocNetworkChannel.CHANNEL_PUSH.getValue());
+        sNetworkChannel = AdhocNetworkChannel.getTypeByValue(networkChannel);
+    }
 
     public static void setNetworkChannel(@NonNull AdhocNetworkChannel pNetworkChannel) {
         sNetworkChannel = pNetworkChannel;
+
+        ISharedPreferenceModel sharedPreferenceModel =
+                SharedPreferenceFactory.getInstance().getModel();
+        sharedPreferenceModel.putInt(SP_REQUEST_CHANNEL, getNetworkChannel().getValue()).apply();
     }
 
     public static AdhocNetworkChannel getNetworkChannel() {
@@ -26,6 +46,10 @@ public final class MdmTransferConfig {
 
     public static void setRequestTimeout(long pRequestTimeout){
         sRequestTimeout.set(pRequestTimeout);
+
+        ISharedPreferenceModel sharedPreferenceModel =
+                SharedPreferenceFactory.getInstance().getModel();
+        sharedPreferenceModel.putLong(SP_REQUEST_TIMEOUT, getRequestTimeout()).apply();
     }
 
     public static long getRequestTimeout(){
