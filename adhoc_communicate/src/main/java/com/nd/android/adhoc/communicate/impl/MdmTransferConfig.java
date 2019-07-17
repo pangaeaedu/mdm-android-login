@@ -25,7 +25,7 @@ public final class MdmTransferConfig {
         ISharedPreferenceModel sharedPreferenceModel =
                 SharedPreferenceFactory.getInstance().getModel();
 
-        long timeout = sharedPreferenceModel.getLong(SP_REQUEST_TIMEOUT, 20);
+        long timeout = sharedPreferenceModel.getLong(SP_REQUEST_TIMEOUT, 20 * 1000);
         sRequestTimeout = new AtomicLong(timeout);
 
         int networkChannel = sharedPreferenceModel.getInt(SP_REQUEST_CHANNEL, AdhocNetworkChannel.CHANNEL_PUSH.getValue());

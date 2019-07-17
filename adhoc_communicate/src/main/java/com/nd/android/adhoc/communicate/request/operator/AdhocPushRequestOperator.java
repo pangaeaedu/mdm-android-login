@@ -40,13 +40,13 @@ public class AdhocPushRequestOperator {
     /**
      * 执行请求
      *
-     * @param msgid       消息ID，如果不传，默认随机生成 UUID
-     * @param ttlSeconds  超时时间，必填
-     * @param contentType 内容类型，选填
-     * @param content     请求内容，必填
+     * @param msgid          消息ID，如果不传，默认随机生成 UUID
+     * @param ttlMillSeconds 超时时间，必填
+     * @param contentType    内容类型，选填
+     * @param content        请求内容，必填
      * @return Observable<Response>
      */
-    public static Observable<Response> doRequest(String msgid, final long ttlSeconds, final String contentType, @NonNull final String content) {
+    public static Observable<Response> doRequest(String msgid, final long ttlMillSeconds, final String contentType, @NonNull final String content) {
         if (TextUtils.isEmpty(msgid)) {
             msgid = UUID.randomUUID().toString();
         }
@@ -56,7 +56,7 @@ public class AdhocPushRequestOperator {
         final String finalMsgid = msgid;
         return mPushFeedbackSub.asObservable()
                 .onBackpressureBuffer()
-                .delay(500,TimeUnit.MILLISECONDS)
+                .delay(500, TimeUnit.MILLISECONDS)
                 .filter(new Func1<String, Boolean>() {
                     @Override
                     public Boolean call(String result) {
@@ -102,7 +102,7 @@ public class AdhocPushRequestOperator {
 //                    }
 //                })
 //                // 规定时间内还没有收到 有效的请求，就按照超时处理
-                .timeout(ttlSeconds, TimeUnit.SECONDS)
+                .timeout(ttlMillSeconds, TimeUnit.MILLISECONDS)
                 // 这里把返回的结果转为 Response
                 .map(new Func1<String, Response>() {
                     @Override
@@ -156,7 +156,7 @@ public class AdhocPushRequestOperator {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        MdmTransferFactory.getPushModel().sendUpStreamMsg(finalMsgid, ttlSeconds, contentType, content);
+                        MdmTransferFactory.getPushModel().sendUpStreamMsg(finalMsgid, ttlMillSeconds / 1000, contentType, content);
                     }
                 });
     }
