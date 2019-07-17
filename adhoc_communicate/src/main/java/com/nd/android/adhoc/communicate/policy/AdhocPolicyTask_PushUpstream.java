@@ -12,9 +12,9 @@ import org.json.JSONObject;
  * Created by HuangYK on 2019/7/2.
  */
 @Service(AdhocPolicyTaskAbs.class)
-public class AdhocPolicyWarning_PushUpstream extends AdhocPolicyTaskAbs {
+public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
 
-    private static final String TAG = "AdhocPolicyWarning_PushUpstream";
+    private static final String TAG = "AdhocPolicyTask_PushUpstream";
 
     @Override
     public int getPolicyType() {
