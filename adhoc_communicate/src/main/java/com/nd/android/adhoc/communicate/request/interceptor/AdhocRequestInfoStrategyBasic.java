@@ -30,9 +30,8 @@ abstract class AdhocRequestInfoStrategyBasic {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("action", getAction(pRequest));
-
+            jsonObject.put("method", getMethod());
             jsonObject.put("header", getHeader(pRequest));
-
             jsonObject.put("content", getContent(pRequest));
 
             return jsonObject.toString();
