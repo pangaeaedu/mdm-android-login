@@ -61,6 +61,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     private void clearPolicy() {
+        Log.d("yhq", "clearPolicy");
         Observable
                 .create(new Observable.OnSubscribe<Void>() {
                     @Override
@@ -70,9 +71,12 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                                     (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
                                             .getAdhocRouter().build(IAdhocPolicyLifeCycleProvider.ROUTE_PATH).navigation();
                             if (policyLifeCycleProvider != null) {
+                                Log.d("yhq", "IAdhocPolicyLifeCycleProvider clearPolicy");
                                 policyLifeCycleProvider.clearPolicy();
                                 pSubscriber.onNext(null);
                                 pSubscriber.onCompleted();
+                            } else {
+                                Log.d("yhq", "IAdhocPolicyLifeCycleProvider not found");
                             }
                         } catch (Exception pE) {
                             pSubscriber.onError(pE);
