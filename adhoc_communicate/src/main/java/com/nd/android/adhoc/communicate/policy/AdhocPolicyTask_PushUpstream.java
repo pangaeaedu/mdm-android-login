@@ -47,4 +47,10 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
         super.updateTask(pPolicyData);
     }
 
+    @Override
+    public void stop() {
+        MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
+        MdmTransferConfig.setRequestTimeout(0);
+        super.stop();
+    }
 }

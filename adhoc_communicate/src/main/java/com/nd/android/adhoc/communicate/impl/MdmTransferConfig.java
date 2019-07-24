@@ -19,13 +19,15 @@ public final class MdmTransferConfig {
     private static final String SP_REQUEST_TIMEOUT = "push_request_timeout";
     private static final String SP_REQUEST_CHANNEL = "network_request_channel";
 
+    private static final long DEF_REQUEST_TIMEOUT = 20 * 1000;
+
     private static AtomicLong sRequestTimeout;
 
     static {
         ISharedPreferenceModel sharedPreferenceModel =
                 SharedPreferenceFactory.getInstance().getModel();
 
-        long timeout = sharedPreferenceModel.getLong(SP_REQUEST_TIMEOUT, 20 * 1000);
+        long timeout = sharedPreferenceModel.getLong(SP_REQUEST_TIMEOUT, DEF_REQUEST_TIMEOUT);
         sRequestTimeout = new AtomicLong(timeout);
 
         int networkChannel = sharedPreferenceModel.getInt(SP_REQUEST_CHANNEL, AdhocNetworkChannel.CHANNEL_PUSH.getValue());
@@ -45,6 +47,10 @@ public final class MdmTransferConfig {
     }
 
     public static void setRequestTimeout(long pRequestTimeout){
+        if (pRequestTimeout <= 0) {
+            pRequestTimeout = DEF_REQUEST_TIMEOUT;
+        }
+
         sRequestTimeout.set(pRequestTimeout);
 
         ISharedPreferenceModel sharedPreferenceModel =
