@@ -11,9 +11,12 @@ import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.loginapi.IInitApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
+import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
+import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 @Service(AdhocAppInitSyncAbs.class)
@@ -28,7 +31,7 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
     public void doInitSync(@NonNull final IAdhocInitCallback pCallback) {
         IInitApi api = (IInitApi) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(LoginApiRoutePathConstants.PATH_LOGINAPI_INIT).navigation();
-        if(api == null){
+        if (api == null) {
             pCallback.onFailed(new AdhocException("init api not found"));
             return;
         }
@@ -43,6 +46,8 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.e("yhq", "init Device error:" + e.getMessage());
+                        updatePolicyAsync();
                         pCallback.onSuccess();
                     }
 
@@ -53,5 +58,48 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
                 });
     }
 
+    private void updatePolicyAsync() {
+        Observable
+                .create(new Observable.OnSubscribe<Object>() {
+                    @Override
+                    public void call(Subscriber<? super Object> pSubscriber) {
+                        try {
+                            updatePolicy();
+                            pSubscriber.onNext(null);
+                            pSubscriber.onCompleted();
+                        } catch (Exception pE) {
+                            pSubscriber.onError(pE);
+                        }
 
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Object>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Object pO) {
+
+                    }
+                });
+    }
+
+    private void updatePolicy() {
+        Log.e("yhq", "init Device updatePolicy");
+        IAdhocPolicyLifeCycleProvider policyLifeCycleProvider =
+                (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
+                        .getAdhocRouter().build(IAdhocPolicyLifeCycleProvider.ROUTE_PATH).navigation();
+        if (policyLifeCycleProvider == null) {
+            return;
+        }
+        policyLifeCycleProvider.updatePolicy();
+    }
 }
