@@ -268,6 +268,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String cpuSn = AdhocDeviceUtil.getCpuSN();
         String imei = AdhocDeviceUtil.getIMEI(context);
         String wifiMac = AdhocDeviceUtil.getWifiMac(context);
+
+        if(TextUtils.isEmpty(wifiMac)){
+            throw new Exception("confirmDeviceIDFromServer meet wifi mac empty");
+        }
+
         String blueToothMac = AdhocDeviceUtil.getBloothMac();
         String serialNo = DeviceHelper.getSerialNumberThroughControl();
         String androidID = AdhocDeviceUtil.getAndroidId(context);
