@@ -1,11 +1,15 @@
 package com.nd.android.adhoc.communicate.policy;
 
-import com.nd.android.adhoc.basic.log.Logger;
+import android.text.TextUtils;
+
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.communicate.impl.MdmTransferConfig;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -28,7 +32,11 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
 
 
     @Override
-    public void updateTask(String pPolicyData) {
+    public void updateTask(String pPolicyData) throws AdhocException {
+        if (TextUtils.isEmpty(pPolicyData)) {
+            throw new AdhocException("updateTask failed: pPolicyData is empty", -1, AdhocPolicyMsgCode.ERROR_POLICY_DATA_IS_EMPTY);
+        }
+
         try {
             JSONObject jsonObject = new JSONObject(pPolicyData);
 
@@ -39,18 +47,23 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
             MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.getTypeByValue(enable));
             MdmTransferConfig.setRequestTimeout(timeout);
 
+        } catch (JSONException e) {
+            throw new AdhocException("updateTask error: " + e, -1, AdhocPolicyMsgCode.ERROR_JSON_PARSING_FAILED);
         } catch (Exception e) {
-            Logger.w(TAG, "runTask error: " + e);
-            return;
+            throw new AdhocException("updateTask error: " + e, -1, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
 
         super.updateTask(pPolicyData);
     }
 
     @Override
-    public void stop() {
-        MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
-        MdmTransferConfig.setRequestTimeout(0);
+    public void stop() throws AdhocException {
+        try {
+            MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
+            MdmTransferConfig.setRequestTimeout(0);
+        } catch (Exception e) {
+            throw new AdhocException("stop error: " + e, -1, AdhocPolicyMsgCode.ERROR_UNKNOW);
+        }
         super.stop();
     }
 }
