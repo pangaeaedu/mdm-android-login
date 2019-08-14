@@ -6,6 +6,7 @@ import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.communicate.impl.MdmTransferConfig;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyErrorCode;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
 import com.nd.sdp.android.serviceloader.annotation.Service;
@@ -33,7 +34,7 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
 
 
     @Override
-    public void updateTask(String pPolicyData) throws AdhocException {
+    public AdhocPolicyErrorCode updateTask(String pPolicyData) throws AdhocException {
         if (TextUtils.isEmpty(pPolicyData)) {
             throw new AdhocPolicyException("updateTask failed: pPolicyData is empty", AdhocPolicyMsgCode.ERROR_POLICY_DATA_IS_EMPTY);
         }
@@ -54,17 +55,17 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
             throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
 
-        super.updateTask(pPolicyData);
+        return super.updateTask(pPolicyData);
     }
 
     @Override
-    public void stop() throws AdhocException {
+    public AdhocPolicyErrorCode stop() throws AdhocException {
         try {
             MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
             MdmTransferConfig.setRequestTimeout(0);
         } catch (Exception e) {
             throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
-        super.stop();
+        return super.stop();
     }
 }

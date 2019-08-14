@@ -32,7 +32,7 @@ ext {
     screen_capture_version = '1.3.37.2086.242.6bc521f-develop-SNAPSHOT'
     adhoc_push_util_version = '0.3.25.94.5a4ce96'
 
-    policy_version = '2.1.126.f6a82da-hyk0.7.3policyresponse-SNAPSHOT'
+    policy_version = '2.1.131.87e8068-hyk0.7.3policyresponse-SNAPSHOT'
 }
 
 allprojects {

@@ -4,6 +4,9 @@ import com.nd.android.adhoc.RunningAppWatchManager;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyErrorCode;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
 import org.json.JSONObject;
@@ -27,7 +30,7 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     }
 
     @Override
-    public void updateTask(String pPolicyData) throws AdhocException{
+    public AdhocPolicyErrorCode updateTask(String pPolicyData) throws AdhocException{
         try {
             JSONObject jsonObject = new JSONObject(pPolicyData);
 
@@ -39,19 +42,20 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
             }else {
                 RunningAppWatchManager.getInstance().stopWatching();
             }
-            super.updateTask(pPolicyData);
+            return super.updateTask(pPolicyData);
         } catch (Exception e) {
             Logger.w(TAG, "runTask error: " + e);
+            throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
     }
 
     @Override
-    public void stop() throws AdhocException {
+    public AdhocPolicyErrorCode stop() throws AdhocException {
         try{
             RunningAppWatchManager.getInstance().stopWatching();
         }catch (Exception e){
-
+            throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
-        super.stop();
+        return super.stop();
     }
 }
