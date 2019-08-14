@@ -6,6 +6,7 @@ import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.communicate.impl.MdmTransferConfig;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
@@ -34,7 +35,7 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
     @Override
     public void updateTask(String pPolicyData) throws AdhocException {
         if (TextUtils.isEmpty(pPolicyData)) {
-            throw new AdhocException("updateTask failed: pPolicyData is empty", -1, AdhocPolicyMsgCode.ERROR_POLICY_DATA_IS_EMPTY);
+            throw new AdhocPolicyException("updateTask failed: pPolicyData is empty", AdhocPolicyMsgCode.ERROR_POLICY_DATA_IS_EMPTY);
         }
 
         try {
@@ -48,9 +49,9 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
             MdmTransferConfig.setRequestTimeout(timeout);
 
         } catch (JSONException e) {
-            throw new AdhocException("updateTask error: " + e, -1, AdhocPolicyMsgCode.ERROR_JSON_PARSING_FAILED);
+            throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_JSON_PARSING_FAILED);
         } catch (Exception e) {
-            throw new AdhocException("updateTask error: " + e, -1, AdhocPolicyMsgCode.ERROR_UNKNOW);
+            throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
 
         super.updateTask(pPolicyData);
@@ -62,7 +63,7 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
             MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
             MdmTransferConfig.setRequestTimeout(0);
         } catch (Exception e) {
-            throw new AdhocException("stop error: " + e, -1, AdhocPolicyMsgCode.ERROR_UNKNOW);
+            throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
         super.stop();
     }
