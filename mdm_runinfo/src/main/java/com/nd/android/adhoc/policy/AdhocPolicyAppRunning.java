@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.policy;
 
 import com.nd.android.adhoc.RunningAppWatchManager;
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
 import com.nd.sdp.android.serviceloader.annotation.Service;
@@ -26,7 +27,7 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     }
 
     @Override
-    public void updateTask(String pPolicyData) {
+    public void updateTask(String pPolicyData) throws AdhocException{
         try {
             JSONObject jsonObject = new JSONObject(pPolicyData);
 
@@ -45,8 +46,12 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     }
 
     @Override
-    public void stop() {
-        RunningAppWatchManager.getInstance().stopWatching();
+    public void stop() throws AdhocException {
+        try{
+            RunningAppWatchManager.getInstance().stopWatching();
+        }catch (Exception e){
+
+        }
         super.stop();
     }
 }
