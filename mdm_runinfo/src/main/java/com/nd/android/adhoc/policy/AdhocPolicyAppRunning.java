@@ -1,9 +1,12 @@
 package com.nd.android.adhoc.policy;
 
+import android.support.annotation.NonNull;
+
 import com.nd.android.adhoc.RunningAppWatchManager;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.IAdhocPolicyEntity;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyErrorCode;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
@@ -30,9 +33,9 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     }
 
     @Override
-    public AdhocPolicyErrorCode updateTask(String pPolicyData) throws AdhocException{
+    public AdhocPolicyErrorCode executeTask(@NonNull IAdhocPolicyEntity pPolicyEntity)  throws AdhocException{
         try {
-            JSONObject jsonObject = new JSONObject(pPolicyData);
+            JSONObject jsonObject = new JSONObject(pPolicyEntity.getData());
 
             // 1 = push上行，0 = http/https，默认 1
             int enable = jsonObject.optInt("enable", 1);
@@ -42,10 +45,10 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
             }else {
                 RunningAppWatchManager.getInstance().stopWatching();
             }
-            return super.updateTask(pPolicyData);
+            return super.executeTask(pPolicyEntity);
         } catch (Exception e) {
-            Logger.w(TAG, "runTask error: " + e);
-            throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
+            Logger.w(TAG, "executeTask error: " + e);
+            throw new AdhocPolicyException("executeTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
     }
 
