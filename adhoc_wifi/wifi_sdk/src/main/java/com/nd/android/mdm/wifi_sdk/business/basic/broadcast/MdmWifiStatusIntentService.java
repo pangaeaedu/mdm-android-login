@@ -1,6 +1,7 @@
 package com.nd.android.mdm.wifi_sdk.business.basic.broadcast;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
@@ -26,6 +27,9 @@ public class MdmWifiStatusIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Bundle bundle;
+
+        startForeground(1, new Notification());
+
         if (intent == null ||
                 (bundle = intent.getExtras()) == null) {
             return;
