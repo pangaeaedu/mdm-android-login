@@ -1,11 +1,13 @@
 package com.nd.android.adhoc.communicate.policy;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.communicate.impl.MdmTransferConfig;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.IAdhocPolicyEntity;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyErrorCode;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
@@ -34,13 +36,13 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
 
 
     @Override
-    public AdhocPolicyErrorCode updateTask(String pPolicyData) throws AdhocException {
-        if (TextUtils.isEmpty(pPolicyData)) {
+    public AdhocPolicyErrorCode executeTask(@NonNull IAdhocPolicyEntity pPolicyEntity) throws AdhocException {
+        if (TextUtils.isEmpty(pPolicyEntity.getData())) {
             throw new AdhocPolicyException("updateTask failed: pPolicyData is empty", AdhocPolicyMsgCode.ERROR_POLICY_DATA_IS_EMPTY);
         }
 
         try {
-            JSONObject jsonObject = new JSONObject(pPolicyData);
+            JSONObject jsonObject = new JSONObject(pPolicyEntity.getData());
 
             // 1 = push上行，0 = http/https，默认 1
             int enable = jsonObject.optInt("enable", 1);
@@ -55,7 +57,7 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
             throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
 
-        return super.updateTask(pPolicyData);
+        return super.executeTask(pPolicyEntity);
     }
 
     @Override
