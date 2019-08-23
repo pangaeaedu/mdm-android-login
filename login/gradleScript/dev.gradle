@@ -17,6 +17,7 @@ dependencies {
         api project (':adhoc_communicate')
     }catch (Exception e){
         api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version") {
+            exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
     }
 
@@ -26,6 +27,7 @@ dependencies {
         api("com.nd.sdp.android:adhocpush:$adhoc_push_util_version"){
             exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
             exclude group:'com.nd.android.mdm.biz' ,module:'mdm_biz_common'
+            exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
     }
 
@@ -61,9 +63,6 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.android.adhoc:adhoc_policy_api:$policy_version") {
             exclude group: 'com.nd.android.adhoc', module: 'mdm_biz_sdk_impl'
-            exclude group:'com.nd.android.mdm.biz' ,module:'adhoc_communicate'
-            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
-            exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
     }
 
@@ -71,6 +70,7 @@ dependencies {
         api project (':mdm_env')
     }catch (Exception ignored){
         api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version") {
+            exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
     }
 
@@ -78,6 +78,7 @@ dependencies {
         api project (":assistant_sdk")
     }catch(Exception ignored){
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
+            exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
     }
 
