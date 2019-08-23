@@ -16,6 +16,8 @@ public interface IPushModule {
 
     void stop();
 
+    void setAutoStart(boolean pAutoStart);
+
     String getDeviceId();
 
 //    String getUid();

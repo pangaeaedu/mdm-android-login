@@ -200,6 +200,11 @@ class PushModule implements IPushModule {
     }
 
     @Override
+    public void setAutoStart(boolean pAutoStart) {
+        mPushChannel.setAutoStart(pAutoStart);
+    }
+
+    @Override
     public String getDeviceId() {
         return mPushChannel.getPushID();
     }
