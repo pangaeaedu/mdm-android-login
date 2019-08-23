@@ -7,6 +7,12 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_db:$adhoc_basic_version")
     }
 
+    try {
+        api project(':adhoc_basic_service')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_service:$adhoc_basic_version")
+    }
+
     api("com.nd.android.adhoc.basic:adhoc_util_thread:$adhoc_basic_version")
 
     api("com.nd.android.adhoc.basic:adhoc_util_net:$adhoc_basic_version")
