@@ -33,7 +33,7 @@ ext {
 
     adhoc_push_util_version = '0.3.25.94.5a4ce96'
 
-    policy_version = '2.1.144.4db100b'
+    policy_version = '2.1.146.10d8ca1'
 }
 
 allprojects {
