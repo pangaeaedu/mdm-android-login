@@ -63,6 +63,7 @@ dependencies {
             exclude group: 'com.nd.android.adhoc', module: 'mdm_biz_sdk_impl'
             exclude group:'com.nd.android.mdm.biz' ,module:'adhoc_communicate'
             exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
+            exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
     }
 
