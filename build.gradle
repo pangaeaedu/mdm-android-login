@@ -29,8 +29,7 @@ ext {
 
     // 下面这三个后续也需要发布为正式版本
     adhoc_sdk_version = '1.2.19.2078-develop-SNAPSHOT'
-    screen_capture_version = '1.3.38.2086.245.083c7f2-develop-SNAPSHOT'
-
+    screen_capture_version = '1.3.38.2086.247.040a6b0-develop-SNAPSHOT'
     adhoc_push_util_version = '0.3.25.94.5a4ce96'
 
     policy_version = '2.1.146.10d8ca1'
