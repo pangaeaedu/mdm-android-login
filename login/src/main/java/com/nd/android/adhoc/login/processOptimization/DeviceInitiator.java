@@ -288,6 +288,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         ConfirmDeviceIDResponse response = null;
         for (int i = 0; i <= 2; i++) {
             try {
+                Log.e("yhq", "confirm device id round:"+i);
                 response = getHttpService().confirmDeviceID(buildSn, cpuSn, imei,
                         wifiMac, blueToothMac, serialNo, androidID, pLocalDeviceID);
                 if (response != null) {
@@ -295,6 +296,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     return response;
                 }
             } catch (Exception pE) {
+                pE.printStackTrace();
                 if(!(pE instanceof TimeoutException)){
                     throw pE;
                 }
