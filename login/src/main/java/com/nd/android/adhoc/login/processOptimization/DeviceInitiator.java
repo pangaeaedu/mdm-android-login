@@ -16,6 +16,7 @@ import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.RetrieveWifiMacException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -268,6 +269,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String cpuSn = AdhocDeviceUtil.getCpuSN();
         String imei = AdhocDeviceUtil.getIMEI(context);
         String wifiMac = AdhocDeviceUtil.getWifiMac(context);
+
+        if(TextUtils.isEmpty(wifiMac)){
+            throw new RetrieveWifiMacException();
+        }
+
         String blueToothMac = AdhocDeviceUtil.getBloothMac();
         String serialNo = DeviceHelper.getSerialNumberThroughControl();
         String androidID = AdhocDeviceUtil.getAndroidId(context);
