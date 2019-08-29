@@ -11,6 +11,7 @@ import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.loginapi.IInitApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
+import com.nd.android.adhoc.loginapi.exception.RetrieveWifiMacException;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
@@ -44,6 +45,11 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
 
                     @Override
                     public void onError(Throwable e) {
+                        if(e instanceof RetrieveWifiMacException){
+                            pCallback.onFailed(new AdhocException("retrieve wifi mac error"));
+                            return;
+                        }
+
                         Log.e("yhq", "init Device error:" + e.getMessage());
 //                        updatePolicyAsync();
                         updatePolicy();

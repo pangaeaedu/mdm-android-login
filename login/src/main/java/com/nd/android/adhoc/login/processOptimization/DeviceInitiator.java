@@ -16,6 +16,9 @@ import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.RetrieveWifiMacException;
+
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -153,6 +156,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     } else {
                         deviceID = loadDeviceIDFromPrevSpOrSDCard();
 
+
                         ConfirmDeviceIDResponse result = confirmDeviceIDFromServer(deviceID);
 
                         if(!result.isSuccess()){
@@ -270,7 +274,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String wifiMac = AdhocDeviceUtil.getWifiMac(context);
 
         if(TextUtils.isEmpty(wifiMac)){
-            throw new Exception("confirmDeviceIDFromServer meet wifi mac empty");
+            throw new RetrieveWifiMacException();
         }
 
         String blueToothMac = AdhocDeviceUtil.getBloothMac();
@@ -280,9 +284,25 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
         +" wifiMac:"+wifiMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
         +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
-        ConfirmDeviceIDResponse response =  getHttpService().confirmDeviceID(buildSn, cpuSn, imei,
-                wifiMac, blueToothMac, serialNo, androidID,pLocalDeviceID);
-        Log.e("yhq", "deviceID response:"+response.getDeviceID());
-        return response;
+
+        ConfirmDeviceIDResponse response = null;
+        for (int i = 0; i <= 2; i++) {
+            try {
+                Log.e("yhq", "confirm device id round:"+i);
+                response = getHttpService().confirmDeviceID(buildSn, cpuSn, imei,
+                        wifiMac, blueToothMac, serialNo, androidID, pLocalDeviceID);
+                if (response != null) {
+                    Log.e("yhq", "deviceID response:" + response.getDeviceID());
+                    return response;
+                }
+            } catch (Exception pE) {
+                pE.printStackTrace();
+                if(!(pE instanceof TimeoutException)){
+                    throw pE;
+                }
+            }
+        }
+
+        throw new TimeoutException("after retry 3 time, confirm deivce id still timeout");
     }
 }
