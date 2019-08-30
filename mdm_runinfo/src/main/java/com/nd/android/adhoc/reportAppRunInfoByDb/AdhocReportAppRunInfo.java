@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.reportAppRunning;
+package com.nd.android.adhoc.reportAppRunInfoByDb;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,15 +11,15 @@ import com.google.gson.reflect.TypeToken;
 import com.nd.android.adhoc.IAppListListenner;
 import com.nd.android.adhoc.RunningAppWatchManager;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
+import com.nd.android.adhoc.db.entity.MdmRunInfoEntity;
+import com.nd.android.adhoc.db.entity.intfc.IMdmRunInfoEntity;
+import com.nd.android.adhoc.db.operator.MdmRunInfoDbOperatorFactory;
 import com.nd.android.adhoc.utils.AppRunInfoReportConstant;
 import com.nd.android.adhoc.utils.AppRunInfoReportUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,13 +31,12 @@ import java.util.Map;
 /**
  * APP运行统计类
  */
-@Deprecated
-public class AdhocReportAppRunning {
-    private static final String TAG = "AdhocReportAppRunning";
-    private static AdhocReportAppRunning instance;
+public class AdhocReportAppRunInfo {
+    private static final String TAG = "AdhocReportAppRunInfo";
+    private static AdhocReportAppRunInfo instance;
 
     /**上一次检查完，正在运行的APP*/
-    private Map<String, RunningPackageInfo> mMapRunningApps = new HashMap<>();
+    private Map<String, MdmRunInfoEntity> mMapRunningApps = new HashMap<>();
 
     /**须排除不统计的包名*/
     private HashSet<String> mSetExcluded;
@@ -54,9 +53,9 @@ public class AdhocReportAppRunning {
 
     private final Object mSyncObject = new Object();
 
-    public synchronized static AdhocReportAppRunning getInstance() {
+    public synchronized static AdhocReportAppRunInfo getInstance() {
         if (instance == null) {
-            instance = new AdhocReportAppRunning();
+            instance = new AdhocReportAppRunInfo();
         }
         return instance;
     }
@@ -66,7 +65,7 @@ public class AdhocReportAppRunning {
         mSetExcluded.add("com.nd.pad.eci.demo");
     }
 
-    private AdhocReportAppRunning() {
+    private AdhocReportAppRunInfo() {
         mGson = new GsonBuilder().create();
         generateExcluedPackages();
     }
@@ -74,6 +73,7 @@ public class AdhocReportAppRunning {
     public void deal(){
         synchronized (mSyncObject){
             if(!mbIsWathcing){
+                AdhocAppRunningDataTransfer.convertSpToDb();
                 loadCache();
                 RunningAppWatchManager.getInstance().addListeners(mAppListListenner);
                 RunningAppWatchManager.getInstance().watch();
@@ -91,7 +91,7 @@ public class AdhocReportAppRunning {
             RunningAppWatchManager.getInstance().removeListeners(mAppListListenner);
 
             //取消上报
-            getCurrentToReportHourData().stopReporting();
+            getCurrentToReportDayData().stopReporting();
             destroyCurToReportHourData();
 
             //清除缓存
@@ -139,13 +139,13 @@ public class AdhocReportAppRunning {
         ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
         spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP, mGson.toJson(mMapRunningApps));
 
-        getCurrentToReportHourData().cacheData();
+        getCurrentToReportDayData().cacheData();
         mlLastWriteCacheTime = System.currentTimeMillis();
     }
 
     private void reportToServer(){
         Logger.i(TAG, "dealReportToServer");
-        getCurrentToReportHourData().dealReportToServer(false);
+        getCurrentToReportDayData().dealReportToServer(false);
         mlLastReportTime = System.currentTimeMillis();
     }
 
@@ -155,14 +155,14 @@ public class AdhocReportAppRunning {
         }
 //        Logger.i(TAG, "开始在内存中记录");
         //先重置状态
-        for (Map.Entry<String, RunningPackageInfo> entry : mMapRunningApps.entrySet()) {
+        for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
             entry.getValue().setMbRunningListContainsThis(false);
         }
 
         PackageManager pm = AdhocBasicConfig.getInstance().getAppContext().getPackageManager();
 
         List<PackageInfo> listOpen = new ArrayList<>();
-        List<RunningPackageInfo> listClosed = new ArrayList<>();
+        List<MdmRunInfoEntity> listClosed = new ArrayList<>();
         for (PackageInfo packageInfo : runningList){
             if(mSetExcluded.contains(packageInfo.packageName)){
                 continue;
@@ -177,7 +177,7 @@ public class AdhocReportAppRunning {
         }
 
         //现在根据map里的标记取出map里有，而当前运行列表里没有的，说明APP被关闭了
-        for (Map.Entry<String, RunningPackageInfo> entry : mMapRunningApps.entrySet()) {
+        for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
             if(!entry.getValue().isMbRunningListContainsThis()){
                 listClosed.add(entry.getValue());
             }
@@ -185,48 +185,48 @@ public class AdhocReportAppRunning {
 
         //处理新打开的APP
         for(PackageInfo info : listOpen){
-            RunningPackageInfo newPack = new RunningPackageInfo(
-                    java.util.UUID.randomUUID().toString(),
+            boolean bToReportDataContainsPack = getCurrentToReportDayData().getMapApps().containsKey(info.packageName);
+            MdmRunInfoEntity newPack = new MdmRunInfoEntity(
+                    bToReportDataContainsPack ? getCurrentToReportDayData().getMapApps().get(info.packageName).getId():
+                            java.util.UUID.randomUUID().toString(),
                     info.packageName,
                     pm.getApplicationLabel(info.applicationInfo).toString());
             mMapRunningApps.put(info.packageName, newPack);
-
-            if(!getCurrentToReportHourData().getMapApps().containsKey(info.packageName)){
-                getCurrentToReportHourData().getMapApps().put(info.packageName, newPack);
+            if(!bToReportDataContainsPack){
+                getCurrentToReportDayData().getMapApps().put(info.packageName, newPack);
             }
-            getCurrentToReportHourData().getMapApps().get(info.packageName).onOpen();
+            getCurrentToReportDayData().getMapApps().get(info.packageName).onOpen();
         }
 
         //处理被关闭的APP
-        for(RunningPackageInfo info : listClosed){
+        for(MdmRunInfoEntity info : listClosed){
             mMapRunningApps.remove(info.getPackageName());
 
-            if(getCurrentToReportHourData().getMapApps().containsKey(info.getPackageName())){
-                getCurrentToReportHourData().getMapApps().get(info.getPackageName()).onClose();
+            if(getCurrentToReportDayData().getMapApps().containsKey(info.getPackageName())){
+                getCurrentToReportDayData().getMapApps().get(info.getPackageName()).onClose();
             }
         }
 
         //启动时，有可能从缓存里读出正在运行的app，但是本时段的需上传的为空，这里重新再添加一下
-        for (Map.Entry<String, RunningPackageInfo> entry : mMapRunningApps.entrySet()) {
-            if(!getCurrentToReportHourData().getMapApps().containsKey(entry.getKey())){
+        for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
+            if(!getCurrentToReportDayData().getMapApps().containsKey(entry.getKey())){
                 Logger.i(TAG, "readd open apps");
-                getCurrentToReportHourData().getMapApps().put(entry.getKey(), entry.getValue());
-                getCurrentToReportHourData().getMapApps().get(entry.getKey()).setOpenStatus();
+                getCurrentToReportDayData().getMapApps().put(entry.getKey(), entry.getValue());
+                getCurrentToReportDayData().getMapApps().get(entry.getKey()).setOpenStatus();
             }
         }
-//        Logger.i(TAG, "内存中记录结束");
     }
 
     private void destroyCurToReportHourData(){
-        mToReportHourData = null;
+        mToReportDayData = null;
     }
 
-    private AdhocReportAppListHourData mToReportHourData;
-    private AdhocReportAppListHourData getCurrentToReportHourData(){
-        if(null == mToReportHourData){
-            mToReportHourData = new AdhocReportAppListHourData();
+    private AdhocReportAppListDayData mToReportDayData;
+    private AdhocReportAppListDayData getCurrentToReportDayData(){
+        if(null == mToReportDayData){
+            mToReportDayData = new AdhocReportAppListDayData();
         }
-        return mToReportHourData;
+        return mToReportDayData;
     }
 
     private void loadCache(){
@@ -235,7 +235,7 @@ public class AdhocReportAppRunning {
         String strCache = spModel.getString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP, "");
 
         if(!TextUtils.isEmpty(strCache)){
-            mMapRunningApps = mGson.fromJson(strCache, new TypeToken<HashMap<String, RunningPackageInfo>>(){}.getType());
+            mMapRunningApps = mGson.fromJson(strCache, new TypeToken<HashMap<String, MdmRunInfoEntity>>(){}.getType());
         }
 
         //如果缓存里没有上次上报时间，就把当前时段的上报时间写上去，表示上一个时间段的数据已在当前时段汇报过, 这样与后续逻辑统一
@@ -243,48 +243,51 @@ public class AdhocReportAppRunning {
             spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, System.currentTimeMillis());
         }
 
-        //上报可能没及时上报的数据，要在恢复缓存数据之前处理这个，否则数据被覆盖
-        String strToReportCache = spModel.getString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
-        if(!TextUtils.isEmpty(strToReportCache)){
-            try {
-                getCurrentToReportHourData().reportToServer(new JSONObject(strToReportCache));
-            } catch (JSONException e) {
-                Logger.e(TAG, "什么鸟数据");
-                e.printStackTrace();
-                spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
+        //取出当天的APP缓存
+        List<IMdmRunInfoEntity> listEntity = MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().getCurDayRunInfo();
+        generateToReportData(listEntity);
+
+        //取出上次缓存时间与当前时间做比较。
+        //如果超过20分钟则认为系统关闭，将上面取得的runningapp里的APP在对应数据库中做一次关闭操作，然后清空runningap
+        //如果未超过20分钟，则不做处理
+        if(!AdhocDataCheckUtils.isCollectionEmpty(listEntity)){
+            long lCurTimeStamp = System.currentTimeMillis();
+            long lCacheTimeStamp = listEntity.get(0).getDayBeginTimeStamp();
+
+            final long CLOSE_APP_RANGE_TIME = 20 * 60 * 1000;
+            if(lCurTimeStamp - lCacheTimeStamp > CLOSE_APP_RANGE_TIME){
+                for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
+                    if(getCurrentToReportDayData().getMapApps().containsKey(entry.getKey())){
+                        getCurrentToReportDayData().getMapApps().get(entry.getKey()).fillUseTime(lCacheTimeStamp + CLOSE_APP_RANGE_TIME);
+                    }
+                }
+                mMapRunningApps.clear();
             }
         }
 
-        strCache = spModel.getString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_APP_LIST);
-        if(!TextUtils.isEmpty(strCache)){
-            getDataFromJson(strCache);
-        }
+        //上报今天之前的数据
+        RunInfoReportHelper.reportToServerBusiness();
     }
 
     /**
-     * Gson在OPS上莫名其妙的无法反序列化OpsReportAppListHourData对象，这里逐个反序列化
-     * @param strData
+     * 将数据库里暂存的applist转换到内存里
+     * @param listEntity listEntity
      */
-    private void getDataFromJson(String strData){
-        Logger.i(TAG, "begin getDataFromJson");
-        mToReportHourData = new AdhocReportAppListHourData();
-        try {
-            JSONObject jsonData = new JSONObject(strData);
-            mToReportHourData.setMlMsOfCurHour(jsonData.optLong("time"));
-            JSONArray array = jsonData.optJSONArray("info");
-            List<RunningPackageInfo> listApps = new ArrayList<>();
-            for(int index = 0; index < array.length(); index++){
-                RunningPackageInfo info = mGson.fromJson(array.get(index).toString(), RunningPackageInfo.class);
-                listApps.add(info);
-            }
-            mToReportHourData.setListApps(listApps);
-            mToReportHourData.holdMap();
-        }catch (JSONException e ){
-            Logger.e(TAG, "not valid cache");
-            ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_APP_LIST, "");
+    private void generateToReportData(List<IMdmRunInfoEntity> listEntity){
+        Logger.i(TAG, "begin generateToReportData");
+        if(AdhocDataCheckUtils.isCollectionEmpty(listEntity)){
+            return;
         }
-        Logger.i(TAG, "end getDataFromJson");
+        mToReportDayData = new AdhocReportAppListDayData();
+        mToReportDayData.setMlMsOfCurHour(listEntity.get(0).getDayBeginTimeStamp());
+        List<MdmRunInfoEntity> listApps = new ArrayList<>();
+        for(int index = 0; index < listEntity.size(); index++){
+            IMdmRunInfoEntity entity = listEntity.get(index);
+            if(entity instanceof MdmRunInfoEntity){
+                listApps.add((MdmRunInfoEntity)entity);
+            }
+        }
+        mToReportDayData.setListApps(listApps);
+        mToReportDayData.holdMap();
     }
-
 }
