@@ -1,8 +1,10 @@
 package com.nd.android.adhoc.login;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitPriority;
@@ -51,8 +53,9 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
                         }
 
                         Log.e("yhq", "init Device error:" + e.getMessage());
-//                        updatePolicyAsync();
-                        updatePolicy();
+                        if(!TextUtils.isEmpty(DeviceInfoManager.getInstance().getDeviceID())) {
+                            updatePolicy();
+                        }
                         pCallback.onSuccess();
                     }
 
