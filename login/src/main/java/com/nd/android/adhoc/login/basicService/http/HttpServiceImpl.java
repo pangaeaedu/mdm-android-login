@@ -20,6 +20,8 @@ import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class HttpServiceImpl implements IHttpService {
     public HttpServiceImpl() {
     }
@@ -120,13 +122,27 @@ public class HttpServiceImpl implements IHttpService {
         return result;
     }
 
+//    @Override
+//    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
+//                                                   String pWifiMac, String pLanMac,
+//                                                   String pBlueToothMac, String pSerialNo,
+//                                                   String pAndroidID, String pDeviceToken) throws Exception {
+//        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+//        ConfirmDeviceIDResponse result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+//                pLanMac, pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
+//
+//        if (!result.isSuccess()) {
+//            throw new ConfirmIDServerException("confirm id not success");
+//        }
+//
+//        return result;
+//    }
+
     @Override
-    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
-                                                   String pWifiMac, String pBlueToothMac, String pSerialNo,
-                                                   String pAndroidID, String pDeviceToken) throws Exception {
+    public ConfirmDeviceIDResponse confirmDeviceID(Map<String, Object> pHardwareMap,
+                                                   String pDeviceID) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-        ConfirmDeviceIDResponse result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
-                pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
+        ConfirmDeviceIDResponse result = dao.confirmDeviceID(pHardwareMap, pDeviceID);
 
         if (!result.isSuccess()) {
             throw new ConfirmIDServerException("confirm id not success");

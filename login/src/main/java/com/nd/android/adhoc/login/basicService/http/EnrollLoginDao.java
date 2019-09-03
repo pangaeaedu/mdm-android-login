@@ -1,6 +1,5 @@
 package com.nd.android.adhoc.login.basicService.http;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -19,6 +18,7 @@ import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.enumConst.DeviceType;
 import com.nd.android.adhoc.login.exception.GetUserInfoServerException;
 import com.nd.android.adhoc.login.exception.LoginUserServerException;
+import com.nd.android.adhoc.login.processOptimization.utils.LoginArgumentUtils;
 import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
 import com.nd.android.adhoc.loginapi.exception.BindPushIDServerException;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
@@ -193,38 +193,63 @@ public class EnrollLoginDao extends AdhocHttpDao {
    "devicetype":1  //设备类型
    "devicetoken":"xxxxxxxx" //新的devicetoken
     */
-    public ConfirmDeviceIDResponse confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                                   String pBlueToothMac, String pSerialNo, String pAndroidID,
-                                                   String pDeviceID) throws Exception{
-        Map<String, Object> mapHardware = new HashMap<>();
+//    public ConfirmDeviceIDResponse confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
+//                                                      String pBlueToothMac, String pSerialNo, String pAndroidID,
+//                                                      String pDeviceID) throws Exception{
+//        Map<String, Object> mapHardware = new HashMap<>();
+//
+//        if(!TextUtils.isEmpty(pBuildSn)) {
+//            mapHardware.put("build_sn", pBuildSn);
+//        }
+//
+//        if(!TextUtils.isEmpty(pCpuSn)){
+//            mapHardware.put("cpu_sn", pCpuSn);
+//        }
+//
+//        if(!TextUtils.isEmpty(pIMEI)) {
+//            mapHardware.put("imei", pIMEI);
+//        }
+//
+//        if(!TextUtils.isEmpty(pWifiMac)) {
+//            mapHardware.put("wifi_mac", pWifiMac);
+//        }
+//
+//        if(!TextUtils.isEmpty(pBlueToothMac)) {
+//            mapHardware.put("btooth_mac", pBlueToothMac);
+//        }
+//
+//        if(!TextUtils.isEmpty(pSerialNo)){
+//            mapHardware.put("serial_no", pSerialNo);
+//        }
+//
+//        if(!TextUtils.isEmpty(pAndroidID)) {
+//            mapHardware.put("android_id", pAndroidID);
+//        }
+//
+//        Map<String, Object> data = new HashMap<>();
+//        data.put("hardware", mapHardware);
+//        data.put("type", DeviceType.Android.getValue());  //设备类型，1代表android
+//        data.put("device_token", pDeviceID);
+//
+//        try {
+//            Gson gson = new GsonBuilder().create();
+//            String content = gson.toJson(data);
+//
+//            return postAction().post("/v1.1/enroll/getDeviceToken/", ConfirmDeviceIDResponse.class,
+//                    content, null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+//                    +"/v1.1/enroll/getDeviceToken/"+" " + "Msg:"+e.getMessage());
+//            throw new ConfirmIDServerException(e.getMessage());
+//        }
+//    }
 
-        if(!TextUtils.isEmpty(pBuildSn)) {
-            mapHardware.put("build_sn", pBuildSn);
-        }
-
-        if(!TextUtils.isEmpty(pCpuSn)){
-            mapHardware.put("cpu_sn", pCpuSn);
-        }
-
-        if(!TextUtils.isEmpty(pIMEI)) {
-            mapHardware.put("imei", pIMEI);
-        }
-
-        if(!TextUtils.isEmpty(pWifiMac)) {
-            mapHardware.put("wifi_mac", pWifiMac);
-        }
-
-        if(!TextUtils.isEmpty(pBlueToothMac)) {
-            mapHardware.put("btooth_mac", pBlueToothMac);
-        }
-
-        if(!TextUtils.isEmpty(pSerialNo)){
-            mapHardware.put("serial_no", pSerialNo);
-        }
-
-        if(!TextUtils.isEmpty(pAndroidID)) {
-            mapHardware.put("android_id", pAndroidID);
-        }
+    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
+                                                   String pWifiMac, String pLanMac, String pBlueToothMac,
+                                                   String pSerialNo, String pAndroidID, String pDeviceID) throws Exception {
+        Map<String, Object> mapHardware = LoginArgumentUtils.genHardwareMap(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+                pLanMac, pBlueToothMac, pSerialNo, pAndroidID);
 
         Map<String, Object> data = new HashMap<>();
         data.put("hardware", mapHardware);
@@ -239,10 +264,31 @@ public class EnrollLoginDao extends AdhocHttpDao {
                     content, null);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/getDeviceToken/"+" " + "Msg:"+e.getMessage());
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/getDeviceToken/" + " " + "Msg:" + e.getMessage());
             throw new ConfirmIDServerException(e.getMessage());
-//            throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }
+
+    public ConfirmDeviceIDResponse confirmDeviceID(Map<String, Object> pHardwareMap,
+                                                   String pDeviceID) throws Exception {
+        Map<String, Object> data = new HashMap<>();
+        data.put("hardware", pHardwareMap);
+        data.put("type", DeviceType.Android.getValue());  //设备类型，1代表android
+        data.put("device_token", pDeviceID);
+
+        try {
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(data);
+
+            return postAction().post("/v1.1/enroll/getDeviceToken/", ConfirmDeviceIDResponse.class,
+                    content, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/getDeviceToken/" + " " + "Msg:" + e.getMessage());
+            throw new ConfirmIDServerException(e.getMessage());
+        }
+    }
+
 }
