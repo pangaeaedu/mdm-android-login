@@ -15,9 +15,11 @@ import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
+import com.nd.android.adhoc.login.processOptimization.utils.LoginArgumentUtils;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
-import com.nd.android.adhoc.loginapi.exception.RetrieveWifiMacException;
+import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
 
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
@@ -273,8 +275,10 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String imei = AdhocDeviceUtil.getIMEI(context);
         String wifiMac = AdhocDeviceUtil.getWifiMac(context);
 
-        if(TextUtils.isEmpty(wifiMac)){
-            throw new RetrieveWifiMacException();
+        String lanMac = AdhocDeviceUtil.getEthernetMac();
+
+        if(TextUtils.isEmpty(wifiMac) && TextUtils.isEmpty(lanMac)){
+            throw new RetrieveMacException();
         }
 
         String blueToothMac = AdhocDeviceUtil.getBloothMac();
@@ -282,15 +286,17 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String androidID = AdhocDeviceUtil.getAndroidId(context);
 
         Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
-        +" wifiMac:"+wifiMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
+        +" wifiMac:"+wifiMac+" lanMac:"+lanMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
         +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
 
         ConfirmDeviceIDResponse response = null;
         for (int i = 0; i <= 2; i++) {
             try {
                 Log.e("yhq", "confirm device id round:"+i);
-                response = getHttpService().confirmDeviceID(buildSn, cpuSn, imei,
-                        wifiMac, blueToothMac, serialNo, androidID, pLocalDeviceID);
+
+                Map<String, Object> hardwareMaps = LoginArgumentUtils.genHardwareMap(buildSn,
+                        cpuSn, imei, wifiMac, lanMac, blueToothMac, serialNo, androidID);
+                response = getHttpService().confirmDeviceID(hardwareMaps, pLocalDeviceID);
                 if (response != null) {
                     Log.e("yhq", "deviceID response:" + response.getDeviceID());
                     return response;
