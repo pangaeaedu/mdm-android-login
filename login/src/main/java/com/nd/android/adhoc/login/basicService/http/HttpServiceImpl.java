@@ -14,6 +14,7 @@ import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.exception.LoginUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
 import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 import com.nd.android.mdm.biz.env.IMdmEnvModule;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
@@ -66,6 +67,10 @@ public class HttpServiceImpl implements IHttpService {
         BindPushIDResponse result = dao.bindDeviceIDToPushID(pDeviceID, pPushID);
 
         if(!result.isSuccess()){
+            if(result.isDeviceTokenNotFound()){
+                throw new DeviceTokenNotFoundException();
+            }
+
             throw new Exception("Bind Device Failed");
         }
 

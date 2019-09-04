@@ -1,7 +1,7 @@
 package com.nd.android.adhoc.login.basicService.data.http;
 
 /**
- *  "errcode":1  //0=成功，-1=失败
+ *  "errcode":1  //0=成功，-1=失败 300000=device_token 不存在失败
  "requestid":"08002800A8C5" //设备的唯一标识，必填
  */
 public class BindPushIDResponse {
@@ -10,5 +10,9 @@ public class BindPushIDResponse {
 
     public boolean isSuccess(){
         return errcode == 0;
+    }
+
+    public boolean isDeviceTokenNotFound(){
+        return errcode == 300000;
     }
 }

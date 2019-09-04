@@ -9,6 +9,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
@@ -17,6 +18,7 @@ import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusRespon
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.utils.LoginArgumentUtils;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
 import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
 
 import java.util.Map;
@@ -87,6 +89,10 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             e.printStackTrace();
                             Log.e("yhq", "bind push id error:" + e.getMessage());
                             mSubBindPushID = null;
+
+                            if(e instanceof DeviceTokenNotFoundException) {
+                                clearSpDeviceIDThenQuit();
+                            }
                         }
 
                         @Override
@@ -102,6 +108,15 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
             Log.e(TAG, "push sdk onDisconnected");
         }
     };
+
+    private void clearSpDeviceIDThenQuit(){
+        Log.e("yhq", "clearSpDeviceIDThenQuit");
+
+        DeviceIDSPUtils.saveDeviceIDToSp("");
+
+        ActivityStackManager.INSTANCE.closeAllActivitys();
+        System.exit(0);
+    }
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
         Log.e("yhq", "actualQueryDeviceStatus:"+pDeviceID);
