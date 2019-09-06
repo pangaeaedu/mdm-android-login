@@ -22,12 +22,22 @@ public class DeviceInfoManager {
     private DeviceInfoManager() {
     }
 
+    private int mUserAutoLogin = 0;
+
     private String mDeviceID = "";
     private DeviceStatus mDeviceStatus = null;
 
     private BehaviorSubject<String> mPushIDSubject = BehaviorSubject.create();
 
     private BehaviorSubject<String> mConfirmDeviceIDSubject = BehaviorSubject.create();
+
+    public void setUserAutoLogin(int pAutoLogin){
+        mUserAutoLogin = pAutoLogin;
+    }
+
+    public int getUserAutoLogin(){
+        return mUserAutoLogin;
+    }
 
     public void setDeviceID(@NonNull String pDeviceID) {
         mDeviceID = pDeviceID;

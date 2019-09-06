@@ -63,9 +63,11 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                 return;
                             }
 
+                            int userAutoLogin = DeviceInfoManager.getInstance().getUserAutoLogin();
                             QueryDeviceStatusResponse result = getHttpService()
-                                    .getDeviceStatus(pDeviceID, serialNum);
-                            Log.e("yhq", "QueryDeviceStatusResponse:" + result.toString());
+                                    .getDeviceStatus(pDeviceID, serialNum, userAutoLogin);
+                            Log.e("yhq", "user auto " + "login:" + userAutoLogin +
+                                    "QueryDeviceStatusResponse:" + result.toString());
                             saveLoginInfo(result.getUsername(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
