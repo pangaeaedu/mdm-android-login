@@ -105,7 +105,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         @Override
         public void onDisconnected() {
-            Log.e(TAG, "push sdk onDisconnected");
+            Log.e("yhq", "push sdk onDisconnected");
         }
     };
 

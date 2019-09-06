@@ -156,7 +156,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             GetActivateUserResultResponse queryResult = getHttpService()
                     .queryActivateResult(pDeviceID, pRequestID);
             if (!queryResult.isSuccess()) {
-                Logger.e(TAG, "GetActivateUserResultResponse:"+queryResult.toString());
+                Logger.e("yhq", "GetActivateUserResultResponse:"+queryResult.toString());
                 if (queryResult.isActivateStillProcessing()) {
                     CrashAnalytics.INSTANCE.reportException(new Exception("queryActivateResult not finish, still processing"));
                     continue;
