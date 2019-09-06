@@ -318,7 +318,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 }
             } catch (Exception pE) {
                 pE.printStackTrace();
-                if(!(pE instanceof TimeoutException)){
+                if(!(pE instanceof ConfirmIDServerException)){
                     throw pE;
                 }
             }
