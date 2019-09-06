@@ -55,10 +55,32 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
     public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum)
             throws Exception {
+//        try {
+//            Map<String, Object> map = new HashMap<>();
+//            map.put("device_token", pDeviceID);
+//            map.put("serial_no", pSerialNum);
+//            map.put("type", DeviceType.Android.getValue());
+//
+//            Gson gson = new GsonBuilder().create();
+//            String content = gson.toJson(map);
+//
+//            return postAction().post("/v1.1/enroll/getDeviceStatus/", QueryDeviceStatusResponse.class,
+//                    content, null);
+//        }catch (Exception pE){
+//            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+//                    +"/v1.1/enroll/getDeviceStatus/"+" " + "Msg:"+pE.getMessage());
+//            throw new QueryDeviceStatusServerException(pE.getMessage());
+//        }
+        return queryDeviceStatus(pDeviceID, pSerialNum, 0);
+    }
+
+    public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum, int
+            pAutoLogin) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
             map.put("serial_no", pSerialNum);
+            map.put("login_auto", pAutoLogin);
             map.put("type", DeviceType.Android.getValue());
 
             Gson gson = new GsonBuilder().create();

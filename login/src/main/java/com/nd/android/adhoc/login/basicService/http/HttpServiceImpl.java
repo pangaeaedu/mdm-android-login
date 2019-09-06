@@ -158,11 +158,18 @@ public class HttpServiceImpl implements IHttpService {
 
     @Override
     public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception {
+        return getDeviceStatus(pDeviceID, pSerialNum, 0);
+    }
+
+    @Override
+    public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum,
+                                                     int pAutoLogin) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-        QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum);
+        QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum, pAutoLogin);
         if (!result.isSuccess()) {
             throw new QueryDeviceStatusServerException("get device status not success");
         }
+
         return result;
     }
 

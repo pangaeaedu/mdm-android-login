@@ -50,5 +50,8 @@ public interface IHttpService {
 
     QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception;
 
+    QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum, int pAutoLogin)
+            throws Exception;
+
     GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception;
 }
