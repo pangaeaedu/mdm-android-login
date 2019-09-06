@@ -90,6 +90,20 @@ public class HttpServiceImpl implements IHttpService {
         return response;
     }
 
+    public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, ActivateUserType pUserType,
+                                             String pLoginToken, int pRealType) throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo, pUserType,
+                pLoginToken, pRealType);
+
+        if (!response.isSuccess()) {
+            throw new ActivateUserServerException("active user failed");
+        }
+
+        return response;
+    }
+
+
     @Override
     public GetOldTokenResult getOldDeviceToken(String pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
                                     String pBlueToothMac, String pSerialNo, String pDeviceToken)

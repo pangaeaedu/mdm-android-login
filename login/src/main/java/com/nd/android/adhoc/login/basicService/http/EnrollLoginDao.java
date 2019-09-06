@@ -166,6 +166,38 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
     }
 
+    public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
+                                             ActivateUserType pUserType, String pLoginToken,
+                                             int pRealType)
+            throws Exception {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("device_token", pDeviceID);
+            map.put("type", DeviceType.Android.getValue());
+
+            Map<String, String> header = null;
+            header = new HashMap<>();
+            header.put("channel", pUserType.getValue());
+            if (pUserType == ActivateUserType.Uc) {
+                header.put("Authorization", pLoginToken);
+            }
+
+            map.put("realtype", pRealType);
+            map.put("serial_no", pSerialNo);
+
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+
+            return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
+                    content, header);
+        }catch (Exception pE){
+            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1.1/enroll/activate/"+" " + "Msg:"+pE.getMessage());
+            throw new ActivateUserServerException(pE.getMessage());
+        }
+
+    }
+
     public void requestPolicySet(String pDeviceToken, long pTime, JSONObject pData) throws
             AdhocHttpException {
         try {

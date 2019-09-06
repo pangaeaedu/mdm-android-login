@@ -7,6 +7,7 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
@@ -63,11 +64,18 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                 return;
                             }
 
-                            int userAutoLogin = DeviceInfoManager.getInstance().getUserAutoLogin();
-                            QueryDeviceStatusResponse result = getHttpService()
-                                    .getDeviceStatus(pDeviceID, serialNum, userAutoLogin);
-                            Log.e("yhq", "user auto " + "login:" + userAutoLogin +
-                                    "QueryDeviceStatusResponse:" + result.toString());
+                            UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                            QueryDeviceStatusResponse result = null;
+                            if (loginConfig != null && loginConfig.isAutoLogin()) {
+                                // 自动登录的情况下，要把autoLogin的值1带上去
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum, loginConfig.getAutoLogin());
+                                Log.e("yhq", "user auto login QueryDeviceStatusResponse:"
+                                        + result.toString());
+                            } else {
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum);
+                                Log.e("yhq", "QueryDeviceStatusResponse:" + result.toString());
+                            }
+
                             saveLoginInfo(result.getUsername(), result.getNickname());
 
                             DeviceStatus curStatus = result.getStatus();
@@ -95,7 +103,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     protected Observable<DeviceStatus> activeUser(final ActivateUserType pUserType,
                                                   final String pLoginToken) {
-        Log.e("yhq", "activeUser:"+pUserType.getValue());
+        Log.e("yhq", "activeUser:" + pUserType.getValue());
         return Observable.create(new Observable.OnSubscribe<DeviceStatus>() {
             @Override
             public void call(Subscriber<? super DeviceStatus> pSubscriber) {
@@ -110,14 +118,22 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         return;
                     }
 
-                    ActivateUserResponse response = getHttpService().activateUser(deviceID,
-                            serialNum, pUserType, pLoginToken);
+                    ActivateUserResponse response = null;
+                    UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                    if (loginConfig != null && loginConfig.isAutoLogin()) {
+                        //自动登录的情况下，需要把realtype传上去
+                        response = getHttpService().activateUser(deviceID,
+                                serialNum, pUserType, pLoginToken, loginConfig.getActivateRealType());
+                    } else {
+                        response = getHttpService().activateUser(deviceID, serialNum, pUserType, pLoginToken);
+                    }
+
                     queryActivateResultUntilTimesReach(3, deviceID, response.getRequestid(),
                             pSubscriber);
                 } catch (Exception e) {
                     // 如果激活用户异常，要把本地的状态更改成Init状态
                     DeviceInfoManager.getInstance().setCurrentStatus(DeviceStatus.Init);
-                    Log.e("yhq", "activate user error:"+e.getMessage());
+                    Log.e("yhq", "activate user error:" + e.getMessage());
                     CrashAnalytics.INSTANCE.reportException(e);
                     pSubscriber.onError(e);
                 }
