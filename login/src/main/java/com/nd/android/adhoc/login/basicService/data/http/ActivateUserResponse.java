@@ -23,6 +23,32 @@ public class ActivateUserResponse {
         return true;
     }
 
+    public void setErrcode(int pErrcode){
+        errcode = pErrcode;
+    }
+
+    public void setResult(String pResult){
+        result = pResult;
+    }
+
+    public String getResult(){
+        return result;
+    }
+
+    public int getDelayTime(){
+        try {
+            return Integer.parseInt(result);
+        }catch (Exception pE){
+
+        }
+
+        return 7200;
+
+    }
+    public int getErrcode(){
+        return errcode;
+    }
+
     public String getRequestid(){
         return requestid;
     }
