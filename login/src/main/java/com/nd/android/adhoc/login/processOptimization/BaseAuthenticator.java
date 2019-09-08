@@ -121,9 +121,8 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     ActivateUserResponse response = null;
                     UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
                     if (loginConfig != null && loginConfig.isAutoLogin()) {
-                        //自动登录的情况下，需要把realtype传上去
-                        response = getHttpService().activateUser(deviceID,
-                                serialNum, pUserType, pLoginToken, loginConfig.getActivateRealType());
+                        retryActivateUser(deviceID, serialNum, pUserType, pLoginToken,
+                                loginConfig.getActivateRealType());
                     } else {
                         response = getHttpService().activateUser(deviceID, serialNum, pUserType, pLoginToken);
                     }
@@ -139,6 +138,26 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                 }
             }
         });
+    }
+
+    //自动登录的情况下，需要把realtype传上去，重试三次，因为大量请求的情况下，激活有可能失败
+    private ActivateUserResponse retryActivateUser(String pDeviceID, String pSerialNum,
+                                                   ActivateUserType pUserType, String pLoginToken,
+                                                   int pActivateRealType) throws Exception {
+        //自动登录的情况下，需要把realtype传上去，重试三次，因为大
+        final int RetryTime = 3;
+        for (int i = 0; i < RetryTime; i++) {
+            try {
+                ActivateUserResponse response = getHttpService().activateUser(pDeviceID,
+                        pSerialNum, pUserType, pLoginToken, pActivateRealType);
+                return response;
+            } catch (Exception pE) {
+                pE.printStackTrace();
+            }
+        }
+
+        System.exit(0);
+        return null;
     }
 
     protected void saveLoginInfo(String pUserName, String pNickName) {
