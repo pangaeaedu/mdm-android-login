@@ -96,10 +96,6 @@ public class HttpServiceImpl implements IHttpService {
         ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo, pUserType,
                 pLoginToken, pRealType);
 
-        if (!response.isSuccess()) {
-            throw new ActivateUserServerException("active user failed");
-        }
-
         return response;
     }
 
