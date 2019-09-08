@@ -1,6 +1,9 @@
 package com.nd.android.adhoc.login.processOptimization;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -8,6 +11,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
@@ -24,6 +28,8 @@ import com.nd.android.adhoc.login.info.AdhocUserInfoImpl;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.QueryActivateUserResultException;
 import com.nd.android.adhoc.loginapi.exception.QueryActivateUserTimeoutException;
+
+import java.util.Random;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -107,6 +113,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         return Observable.create(new Observable.OnSubscribe<DeviceStatus>() {
             @Override
             public void call(Subscriber<? super DeviceStatus> pSubscriber) {
+                UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
                 try {
                     String deviceID = DeviceInfoManager.getInstance().getDeviceID();
                     String serialNum = DeviceHelper.getSerialNumberThroughControl();
@@ -119,7 +126,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     }
 
                     ActivateUserResponse response = null;
-                    UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+
                     if (loginConfig != null && loginConfig.isAutoLogin()) {
                         retryActivateUser(deviceID, serialNum, pUserType, pLoginToken,
                                 loginConfig.getActivateRealType());
@@ -134,6 +141,9 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     DeviceInfoManager.getInstance().setCurrentStatus(DeviceStatus.Init);
                     Log.e("yhq", "activate user error:" + e.getMessage());
                     CrashAnalytics.INSTANCE.reportException(e);
+                    if (loginConfig != null && loginConfig.isAutoLogin()) {
+                        System.exit(0);
+                    }
                     pSubscriber.onError(e);
                 }
             }
@@ -154,6 +164,12 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             } catch (Exception pE) {
                 pE.printStackTrace();
             }
+
+            try {
+                Thread.sleep(getRetrySleepSec()*1000);
+            }catch (Exception pE){
+                pE.printStackTrace();
+            }
         }
 
         System.exit(0);
@@ -166,9 +182,15 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         getConfig().saveNickname(pNickName);
     }
 
+    private int getRetrySleepSec(){
+        Random r = new Random();
+        return r.nextInt(7200)+20;
+    }
     protected void queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
                                                       String pRequestID, Subscriber<? super DeviceStatus> pSubscriber) throws Exception {
         Log.e("yhq", "queryActivateResultUntilTimesReach");
+        UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+
         for (int i = 0; i < pTimes; i++) {
             Thread.sleep((i * 3 + 1) * 1000);
 
@@ -195,6 +217,17 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             mDeviceStatusListener.onDeviceStatusChanged(queryResult.getStatus());
             pSubscriber.onNext(queryResult.getStatus());
             pSubscriber.onCompleted();
+
+            if(loginConfig != null && loginConfig.isAutoLogin()){
+                if(DeviceStatus.isStatusUnLogin(queryResult.getStatus())){
+                    System.exit(0);
+                } else {
+                    Context context = AdhocBasicConfig.getInstance().getAppContext();
+                    Intent intent = new Intent();
+                    intent.setAction("com.nd.sdp.adhoc.main.ui.login.activated");
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                }
+            }
             return;
         }
 
