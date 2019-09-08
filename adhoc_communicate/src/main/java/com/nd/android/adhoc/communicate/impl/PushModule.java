@@ -389,7 +389,8 @@ class PushModule implements IPushModule {
                 continue;
             }
 
-            if(System.currentTimeMillis() - data.getSendTime() > 1000 * 60){
+            long expireTime = MdmTransferConfig.getRequestTimeout();
+            if(System.currentTimeMillis() - data.getSendTime() > expireTime){
                 Log.e(TAG, "discardTimeoutMsg id:"+data.getMsgID());
                 mUpStreamMsgCache.remove(data);
             }else{
@@ -404,7 +405,9 @@ class PushModule implements IPushModule {
             if (data == null) {
                 continue;
             }
-            if(System.currentTimeMillis() - data.getSendTime() < 1000*60){
+
+            long expireTime = MdmTransferConfig.getRequestTimeout();
+            if(System.currentTimeMillis() - data.getSendTime() < expireTime){
                 Log.e(TAG, "resendMsgThenClearCache: msg id:"+data.getMsgID());
                 sendUpStreamMsg(data.getMsgID(), data.getTTLSeconds(), data.getContentType(),
                         data.getContent());
