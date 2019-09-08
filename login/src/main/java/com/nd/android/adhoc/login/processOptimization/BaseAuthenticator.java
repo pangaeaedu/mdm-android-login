@@ -101,16 +101,17 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         } catch (Exception e) {
                             Log.e("yhq", "queryDeviceStatusFromServer error:"+e.getMessage());
                             CrashAnalytics.INSTANCE.reportException(e);
-                            pSubscriber.onError(e);
-
                             //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
                             if(isAutoLogin()){
                                 DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
                                 if(DeviceStatus.isStatusUnLogin(status)){
                                     Log.e("yhq","auto login device status:"+status.toString());
                                     quitAppAfter(120);
+                                    return;
                                 }
                             }
+
+                            pSubscriber.onError(e);
                         }
                     }
                 });
