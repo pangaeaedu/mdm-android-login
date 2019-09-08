@@ -225,6 +225,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             public void onError(Throwable e) {
                                 Log.e("yhq", "init error:"+e.getMessage());
                                 e.printStackTrace();
+
                                 synchronized (DeviceInitiator.this) {
                                     mInitSubject.onError(e);
                                     mInitSubject = null;
@@ -299,8 +300,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String blueToothMac = AdhocDeviceUtil.getBloothMac();
         String serialNo = DeviceHelper.getSerialNumberThroughControl();
         String androidID = AdhocDeviceUtil.getAndroidId(context);
-
-
+        boolean isAutoLogin = isAutoLogin();
 
         ConfirmDeviceIDResponse response = null;
         for (int i = 0; i <= 2; i++) {
@@ -323,10 +323,16 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 }
             } catch (Exception pE) {
                 pE.printStackTrace();
-                if(!(pE instanceof ConfirmIDServerException)){
+                if(!isAutoLogin && !(pE instanceof ConfirmIDServerException)){
                     throw pE;
                 }
             }
+        }
+
+        //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
+        if(isAutoLogin){
+            Log.e("yhq", "confirm device id error, quit");
+            quitAppAfter(120);
         }
 
         throw new TimeoutException("after retry 3 time, confirm deivce id still timeout");

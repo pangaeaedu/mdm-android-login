@@ -72,7 +72,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
                             UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
                             QueryDeviceStatusResponse result = null;
-                            if (loginConfig != null && loginConfig.isAutoLogin()) {
+                            if (isAutoLogin()) {
                                 // 自动登录的情况下，要把autoLogin的值1带上去
                                 result = getHttpService().getDeviceStatus(pDeviceID, serialNum, loginConfig.getAutoLogin());
                                 Log.e("yhq", "user auto login QueryDeviceStatusResponse:"
@@ -102,9 +102,37 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             Log.e("yhq", "queryDeviceStatusFromServer error:"+e.getMessage());
                             CrashAnalytics.INSTANCE.reportException(e);
                             pSubscriber.onError(e);
+
+                            //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
+                            if(isAutoLogin()){
+                                DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
+                                if(DeviceStatus.isStatusUnLogin(status)){
+                                    Log.e("yhq","auto login device status:"+status.toString());
+                                    quitAppAfter(120);
+                                }
+                            }
                         }
                     }
                 });
+    }
+
+    protected boolean isAutoLogin(){
+        UserLoginConfig loginConfig = DeviceInfoManager.getInstance()
+                .getUserLoginConfig();
+        if(loginConfig != null && loginConfig.isAutoLogin()){
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void quitAppAfter(int pSec){
+        try {
+            Log.e("yhq", "quitAppAfter "+pSec);
+            Thread.sleep(pSec*1000);
+            System.exit(0);
+        }catch (Exception pE){
+        }
     }
 
     protected Observable<DeviceStatus> activeUser(final ActivateUserType pUserType,
@@ -128,7 +156,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     ActivateUserResponse response = null;
 
                     if (loginConfig != null && loginConfig.isAutoLogin()) {
-                        retryActivateUser(deviceID, serialNum, pUserType, pLoginToken,
+                        response = retryActivateUser(deviceID, serialNum, pUserType, pLoginToken,
                                 loginConfig.getActivateRealType());
                     } else {
                         response = getHttpService().activateUser(deviceID, serialNum, pUserType, pLoginToken);
@@ -141,8 +169,8 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     DeviceInfoManager.getInstance().setCurrentStatus(DeviceStatus.Init);
                     Log.e("yhq", "activate user error:" + e.getMessage());
                     CrashAnalytics.INSTANCE.reportException(e);
-                    if (loginConfig != null && loginConfig.isAutoLogin()) {
-                        System.exit(0);
+                    if (isAutoLogin()) {
+                        quitAppAfter(120);
                     }
                     pSubscriber.onError(e);
                 }
@@ -155,18 +183,27 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                                    ActivateUserType pUserType, String pLoginToken,
                                                    int pActivateRealType) throws Exception {
         //自动登录的情况下，需要把realtype传上去，重试三次，因为大
+        Log.e("yhq", "retryActivateUser");
         final int RetryTime = 3;
         for (int i = 0; i < RetryTime; i++) {
+            ActivateUserResponse response = null;
             try {
-                ActivateUserResponse response = getHttpService().activateUser(pDeviceID,
+                response = getHttpService().activateUser(pDeviceID,
                         pSerialNum, pUserType, pLoginToken, pActivateRealType);
-                return response;
+                if(response != null && response.getErrcode() == 0){
+                    return response;
+                }
             } catch (Exception pE) {
                 pE.printStackTrace();
             }
 
             try {
-                Thread.sleep(getRetrySleepSec()*1000);
+                if(response != null && response.getErrcode() == -1){
+                    int delayTime = getRetrySleepSec(response.getDelayTime())*1000;
+                    Log.e("yhq", "wait to activate :"+delayTime);
+                    Thread.sleep(delayTime);
+                }
+
             }catch (Exception pE){
                 pE.printStackTrace();
             }
@@ -182,15 +219,14 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         getConfig().saveNickname(pNickName);
     }
 
-    private int getRetrySleepSec(){
+    private int getRetrySleepSec(int limit){
         Random r = new Random();
-        return r.nextInt(7200)+20;
+        return r.nextInt(limit)+20;
     }
+
     protected void queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
                                                       String pRequestID, Subscriber<? super DeviceStatus> pSubscriber) throws Exception {
         Log.e("yhq", "queryActivateResultUntilTimesReach");
-        UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
-
         for (int i = 0; i < pTimes; i++) {
             Thread.sleep((i * 3 + 1) * 1000);
 
@@ -204,10 +240,15 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                 }
 
 
-                Exception exception = new QueryActivateUserResultException(queryResult.getMsgcode());;
-                CrashAnalytics.INSTANCE.reportException(exception);
-                pSubscriber.onError(exception);
-                return;
+                if(isAutoLogin()){
+                    quitAppAfter(120);
+                    return;
+                } else {
+                    Exception exception = new QueryActivateUserResultException(queryResult.getMsgcode());
+                    CrashAnalytics.INSTANCE.reportException(exception);
+                    pSubscriber.onError(exception);
+                    return;
+                }
             }
 
             saveLoginInfo(queryResult.getUsername(), queryResult.getNickname());
@@ -218,8 +259,9 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             pSubscriber.onNext(queryResult.getStatus());
             pSubscriber.onCompleted();
 
-            if(loginConfig != null && loginConfig.isAutoLogin()){
+            if(isAutoLogin()){
                 if(DeviceStatus.isStatusUnLogin(queryResult.getStatus())){
+                    Log.e("yhq", "quit after get activate result");
                     System.exit(0);
                 } else {
                     Context context = AdhocBasicConfig.getInstance().getAppContext();
@@ -228,6 +270,12 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 }
             }
+            return;
+        }
+
+        if(isAutoLogin()){
+            Log.e("yhq", "queryActivateResultUntilTimesReach times reached");
+            quitAppAfter(120);
             return;
         }
 
