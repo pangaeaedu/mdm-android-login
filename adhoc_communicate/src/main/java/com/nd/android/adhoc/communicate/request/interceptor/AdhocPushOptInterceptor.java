@@ -6,6 +6,7 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferConfig;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.communicate.request.operator.AdhocPushRequestOperator;
+import com.nd.android.adhoc.communicate.request.operator.PushFakeResponseManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -62,6 +63,11 @@ class AdhocPushOptInterceptor implements Interceptor {
             return null;
         }
 
-        return AdhocPushRequestOperator.doRequest(UUID.randomUUID().toString(), MdmTransferConfig.getRequestTimeout(), "", content).toBlocking().first();
+
+        String msgID = UUID.randomUUID().toString();
+        PushFakeResponseManager.getInstance().addRequest(msgID, content);
+
+        return AdhocPushRequestOperator.doRequest(msgID, MdmTransferConfig.getRequestTimeout(), "",
+                content).toBlocking().first();
     }
 }
