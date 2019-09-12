@@ -53,7 +53,7 @@ public class PushFakeResponseManager {
                 fakeMsg = PushDataUtils.generateResponse(200, pMsgID, 1, 0,
                         DeviceHelper.getDeviceToken());
             } else {
-                fakeMsg = PushDataUtils.generateResponse(pErrorCode, pMsgID, 1, pErrorCode,
+                fakeMsg = PushDataUtils.generateResponse(505, pMsgID, 1, pErrorCode,
                         DeviceHelper.getDeviceToken());
             }
 
