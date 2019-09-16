@@ -37,10 +37,10 @@ public class PushFakeResponseManager {
     }
 
     public void addRequest(String pMsgID, String pContent){
-        Log.d(TAG, "addRequest:"+pContent);
+        Log.d(TAG, "msgID:"+pMsgID+" addRequest:"+pContent);
         String action = PushDataUtils.getAction(pContent);
         if(action.equalsIgnoreCase("/v1/device/cmdresult/")){
-            Log.d(TAG, "put data:"+pContent);
+            Log.d(TAG, "msgID:"+pMsgID+" put data:"+pContent);
             mCmdResultCache.put(pMsgID, pContent);
         }
     }
