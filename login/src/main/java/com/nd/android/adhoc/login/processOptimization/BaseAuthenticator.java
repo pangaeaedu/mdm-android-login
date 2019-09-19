@@ -1,9 +1,6 @@
 package com.nd.android.adhoc.login.processOptimization;
 
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -11,7 +8,6 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
-import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
@@ -25,6 +21,7 @@ import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusRespon
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.info.AdhocLoginInfoImpl;
 import com.nd.android.adhoc.login.info.AdhocUserInfoImpl;
+import com.nd.android.adhoc.login.utils.DeviceActivateBroadcastUtils;
 import com.nd.android.adhoc.loginapi.ISchoolGroupCodeRetriever;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.QueryActivateUserResultException;
@@ -93,6 +90,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                     }
 
                                     // 把取回的school groupCode放在result中，返回给下一个调用点
+                                    Log.e("yhq", "retrieveGroupCode root group code:"+result.getRootCode());
                                     ISchoolGroupCodeRetriever retriever = interceptors.next();
                                     String schoolGroupCode = retriever.retrieveGroupCode(result.getRootCode());
                                     result.setSelSchoolGroupCode(schoolGroupCode);
@@ -114,6 +112,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                 DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
                                 if(DeviceStatus.isStatusUnLogin(status)){
                                     Log.e("yhq","auto login device status:"+status.toString());
+                                    DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
                                     quitAppAfter(120);
                                     return;
                                 }
@@ -200,6 +199,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     Log.e("yhq", "activate user error:" + e.getMessage());
                     CrashAnalytics.INSTANCE.reportException(e);
                     if (isAutoLogin()) {
+                        DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
                         quitAppAfter(120);
                     }
                     pSubscriber.onError(e);
@@ -210,17 +210,17 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     //自动登录的情况下，需要把realtype传上去，重试三次，因为大量请求的情况下，激活有可能失败
     private ActivateUserResponse retryActivateUser(String pDeviceID, String pSerialNum,
-                                                   String pSchoolRootCode,
+                                                   String pSchoolGroupCode,
                                                    ActivateUserType pUserType, String pLoginToken,
                                                    int pActivateRealType) throws Exception {
         //自动登录的情况下，需要把realtype传上去，重试三次，因为大
-        Log.e("yhq", "retryActivateUser");
+        Log.e("yhq", "retryActivateUser school group code:"+pSchoolGroupCode);
         final int RetryTime = 3;
         for (int i = 0; i < RetryTime; i++) {
             ActivateUserResponse response = null;
             try {
                 response = getHttpService().activateUser(pDeviceID,
-                        pSerialNum, pSchoolRootCode, pUserType, pLoginToken, pActivateRealType);
+                        pSerialNum, pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType);
                 if(response != null && response.getErrcode() == 0){
                     return response;
                 }
@@ -272,6 +272,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
 
                 if(isAutoLogin()){
+                    DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
                     quitAppAfter(120);
                     return;
                 } else {
@@ -287,6 +288,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             notifyLogin(queryResult.getUsername(), queryResult.getNickname());
 
             mDeviceStatusListener.onDeviceStatusChanged(queryResult.getStatus());
+
             pSubscriber.onNext(queryResult.getStatus());
             pSubscriber.onCompleted();
 
@@ -295,10 +297,11 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     Log.e("yhq", "quit after get activate result");
                     System.exit(0);
                 } else {
-                    Context context = AdhocBasicConfig.getInstance().getAppContext();
-                    Intent intent = new Intent();
-                    intent.setAction("com.nd.sdp.adhoc.main.ui.login.activated");
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                    DeviceActivateBroadcastUtils.sendActivateSuccessBroadcast();
+//                    Context context = AdhocBasicConfig.getInstance().getAppContext();
+//                    Intent intent = new Intent();
+//                    intent.setAction("com.nd.sdp.adhoc.main.ui.login.activated");
+//                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 }
             }
             return;
@@ -306,6 +309,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
         if(isAutoLogin()){
             Log.e("yhq", "queryActivateResultUntilTimesReach times reached");
+            DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
             quitAppAfter(120);
             return;
         }
