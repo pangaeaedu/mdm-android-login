@@ -64,7 +64,7 @@ dependencies {
     }
 
     try{
-        api project (":assistant_sdk")
+        api project (':assistant_sdk')
     }catch(Exception e){
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
         }

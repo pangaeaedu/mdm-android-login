@@ -31,7 +31,7 @@ public interface IHttpService {
     ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
                                       ActivateUserType pUserType, String pLoginToken) throws Exception;
 
-    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
+    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pSchoolGroupCode,
                                       ActivateUserType pUserType, String pLoginToken,
                                       int pRealType) throws Exception;
 
@@ -55,6 +55,10 @@ public interface IHttpService {
     QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception;
 
     QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum, int pAutoLogin)
+            throws Exception;
+
+    QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum, int pAutoLogin,
+                                              int pNeedGroup)
             throws Exception;
 
     GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception;

@@ -1,5 +1,6 @@
 package com.nd.android.adhoc.login.basicService.http;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -53,6 +54,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         }
     }
 
+    @Deprecated
     public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum)
             throws Exception {
 //        try {
@@ -76,12 +78,35 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
     public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum, int
             pAutoLogin) throws Exception {
+//        try {
+//            Map<String, Object> map = new HashMap<>();
+//            map.put("device_token", pDeviceID);
+//            map.put("serial_no", pSerialNum);
+//            map.put("login_auto", pAutoLogin);
+//            map.put("type", DeviceType.Android.getValue());
+//
+//            Gson gson = new GsonBuilder().create();
+//            String content = gson.toJson(map);
+//
+//            return postAction().post("/v1.1/enroll/getDeviceStatus/", QueryDeviceStatusResponse.class,
+//                    content, null);
+//        }catch (Exception pE){
+//            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+//                    +"/v1.1/enroll/getDeviceStatus/"+" " + "Msg:"+pE.getMessage());
+//            throw new QueryDeviceStatusServerException(pE.getMessage());
+//        }
+        return queryDeviceStatus(pDeviceID, pSerialNum, pAutoLogin, 0);
+    }
+
+    public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum, int
+            pAutoLogin, int pNeedGroup) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
             map.put("serial_no", pSerialNum);
             map.put("login_auto", pAutoLogin);
             map.put("type", DeviceType.Android.getValue());
+            map.put("need_group", pNeedGroup);
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
@@ -167,6 +192,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
     }
 
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
+                                             String pSchoolGroupCode,
                                              ActivateUserType pUserType, String pLoginToken,
                                              int pRealType)
             throws Exception {
@@ -180,6 +206,10 @@ public class EnrollLoginDao extends AdhocHttpDao {
             header.put("channel", pUserType.getValue());
             if (pUserType == ActivateUserType.Uc) {
                 header.put("Authorization", pLoginToken);
+            }
+
+            if(!TextUtils.isEmpty(pSchoolGroupCode)){
+                map.put("groupcode", pSchoolGroupCode);
             }
 
             map.put("realtype", pRealType);

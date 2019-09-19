@@ -90,10 +90,14 @@ public class HttpServiceImpl implements IHttpService {
         return response;
     }
 
-    public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, ActivateUserType pUserType,
+    public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
+                                             String pSchoolGroupCode,
+                                             ActivateUserType pUserType,
                                              String pLoginToken, int pRealType) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-        ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo, pUserType,
+        ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo,
+                pSchoolGroupCode,
+                pUserType,
                 pLoginToken, pRealType);
 
         return response;
@@ -182,6 +186,21 @@ public class HttpServiceImpl implements IHttpService {
 
         return result;
     }
+
+    @Override
+    public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum,
+                                                     int pAutoLogin, int pNeedGroup) throws
+            Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum,
+                pAutoLogin, pNeedGroup);
+        if (!result.isSuccess()) {
+            throw new QueryDeviceStatusServerException("get device status not success");
+        }
+
+        return result;
+    }
+
 
     @Override
     public GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception {

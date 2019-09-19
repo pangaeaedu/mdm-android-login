@@ -15,9 +15,13 @@ public class QueryDeviceStatusResponse {
     public int errcode = 0;
     public int status = 1;
     private int login_auto = 0;
+    private int need_group = 0;       // 是否需要组织节点
     private String nick_name = "";
     private String jobnum  = "";
+    private String groupcode = "";    // 组织节点的根节点
     public String requestid = "";
+
+    private String selSchoolGroupCode = "";
 
     public boolean isSuccess(){
         return errcode == 0;
@@ -43,6 +47,21 @@ public class QueryDeviceStatusResponse {
         return login_auto == 1;
     }
 
+    public boolean isNeedGroup(){
+        return need_group == 1;
+    }
+
+    public String getSelSchoolGroupCode(){
+        return selSchoolGroupCode;
+    }
+
+    public void setSelSchoolGroupCode(String pSchoolGroupCode){
+        selSchoolGroupCode = pSchoolGroupCode;
+    }
+
+    public String getRootCode(){
+        return groupcode;
+    }
     public String toString() {
         return "errcode:" + errcode
                 + " status:" + status
