@@ -93,6 +93,16 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                     Log.e("yhq", "retrieveGroupCode root group code:"+result.getRootCode());
                                     ISchoolGroupCodeRetriever retriever = interceptors.next();
                                     String schoolGroupCode = retriever.retrieveGroupCode(result.getRootCode());
+
+                                    //偶发异常，强行杀进程
+                                    if(schoolGroupCode.equalsIgnoreCase(result.getRootCode())){
+                                        Log.e("yhq", "retrieveGroupCode not work root " +
+                                                "code:"+result.getRootCode()+" selected:"+schoolGroupCode
+                                        +" quit app");
+                                        System.exit(0);
+                                        return;
+                                    }
+
                                     result.setSelSchoolGroupCode(schoolGroupCode);
                                     onQueryResultReturn(pSubscriber, result);
                                     return;

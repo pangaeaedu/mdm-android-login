@@ -25,6 +25,9 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
     protected abstract void showUI(String pRootCode);
 
     protected void setGroupCode(String sGroupCode){
+        Exception e = new Exception("this is a log");
+        e.printStackTrace();
+
         Log.e(TAG, "setGroupCode:"+sGroupCode);
         mGroupCode = sGroupCode;
         mCountDownLatch.countDown();
