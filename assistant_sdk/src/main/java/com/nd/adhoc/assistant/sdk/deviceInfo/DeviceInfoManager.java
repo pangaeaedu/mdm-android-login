@@ -2,6 +2,7 @@ package com.nd.adhoc.assistant.sdk.deviceInfo;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
@@ -22,12 +23,23 @@ public class DeviceInfoManager {
     private DeviceInfoManager() {
     }
 
+    private UserLoginConfig mUserLoginConfig = null;
+
     private String mDeviceID = "";
     private DeviceStatus mDeviceStatus = null;
 
     private BehaviorSubject<String> mPushIDSubject = BehaviorSubject.create();
 
     private BehaviorSubject<String> mConfirmDeviceIDSubject = BehaviorSubject.create();
+
+    public void setUserLoginConfig(UserLoginConfig pLoginConfig){
+        mUserLoginConfig = pLoginConfig;
+    }
+
+    @Nullable
+    public UserLoginConfig getUserLoginConfig(){
+        return mUserLoginConfig;
+    }
 
     public void setDeviceID(@NonNull String pDeviceID) {
         mDeviceID = pDeviceID;

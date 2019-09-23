@@ -1,11 +1,25 @@
 package com.nd.android.mdm.biz.env;
 
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.nd.smartcan.content.CsManager;
 import com.nd.smartcan.content.base.CsBaseManager;
 
 public class EnvUtils {
+    private static final String TAG = "EnvUtils";
 
+    public static void setCsEnv(@NonNull IMdmEnvModule pEnvModule){
+        Log.e(TAG, "setCsEnv name:"+pEnvModule.getName()
+        +" csBaseUrl:"+pEnvModule.getCsBaseUrl()+" csBaseDownUrl:"+pEnvModule.getCsBaseDownUrl());
+
+        CsManager.setContentBaseUrl(pEnvModule.getCsBaseUrl());
+        CsBaseManager.setContentBaseUrl(pEnvModule.getCsBaseUrl());
+
+        CsManager.setContentDownBaseUrl(pEnvModule.getCsBaseDownUrl());
+        CsBaseManager.setDownloadBaseUrl(pEnvModule.getCsBaseDownUrl());
+    }
     public static void setUcEnv(int pIndex){
         switch (pIndex) {
             case 3:

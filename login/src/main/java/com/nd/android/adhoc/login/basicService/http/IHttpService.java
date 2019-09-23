@@ -12,6 +12,8 @@ import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public interface IHttpService {
 
     void requestPolicy(String pDeviceToken, long pTime, JSONObject pData) throws Exception;
@@ -29,6 +31,10 @@ public interface IHttpService {
     ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
                                       ActivateUserType pUserType, String pLoginToken) throws Exception;
 
+    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pSchoolGroupCode,
+                                      ActivateUserType pUserType, String pLoginToken,
+                                      int pRealType) throws Exception;
+
     GetOldTokenResult getOldDeviceToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
                                         String pBlueToothMac, String pSerialNo, String pDeviceToken) throws Exception;
 
@@ -37,11 +43,23 @@ public interface IHttpService {
     GetActivateUserResultResponse queryActivateResult(String pDeviceID, String pRequestID) throws
             Exception;
 
-    ConfirmDeviceIDResponse confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                            String pBlueToothMac, String pSerialNo, String pAndroidID,
-                                            String pDeviceToken) throws Exception;
+//    @Deprecated
+//    ConfirmDeviceIDResponse confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
+//                                            String pLanMac, String pBlueToothMac, String
+//                                                    pSerialNo, String pAndroidID,
+//                                            String pDeviceToken) throws Exception;
+
+    ConfirmDeviceIDResponse confirmDeviceID(Map<String, Object> pHardwareMap, String pDeviceID)
+            throws Exception;
 
     QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception;
+
+    QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum, int pAutoLogin)
+            throws Exception;
+
+    QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum, int pAutoLogin,
+                                              int pNeedGroup)
+            throws Exception;
 
     GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception;
 }

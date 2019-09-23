@@ -9,7 +9,9 @@
       "url": "http://drms.dev.web.nd",
       "downloadservicename":"dev_content_drms",
       "apm_server":"http://qc-report-collection.dev.web.nd/v1",
-      "exception_report_host_name":"DEV"
+      "exception_report_host_name":"DEV",
+      "cs_base_url":"https://betacs.101.com/v0.1/",
+      "cs_base_down_url":"https://betacs.101.com/v0.1/"
     },
     {
       "name": "Test",
@@ -19,7 +21,9 @@
       "url": "http://drms.debug.web.nd",
       "downloadservicename":"prepub_content_mdm",
       "apm_server":"http://qc-report-collection.debug.web.nd/v1",
-      "exception_report_host_name":"DEBUG"
+      "exception_report_host_name":"DEBUG",
+      "cs_base_url":"https://betacs.101.com/v0.1/",
+      "cs_base_down_url":"https://betacs.101.com/v0.1/"
     },
     {
       "name": "China",
@@ -29,7 +33,9 @@
       "url": "https://mdm.ndmdm.site",
       "downloadservicename":"production_content_mdm",
       "apm_server":"https://qc-report-collection.sdp.101.com/v1",
-      "exception_report_host_name":"PRODUCT"
+      "exception_report_host_name":"PRODUCT",
+      "cs_base_url":"https://cs.101.com/v0.1/",
+      "cs_base_down_url":"https://cs.101.com/v0.1/"
     },
     {
       "name": "WholeWorld",
@@ -39,7 +45,9 @@
       "url": "https://mdmaws.ndmdm.site",
       "downloadservicename":"drms",
       "apm_server":"",
-      "exception_report_host_name":"AWS"
+      "exception_report_host_name":"AWS",
+      "cs_base_url":"https://awscs.101.com/v0.1/",
+      "cs_base_down_url":"https://awscs.101.com/v0.1/"
     },
     {
       "name": "Egypt",
@@ -49,7 +57,9 @@
       "url": "http://mdm-backend.test.moe.gov.eg",
       "downloadservicename":"drms",
       "apm_server":"",
-      "exception_report_host_name":""
+      "exception_report_host_name":"",
+      "cs_base_url":"http://egcs-mdm.test.moe.gov.eg/v0.1/",
+      "cs_base_down_url":"http://egcs-mdm.test.moe.gov.eg/v0.1/"
     },
     {
       "name": "EgyptDrill",
@@ -59,7 +69,9 @@
       "url": "https://mdm-backend.beta.101.com",
       "downloadservicename":"drms",
       "apm_server":"",
-      "exception_report_host_name":""
+      "exception_report_host_name":"",
+      "cs_base_url":"https://egcs-mdm.beta.101.com/v0.1/",
+      "cs_base_down_url":"https://egcs-mdm.beta.101.com/v0.1/"
     },
     {
       "name": "ShanXi",
@@ -69,7 +81,9 @@
       "url": "https://drms.sneduyun.com.cn",
       "downloadservicename":"wjt_content_mdm",
       "apm_server":"",
-      "exception_report_host_name":""
+      "exception_report_host_name":"",
+      "cs_base_url":"https://sdpcs.sneduyun.com.cn/v0.1/",
+      "cs_base_down_url":"https://sdpcs.sneduyun.com.cn/v0.1/"
     }
   ]
 }

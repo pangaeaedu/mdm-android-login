@@ -1,5 +1,6 @@
 package com.nd.android.adhoc.communicate.push;
 
+import com.nd.adhoc.push.core.IPushChannelDataListener;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 
 /**
@@ -27,6 +28,9 @@ public interface IPushModule {
     void addConnectListener(IPushConnectListener pListener);
 
     void removeConnectListener(IPushConnectListener pListener);
+
+    void addDataListener(IPushChannelDataListener pListener);
+    void removeDataListener(IPushChannelDataListener pListener);
 
     void release();
 

@@ -31,6 +31,12 @@ class MdmEnvModule implements IMdmEnvModule{
     @SerializedName("exception_report_host_name")
     String mExceptionReportHostName;
 
+    @SerializedName("cs_base_url")
+    String mCsBaseUrl;
+
+    @SerializedName("cs_base_down_url")
+    String mCSBaseDownUrl;
+
     public MdmEnvModule() {
     }
 
@@ -67,5 +73,15 @@ class MdmEnvModule implements IMdmEnvModule{
     @Override
     public String getExceptionReportHostName() {
         return mExceptionReportHostName;
+    }
+
+    @Override
+    public String getCsBaseUrl() {
+        return mCsBaseUrl;
+    }
+
+    @Override
+    public String getCsBaseDownUrl() {
+        return mCSBaseDownUrl;
     }
 }
