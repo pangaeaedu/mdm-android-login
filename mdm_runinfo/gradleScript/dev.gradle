@@ -34,6 +34,7 @@ dependencies {
         api project(":assistant_sdk")
     }catch (Exception ignore){
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
+            exclude group: 'com.nd.android.adhoc', module: 'device_control'
         }
     }
 
