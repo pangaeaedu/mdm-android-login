@@ -17,12 +17,12 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.5.424.6fb0979'
+    adhoc_basic_version = '1.6.425.e1bdfa7-hyksupport28-SNAPSHOT'
 
 
-    mdm_biz_version = '1.7.517.f95f8b5'
-    device_control_version = '1.6.417.fca269a'
-    device_command_version = '1.9.278.5a1fda1'
+    mdm_biz_version = '1.7.452.a28ca3c-hyk0.7.0policy-SNAPSHOT'
+    device_control_version = '1.7.420.ca7d25b-hyksupport28-SNAPSHOT'
+    device_command_version = '2.0.279.8265e46-hyksupport28-SNAPSHOT'
 
     location_verison = '1.5.61.a58bb09'
     file_transfer_version = '1.1.34.3cff954'
@@ -33,6 +33,13 @@ ext {
     adhoc_push_util_version = '0.3.25.102.2308121'
 
     policy_version = '2.1.146.10d8ca1'
+
+
+    androidBuildToolsVersion = '28.0.3'
+    androidMinSdkVersion = 17
+    androidTargetSdkVersion = 28
+    androidCompileSdkVersion = 28
+    androidSupportSdkVersion = '28.0.0'
 }
 
 allprojects {
