@@ -20,7 +20,8 @@ ext {
     adhoc_basic_version = '1.6.425.e1bdfa7-hyksupport28-SNAPSHOT'
 
 
-    mdm_biz_version = '1.7.452.a28ca3c-hyk0.7.0policy-SNAPSHOT'
+    mdm_biz_version = '1.7.517.f95f8b5'
+
     device_control_version = '1.7.420.ca7d25b-hyksupport28-SNAPSHOT'
     device_command_version = '2.0.279.8265e46-hyksupport28-SNAPSHOT'
 
