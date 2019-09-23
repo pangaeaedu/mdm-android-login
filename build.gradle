@@ -20,9 +20,9 @@ ext {
     adhoc_basic_version = '1.5.424.6fb0979'
 
 
-    mdm_biz_version = '1.7.452.a28ca3c-hyk0.7.0policy-SNAPSHOT'
-    device_control_version = '1.6.358.b5a441a'
-    device_command_version = '1.7.200.cc48769'
+    mdm_biz_version = '1.7.517.f95f8b5'
+    device_control_version = '1.6.417.fca269a'
+    device_command_version = '1.9.278.5a1fda1'
 
     location_verison = '1.5.61.a58bb09'
     file_transfer_version = '1.1.34.3cff954'
