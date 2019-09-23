@@ -74,13 +74,13 @@ dependencies {
         }
     }
 
-//    try{
-//        api project (':assistant_sdk')
-//    }catch(Exception e){
+    try{
+        api project (':assistant_sdk')
+    }catch(Exception e){
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
             exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
-//    }
+    }
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
