@@ -20,6 +20,7 @@ dependencies {
     }
 
     api ("com.nd.android.adhoc:device_control:$device_control_version"){
+        exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
         exclude group:'com.nd.android.mdm.biz' ,module:'assistant_sdk'
     }
 
