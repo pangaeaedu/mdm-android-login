@@ -19,7 +19,6 @@ buildscript {
 ext {
     adhoc_basic_version = '1.5.424.6fb0979'
 
-
     mdm_biz_version = '1.7.517.f95f8b5'
     device_control_version = '1.6.417.fca269a'
     device_command_version = '1.9.278.5a1fda1'
