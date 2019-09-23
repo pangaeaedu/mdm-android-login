@@ -35,7 +35,7 @@ public class AdhocReportAppRunInfo {
     private static final String TAG = "AdhocReportAppRunInfo";
     private static AdhocReportAppRunInfo instance;
 
-    /**上一次检查完，正在运行的APP*/
+    /**上一次检查完，正在运行的APP,只用于比较是否有APP运行，里头数据不参与APP时长次数统计！*/
     private Map<String, MdmRunInfoEntity> mMapRunningApps = new HashMap<>();
 
     /**须排除不统计的包名*/
@@ -96,12 +96,13 @@ public class AdhocReportAppRunInfo {
 
             //清除缓存
             ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP, "");
+            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB, "");
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_APP_LIST, "");
             spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, 0);
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST, "");
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
             spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0);
+            MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().deleteAllData();
 
             //重置内存
             mlLastWriteCacheTime = 0;
@@ -137,7 +138,7 @@ public class AdhocReportAppRunInfo {
         Logger.i(TAG, "writeCacheToLocal");
         //把正在运行列表也写进去，防助手被杀
         ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-        spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP, mGson.toJson(mMapRunningApps));
+        spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB, mGson.toJson(mMapRunningApps));
 
         getCurrentToReportDayData().cacheData();
         mlLastWriteCacheTime = System.currentTimeMillis();
@@ -212,8 +213,10 @@ public class AdhocReportAppRunInfo {
             if(!getCurrentToReportDayData().getMapApps().containsKey(entry.getKey())){
                 Logger.i(TAG, "readd open apps");
                 getCurrentToReportDayData().getMapApps().put(entry.getKey(), entry.getValue());
-                getCurrentToReportDayData().getMapApps().get(entry.getKey()).setOpenStatus();
+                getCurrentToReportDayData().getMapApps().get(entry.getKey()).setDayBeginTimeStamp(
+                        AppRunInfoReportUtils.getCurrentDayTimeStamp());
             }
+            getCurrentToReportDayData().getMapApps().get(entry.getKey()).setOpenStatus();
         }
     }
 
@@ -232,7 +235,7 @@ public class AdhocReportAppRunInfo {
     private void loadCache(){
         Logger.i(TAG, "loadCache");
         ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-        String strCache = spModel.getString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP, "");
+        String strCache = spModel.getString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB, "");
 
         if(!TextUtils.isEmpty(strCache)){
             mMapRunningApps = mGson.fromJson(strCache, new TypeToken<HashMap<String, MdmRunInfoEntity>>(){}.getType());
@@ -243,22 +246,29 @@ public class AdhocReportAppRunInfo {
             spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, System.currentTimeMillis());
         }
 
+        long lCacheTimeStamp = spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, System.currentTimeMillis());
+        //如果缓存的时间与当前已经不是同一天，只做上报，把mMapRunningApps给清了；后续流程重新开始吧
+        if(AppRunInfoReportUtils.getCurrentDayTimeStamp() != AppRunInfoReportUtils.getSpecifyTimeDayStamp(lCacheTimeStamp)){
+            mMapRunningApps.clear();
+            RunInfoReportHelper.reportToServerBusiness();
+            return;
+        }
+
         //取出当天的APP缓存
         List<IMdmRunInfoEntity> listEntity = MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().getCurDayRunInfo();
-        generateToReportData(listEntity);
+        generateToReportData(listEntity, lCacheTimeStamp);
 
         //取出上次缓存时间与当前时间做比较。
         //如果超过20分钟则认为系统关闭，将上面取得的runningapp里的APP在对应数据库中做一次关闭操作，然后清空runningap
         //如果未超过20分钟，则不做处理
         if(!AdhocDataCheckUtils.isCollectionEmpty(listEntity)){
             long lCurTimeStamp = System.currentTimeMillis();
-            long lCacheTimeStamp = listEntity.get(0).getDayBeginTimeStamp();
 
             final long CLOSE_APP_RANGE_TIME = 20 * 60 * 1000;
             if(lCurTimeStamp - lCacheTimeStamp > CLOSE_APP_RANGE_TIME){
                 for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
                     if(getCurrentToReportDayData().getMapApps().containsKey(entry.getKey())){
-                        getCurrentToReportDayData().getMapApps().get(entry.getKey()).fillUseTime(lCacheTimeStamp + CLOSE_APP_RANGE_TIME);
+                        getCurrentToReportDayData().getMapApps().get(entry.getKey()).forceFillUseTime(lCacheTimeStamp + CLOSE_APP_RANGE_TIME);
                     }
                 }
                 mMapRunningApps.clear();
@@ -273,7 +283,7 @@ public class AdhocReportAppRunInfo {
      * 将数据库里暂存的applist转换到内存里
      * @param listEntity listEntity
      */
-    private void generateToReportData(List<IMdmRunInfoEntity> listEntity){
+    private void generateToReportData(List<IMdmRunInfoEntity> listEntity, final long lLastOpenTime){
         Logger.i(TAG, "begin generateToReportData");
         if(AdhocDataCheckUtils.isCollectionEmpty(listEntity)){
             return;
@@ -284,7 +294,9 @@ public class AdhocReportAppRunInfo {
         for(int index = 0; index < listEntity.size(); index++){
             IMdmRunInfoEntity entity = listEntity.get(index);
             if(entity instanceof MdmRunInfoEntity){
-                listApps.add((MdmRunInfoEntity)entity);
+                MdmRunInfoEntity mdmRunInfoEntity = (MdmRunInfoEntity)entity;
+                mdmRunInfoEntity.setLastOpenTime(lLastOpenTime);
+                listApps.add(mdmRunInfoEntity);
             }
         }
         mToReportDayData.setListApps(listApps);

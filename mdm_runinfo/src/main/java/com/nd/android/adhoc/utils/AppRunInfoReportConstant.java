@@ -6,8 +6,11 @@ package com.nd.android.adhoc.utils;
  */
 
 public class AppRunInfoReportConstant {
+    /**缓存正在运行的APP列表,DB版*/
+    public static final String OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB = "OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB";
     /**缓存正在运行的APP列表*/
     public static final String OPS_SP_KEY_CACHE_RUNNING_APP_MAP = "OPS_SP_KEY_CACHE_RUNNING_APP_MAP";
+
     /**缓存当前时段的APP运行情况*/
     public static final String OPS_SP_KEY_CACHE_APP_LIST = "OPS_SP_KEY_CACHE_APP_LIST";
     /**写本地缓存时间点的KEY*/

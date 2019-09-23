@@ -1,4 +1,4 @@
-package com.nd.android.adhoc.reportAppRunning;
+package com.nd.android.adhoc.reportAppRunInfoByDb;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -27,13 +27,13 @@ public class MdmRunInfoEntity implements IMdmRunInfoEntity {
 
     @Expose
     @SerializedName("id")
-    @DatabaseField(columnName = "id", generatedId = true)
+    @DatabaseField(id = true, canBeNull = false, columnName = "id")
     public String mstrId;
 
     @Expose
     @SerializedName("day_time_stamp")
     @DatabaseField(canBeNull = false, columnName = DAY_TIME_STAMP)
-    private long mlDayTimeStamp ;
+    private long mlDayTimeStamp = AppRunInfoReportUtils.getCurrentDayTimeStamp();
 
     @Expose
     @SerializedName("package_name")
@@ -66,6 +66,9 @@ public class MdmRunInfoEntity implements IMdmRunInfoEntity {
     @Expose
     private long mLastOpenTime;
 
+    public MdmRunInfoEntity(){
+    }
+
     public MdmRunInfoEntity(String strId, String strPackage, String strAppName){
         mstrId = strId;
         mstrPackageName = strPackage;
@@ -84,6 +87,10 @@ public class MdmRunInfoEntity implements IMdmRunInfoEntity {
 
     public long getLastOpenTime(){
         return mLastOpenTime;
+    }
+
+    public void setLastOpenTime(long lastOpenTime){
+         mLastOpenTime = lastOpenTime;
     }
 
     /**
@@ -118,6 +125,14 @@ public class MdmRunInfoEntity implements IMdmRunInfoEntity {
         }
     }
 
+    /**
+     * 强制加时间，用于读缓存时
+     * @param lDeadTimeToMinus
+     */
+    public void forceFillUseTime(long lDeadTimeToMinus){
+        refreshUseTime(lDeadTimeToMinus);
+    }
+
     private void refreshUseTime(long lDeadTimeToMinus){
         mlRunTime += lDeadTimeToMinus - mLastOpenTime;
         mlRunTime = Math.min(24 * 3600 * 1000L, mlRunTime);
@@ -131,7 +146,8 @@ public class MdmRunInfoEntity implements IMdmRunInfoEntity {
         resetId();
         miRunCount = 0;
         mlRunTime = 0;
-        mLastOpenTime = AppRunInfoReportUtils.getCurrentDayTimeStamp();
+        mlDayTimeStamp = AppRunInfoReportUtils.getCurrentDayTimeStamp();
+        mLastOpenTime = mlDayTimeStamp;
     }
 
     public boolean isMbRunningListContainsThis() {

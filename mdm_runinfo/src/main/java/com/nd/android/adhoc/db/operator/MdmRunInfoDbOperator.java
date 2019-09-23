@@ -56,7 +56,10 @@ class MdmRunInfoDbOperator implements IMdmRunInfoDbOperator {
         try {
             QueryBuilder<IMdmRunInfoEntity, Void> queryBuilder = mRunInfoDbDao.queryBuilder();
             queryBuilder.limit(1000L);
-            return queryBuilder.where().lt(MdmRunInfoEntity.DAY_TIME_STAMP, AppRunInfoReportUtils.getCurrentDayTimeStamp()).query();
+            return queryBuilder.where().lt(MdmRunInfoEntity.DAY_TIME_STAMP, AppRunInfoReportUtils.getCurrentDayTimeStamp())
+                    .and().gt(MdmRunInfoEntity.RUN_TIME, 3 * 60 * 1000)
+                    .and().isNotNull(MdmRunInfoEntity.PACKAGE_NAME)
+                    .and().isNotNull(MdmRunInfoEntity.APP_NAME).query();
         } catch (SQLException e) {
             Logger.e(TAG, "getFileInfo error: " + e);
         }
@@ -72,7 +75,7 @@ class MdmRunInfoDbOperator implements IMdmRunInfoDbOperator {
             connection.setAutoCommit(false);
 
             DeleteBuilder<IMdmRunInfoEntity, Void> deleteBuilder = mRunInfoDbDao.deleteBuilder();
-            deleteBuilder.where().lt(MdmRunInfoEntity.DAY_TIME_STAMP, System.currentTimeMillis());
+            deleteBuilder.where().lt(MdmRunInfoEntity.DAY_TIME_STAMP, AppRunInfoReportUtils.getCurrentDayTimeStamp());
             deleteBuilder.delete();
 
             connection.commit(savepoint);
@@ -157,6 +160,30 @@ class MdmRunInfoDbOperator implements IMdmRunInfoDbOperator {
             return true;
         } catch (Exception e) {
             Logger.e(TAG,  "saveOrUpdateRunInfo error: " + e);
+            try {
+                connection.rollback(savepoint);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteAllData() {
+        DatabaseConnection connection = new AndroidDatabaseConnection(mDbHelper.getReadableDatabase(), true);
+        Savepoint savepoint = null;
+        try {
+            savepoint = connection.setSavePoint("start");
+            connection.setAutoCommit(false);
+
+            DeleteBuilder<IMdmRunInfoEntity, Void> deleteBuilder = mRunInfoDbDao.deleteBuilder();
+            deleteBuilder.delete();
+
+            connection.commit(savepoint);
+            return true;
+        } catch (Exception e) {
+            Logger.e(TAG,  "deleteAllData error: " + e);
             try {
                 connection.rollback(savepoint);
             } catch (SQLException e1) {

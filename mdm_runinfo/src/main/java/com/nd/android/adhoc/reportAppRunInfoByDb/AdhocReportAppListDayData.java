@@ -1,7 +1,5 @@
 package com.nd.android.adhoc.reportAppRunInfoByDb;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
@@ -39,9 +37,6 @@ public class AdhocReportAppListDayData {
 
     private Random mRandom;
 
-    /**超过这个数，当成垃圾数据，否则可能引起推栈爆满*/
-    private static int s_MAX_CACHE_DATA_SIZE = 512 * 1000;
-
     /**随机3000秒内上报*/
     private static int RANDOM_SECONDS_BOUND = 3000;
 
@@ -56,8 +51,6 @@ public class AdhocReportAppListDayData {
 
     private Map<String, MdmRunInfoEntity> mMapAppsToReport = new HashMap<>();
 
-    private Gson mGson;
-
     private Subscription mDelayReportSubscription;
 
     public void setListApps(List<MdmRunInfoEntity> listApps){
@@ -66,7 +59,6 @@ public class AdhocReportAppListDayData {
 
     public AdhocReportAppListDayData(){
         mlMsOfCurDay = AppRunInfoReportUtils.getCurrentDayTimeStamp();
-        mGson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         mRandom = new Random(RANDOM_SECONDS_SEED);
     }
 
@@ -141,11 +133,11 @@ public class AdhocReportAppListDayData {
         for (MdmRunInfoEntity entity : mlistApps) {
             entity.fillUseTime(lDeadTimeToMinus);
         }
-
-        switchToNextDay();
         final List<IMdmRunInfoEntity> listEntity = new ArrayList<>();
         listEntity.addAll(mlistApps);
         MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().saveOrUpdateRunInfo(listEntity);
+
+        switchToNextDay();
 
         if(bImmediately){
             RunInfoReportHelper.reportToServerBusiness();

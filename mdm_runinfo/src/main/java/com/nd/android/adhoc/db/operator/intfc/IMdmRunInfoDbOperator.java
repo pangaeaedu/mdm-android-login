@@ -13,6 +13,10 @@ public interface IMdmRunInfoDbOperator {
 
     List<IMdmRunInfoEntity> getCurDayRunInfo();
 
+    /**
+     * 获取需要上报的列表，会过滤不需要上报的，比如小于3分钟运行时长的
+     * @return
+     */
     List<IMdmRunInfoEntity> getToReportRunInfo();
 
     boolean deleteUnUseableRunInfo();
@@ -20,4 +24,6 @@ public interface IMdmRunInfoDbOperator {
     boolean deleteRunInfo(List<IMdmRunInfoEntity> listEntity);
 
     boolean saveOrUpdateRunInfo(List<IMdmRunInfoEntity> listEntity);
+
+    boolean deleteAllData();
 }

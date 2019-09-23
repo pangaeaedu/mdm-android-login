@@ -10,7 +10,6 @@ import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.db.entity.intfc.IMdmRunInfoEntity;
 import com.nd.android.adhoc.db.operator.MdmRunInfoDbOperatorFactory;
-import com.nd.android.adhoc.reportAppRunning.RunInfoReportResult;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONArray;
@@ -121,12 +120,11 @@ public class RunInfoReportHelper {
         return strHost;
     }
 
-
     public static void reportToServerBusiness(){
         List<IMdmRunInfoEntity> listEntity = MdmRunInfoDbOperatorFactory.getInstance().
                 getRunInfoDbOperator().getToReportRunInfo();
         if(AdhocDataCheckUtils.isCollectionEmpty(listEntity)){
-            //没有可上报的数据了，删除可能的无用数据，比如小于3分钟无须上报的
+            //没有可上报的数据了，删除当前时间戳之前的所有数据
             MdmRunInfoDbOperatorFactory.getInstance().
                     getRunInfoDbOperator().deleteUnUseableRunInfo();
             return;
@@ -149,6 +147,9 @@ public class RunInfoReportHelper {
                     if (null == result || 0 != result.getMiErrorCode()) {
                         subscriber.onError(new AdhocException("report not success"));
                     }else {
+                        Logger.i(TAG, "上报成功");
+                        //成功了，清除需要补报的缓存
+                        MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().deleteRunInfo(listEntity);
                         subscriber.onNext(result);
                         subscriber.onCompleted();
                     }
@@ -170,9 +171,9 @@ public class RunInfoReportHelper {
 
                     @Override
                     public void onNext(RunInfoReportResult result) {
-                        //成功了，清除需要补报的缓存
-                        Logger.i(TAG, "上报成功");
-                        MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().deleteRunInfo(listEntity);
+                        //一次只上报1000条数据，如果还有的话，要继续上报，直到没有可上报的，并删除无用数据
+                        Logger.i(TAG, "recursive call reportToServerBusiness");
+                        reportToServerBusiness();
                     }
                 });
     }
