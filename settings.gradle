@@ -1,30 +1,30 @@
-//include ':login'
-//include ':loginapi'
+include ':login'
+include ':loginapi'
 include ':assistant_sdk'            // 登录 SDK、API
 
-//include ':mdm_biz_common'           // MDM 业务公共模块
-//include ':mdm_env'                  // 环境配置模块
-//include ':adhoc_communicate'        // 通讯模块，包含 pushsdk、 自组网 connect 通讯
-//
-//
-//include ':mdm_util_cmd'             // 通讯模块，包含 pushsdk、 自组网 connect 通讯
-//
-////include ":mdm_feedback_biz"         // 请求回报处理模块
-//
-//
-////include ":mdm_event_define"         // 一些 Event 事件的定义（用于 EventBus，后续慢慢移除）
-//
-//include ":adhoc_rtmp"               // rtmp 流媒体相关
-//
-//
-//include ":adhoc_wifi:wifi_sdk"      // WIFI sdk
-//
-//
-//include ":mdm_monitor"              // Monitor Module
-//include ":mdm_runinfo"              // 应用运行信息收集
-//include ":mdm_autoupdate"              // 应用运行信息收集
+include ':mdm_biz_common'           // MDM 业务公共模块
+include ':mdm_env'                  // 环境配置模块
+include ':adhoc_communicate'        // 通讯模块，包含 pushsdk、 自组网 connect 通讯
 
-//include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
+
+include ':mdm_util_cmd'             // 通讯模块，包含 pushsdk、 自组网 connect 通讯
+
+//include ":mdm_feedback_biz"         // 请求回报处理模块
+
+
+//include ":mdm_event_define"         // 一些 Event 事件的定义（用于 EventBus，后续慢慢移除）
+
+include ":adhoc_rtmp"               // rtmp 流媒体相关
+
+
+include ":adhoc_wifi:wifi_sdk"      // WIFI sdk
+
+
+include ":mdm_monitor"              // Monitor Module
+include ":mdm_runinfo"              // 应用运行信息收集
+include ":mdm_autoupdate"              // 应用运行信息收集
+
+include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
 
 
 
