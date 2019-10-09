@@ -71,7 +71,7 @@ public class MdmWifiStatusReceiver extends BroadcastReceiver {
                 break;
         }
 
-        AdhocServiceCompat.startService(context, intent);
+        AdhocServiceCompat.startService(context, serviceIntent);
 
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 //            AdhocBasicConfig.getInstance().getAppContext().startForegroundService(serviceIntent);
