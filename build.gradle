@@ -17,10 +17,10 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.6.425.e1bdfa7-hyksupport28-SNAPSHOT'
+    adhoc_basic_version = '1.6.432.e4a4ecb-hyksupport28-SNAPSHOT'
 
 
-    mdm_biz_version = '1.7.527.4f514cf'
+    mdm_biz_version = '1.8.536.e45e43c-hyksupport28-SNAPSHOT'
 
     device_control_version = '1.7.423.19991c8-hyksupport28-SNAPSHOT'
     device_command_version = '2.0.279.8265e46-hyksupport28-SNAPSHOT'
