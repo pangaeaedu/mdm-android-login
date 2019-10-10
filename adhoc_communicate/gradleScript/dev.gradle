@@ -87,7 +87,6 @@ dependencies {
     }
 
 
-//    api project(':adhocpush')
 //    api project (":awspushchannel")
 
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
