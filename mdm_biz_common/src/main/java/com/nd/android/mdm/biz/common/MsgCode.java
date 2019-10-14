@@ -28,7 +28,7 @@ public class MsgCode {
     public static final int ERROR_MEDIA_LOAD_ERROR = 10016;                 // 加载失败
     public static final int ERROR_DECOMPRESS_ERROR = 10017;                 // 解压失败
     public static final int ERROR_TEMPLATE_NOTEXIST = 10018;                // 模板不存在（分众传媒HTML模板）
-    public static final int ERROR_APP_NOT_EXIST = 10019;                // 模板不存在（分众传媒HTML模板）
+    public static final int ERROR_APP_NOT_EXIST = 10019;                // 应用不存在
 
     public static final int STATUS_MEDIA_READY = 20001;                     // 开始播放
     public static final int STATUS_MEDIA_COMPLETE = 20001;                  // 播放结束
