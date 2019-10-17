@@ -90,8 +90,8 @@ class AdhocConnectModule implements IAdhocConnectModule {
         public void onServiceConnected(ComponentName name, IBinder binder) {
             mAdhoc = IAdhoc.Stub.asInterface(binder);
             try {
-                String logPath = AdhocStorageUtil.getSDCardFilesDir(mContext) + "log/adhoclog/";
-                String receivePath = AdhocStorageUtil.getSDCardFilesDir(mContext) + "adhocrecv/" ;
+                String logPath = AdhocStorageUtil.getSDCardFilesDir(mContext,"log/adhoclog/");
+                String receivePath = AdhocStorageUtil.getSDCardFilesDir(mContext, "adhocrecv/");
                 mAdhoc.setLogPathAndName(logPath, "adhoc");
                 mAdhoc.setRecvFilePath(receivePath);
                 mAdhoc.setMasterName("teacher");
