@@ -30,7 +30,7 @@ public class MsgCode {
     public static final int ERROR_TEMPLATE_NOTEXIST = 10018;                // 模板不存在（分众传媒HTML模板）
     public static final int ERROR_APP_NOT_EXIST = 10019;                // 应用不存在
     public static final int ERROR_SYSTEM_SPACE_NOT_ENOUGH = 10033;          // 系统空间不足
-
+    public static final int ERROR_STORAGE_SPACE_NOT_ENOUGH = 10034;          // 设备存储空间不足
 
     public static final int STATUS_MEDIA_READY = 20001;                     // 开始播放
     public static final int STATUS_MEDIA_COMPLETE = 20001;                  // 播放结束
