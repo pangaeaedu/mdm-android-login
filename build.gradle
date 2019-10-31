@@ -29,9 +29,9 @@ ext {
     file_transfer_version = '1.1.34.3cff954'
 
     // 下面这三个后续也需要发布为正式版本
-    adhoc_sdk_version = '1.2.19.2089-develop-SNAPSHOT'
-    screen_capture_version = '1.3.38.2086.247.040a6b0-develop-SNAPSHOT'
-    adhoc_push_util_version = '0.3.25.102.2308121'
+    adhoc_sdk_version = '1.2.21.2089-develop-SNAPSHOT'
+    screen_capture_version = '1.3.39.2086.250.3a8175b-develop-SNAPSHOT'
+    adhoc_push_util_version = '0.3.26.104.8149720'
 
     policy_version = '2.1.146.10d8ca1'
 
