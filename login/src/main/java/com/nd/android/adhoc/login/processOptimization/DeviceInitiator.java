@@ -9,15 +9,19 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
+import com.nd.android.adhoc.login.processOptimization.utils.LoginArgumentUtils;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
-import com.nd.android.adhoc.loginapi.exception.RetrieveWifiMacException;
+import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
+import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
 
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
@@ -85,6 +89,10 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             e.printStackTrace();
                             Log.e("yhq", "bind push id error:" + e.getMessage());
                             mSubBindPushID = null;
+
+                            if(e instanceof DeviceTokenNotFoundException) {
+                                clearSpDeviceIDThenQuit();
+                            }
                         }
 
                         @Override
@@ -97,9 +105,18 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         @Override
         public void onDisconnected() {
-            Log.e(TAG, "push sdk onDisconnected");
+            Log.e("yhq", "push sdk onDisconnected");
         }
     };
+
+    private void clearSpDeviceIDThenQuit(){
+        Log.e("yhq", "clearSpDeviceIDThenQuit");
+
+        DeviceIDSPUtils.saveDeviceIDToSp("");
+
+        ActivityStackManager.INSTANCE.closeAllActivitys();
+        System.exit(0);
+    }
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
         Log.e("yhq", "actualQueryDeviceStatus:"+pDeviceID);
@@ -108,7 +125,8 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     @Override
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
                         if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
-                            return activeUser(ActivateUserType.AutoLogin, "");
+                            return activeUser(ActivateUserType.AutoLogin, pResponse
+                                    .getSelSchoolGroupCode(), "");
                         }
 
                         return Observable.just(pResponse.getStatus());
@@ -208,6 +226,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             public void onError(Throwable e) {
                                 Log.e("yhq", "init error:"+e.getMessage());
                                 e.printStackTrace();
+
                                 synchronized (DeviceInitiator.this) {
                                     mInitSubject.onError(e);
                                     mInitSubject = null;
@@ -273,34 +292,48 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String imei = AdhocDeviceUtil.getIMEI(context);
         String wifiMac = AdhocDeviceUtil.getWifiMac(context);
 
-        if(TextUtils.isEmpty(wifiMac)){
-            throw new RetrieveWifiMacException();
+        String lanMac = AdhocDeviceUtil.getEthernetMac();
+
+        if(TextUtils.isEmpty(wifiMac) && TextUtils.isEmpty(lanMac)){
+            throw new RetrieveMacException();
         }
 
         String blueToothMac = AdhocDeviceUtil.getBloothMac();
         String serialNo = DeviceHelper.getSerialNumberThroughControl();
         String androidID = AdhocDeviceUtil.getAndroidId(context);
-
-        Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
-        +" wifiMac:"+wifiMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
-        +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
+        boolean isAutoLogin = isAutoLogin();
 
         ConfirmDeviceIDResponse response = null;
         for (int i = 0; i <= 2; i++) {
             try {
                 Log.e("yhq", "confirm device id round:"+i);
-                response = getHttpService().confirmDeviceID(buildSn, cpuSn, imei,
-                        wifiMac, blueToothMac, serialNo, androidID, pLocalDeviceID);
+
+                if(TextUtils.isEmpty(wifiMac)) {
+                    wifiMac = AdhocDeviceUtil.getWifiMac(context);
+                }
+
+                Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
+                        +" wifiMac:"+wifiMac+" lanMac:"+lanMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
+                        +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
+                Map<String, Object> hardwareMaps = LoginArgumentUtils.genHardwareMap(buildSn,
+                        cpuSn, imei, wifiMac, lanMac, blueToothMac, serialNo, androidID);
+                response = getHttpService().confirmDeviceID(hardwareMaps, pLocalDeviceID);
                 if (response != null) {
                     Log.e("yhq", "deviceID response:" + response.getDeviceID());
                     return response;
                 }
             } catch (Exception pE) {
                 pE.printStackTrace();
-                if(!(pE instanceof TimeoutException)){
+                if(!isAutoLogin && !(pE instanceof ConfirmIDServerException)){
                     throw pE;
                 }
             }
+        }
+
+        //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
+        if(isAutoLogin){
+            Log.e("yhq", "confirm device id error, quit");
+            quitAppAfter(120);
         }
 
         throw new TimeoutException("after retry 3 time, confirm deivce id still timeout");

@@ -75,8 +75,8 @@ dependencies {
     }
 
     try{
-        api project (":assistant_sdk")
-    }catch(Exception ignored){
+        api project (':assistant_sdk')
+    }catch(Exception e){
         api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version") {
             exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
         }
@@ -97,7 +97,3 @@ configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
-//configurations {
-//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_system'
-//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_basic_net'
-//}

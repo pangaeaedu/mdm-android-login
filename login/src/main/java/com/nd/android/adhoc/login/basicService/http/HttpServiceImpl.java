@@ -14,11 +14,14 @@ import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.exception.LoginUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
+import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
 import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
 import com.nd.android.mdm.biz.env.IMdmEnvModule;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONObject;
+
+import java.util.Map;
 
 public class HttpServiceImpl implements IHttpService {
     public HttpServiceImpl() {
@@ -64,6 +67,10 @@ public class HttpServiceImpl implements IHttpService {
         BindPushIDResponse result = dao.bindDeviceIDToPushID(pDeviceID, pPushID);
 
         if(!result.isSuccess()){
+            if(result.isDeviceTokenNotFound()){
+                throw new DeviceTokenNotFoundException();
+            }
+
             throw new Exception("Bind Device Failed");
         }
 
@@ -82,6 +89,20 @@ public class HttpServiceImpl implements IHttpService {
 
         return response;
     }
+
+    public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
+                                             String pSchoolGroupCode,
+                                             ActivateUserType pUserType,
+                                             String pLoginToken, int pRealType) throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo,
+                pSchoolGroupCode,
+                pUserType,
+                pLoginToken, pRealType);
+
+        return response;
+    }
+
 
     @Override
     public GetOldTokenResult getOldDeviceToken(String pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
@@ -120,13 +141,27 @@ public class HttpServiceImpl implements IHttpService {
         return result;
     }
 
+//    @Override
+//    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
+//                                                   String pWifiMac, String pLanMac,
+//                                                   String pBlueToothMac, String pSerialNo,
+//                                                   String pAndroidID, String pDeviceToken) throws Exception {
+//        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+//        ConfirmDeviceIDResponse result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+//                pLanMac, pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
+//
+//        if (!result.isSuccess()) {
+//            throw new ConfirmIDServerException("confirm id not success");
+//        }
+//
+//        return result;
+//    }
+
     @Override
-    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
-                                                   String pWifiMac, String pBlueToothMac, String pSerialNo,
-                                                   String pAndroidID, String pDeviceToken) throws Exception {
+    public ConfirmDeviceIDResponse confirmDeviceID(Map<String, Object> pHardwareMap,
+                                                   String pDeviceID) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-        ConfirmDeviceIDResponse result = dao.confirmDeviceID(pBuildSn, pCpuSn, pIMEI, pWifiMac,
-                pBlueToothMac, pSerialNo, pAndroidID, pDeviceToken);
+        ConfirmDeviceIDResponse result = dao.confirmDeviceID(pHardwareMap, pDeviceID);
 
         if (!result.isSuccess()) {
             throw new ConfirmIDServerException("confirm id not success");
@@ -137,13 +172,35 @@ public class HttpServiceImpl implements IHttpService {
 
     @Override
     public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum) throws Exception {
+        return getDeviceStatus(pDeviceID, pSerialNum, 0);
+    }
+
+    @Override
+    public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum,
+                                                     int pAutoLogin) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
-        QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum);
+        QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum, pAutoLogin);
         if (!result.isSuccess()) {
             throw new QueryDeviceStatusServerException("get device status not success");
         }
+
         return result;
     }
+
+    @Override
+    public QueryDeviceStatusResponse getDeviceStatus(String pDeviceID, String pSerialNum,
+                                                     int pAutoLogin, int pNeedGroup) throws
+            Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        QueryDeviceStatusResponse result = dao.queryDeviceStatus(pDeviceID, pSerialNum,
+                pAutoLogin, pNeedGroup);
+        if (!result.isSuccess()) {
+            throw new QueryDeviceStatusServerException("get device status not success");
+        }
+
+        return result;
+    }
+
 
     @Override
     public GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception {

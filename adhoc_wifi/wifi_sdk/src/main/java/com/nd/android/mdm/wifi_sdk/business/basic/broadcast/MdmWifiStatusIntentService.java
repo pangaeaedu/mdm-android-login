@@ -1,5 +1,6 @@
 package com.nd.android.mdm.wifi_sdk.business.basic.broadcast;
 
+import android.app.IntentService;
 import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
@@ -15,7 +16,7 @@ import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiConstant;
  * Created by HuangYK on 2019/3/2 0002.
  */
 
-public class MdmWifiStatusIntentService extends AdhocIntentService {
+public class MdmWifiStatusIntentService extends IntentService {
 
     private static final String TAG = "MdmWifiStatusIntentService";
 
@@ -25,7 +26,6 @@ public class MdmWifiStatusIntentService extends AdhocIntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        super.onHandleIntent(intent);
 
         Bundle bundle;
 

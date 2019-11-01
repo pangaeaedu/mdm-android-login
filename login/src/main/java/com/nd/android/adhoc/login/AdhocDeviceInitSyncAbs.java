@@ -1,8 +1,10 @@
 package com.nd.android.adhoc.login;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitPriority;
@@ -11,7 +13,7 @@ import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.loginapi.IInitApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
-import com.nd.android.adhoc.loginapi.exception.RetrieveWifiMacException;
+import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
@@ -45,14 +47,15 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
 
                     @Override
                     public void onError(Throwable e) {
-                        if(e instanceof RetrieveWifiMacException){
+                        if(e instanceof RetrieveMacException){
                             pCallback.onFailed(new AdhocException("retrieve wifi mac error"));
                             return;
                         }
 
                         Log.e("yhq", "init Device error:" + e.getMessage());
-//                        updatePolicyAsync();
-                        updatePolicy();
+                        if(!TextUtils.isEmpty(DeviceInfoManager.getInstance().getDeviceID())) {
+                            updatePolicy();
+                        }
                         pCallback.onSuccess();
                     }
 

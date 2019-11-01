@@ -29,6 +29,11 @@ public class MsgCode {
     public static final int ERROR_DECOMPRESS_ERROR = 10017;                 // 解压失败
     public static final int ERROR_TEMPLATE_NOTEXIST = 10018;                // 模板不存在（分众传媒HTML模板）
 
+    public static final int ERROR_SYSTEM_SPACE_NOT_ENOUGH = 10033;          // 系统空间不足
+    public static final int ERROR_STORAGE_SPACE_NOT_ENOUGH = 10034;          // 设备存储空间不足
+    public static final int ERROR_APP_NOT_EXIST = 10035;                // 应用不存在
+    public static final int ERROR_DOWNLOAD_FILE_NOT_EXIST = 10036;                // 下载文件失败，对应文件不存在
+    public static final int ERROR_VIOLATION_OF_POLICY = 10037;                // 违反策略限制
 
     public static final int STATUS_MEDIA_READY = 20001;                     // 开始播放
     public static final int STATUS_MEDIA_COMPLETE = 20001;                  // 播放结束

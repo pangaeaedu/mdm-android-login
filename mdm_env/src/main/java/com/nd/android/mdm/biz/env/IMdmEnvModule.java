@@ -21,4 +21,7 @@ public interface IMdmEnvModule {
     String getApmServer();
 
     String getExceptionReportHostName();
+
+    String getCsBaseUrl();
+    String getCsBaseDownUrl();
 }
