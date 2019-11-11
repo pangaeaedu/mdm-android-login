@@ -14,7 +14,8 @@
       "cs_base_down_url":"https://betacs.101.com/v0.1/",
       "uc_protocol_update_url":"",
       "uc_new_version_base_url":"https://uc-gateway.beta.101.com/v1.1/",
-      "uc_app_id":""
+      "uc_app_id":"bc954f54-b9b9-4fae-97d2-b6a4085c3014",
+      "uc_org_code":"mdm"
     },
     {
       "name": "Test",
@@ -29,7 +30,8 @@
       "cs_base_down_url":"https://betacs.101.com/v0.1/",
       "uc_protocol_update_url":"",
       "uc_new_version_base_url":"https://uc-gateway.beta.101.com/v1.1/",
-      "uc_app_id":""
+      "uc_app_id":"bc954f54-b9b9-4fae-97d2-b6a4085c3014",
+      "uc_org_code":"mdm_pre"
     },
     {
       "name": "China",
@@ -44,7 +46,8 @@
       "cs_base_down_url":"https://cs.101.com/v0.1/",
       "uc_protocol_update_url":"https://uc.101.com",
       "uc_new_version_base_url":"https://uc-gateway.101.com/v1.1/",
-      "uc_app_id":""
+      "uc_app_id":"bc954f54-b9b9-4fae-97d2-b6a4085c3014",
+      "uc_org_code":"ND_PRODUCT"
     },
     {
       "name": "WholeWorld",
@@ -59,7 +62,8 @@
       "cs_base_down_url":"https://awscs.101.com/v0.1/",
       "uc_protocol_update_url":"https://uc-personal-web.aws.101.com",
       "uc_new_version_base_url":"https://uc-gateway-aws.101.com/v1.1/",
-      "uc_app_id":""
+      "uc_app_id":"bc954f54-b9b9-4fae-97d2-b6a4085c3014",
+      "uc_org_code":"ND_MDM"
     },
     {
       "name": "Egypt",
@@ -74,7 +78,8 @@
       "cs_base_down_url":"http://egcs-mdm.test.moe.gov.eg/v0.1/",
       "uc_protocol_update_url":"https://uc-gateway.beta.101.com/v1.1/",
       "uc_new_version_base_url":"",
-      "uc_app_id":""
+      "uc_app_id":"bc954f54-b9b9-4fae-97d2-b6a4085c3014",
+      "uc_org_code":"MDM"
     },
     {
       "name": "EgyptDrill",
@@ -89,7 +94,8 @@
       "cs_base_down_url":"https://egcs-mdm.beta.101.com/v0.1/",
       "uc_protocol_update_url":"https://uc-gateway.beta.101.com/v1.1/",
       "uc_new_version_base_url":"",
-      "uc_app_id":""
+      "uc_app_id":"bc954f54-b9b9-4fae-97d2-b6a4085c3014",
+      "uc_org_code":"MDM"
     },
     {
       "name": "ShanXi",
@@ -104,8 +110,8 @@
       "cs_base_down_url":"https://sdpcs.sneduyun.com.cn/v0.1/",
       "uc_protocol_update_url":"https://uc-gateway.beta.101.com/v1.1/",
       "uc_new_version_base_url":"",
-      "uc_app_id":"",
-      "uc_org_code":""
+      "uc_app_id":"bc954f54-b9b9-4fae-97d2-b6a4085c3014",
+      "uc_org_code":"MDM"
     }
   ]
 }
