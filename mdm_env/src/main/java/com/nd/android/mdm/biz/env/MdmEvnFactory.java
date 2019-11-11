@@ -161,7 +161,8 @@ public final class MdmEvnFactory {
         mCurMdmEnvModule = getMdmEnvModel(index);
         mPreferenceModel.putInt("env", mCurIndexk).apply();
 
-        EnvUtils.setCsEnv(mCurMdmEnvModule);
+//        EnvUtils.setCsEnv(mCurMdmEnvModule);
+        EnvUtils.initSdpEnv(mCurMdmEnvModule);
 
         notifyEnvChanged(old, mCurMdmEnvModule);
         broadcastNewEnv(index);

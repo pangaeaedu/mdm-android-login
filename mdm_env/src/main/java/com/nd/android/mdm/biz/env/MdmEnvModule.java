@@ -37,6 +37,15 @@ class MdmEnvModule implements IMdmEnvModule{
     @SerializedName("cs_base_down_url")
     String mCSBaseDownUrl;
 
+    @SerializedName("uc_new_version_base_url")
+    String mUcNewVersionBaseUrl;
+
+    @SerializedName("uc_protocol_update_url")
+    String mUcProtocolUpdateUrl;
+
+    @SerializedName("uc_app_id")
+    String mUcAppID;
+
     public MdmEnvModule() {
     }
 
@@ -84,4 +93,20 @@ class MdmEnvModule implements IMdmEnvModule{
     public String getCsBaseDownUrl() {
         return mCSBaseDownUrl;
     }
+
+    @Override
+    public String getUcNewVersionBaseUrl() {
+        return mUcNewVersionBaseUrl;
+    }
+
+    @Override
+    public String getUcProtocolUpdateUrl() {
+        return mUcProtocolUpdateUrl;
+    }
+
+    @Override
+    public String getUcAppID() {
+        return null;
+    }
+
 }

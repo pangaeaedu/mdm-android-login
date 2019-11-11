@@ -25,6 +25,10 @@ dependencies {
         transitive = true
         changing = true
     }
+
+    api('com.nd.sdp.uc:nducsdk_implenment:0.0.1.8.nducsdk.release')
+    api('com.nd.sdp.uc:nducsdk:0.0.1.8.nducsdk.release')
+
 }
 
 

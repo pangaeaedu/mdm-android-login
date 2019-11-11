@@ -23,5 +23,14 @@ public interface IMdmEnvModule {
     String getExceptionReportHostName();
 
     String getCsBaseUrl();
+
     String getCsBaseDownUrl();
+
+    String getUcNewVersionBaseUrl();
+
+    String getUcProtocolUpdateUrl();
+
+    String getUcAppID();
+
+    String getUcOrgCode();
 }

@@ -11,7 +11,10 @@
       "apm_server":"http://qc-report-collection.dev.web.nd/v1",
       "exception_report_host_name":"DEV",
       "cs_base_url":"https://betacs.101.com/v0.1/",
-      "cs_base_down_url":"https://betacs.101.com/v0.1/"
+      "cs_base_down_url":"https://betacs.101.com/v0.1/",
+      "uc_protocol_update_url":"",
+      "uc_new_version_base_url":"https://uc-gateway.beta.101.com/v1.1/",
+      "uc_app_id":""
     },
     {
       "name": "Test",
@@ -23,7 +26,10 @@
       "apm_server":"http://qc-report-collection.debug.web.nd/v1",
       "exception_report_host_name":"DEBUG",
       "cs_base_url":"https://betacs.101.com/v0.1/",
-      "cs_base_down_url":"https://betacs.101.com/v0.1/"
+      "cs_base_down_url":"https://betacs.101.com/v0.1/",
+      "uc_protocol_update_url":"",
+      "uc_new_version_base_url":"https://uc-gateway.beta.101.com/v1.1/",
+      "uc_app_id":""
     },
     {
       "name": "China",
@@ -35,7 +41,10 @@
       "apm_server":"https://qc-report-collection.sdp.101.com/v1",
       "exception_report_host_name":"PRODUCT",
       "cs_base_url":"https://cs.101.com/v0.1/",
-      "cs_base_down_url":"https://cs.101.com/v0.1/"
+      "cs_base_down_url":"https://cs.101.com/v0.1/",
+      "uc_protocol_update_url":"https://uc.101.com",
+      "uc_new_version_base_url":"https://uc-gateway.101.com/v1.1/",
+      "uc_app_id":""
     },
     {
       "name": "WholeWorld",
@@ -47,7 +56,10 @@
       "apm_server":"",
       "exception_report_host_name":"AWS",
       "cs_base_url":"https://awscs.101.com/v0.1/",
-      "cs_base_down_url":"https://awscs.101.com/v0.1/"
+      "cs_base_down_url":"https://awscs.101.com/v0.1/",
+      "uc_protocol_update_url":"https://uc-personal-web.aws.101.com",
+      "uc_new_version_base_url":"https://uc-gateway-aws.101.com/v1.1/",
+      "uc_app_id":""
     },
     {
       "name": "Egypt",
@@ -59,7 +71,10 @@
       "apm_server":"",
       "exception_report_host_name":"",
       "cs_base_url":"http://egcs-mdm.test.moe.gov.eg/v0.1/",
-      "cs_base_down_url":"http://egcs-mdm.test.moe.gov.eg/v0.1/"
+      "cs_base_down_url":"http://egcs-mdm.test.moe.gov.eg/v0.1/",
+      "uc_protocol_update_url":"https://uc-gateway.beta.101.com/v1.1/",
+      "uc_new_version_base_url":"",
+      "uc_app_id":""
     },
     {
       "name": "EgyptDrill",
@@ -71,7 +86,10 @@
       "apm_server":"",
       "exception_report_host_name":"",
       "cs_base_url":"https://egcs-mdm.beta.101.com/v0.1/",
-      "cs_base_down_url":"https://egcs-mdm.beta.101.com/v0.1/"
+      "cs_base_down_url":"https://egcs-mdm.beta.101.com/v0.1/",
+      "uc_protocol_update_url":"https://uc-gateway.beta.101.com/v1.1/",
+      "uc_new_version_base_url":"",
+      "uc_app_id":""
     },
     {
       "name": "ShanXi",
@@ -83,7 +101,11 @@
       "apm_server":"",
       "exception_report_host_name":"",
       "cs_base_url":"https://sdpcs.sneduyun.com.cn/v0.1/",
-      "cs_base_down_url":"https://sdpcs.sneduyun.com.cn/v0.1/"
+      "cs_base_down_url":"https://sdpcs.sneduyun.com.cn/v0.1/",
+      "uc_protocol_update_url":"https://uc-gateway.beta.101.com/v1.1/",
+      "uc_new_version_base_url":"",
+      "uc_app_id":"",
+      "uc_org_code":""
     }
   ]
 }
