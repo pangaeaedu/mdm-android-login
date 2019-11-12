@@ -46,6 +46,9 @@ class MdmEnvModule implements IMdmEnvModule{
     @SerializedName("uc_app_id")
     String mUcAppID;
 
+    @SerializedName("uc_org_code")
+    String mUcOrgCode;
+
     public MdmEnvModule() {
     }
 
@@ -106,7 +109,12 @@ class MdmEnvModule implements IMdmEnvModule{
 
     @Override
     public String getUcAppID() {
-        return null;
+        return mUcAppID;
+    }
+
+    @Override
+    public String getUcOrgCode() {
+        return mUcOrgCode;
     }
 
 }

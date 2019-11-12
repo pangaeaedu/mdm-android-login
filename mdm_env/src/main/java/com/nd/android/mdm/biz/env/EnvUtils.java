@@ -4,16 +4,16 @@ package com.nd.android.mdm.biz.env;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.smartcan.content.CsManager;
 import com.nd.smartcan.content.base.CsBaseManager;
-import com.nd.smartcan.frame.util.AppContextUtils;
 import com.nd.uc.account.NdUc;
 import com.nd.uc.account.interfaces.ICurrentUser;
 
 public class EnvUtils {
     private static final String TAG = "EnvUtils";
 
-    public static void initSdpEnv(@NonNull IMdmEnvModule pEnvModule){
+    public static void initSdpEnv(@NonNull IMdmEnvModule pEnvModule) {
         setCsEnv(pEnvModule);
         setUcEnv(pEnvModule);
     }
@@ -30,10 +30,14 @@ public class EnvUtils {
     }
 
     public static void setUcEnv(@NonNull IMdmEnvModule pEnvModule) {
+        Log.e(TAG, "setUcEnv appid:" + pEnvModule.getUcAppID()
+                + " newversionUrl:" + pEnvModule.getUcNewVersionBaseUrl()
+                + " protocolUrl:" + pEnvModule.getUcNewVersionBaseUrl()
+                + " orgcode:" + pEnvModule.getUcOrgCode());
         NdUc.buildConfiguration().withAppId(pEnvModule.getUcAppID()). //设置appId
                 withAccountType(ICurrentUser.ACCOUNT_TYPE_ORG). //设置帐户类型
                 withBaseUrl(pEnvModule.getUcNewVersionBaseUrl()). //设置BaseUrl
-                withContext(AppContextUtils.getContext()).
+                withContext(AdhocBasicConfig.getInstance().getAppContext()).
                 withAgreementBaseUrl(pEnvModule.getUcProtocolUpdateUrl()).
                 build().init();
     }
