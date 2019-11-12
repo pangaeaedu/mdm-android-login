@@ -35,6 +35,7 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     @Override
     public AdhocPolicyErrorCode executeTask(@NonNull IAdhocPolicyEntity pPolicyEntity)  throws AdhocException{
         try {
+            Logger.i(TAG, "executeTask");
             JSONObject jsonObject = new JSONObject(pPolicyEntity.getData());
 
             // 1 = push上行，0 = http/https，默认 1
