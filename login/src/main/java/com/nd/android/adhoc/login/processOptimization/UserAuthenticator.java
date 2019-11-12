@@ -18,7 +18,7 @@ import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLogin;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLoginResult;
 import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
-import com.nd.android.adhoc.login.processOptimization.login.UserLoginThroughServer;
+import com.nd.android.adhoc.login.processOptimization.login.UserLoginThoughUC11;
 import com.nd.android.adhoc.loginapi.exception.AutoLoginMeetUserLoginException;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
@@ -126,11 +126,18 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
     @NonNull
     private IUserLogin getLogin() {
-        return new UserLoginThroughServer();
+//        return new UserLoginThroughServer();
+        return new UserLoginThoughUC11();
     }
 
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword) {
+        return login(pUserName, pPassword, "");
+    }
+
+    public Observable<DeviceStatus> login(@NonNull final String pUserName,
+                                          @NonNull final String pPassword,
+                                          final String pValidationCode) {
         Log.e("yhq", "login");
         final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         if (TextUtils.isEmpty(deviceID)) {
@@ -152,7 +159,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         }
 
         Log.e("yhq", "direct login");
-        return getLogin().login(pUserName, pPassword)
+        return getLogin().login(pUserName, pPassword, pValidationCode)
                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(IUserLoginResult pResult) {

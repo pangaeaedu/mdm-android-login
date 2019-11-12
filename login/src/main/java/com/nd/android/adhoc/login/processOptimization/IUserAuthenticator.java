@@ -11,5 +11,8 @@ public interface IUserAuthenticator {
     Observable<DeviceStatus> login(@NonNull final String pUserName,
                                    @NonNull final String pPassword);
 
+    Observable<DeviceStatus> login(@NonNull final String pUserName,
+                                   @NonNull final String pPassword,
+                                   @NonNull final String pValidationCode);
     void logout();
 }

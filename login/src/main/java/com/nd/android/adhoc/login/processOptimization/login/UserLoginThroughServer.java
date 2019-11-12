@@ -67,6 +67,11 @@ public class UserLoginThroughServer implements IUserLogin {
         });
     }
 
+    @Override
+    public Observable<IUserLoginResult> login(String pUserName, String pPassword, String pValidationCode) {
+        return login(pUserName, pPassword);
+    }
+
     private IHttpService getHttpService(){
         return BasicServiceFactory.getInstance().getHttpService();
     }

@@ -18,6 +18,7 @@ dependencies {
     }catch (Exception e){
         api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version") {
             exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
+            exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
         }
     }
 
