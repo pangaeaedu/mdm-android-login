@@ -5,35 +5,68 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
+import com.nd.android.adhoc.login.basicService.data.http.GroupPageNode;
+import com.nd.android.adhoc.login.basicService.data.http.GroupPageResponse;
 import com.nd.android.adhoc.login.basicService.data.http.MdmOrgNode;
-import com.nd.android.adhoc.login.basicService.data.http.RetrieveOrgNodeResponse;
+import com.nd.android.adhoc.login.basicService.data.http.ResponseDataConvertUtils;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNode;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeResponse;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SchoolGroupCodeDao extends AdhocHttpDao {
+    private final static int PageSize = 200;
+
     public SchoolGroupCodeDao(String pBaseUrl) {
         super(pBaseUrl);
     }
 
     public List<MdmOrgNode> getSubNodes(String pGroupID) throws Exception{
+        List<MdmOrgNode> resultNodes = new ArrayList<>();
+
+        int offset = 0;
+        while (true){
+            GroupPageResponse response = getSubNodesByPage(pGroupID, offset, PageSize);
+            if(response == null || response.getAaData() == null || response.getAaData().isEmpty()){
+                return resultNodes;
+            }
+
+            for (GroupPageNode node : response.getAaData()) {
+                MdmOrgNode data = ResponseDataConvertUtils.convertFrom(node);
+                resultNodes.add(data);
+            }
+
+            offset+= response.getAaData().size();
+
+            if(response.getAaData().size() < PageSize){
+                return resultNodes;
+            }
+        }
+    }
+
+    public GroupPageResponse getSubNodesByPage(String pGroupID, int pOffset, int pLimit) throws Exception{
         try {
             Map<String, String> header = null;
             header = new HashMap<>();
             header.put("Accept", "application/json");
 
-            RetrieveOrgNodeResponse response = getAction().get("/v1/group/subgroup?id="+pGroupID,
-                    RetrieveOrgNodeResponse.class, null, header);
-            String array = response.getResult();
-            MdmOrgNode[] nodes = new Gson().fromJson(array,MdmOrgNode[].class);
-            return Arrays.asList(nodes);
+            String url = "/v1/group/groupPage?groupCode="+pGroupID+"&offset="+pOffset
+                    +"&limit="+pLimit+"&isson=1";
+
+//            RetrieveOrgNodeResponse response = getAction().get(url, RetrieveOrgNodeResponse.class, null, header);
+//            String array = response.getResult();
+//            MdmOrgNode[] nodes = new Gson().fromJson(array,MdmOrgNode[].class);
+//            return Arrays.asList(nodes);
+
+            GroupPageResponse response = getAction().get(url, GroupPageResponse.class, null,
+                    header);
+            return response;
         }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
+            Log.e("yhq", "SchoolGroupCodeDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1/group/groupPage?groupCode"+" " + "Msg:"+pE.getMessage());
             throw pE;
         }
     }
@@ -60,8 +93,8 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
             .getType());
             return nodes;
         }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
+            Log.e("yhq", "SchoolGroupCodeDao error happpen:"+ postAction().getBaseUrl()
+                    +"/v1/group/grouppath?schoolid="+" " + "Msg:"+pE.getMessage());
             throw pE;
         }
     }
