@@ -55,7 +55,7 @@ class MdmRunInfoDbOperator implements IMdmRunInfoDbOperator {
     public List<IMdmRunInfoEntity> getToReportRunInfo() {
         try {
             QueryBuilder<IMdmRunInfoEntity, Void> queryBuilder = mRunInfoDbDao.queryBuilder();
-            queryBuilder.limit(10L);
+            queryBuilder.limit(1000L);
             return queryBuilder.where().lt(MdmRunInfoEntity.DAY_TIME_STAMP, AppRunInfoReportUtils.getCurrentDayTimeStamp())
                     .and().gt(MdmRunInfoEntity.RUN_TIME, 3 * 60 * 1000)
                     .and().isNotNull(MdmRunInfoEntity.PACKAGE_NAME)
