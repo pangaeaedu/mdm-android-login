@@ -29,8 +29,10 @@ public class UserLoginThoughUC11 implements IUserLogin {
             @Override
             public void call(Subscriber<? super IUserLoginResult> pSubscriber) {
                 String orgCode = "";
+                String userName = pUserName;
                 IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
                 if (pUserName.contains("@")) {
+                    userName = pUserName.substring(0, pUserName.indexOf("@"));
                     orgCode = pUserName.substring(pUserName.indexOf("@")+1, pUserName.length());
                 } else {
                     orgCode = module.getUcOrgCode();
@@ -42,7 +44,7 @@ public class UserLoginThoughUC11 implements IUserLogin {
                         .withLoginNameType(IAuthenticationManager.LOGIN_NAME_TYPE_ORG_USER_CODE)
                         .build();
                 try {
-                    NdUc.getIAuthenticationManager().login(pUserName, pPassword, pValidationCode, map);
+                    NdUc.getIAuthenticationManager().login(userName, pPassword, pValidationCode, map);
 
                     ICurrentUser user = NdUc.getIAuthenticationManager().getCurrentUser();
                     if (user == null) {
