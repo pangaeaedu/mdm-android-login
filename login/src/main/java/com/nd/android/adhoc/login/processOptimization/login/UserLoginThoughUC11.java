@@ -31,7 +31,7 @@ public class UserLoginThoughUC11 implements IUserLogin {
                 String orgCode = "";
                 IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
                 if (pUserName.contains("@")) {
-                    orgCode = pUserName.substring(pUserName.indexOf("@"), pUserName.length());
+                    orgCode = pUserName.substring(pUserName.indexOf("@")+1, pUserName.length());
                 } else {
                     orgCode = module.getUcOrgCode();
                 }
