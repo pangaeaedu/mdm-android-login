@@ -35,6 +35,9 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     private static final String KEY_PREVIOUS_LOGIN_ACCOUNT = "previous_login_account";
 
+    private static final String KEY_WIFI_MAC_REPORTED = "wifi_mac_reported";
+    private static final String KEY_LAN_MAC_REPORTED = "lan_mac_reported";
+
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
     }
@@ -178,6 +181,21 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveString(KEY_PREVIOUS_LOGIN_ACCOUNT,  pAccounts);
     }
 
+    public void setWifiMacReported(Boolean pReported){
+        saveBoolean(KEY_WIFI_MAC_REPORTED, pReported);
+    }
+
+    public Boolean isWifiMacReported(){
+        return getBoolean(KEY_WIFI_MAC_REPORTED);
+    }
+
+    public void setLanMacReported(Boolean pReported){
+        saveBoolean(KEY_LAN_MAC_REPORTED, pReported);
+    }
+
+    public Boolean isLanMacReported(){
+        return getBoolean(KEY_WIFI_MAC_REPORTED);
+    }
 
     // 清理数据的时候，不要清理pushID
     public void clearData(){
