@@ -194,7 +194,7 @@ public class AssistantSpConfig extends BaseSpConfig {
     }
 
     public Boolean isLanMacReported(){
-        return getBoolean(KEY_WIFI_MAC_REPORTED);
+        return getBoolean(KEY_LAN_MAC_REPORTED);
     }
 
     // 清理数据的时候，不要清理pushID
