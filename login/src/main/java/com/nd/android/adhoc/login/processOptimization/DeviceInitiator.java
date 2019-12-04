@@ -12,6 +12,7 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.listener.IAdhocPushConnectListener;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
@@ -46,7 +47,13 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
 
-    private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
+    private IPushConnectListener mPushConnectListener = new IAdhocPushConnectListener() {
+        @Override
+        public void onPushDeviceToken(String deviceToken) {
+            Log.e("yhq", "onPushDeviceToken:" + deviceToken);
+            onConnected();
+        }
+
         @Override
         public void onConnected() {
             Log.e("yhq", "push sdk onConnected");
