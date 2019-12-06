@@ -2,10 +2,7 @@ package com.nd.android.mdm.biz.env;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by HuangYK on 2018/2/28.
- */
-class MdmEnvModule implements IMdmEnvModule{
+class MdmEnvModule implements IMdmEnvModule {
 
     @SerializedName("name")
     String mName;
@@ -21,6 +18,13 @@ class MdmEnvModule implements IMdmEnvModule{
 
     @SerializedName("pushport")
     int mPushPort;
+
+
+    @SerializedName("push_app_id")
+    String mPushAppId;
+
+    @SerializedName("push_app_key")
+    String mPushAppKey;
 
     @SerializedName("downloadservicename")
     String mDownloadServiceName;
@@ -66,6 +70,16 @@ class MdmEnvModule implements IMdmEnvModule{
 
     public String getPushIp() {
         return mPushIp;
+    }
+
+    @Override
+    public String getPushAppId() {
+        return mPushAppId;
+    }
+
+    @Override
+    public String getPushAppKey() {
+        return mPushAppKey;
     }
 
     public int getPushPort() {
