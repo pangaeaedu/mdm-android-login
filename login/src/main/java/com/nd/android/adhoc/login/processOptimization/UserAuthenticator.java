@@ -13,6 +13,8 @@ import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
+import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLogin;
@@ -142,6 +144,12 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         if (TextUtils.isEmpty(deviceID)) {
             return Observable.error(new DeviceIDNotSetException());
+        }
+
+        IPushModule module = MdmTransferFactory.getPushModel();
+        String pushID = module.getDeviceId();
+        if(!TextUtils.isEmpty(pushID)){
+            DeviceInfoManager.getInstance().notifyPushID(pushID);
         }
 
         Context context = AdhocBasicConfig.getInstance().getAppContext();
