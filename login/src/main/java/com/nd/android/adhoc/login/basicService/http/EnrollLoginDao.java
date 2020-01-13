@@ -3,6 +3,7 @@ package com.nd.android.adhoc.login.basicService.http;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nd.android.adhoc.basic.net.constant.AhdocHttpConstants;
@@ -36,7 +37,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         super(pBaseUrl);
     }
 
-    public GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception{
+    public GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
@@ -47,9 +48,9 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/getUserInfo/", GetUserInfoResponse.class,
                     content, null);
-        }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
+        } catch (Exception pE) {
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/getUserInfo/" + " " + "Msg:" + pE.getMessage());
             throw new GetUserInfoServerException(pE.getMessage());
         }
     }
@@ -113,9 +114,9 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/getDeviceStatus/", QueryDeviceStatusResponse.class,
                     content, null);
-        }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/getDeviceStatus/"+" " + "Msg:"+pE.getMessage());
+        } catch (Exception pE) {
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/getDeviceStatus/" + " " + "Msg:" + pE.getMessage());
             throw new QueryDeviceStatusServerException(pE.getMessage());
         }
     }
@@ -132,16 +133,16 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/login/", LoginUserResponse.class,
                     content, null);
-        }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/login/"+" " + "Msg:"+pE.getMessage());
+        } catch (Exception pE) {
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/login/" + " " + "Msg:" + pE.getMessage());
             throw new LoginUserServerException(pE.getMessage());
         }
 
     }
 
     public GetActivateUserResultResponse getActivateResult(String pDeviceID, String pRequestID)
-            throws Exception{
+            throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
@@ -153,9 +154,9 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/getActivateResult/", GetActivateUserResultResponse.class,
                     content, null);
-        }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/getActivateResult/"+" " + "Msg:"+pE.getMessage());
+        } catch (Exception pE) {
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/getActivateResult/" + " " + "Msg:" + pE.getMessage());
             throw new QueryActivateUserResultException(pE.getMessage());
         }
 
@@ -164,30 +165,30 @@ public class EnrollLoginDao extends AdhocHttpDao {
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
                                              ActivateUserType pUserType, String pLoginToken)
             throws Exception {
-       try {
-           Map<String, Object> map = new HashMap<>();
-           map.put("device_token", pDeviceID);
-           map.put("type", DeviceType.Android.getValue());
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("device_token", pDeviceID);
+            map.put("type", DeviceType.Android.getValue());
 
-           Map<String, String> header = null;
-           header = new HashMap<>();
-           header.put("channel", pUserType.getValue());
-           if (pUserType == ActivateUserType.Uc) {
-               header.put("Authorization", pLoginToken);
-           }
+            Map<String, String> header = null;
+            header = new HashMap<>();
+            header.put("channel", pUserType.getValue());
+            if (pUserType == ActivateUserType.Uc) {
+                header.put("Authorization", pLoginToken);
+            }
 
-           map.put("serial_no", pSerialNo);
+            map.put("serial_no", pSerialNo);
 
-           Gson gson = new GsonBuilder().create();
-           String content = gson.toJson(map);
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
 
-           return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
-                   content, header);
-       }catch (Exception pE){
-           Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                   +"/v1.1/enroll/activate/"+" " + "Msg:"+pE.getMessage());
-           throw new ActivateUserServerException(pE.getMessage());
-       }
+            return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
+                    content, header);
+        } catch (Exception pE) {
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/activate/" + " " + "Msg:" + pE.getMessage());
+            throw new ActivateUserServerException(pE.getMessage());
+        }
 
     }
 
@@ -208,7 +209,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
                 header.put("Authorization", pLoginToken);
             }
 
-            if(!TextUtils.isEmpty(pSchoolGroupCode)){
+            if (!TextUtils.isEmpty(pSchoolGroupCode)) {
                 map.put("groupcode", pSchoolGroupCode);
             }
 
@@ -220,9 +221,9 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
                     content, header);
-        }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/activate/"+" " + "Msg:"+pE.getMessage());
+        } catch (Exception pE) {
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/activate/" + " " + "Msg:" + pE.getMessage());
             throw new ActivateUserServerException(pE.getMessage());
         }
 
@@ -232,7 +233,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             AdhocHttpException {
         try {
             JSONObject object = new JSONObject();
-            object.put("device_token",pDeviceToken);
+            object.put("device_token", pDeviceToken);
             object.put("crtime", pTime);
             object.put("data", pData);
             object.put("type", 1);
@@ -240,8 +241,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
             postAction().post("/v1.1/enroll/policyset/",
                     String.class, content, null);
         } catch (Exception e) {
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/policyset/"+" " + "Msg:"+e.getMessage());
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/policyset/" + " " + "Msg:" + e.getMessage());
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }
@@ -258,8 +259,8 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/pushid/", BindPushIDResponse.class, content, null);
         } catch (Exception e) {
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/pushid/"+" " + "Msg:"+e.getMessage());
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/pushid/" + " " + "Msg:" + e.getMessage());
             throw new BindPushIDServerException(e.getMessage());
         }
     }
@@ -372,6 +373,43 @@ public class EnrollLoginDao extends AdhocHttpDao {
             Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
                     + "/v1.1/enroll/getDeviceToken/" + " " + "Msg:" + e.getMessage());
             throw new ConfirmIDServerException(e.getMessage());
+        }
+    }
+
+    /*
+
+{
+    "device_token": "08002800xxxxA8C5"
+    "lan_mac": "xxxxxxx" ,
+    "wifi_mac": "xxxxxxx" ,
+     ...
+    "xxxxx":"xxxxxx" //更多硬件信息
+}
+     */
+    public Boolean reportHardwareInfo(String pDeviceID, Map<String, Object> pInfos) throws
+            Exception {
+        try {
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(pInfos);
+
+            String response = postAction().post("/v1.1/enroll/dtoken/completion",
+                    String.class, content, null);
+
+            if (TextUtils.isEmpty(response)) {
+                return false;
+            }
+
+            com.alibaba.fastjson.JSONObject object = JSON.parseObject(response);
+            int errorcode = object.getInteger("errcode");
+            if (errorcode == 0) {
+                return true;
+            }
+
+            return false;
+        } catch (Exception e) {
+            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
+                    + "/v1.1/enroll/dtoken/completion" + " " + "Msg:" + e.getMessage());
+            throw new BindPushIDServerException(e.getMessage());
         }
     }
 

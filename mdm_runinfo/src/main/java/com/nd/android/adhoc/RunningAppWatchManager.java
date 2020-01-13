@@ -9,7 +9,7 @@ import com.nd.android.adhoc.basic.util.app.receiver.AdhocAppListenerManager;
 import com.nd.android.adhoc.basic.util.app.receiver.IAdhocAppListener;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.control.normal.api.ISystemServiceApi;
-import com.nd.android.adhoc.reportAppRunning.AdhocReportAppRunning;
+import com.nd.android.adhoc.reportAppRunInfoByDb.AdhocReportAppRunInfo;
 import com.nd.android.mdm.basic.system.SystemServiceFactory;
 
 import java.util.ArrayList;
@@ -76,12 +76,12 @@ public class RunningAppWatchManager {
         Logger.i(TAG, "stop watching");
         AdhocAppListenerManager.getInstance().removePakcageListener(mAdhocAppListener);
         AdhocRxJavaUtil.doUnsubscribe(mSubscription);
-        AdhocReportAppRunning.getInstance().stopWatching();
+        AdhocReportAppRunInfo.getInstance().stopWatching();
     }
 
     private void deal(){
         Logger.i(TAG, "system service installed, deal with it");
-        AdhocReportAppRunning.getInstance().deal();
+        AdhocReportAppRunInfo.getInstance().deal();
     }
 
     private IAdhocAppListener mAdhocAppListener = new IAdhocAppListener() {

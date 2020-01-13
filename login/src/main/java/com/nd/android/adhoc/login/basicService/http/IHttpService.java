@@ -62,4 +62,6 @@ public interface IHttpService {
             throws Exception;
 
     GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception;
+
+    Boolean reportHardwareInfo(String pDeviceID, Map<String, Object> pInfo) throws Exception;
 }

@@ -2,10 +2,7 @@ package com.nd.android.mdm.biz.env;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by HuangYK on 2018/2/28.
- */
-class MdmEnvModule implements IMdmEnvModule{
+class MdmEnvModule implements IMdmEnvModule {
 
     @SerializedName("name")
     String mName;
@@ -22,6 +19,13 @@ class MdmEnvModule implements IMdmEnvModule{
     @SerializedName("pushport")
     int mPushPort;
 
+
+    @SerializedName("push_app_id")
+    String mPushAppId;
+
+    @SerializedName("push_app_key")
+    String mPushAppKey;
+
     @SerializedName("downloadservicename")
     String mDownloadServiceName;
 
@@ -36,6 +40,18 @@ class MdmEnvModule implements IMdmEnvModule{
 
     @SerializedName("cs_base_down_url")
     String mCSBaseDownUrl;
+
+    @SerializedName("uc_new_version_base_url")
+    String mUcNewVersionBaseUrl;
+
+    @SerializedName("uc_protocol_update_url")
+    String mUcProtocolUpdateUrl;
+
+    @SerializedName("uc_app_id")
+    String mUcAppID;
+
+    @SerializedName("uc_org_code")
+    String mUcOrgCode;
 
     public MdmEnvModule() {
     }
@@ -54,6 +70,16 @@ class MdmEnvModule implements IMdmEnvModule{
 
     public String getPushIp() {
         return mPushIp;
+    }
+
+    @Override
+    public String getPushAppId() {
+        return mPushAppId;
+    }
+
+    @Override
+    public String getPushAppKey() {
+        return mPushAppKey;
     }
 
     public int getPushPort() {
@@ -84,4 +110,25 @@ class MdmEnvModule implements IMdmEnvModule{
     public String getCsBaseDownUrl() {
         return mCSBaseDownUrl;
     }
+
+    @Override
+    public String getUcNewVersionBaseUrl() {
+        return mUcNewVersionBaseUrl;
+    }
+
+    @Override
+    public String getUcProtocolUpdateUrl() {
+        return mUcProtocolUpdateUrl;
+    }
+
+    @Override
+    public String getUcAppID() {
+        return mUcAppID;
+    }
+
+    @Override
+    public String getUcOrgCode() {
+        return mUcOrgCode;
+    }
+
 }

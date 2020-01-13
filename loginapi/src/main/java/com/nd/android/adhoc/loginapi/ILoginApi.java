@@ -17,6 +17,10 @@ public interface ILoginApi extends IProvider {
     Observable<DeviceStatus> login(@NonNull final String pUserName,
                                    @NonNull final String pPassword);
 
+    Observable<DeviceStatus> login(@NonNull final String pUserName,
+                                   @NonNull final String pPassword,
+                                   String pValidationCode);
+
     Observable<String> getNickName();
 
     Observable<String> getUserID();

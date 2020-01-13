@@ -40,7 +40,7 @@ public class HttpServiceImpl implements IHttpService {
             throws Exception {
         LoginDao dao = new LoginDao(getBaseUrl());
         IBindResult result = dao.bindDevice(pDeviceToken, pPushID, pSerialNum);
-        if(!result.isSuccess()){
+        if (!result.isSuccess()) {
             throw new Exception("Bind Device Failed");
         }
 
@@ -54,7 +54,7 @@ public class HttpServiceImpl implements IHttpService {
         LoginDao dao = new LoginDao(getBaseUrl());
         IBindResult result = dao.bindDeviceWithPushChannelType(pDeviceToken, pPushID,
                 pSerialNum, pPushChannelType);
-        if(!result.isSuccess()){
+        if (!result.isSuccess()) {
             throw new Exception("Bind Device Failed");
         }
 
@@ -66,8 +66,8 @@ public class HttpServiceImpl implements IHttpService {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
         BindPushIDResponse result = dao.bindDeviceIDToPushID(pDeviceID, pPushID);
 
-        if(!result.isSuccess()){
-            if(result.isDeviceTokenNotFound()){
+        if (!result.isSuccess()) {
+            if (result.isDeviceTokenNotFound()) {
                 throw new DeviceTokenNotFoundException();
             }
 
@@ -106,7 +106,7 @@ public class HttpServiceImpl implements IHttpService {
 
     @Override
     public GetOldTokenResult getOldDeviceToken(String pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                    String pBlueToothMac, String pSerialNo, String pDeviceToken)
+                                               String pBlueToothMac, String pSerialNo, String pDeviceToken)
             throws Exception {
         LoginDao dao = new LoginDao(getBaseUrl());
         GetOldTokenResult result = dao.getOldToken(pBuildSn, pCpuSn, pIMEI, pWifiMac,
@@ -208,7 +208,14 @@ public class HttpServiceImpl implements IHttpService {
         return dao.getUserInfo(pDeviceID);
     }
 
-    private String getBaseUrl(){
+    @Override
+    public Boolean reportHardwareInfo(String pDeviceID, Map<String, Object> pInfo)
+            throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        return dao.reportHardwareInfo(pDeviceID, pInfo);
+    }
+
+    private String getBaseUrl() {
         IMdmEnvModule module = MdmEvnFactory.getInstance().getCurEnvironment();
         return module.getUrl();
     }

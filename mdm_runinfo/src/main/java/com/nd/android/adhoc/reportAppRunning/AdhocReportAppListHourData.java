@@ -15,6 +15,7 @@ import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
+import com.nd.android.adhoc.reportAppRunInfoByDb.RunInfoReportResult;
 import com.nd.android.adhoc.utils.AppRunInfoReportConstant;
 import com.nd.android.adhoc.utils.AppRunInfoReportUtils;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
@@ -41,6 +42,7 @@ import rx.schedulers.Schedulers;
  * Created by linsj on 2019/03/26.
  * 某个时段App运行数据列表
  */
+@Deprecated
 public class AdhocReportAppListHourData {
     /**以此对象的构造时间做随机数种子*/
     private final static long RANDOM_SECONDS_SEED = System.currentTimeMillis();
