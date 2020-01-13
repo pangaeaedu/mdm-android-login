@@ -27,6 +27,7 @@ import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.control.define.IControl_AppList;
+import com.nd.android.adhoc.control.define.IControl_CpuUsageRate;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
 import com.nd.android.mdm.basic.ControlFactory;
@@ -440,7 +441,12 @@ public class MonitorModule implements IMonitor {
 
     @Override
     public AdhocCpuInfo getCpuInfo() {
-        return new AdhocCpuInfo(MonitorUtil.getCpuInfo());
+        IControl_CpuUsageRate control_cpuUsageRate = ControlFactory.getInstance().getControl(IControl_CpuUsageRate.class);
+        if (control_cpuUsageRate != null) {
+            return new AdhocCpuInfo((int)control_cpuUsageRate.getUsageRate());
+        }else {
+            return new AdhocCpuInfo(0);
+        }
     }
 
     @Override
