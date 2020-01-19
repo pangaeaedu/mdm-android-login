@@ -39,6 +39,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     protected IDeviceStatusListener mDeviceStatusListener = null;
 
     private static String TAG = "BaseAuthenticator";
+
     public BaseAuthenticator(IDeviceStatusListener pListener) {
         mDeviceStatusListener = pListener;
     }
@@ -56,7 +57,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     }
 
 
-    protected Observable<QueryDeviceStatusResponse> queryDeviceStatusFromServer(final String pDeviceID){
+    protected Observable<QueryDeviceStatusResponse> queryDeviceStatusFromServer(final String pDeviceID) {
         Log.e("yhq", "queryDeviceStatusFromServer");
         return Observable
                 .create(new Observable.OnSubscribe<QueryDeviceStatusResponse>() {
@@ -80,7 +81,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                         + result.toString());
 
                                 DeviceStatus status = result.getStatus();
-                                if(DeviceStatus.isStatusUnLogin(status)){
+                                if (DeviceStatus.isStatusUnLogin(status)) {
                                     Iterator<ISchoolGroupCodeRetriever> interceptors = AnnotationServiceLoader
                                             .load(ISchoolGroupCodeRetriever.class).iterator();
                                     if (!interceptors.hasNext()) {
@@ -90,15 +91,21 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                     }
 
                                     // 把取回的school groupCode放在result中，返回给下一个调用点
-                                    Log.e("yhq", "retrieveGroupCode root group code:"+result.getRootCode());
+                                    Log.e("yhq", "retrieveGroupCode root group code:" + result.getRootCode());
+                                    String schoolGroupCode = "";
                                     ISchoolGroupCodeRetriever retriever = interceptors.next();
-                                    String schoolGroupCode = retriever.retrieveGroupCode(result.getRootCode());
+                                    if (TextUtils.isEmpty(loginConfig.getGroupCode())) {
+                                        schoolGroupCode = retriever.retrieveGroupCode(result.getRootCode());
+                                    } else {
+                                        schoolGroupCode = retriever.retrieveGroupCode(loginConfig
+                                                .getGroupCode());
+                                    }
 
                                     //偶发异常，强行杀进程
-                                    if(schoolGroupCode.equalsIgnoreCase(result.getRootCode())){
+                                    if (schoolGroupCode.equalsIgnoreCase(result.getRootCode())) {
                                         Log.e("yhq", "retrieveGroupCode not work root " +
-                                                "code:"+result.getRootCode()+" selected:"+schoolGroupCode
-                                        +" quit app");
+                                                "code:" + result.getRootCode() + " selected:" + schoolGroupCode
+                                                + " quit app");
                                         System.exit(0);
                                         return;
                                     }
@@ -115,13 +122,13 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             onQueryResultReturn(pSubscriber, result);
 
                         } catch (Exception e) {
-                            Log.e("yhq", "queryDeviceStatusFromServer error:"+e.getMessage());
+                            Log.e("yhq", "queryDeviceStatusFromServer error:" + e.getMessage());
                             CrashAnalytics.INSTANCE.reportException(e);
                             //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
-                            if(isAutoLogin()){
+                            if (isAutoLogin()) {
                                 DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
-                                if(DeviceStatus.isStatusUnLogin(status)){
-                                    Log.e("yhq","auto login device status:"+status.toString());
+                                if (DeviceStatus.isStatusUnLogin(status)) {
+                                    Log.e("yhq", "auto login device status:" + status.toString());
                                     DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
                                     quitAppAfter(120);
                                     return;
@@ -135,7 +142,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     }
 
     protected void onQueryResultReturn(Subscriber<? super QueryDeviceStatusResponse> pSubscriber,
-                                       QueryDeviceStatusResponse result ){
+                                       QueryDeviceStatusResponse result) {
         saveLoginInfo(result.getUsername(), result.getNickname());
 
         DeviceStatus curStatus = result.getStatus();
@@ -154,22 +161,22 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         pSubscriber.onCompleted();
     }
 
-    protected boolean isAutoLogin(){
+    protected boolean isAutoLogin() {
         UserLoginConfig loginConfig = DeviceInfoManager.getInstance()
                 .getUserLoginConfig();
-        if(loginConfig != null && loginConfig.isAutoLogin()){
+        if (loginConfig != null && loginConfig.isAutoLogin()) {
             return true;
         }
 
         return false;
     }
 
-    protected void quitAppAfter(int pSec){
+    protected void quitAppAfter(int pSec) {
         try {
-            Log.e("yhq", "quitAppAfter "+pSec);
-            Thread.sleep(pSec*1000);
+            Log.e("yhq", "quitAppAfter " + pSec);
+            Thread.sleep(pSec * 1000);
             System.exit(0);
-        }catch (Exception pE){
+        } catch (Exception pE) {
         }
     }
 
@@ -224,14 +231,14 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                                    ActivateUserType pUserType, String pLoginToken,
                                                    int pActivateRealType) throws Exception {
         //自动登录的情况下，需要把realtype传上去，重试三次，因为大
-        Log.e("yhq", "retryActivateUser school group code:"+pSchoolGroupCode);
+        Log.e("yhq", "retryActivateUser school group code:" + pSchoolGroupCode);
         final int RetryTime = 3;
         for (int i = 0; i < RetryTime; i++) {
             ActivateUserResponse response = null;
             try {
                 response = getHttpService().activateUser(pDeviceID,
                         pSerialNum, pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType);
-                if(response != null && response.getErrcode() == 0){
+                if (response != null && response.getErrcode() == 0) {
                     return response;
                 }
             } catch (Exception pE) {
@@ -239,13 +246,13 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             }
 
             try {
-                if(response != null && response.getErrcode() == -1){
-                    int delayTime = getRetrySleepSec(response.getDelayTime())*1000;
-                    Log.e("yhq", "wait to activate :"+delayTime);
+                if (response != null && response.getErrcode() == -1) {
+                    int delayTime = getRetrySleepSec(response.getDelayTime()) * 1000;
+                    Log.e("yhq", "wait to activate :" + delayTime);
                     Thread.sleep(delayTime);
                 }
 
-            }catch (Exception pE){
+            } catch (Exception pE) {
                 pE.printStackTrace();
             }
         }
@@ -260,9 +267,9 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         getConfig().saveNickname(pNickName);
     }
 
-    private int getRetrySleepSec(int limit){
+    private int getRetrySleepSec(int limit) {
         Random r = new Random();
-        return r.nextInt(limit)+20;
+        return r.nextInt(limit) + 20;
     }
 
     protected void queryActivateResultUntilTimesReach(int pTimes, String pDeviceID,
@@ -274,14 +281,14 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             GetActivateUserResultResponse queryResult = getHttpService()
                     .queryActivateResult(pDeviceID, pRequestID);
             if (!queryResult.isSuccess()) {
-                Logger.e("yhq", "GetActivateUserResultResponse:"+queryResult.toString());
+                Logger.e("yhq", "GetActivateUserResultResponse:" + queryResult.toString());
                 if (queryResult.isActivateStillProcessing()) {
                     CrashAnalytics.INSTANCE.reportException(new Exception("queryActivateResult not finish, still processing"));
                     continue;
                 }
 
 
-                if(isAutoLogin()){
+                if (isAutoLogin()) {
                     DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
                     quitAppAfter(120);
                     return;
@@ -302,8 +309,8 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             pSubscriber.onNext(queryResult.getStatus());
             pSubscriber.onCompleted();
 
-            if(isAutoLogin()){
-                if(DeviceStatus.isStatusUnLogin(queryResult.getStatus())){
+            if (isAutoLogin()) {
+                if (DeviceStatus.isStatusUnLogin(queryResult.getStatus())) {
                     Log.e("yhq", "quit after get activate result");
                     System.exit(0);
                 } else {
@@ -317,7 +324,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             return;
         }
 
-        if(isAutoLogin()){
+        if (isAutoLogin()) {
             Log.e("yhq", "queryActivateResultUntilTimesReach times reached");
             DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
             quitAppAfter(120);
@@ -332,7 +339,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         String pushID = module.getDeviceId();
         String existPushID = getConfig().getPushID();
 
-        Log.e("yhq", "push id:"+pushID+" exist push id:"+existPushID);
+        Log.e("yhq", "push id:" + pushID + " exist push id:" + existPushID);
         if (TextUtils.isEmpty(pushID)) {
             Exception exception = new Exception("get push id from push module return empty");
             CrashAnalytics.INSTANCE.reportException(exception);
@@ -340,7 +347,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         }
 
         if (pushID.equalsIgnoreCase(existPushID)) {
-            Log.e("yhq", "notify pushid exist:"+existPushID);
+            Log.e("yhq", "notify pushid exist:" + existPushID);
             DeviceInfoManager.getInstance().notifyPushID(pushID);
             return;
         }
@@ -351,7 +358,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
         getHttpService().bindDeviceIDToPushID(deviceID, pushID);
         getConfig().savePushID(pushID);
-        Log.e("yhq", "notify pushid after bind:"+pushID);
+        Log.e("yhq", "notify pushid after bind:" + pushID);
         DeviceInfoManager.getInstance().notifyPushID(pushID);
     }
 }
