@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
+import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfoResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
@@ -213,6 +214,11 @@ public class HttpServiceImpl implements IHttpService {
             throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
         return dao.reportHardwareInfo(pDeviceID, pInfo);
+    }
+
+    @Override
+    public EnrollUserInfoResult setAssetCode(String strDeviceToken, String strAssetCode) throws Exception {
+        return new SetAssetCodeDao(getBaseUrl()).setAssetCode(strDeviceToken, strAssetCode);
     }
 
     private String getBaseUrl() {

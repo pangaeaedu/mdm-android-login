@@ -5,6 +5,7 @@ public class ResponseDataConvertUtils {
         MdmOrgNode result = new MdmOrgNode();
         result.setId(pNode.getGroupCode());
         result.setText(pNode.getName());
+        result.setHasSon(pNode.getHasSon());
         return result;
     }
 }
