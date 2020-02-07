@@ -1,14 +1,17 @@
 package com.nd.android.adhoc.login.basicService.http;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.login.basicService.data.http.MdmOrgNode;
 import com.nd.android.adhoc.login.basicService.data.http.RetrieveOrgNodeResponse;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNode;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeResponse;
+import com.nd.android.adhoc.login.basicService.data.http.SearchSubSchoolNodeResult;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,8 +35,45 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
             MdmOrgNode[] nodes = new Gson().fromJson(array,MdmOrgNode[].class);
             return Arrays.asList(nodes);
         }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+            Log.e("yhq", "SchoolGroupCodeDao error happpen:"+ postAction().getBaseUrl()
                     +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
+            throw pE;
+        }
+    }
+
+    /**
+     * 获取groupcode下的学校
+     * @param strGroupCode 获取groupcode下的学校
+     * @param args  可选参数：
+     *              offset    分页偏移量，默认0
+                    limit     每页的数量，默认1000，最大1000（受限push消息最大200k
+     * @return
+     * @throws Exception
+     */
+    public SearchSubSchoolNodeResult getSubNodesByGroupCode(String strGroupCode, int ...args) throws Exception{
+        if(TextUtils.isEmpty(strGroupCode)){
+            throw new AdhocException("no strGroupCode");
+        }
+        try {
+            Map<String, String> header = null;
+            header = new HashMap<>();
+            header.put("Accept", "application/json");
+
+            StringBuilder sb = new StringBuilder("/v2/group/school?groupcode=").append(strGroupCode);
+            if(null != args && args.length > 0){
+                sb.append("&offset=").append(args[0]);
+
+                if(args.length > 1){
+                    sb.append("&limit=").append(args[1]);
+                }
+            }
+
+            SearchSubSchoolNodeResult response = getAction().get(sb.toString(),
+                    SearchSubSchoolNodeResult.class, null, header);
+            return response;
+        }catch (Exception pE){
+            Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ getAction().getBaseUrl()
+                    +"/v2/group/school" + " " + "Msg:"+pE.getMessage());
             throw pE;
         }
     }
@@ -60,8 +100,30 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
             .getType());
             return nodes;
         }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+            Log.e("yhq", "SchoolGroupCodeDao error happpen:"+ getAction().getBaseUrl()
                     +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
+            throw pE;
+        }
+    }
+
+    //通过schoolid查找学校
+    public List<SearchSchoolNode> searchBySchoolID(String pSchoolID) throws Exception{
+        try {
+            Map<String, String> header = null;
+            header = new HashMap<>();
+            header.put("Accept", "application/json");
+
+            StringBuilder sb = new StringBuilder("/v2/group/exist?schoolid=").append(pSchoolID);
+            SearchSchoolNodeResponse response = getAction().get(sb.toString(),
+                    SearchSchoolNodeResponse.class, null, header);
+            String array = response.getResult();
+
+            List<SearchSchoolNode> nodes = new Gson().fromJson(array, new TypeToken<List<SearchSchoolNode>>(){}
+                    .getType());
+            return nodes;
+        }catch (Exception pE){
+            Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ getAction().getBaseUrl()
+                    +"/v2/group/grouppath?schoolid="+ pSchoolID + " " + "Msg:"+pE.getMessage());
             throw pE;
         }
     }
