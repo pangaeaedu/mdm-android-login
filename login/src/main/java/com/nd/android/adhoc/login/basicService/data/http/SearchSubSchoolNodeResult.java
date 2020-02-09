@@ -28,19 +28,17 @@ public class SearchSubSchoolNodeResult {
     }
 
     public static class SearchSubSchoolNode{
-        @SerializedName("schoolid")
-        private String schoolid = "";
+        @SerializedName("groupcode")
+        private String groupcode = "";
+
+        @SerializedName("groupname")
+        private String groupname = "";
 
         @SerializedName("district")
         private String district = null;
 
         @SerializedName("governorate")
         private String governorate = null;
-
-
-        public void setSchoolid(String schoolid) {
-            this.schoolid = schoolid;
-        }
 
         public void setDistrict(String district) {
             this.district = district;
@@ -50,16 +48,28 @@ public class SearchSubSchoolNodeResult {
             this.governorate = governorate;
         }
 
-        public String getSchoolID(){
-            return schoolid;
-        }
-
         public String getDistrict(){
             return district;
         }
 
         public String getGovernorate(){
             return governorate;
+        }
+
+        public String getGroupcode() {
+            return groupcode;
+        }
+
+        public void setGroupcode(String groupcode) {
+            this.groupcode = groupcode;
+        }
+
+        public String getGroupname() {
+            return groupname;
+        }
+
+        public void setGroupname(String groupname) {
+            this.groupname = groupname;
         }
     }
 

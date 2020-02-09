@@ -10,6 +10,7 @@ import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.login.basicService.data.http.MdmOrgNode;
 import com.nd.android.adhoc.login.basicService.data.http.RetrieveOrgNodeResponse;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNode;
+import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeByGroupCode;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeResponse;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSubSchoolNodeResult;
 
@@ -107,23 +108,19 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
     }
 
     //通过schoolid查找学校
-    public List<SearchSchoolNode> searchBySchoolID(String pSchoolID) throws Exception{
+    public SearchSchoolNodeByGroupCode searchByGroupCode(String groupcode) throws Exception{
         try {
             Map<String, String> header = null;
             header = new HashMap<>();
             header.put("Accept", "application/json");
 
-            StringBuilder sb = new StringBuilder("/v2/group/exist?schoolid=").append(pSchoolID);
-            SearchSchoolNodeResponse response = getAction().get(sb.toString(),
-                    SearchSchoolNodeResponse.class, null, header);
-            String array = response.getResult();
-
-            List<SearchSchoolNode> nodes = new Gson().fromJson(array, new TypeToken<List<SearchSchoolNode>>(){}
-                    .getType());
-            return nodes;
+            StringBuilder sb = new StringBuilder("/v2/group/exist?groupcode=").append(groupcode);
+            SearchSchoolNodeByGroupCode result = getAction().get(sb.toString(),
+                    SearchSchoolNodeByGroupCode.class, null, header);
+            return result;
         }catch (Exception pE){
             Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ getAction().getBaseUrl()
-                    +"/v2/group/grouppath?schoolid="+ pSchoolID + " " + "Msg:"+pE.getMessage());
+                    +"/v2/group/grouppath?groupcode="+ groupcode + " " + "Msg:"+pE.getMessage());
             throw pE;
         }
     }
