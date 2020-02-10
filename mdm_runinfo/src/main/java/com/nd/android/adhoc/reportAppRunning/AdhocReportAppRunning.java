@@ -31,6 +31,7 @@ import java.util.Map;
 /**
  * APP运行统计类
  */
+@Deprecated
 public class AdhocReportAppRunning {
     private static final String TAG = "AdhocReportAppRunning";
     private static AdhocReportAppRunning instance;
@@ -184,7 +185,10 @@ public class AdhocReportAppRunning {
 
         //处理新打开的APP
         for(PackageInfo info : listOpen){
-            RunningPackageInfo newPack = new RunningPackageInfo(info.packageName, pm.getApplicationLabel(info.applicationInfo).toString());
+            RunningPackageInfo newPack = new RunningPackageInfo(
+                    java.util.UUID.randomUUID().toString(),
+                    info.packageName,
+                    pm.getApplicationLabel(info.applicationInfo).toString());
             mMapRunningApps.put(info.packageName, newPack);
 
             if(!getCurrentToReportHourData().getMapApps().containsKey(info.packageName)){
@@ -282,4 +286,5 @@ public class AdhocReportAppRunning {
         }
         Logger.i(TAG, "end getDataFromJson");
     }
+
 }

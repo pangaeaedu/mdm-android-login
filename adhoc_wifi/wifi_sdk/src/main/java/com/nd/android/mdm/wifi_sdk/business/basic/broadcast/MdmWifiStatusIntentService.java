@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.service.AdhocIntentService;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiConstant;
 
 /**
@@ -25,7 +26,9 @@ public class MdmWifiStatusIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+
         Bundle bundle;
+
         if (intent == null ||
                 (bundle = intent.getExtras()) == null) {
             return;

@@ -14,6 +14,10 @@ public interface IMdmEnvModule {
 
     String getPushIp();
 
+    String getPushAppId();
+
+    String getPushAppKey();
+
     int getPushPort();
 
     String getDownloadServiceName();
@@ -23,5 +27,14 @@ public interface IMdmEnvModule {
     String getExceptionReportHostName();
 
     String getCsBaseUrl();
+
     String getCsBaseDownUrl();
+
+    String getUcNewVersionBaseUrl();
+
+    String getUcProtocolUpdateUrl();
+
+    String getUcAppID();
+
+    String getUcOrgCode();
 }

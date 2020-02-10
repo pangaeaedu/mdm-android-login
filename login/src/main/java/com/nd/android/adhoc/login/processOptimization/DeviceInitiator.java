@@ -12,6 +12,7 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.listener.IAdhocPushConnectListener;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
@@ -36,7 +37,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     private static final String TAG = "DeviceInitiator";
 
 
-
     private BehaviorSubject<DeviceStatus> mInitSubject = null;
     private Subscription mSubBindPushID = null;
 
@@ -47,7 +47,13 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
 
-    private IPushConnectListener mPushConnectListener = new IPushConnectListener() {
+    private IPushConnectListener mPushConnectListener = new IAdhocPushConnectListener() {
+        @Override
+        public void onPushDeviceToken(String deviceToken) {
+            Log.e("yhq", "onPushDeviceToken:" + deviceToken);
+            onConnected();
+        }
+
         @Override
         public void onConnected() {
             Log.e("yhq", "push sdk onConnected");
@@ -66,6 +72,9 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                                     try {
                                         Log.e("yhq", "before call bindPushIDToDeviceID");
                                         bindPushIDToDeviceID();
+                                        HardwareInfoCompleteManager.getInstance()
+                                                .reportHardwareInfoIfNecessary();
+
                                         pSubscriber.onNext(true);
                                         pSubscriber.onCompleted();
                                     } catch (Exception e) {
@@ -90,7 +99,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             Log.e("yhq", "bind push id error:" + e.getMessage());
                             mSubBindPushID = null;
 
-                            if(e instanceof DeviceTokenNotFoundException) {
+                            if (e instanceof DeviceTokenNotFoundException) {
                                 clearSpDeviceIDThenQuit();
                             }
                         }
@@ -109,7 +118,8 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         }
     };
 
-    private void clearSpDeviceIDThenQuit(){
+
+    private void clearSpDeviceIDThenQuit() {
         Log.e("yhq", "clearSpDeviceIDThenQuit");
 
         DeviceIDSPUtils.saveDeviceIDToSp("");
@@ -119,7 +129,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
-        Log.e("yhq", "actualQueryDeviceStatus:"+pDeviceID);
+        Log.e("yhq", "actualQueryDeviceStatus:" + pDeviceID);
         return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
@@ -166,7 +176,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     String deviceID = DeviceIDSPUtils.loadThirdVersionDeviceIDFromSp();
                     Context context = AdhocBasicConfig.getInstance().getAppContext();
 
-                    Log.e("yhq", "third sp device id:"+deviceID);
+                    Log.e("yhq", "third sp device id:" + deviceID);
                     if (!TextUtils.isEmpty(deviceID)) {
                         DeviceInfoManager.getInstance().setDeviceID(deviceID);
 
@@ -177,7 +187,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                         ConfirmDeviceIDResponse result = confirmDeviceIDFromServer(deviceID);
 
-                        if(!result.isSuccess()){
+                        if (!result.isSuccess()) {
                             pSubscriber.onError(new ConfirmIDServerException("result not success"));
                             return;
                         }
@@ -224,7 +234,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("yhq", "init error:"+e.getMessage());
+                                Log.e("yhq", "init error:" + e.getMessage());
                                 e.printStackTrace();
 
                                 synchronized (DeviceInitiator.this) {
@@ -255,31 +265,31 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String firstVersionID = DeviceIDSPUtils.loadFirstVersionDeviceIDFromSp();
 
         // 之前版本不存在。
-        if(TextUtils.isEmpty(secondVersionID) && TextUtils.isEmpty(firstVersionID)) {
+        if (TextUtils.isEmpty(secondVersionID) && TextUtils.isEmpty(firstVersionID)) {
             String sd = loadDeviceIDFromSDCard();
 
             return sd;
         }
 
         if (!TextUtils.isEmpty(secondVersionID)) {
-            Log.e("yhq", "use second version:"+secondVersionID);
+            Log.e("yhq", "use second version:" + secondVersionID);
             return secondVersionID;
         }
 
-        Log.e("yhq", "use first version:"+firstVersionID);
+        Log.e("yhq", "use first version:" + firstVersionID);
         return firstVersionID;
     }
 
-    private String loadDeviceIDFromSDCard(){
+    private String loadDeviceIDFromSDCard() {
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         String sdCardDeviceID = DeviceIDSPUtils.loadDeviceIDFromSdCard(context);
         String deviceID = "";
         if (!TextUtils.isEmpty(sdCardDeviceID)) {
-            Log.e("yhq", "sd card device id:"+sdCardDeviceID);
+            Log.e("yhq", "sd card device id:" + sdCardDeviceID);
             deviceID = sdCardDeviceID;
         } else {
             deviceID = DeviceIDSPUtils.generateDeviceID();
-            Log.e("yhq", "generate device id:"+deviceID);
+            Log.e("yhq", "generate device id:" + deviceID);
         }
 
         return deviceID;
@@ -294,7 +304,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         String lanMac = AdhocDeviceUtil.getEthernetMac();
 
-        if(TextUtils.isEmpty(wifiMac) && TextUtils.isEmpty(lanMac)){
+        if (TextUtils.isEmpty(wifiMac) && TextUtils.isEmpty(lanMac)) {
             throw new RetrieveMacException();
         }
 
@@ -306,15 +316,15 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         ConfirmDeviceIDResponse response = null;
         for (int i = 0; i <= 2; i++) {
             try {
-                Log.e("yhq", "confirm device id round:"+i);
+                Log.e("yhq", "confirm device id round:" + i);
 
-                if(TextUtils.isEmpty(wifiMac)) {
+                if (TextUtils.isEmpty(wifiMac)) {
                     wifiMac = AdhocDeviceUtil.getWifiMac(context);
                 }
 
-                Log.e("yhq", "input buildSn:"+buildSn+" cpuSn:"+cpuSn+" imei:"+imei
-                        +" wifiMac:"+wifiMac+" lanMac:"+lanMac+" blueToothMac:"+blueToothMac+" serialNo:"+serialNo
-                        +" androidID:"+androidID+" localDeviceID:"+pLocalDeviceID);
+                Log.e("yhq", "input buildSn:" + buildSn + " cpuSn:" + cpuSn + " imei:" + imei
+                        + " wifiMac:" + wifiMac + " lanMac:" + lanMac + " blueToothMac:" + blueToothMac + " serialNo:" + serialNo
+                        + " androidID:" + androidID + " localDeviceID:" + pLocalDeviceID);
                 Map<String, Object> hardwareMaps = LoginArgumentUtils.genHardwareMap(buildSn,
                         cpuSn, imei, wifiMac, lanMac, blueToothMac, serialNo, androidID);
                 response = getHttpService().confirmDeviceID(hardwareMaps, pLocalDeviceID);
@@ -324,14 +334,14 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 }
             } catch (Exception pE) {
                 pE.printStackTrace();
-                if(!isAutoLogin && !(pE instanceof ConfirmIDServerException)){
+                if (!isAutoLogin && !(pE instanceof ConfirmIDServerException)) {
                     throw pE;
                 }
             }
         }
 
         //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
-        if(isAutoLogin){
+        if (isAutoLogin) {
             Log.e("yhq", "confirm device id error, quit");
             quitAppAfter(120);
         }

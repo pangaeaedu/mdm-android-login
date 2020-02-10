@@ -10,6 +10,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.service.adapter.AdhocServiceCompat;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiConstant;
 
 /**
@@ -69,6 +70,13 @@ public class MdmWifiStatusReceiver extends BroadcastReceiver {
             default:
                 break;
         }
-        context.startService(serviceIntent);
+
+        AdhocServiceCompat.startService(context, serviceIntent);
+
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            AdhocBasicConfig.getInstance().getAppContext().startForegroundService(serviceIntent);
+//        } else {
+//            AdhocBasicConfig.getInstance().getAppContext().startService(serviceIntent);
+//        }
     }
 }

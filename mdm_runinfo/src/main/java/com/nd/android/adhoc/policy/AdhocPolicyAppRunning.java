@@ -1,8 +1,15 @@
 package com.nd.android.adhoc.policy;
 
+import android.support.annotation.NonNull;
+
 import com.nd.android.adhoc.RunningAppWatchManager;
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.IAdhocPolicyEntity;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyErrorCode;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
 import org.json.JSONObject;
@@ -26,9 +33,10 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     }
 
     @Override
-    public void updateTask(String pPolicyData) {
+    public AdhocPolicyErrorCode executeTask(@NonNull IAdhocPolicyEntity pPolicyEntity)  throws AdhocException{
         try {
-            JSONObject jsonObject = new JSONObject(pPolicyData);
+            Logger.i(TAG, "executeTask");
+            JSONObject jsonObject = new JSONObject(pPolicyEntity.getData());
 
             // 1 = push上行，0 = http/https，默认 1
             int enable = jsonObject.optInt("enable", 1);
@@ -38,15 +46,20 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
             }else {
                 RunningAppWatchManager.getInstance().stopWatching();
             }
-            super.updateTask(pPolicyData);
+            return super.executeTask(pPolicyEntity);
         } catch (Exception e) {
-            Logger.w(TAG, "runTask error: " + e);
+            Logger.w(TAG, "executeTask error: " + e);
+            throw new AdhocPolicyException("executeTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
     }
 
     @Override
-    public void stop() {
-        RunningAppWatchManager.getInstance().stopWatching();
-        super.stop();
+    public AdhocPolicyErrorCode stop() throws AdhocException {
+        try{
+            RunningAppWatchManager.getInstance().stopWatching();
+        }catch (Exception e){
+            throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
+        }
+        return super.stop();
     }
 }

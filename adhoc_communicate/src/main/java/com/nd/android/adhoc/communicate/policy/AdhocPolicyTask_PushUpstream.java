@@ -1,11 +1,19 @@
 package com.nd.android.adhoc.communicate.policy;
 
-import com.nd.android.adhoc.basic.log.Logger;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.communicate.impl.MdmTransferConfig;
 import com.nd.android.adhoc.communicate.request.constant.AdhocNetworkChannel;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
+import com.nd.android.adhoc.policy.api.IAdhocPolicyEntity;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyErrorCode;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
+import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -28,9 +36,13 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
 
 
     @Override
-    public void updateTask(String pPolicyData) {
+    public AdhocPolicyErrorCode executeTask(@NonNull IAdhocPolicyEntity pPolicyEntity) throws AdhocException {
+        if (TextUtils.isEmpty(pPolicyEntity.getData())) {
+            throw new AdhocPolicyException("updateTask failed: pPolicyData is empty", AdhocPolicyMsgCode.ERROR_POLICY_DATA_IS_EMPTY);
+        }
+
         try {
-            JSONObject jsonObject = new JSONObject(pPolicyData);
+            JSONObject jsonObject = new JSONObject(pPolicyEntity.getData());
 
             // 1 = push上行，0 = http/https，默认 1
             int enable = jsonObject.optInt("enable", 1);
@@ -39,18 +51,23 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
             MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.getTypeByValue(enable));
             MdmTransferConfig.setRequestTimeout(timeout);
 
+        } catch (JSONException e) {
+            throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_JSON_PARSING_FAILED);
         } catch (Exception e) {
-            Logger.w(TAG, "runTask error: " + e);
-            return;
+            throw new AdhocPolicyException("updateTask error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
 
-        super.updateTask(pPolicyData);
+        return super.executeTask(pPolicyEntity);
     }
 
     @Override
-    public void stop() {
-        MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
-        MdmTransferConfig.setRequestTimeout(0);
-        super.stop();
+    public AdhocPolicyErrorCode stop() throws AdhocException {
+        try {
+            MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
+            MdmTransferConfig.setRequestTimeout(0);
+        } catch (Exception e) {
+            throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
+        }
+        return super.stop();
     }
 }

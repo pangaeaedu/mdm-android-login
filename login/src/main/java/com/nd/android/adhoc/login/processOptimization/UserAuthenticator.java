@@ -13,12 +13,14 @@ import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
+import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLogin;
 import com.nd.android.adhoc.login.processOptimization.login.IUserLoginResult;
 import com.nd.android.adhoc.login.processOptimization.login.LoginUserOrPwdEmptyException;
-import com.nd.android.adhoc.login.processOptimization.login.UserLoginThroughServer;
+import com.nd.android.adhoc.login.processOptimization.login.UserLoginThoughUC11;
 import com.nd.android.adhoc.loginapi.exception.AutoLoginMeetUserLoginException;
 import com.nd.android.adhoc.loginapi.exception.DeviceIDNotSetException;
 import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
@@ -126,15 +128,28 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
 
     @NonNull
     private IUserLogin getLogin() {
-        return new UserLoginThroughServer();
+//        return new UserLoginThroughServer();
+        return new UserLoginThoughUC11();
     }
 
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword) {
+        return login(pUserName, pPassword, "");
+    }
+
+    public Observable<DeviceStatus> login(@NonNull final String pUserName,
+                                          @NonNull final String pPassword,
+                                          final String pValidationCode) {
         Log.e("yhq", "login");
         final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         if (TextUtils.isEmpty(deviceID)) {
             return Observable.error(new DeviceIDNotSetException());
+        }
+
+        IPushModule module = MdmTransferFactory.getPushModel();
+        String pushID = module.getDeviceId();
+        if(!TextUtils.isEmpty(pushID)){
+            DeviceInfoManager.getInstance().notifyPushID(pushID);
         }
 
         Context context = AdhocBasicConfig.getInstance().getAppContext();
@@ -152,7 +167,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         }
 
         Log.e("yhq", "direct login");
-        return getLogin().login(pUserName, pPassword)
+        return getLogin().login(pUserName, pPassword, pValidationCode)
                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(IUserLoginResult pResult) {

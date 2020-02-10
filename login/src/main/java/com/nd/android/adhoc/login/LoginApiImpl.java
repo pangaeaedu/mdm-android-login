@@ -67,6 +67,12 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
 
     @Override
     public Observable<DeviceStatus> login(@NonNull final String pUserName, @NonNull final String pPassword) {
+        return login(pUserName, pPassword, "");
+    }
+
+    @Override
+    public Observable<DeviceStatus> login(@NonNull final String pUserName, @NonNull final String
+            pPassword, final String pValidationCode) {
         //如果device id没有设置上去，说明初始化没有完成，则要先走一次初始化的动作
         if (TextUtils.isEmpty(DeviceInfoManager.getInstance().getDeviceID())) {
             IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance()
@@ -79,7 +85,7 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
                             if (DeviceStatus.isStatusUnLogin(pStatus)) {
                                 IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
                                         .getUserAuthenticator();
-                                return authenticator.login(pUserName, pPassword);
+                                return authenticator.login(pUserName, pPassword, pValidationCode);
                             }
 
                             return Observable.error(new AutoLoginMeetUserLoginException("unknown"));
@@ -90,8 +96,9 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
 
         IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
                 .getUserAuthenticator();
-        return authenticator.login(pUserName, pPassword);
+        return authenticator.login(pUserName, pPassword, pValidationCode);
     }
+
 
     @Override
     public Observable<String> getNickName() {

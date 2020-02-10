@@ -31,7 +31,15 @@ public class MdmOrgNode {
         return id;
     }
 
+    public void setId(String pID){
+        id = pID;
+    }
+
     public String getText(){
         return text;
+    }
+
+    public void setText(String pText){
+        text = pText;
     }
 }

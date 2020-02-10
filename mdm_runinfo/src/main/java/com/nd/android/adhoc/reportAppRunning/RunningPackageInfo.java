@@ -15,6 +15,10 @@ public class RunningPackageInfo {
     private boolean mbRunningListContainsThis;
 
     @Expose
+    @SerializedName("id")
+    private String mstrId;
+
+    @Expose
     @SerializedName("package")
     private String mPackageName;
 
@@ -37,9 +41,18 @@ public class RunningPackageInfo {
     @Expose
     private long mLastOpenTime;
 
-    public RunningPackageInfo(String strPackage, String strAppName){
+    public RunningPackageInfo(String strId, String strPackage, String strAppName){
+        mstrId = strId;
         mPackageName = strPackage;
         mstrAppName = strAppName;
+    }
+
+    public String getId(){
+        return mstrId;
+    }
+
+    public void resetId(){
+        mstrId = java.util.UUID.randomUUID().toString();
     }
 
     public void onOpen(){
@@ -94,6 +107,7 @@ public class RunningPackageInfo {
      * 跨天，调整数据
      */
     public void switchToNextDay(){
+        resetId();
         miRunCount = 0;
         mlRunTime = 0;
         mLastOpenTime = AppRunInfoReportUtils.getCurrentDayTimeStamp();
@@ -109,5 +123,29 @@ public class RunningPackageInfo {
 
     public String getPackageName() {
         return mPackageName;
+    }
+
+    public void setRunCount(int iRunCount) {
+        this.miRunCount = iRunCount;
+    }
+
+    public void setRunTime(long lRunTime) {
+        this.mlRunTime = lRunTime;
+    }
+
+    public long getRunTime() {
+        return mlRunTime;
+    }
+
+    public void setIsRunning(boolean bIsRunning){
+        mbIsRunning.set(bIsRunning);
+    }
+
+    public String getAppName() {
+        return mstrAppName;
+    }
+
+    public int getRunCount() {
+        return miRunCount;
     }
 }
