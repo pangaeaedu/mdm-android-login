@@ -42,6 +42,20 @@ def map = [:]
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_system"] = ":adhoc_util_system"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_net"] = ":adhoc_util_net"
 
+//map["adhoc-device-control/adhoc_basic_control"] = ":adhoc_basic_control"
+//map["adhoc-device-control/device_system_control"] = ":device_system_control"
+//map["adhoc-device-control/device_control"] = ":device_control"
+//map["adhoc-device-control/device_control_deliver"] = ":device_control_deliver"
+//map["adhoc-device-control/device_control_zenkore"] = ":device_control_zenkore"
+//map["adhoc-device-control/device_control_normal"] = ":device_control_normal"
+//map["adhoc-device-control/device_control_normal_aidl"] = ":device_control_normal_aidl"
+//map["adhoc-device-control/device_control_huawei"] = ":device_control_huawei"
+//map["adhoc-device-control/device_control_nd3"] = ":device_control_nd3"
+//map["adhoc-device-control/device_control_root"] = ":device_control_root"
+//map["adhoc-device-control/device_control_samsung"] = ":device_control_samsung"
+//map["adhoc-device-control/device_control_promethean"] = ":device_control_promethean"
+//map["adhoc-device-control/device_control_samsung"] = ":device_control_samsung"
+
 
 map.each { dirPath, projectName ->
     File file = new File('../' + dirPath)

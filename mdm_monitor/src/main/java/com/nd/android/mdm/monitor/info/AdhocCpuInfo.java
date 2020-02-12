@@ -12,4 +12,7 @@ public class AdhocCpuInfo {
     public AdhocCpuInfo(long[] info){
         cpuRate = (int) MonitorUtil.getCpuInfo()[8];
     }
+    public AdhocCpuInfo(int iCpuRate){
+        cpuRate = iCpuRate;
+    }
 }
