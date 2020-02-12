@@ -3,7 +3,6 @@ package com.nd.android.adhoc.login;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfoResult;
@@ -24,7 +23,6 @@ public class AssetSnLoginApiImpl extends BaseAbilityProvider implements IAssetSn
             @Override
             public void call(Subscriber<? super Boolean> pSubscriber) {
                 try {
-                    String deviceID = DeviceInfoManager.getInstance().getDeviceID();
                     EnrollUserInfoResult response = getHttpService().setAssetCode(strDeviceToken, strAssetCode);
 
                     if (null != response && 0 == response.getErrcode()) {
