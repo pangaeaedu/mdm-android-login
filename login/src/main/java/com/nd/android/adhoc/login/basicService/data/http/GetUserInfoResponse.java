@@ -14,6 +14,10 @@ public class GetUserInfoResponse {
     public int errcode = 0;
     public int msgcode = 0;
 
+    public void setNick_name(String strNickName){
+        nick_name = strNickName;
+    }
+
     public String getNickName(){
         return nick_name;
     }
