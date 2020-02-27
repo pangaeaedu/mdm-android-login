@@ -101,6 +101,26 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                                 .getGroupCode());
                                     }
 
+                                    // 因为切换用户的时候，retrieveGroupCode有可能为空，这种情况下，重新拉一遍设备状态
+                                    // 如果状态是已登录的，就直接进去了，未登录的，还要再走一遍retrieveGroupCode
+                                    if (TextUtils.isEmpty(schoolGroupCode)) {
+                                        result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
+                                                loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                        status = result.getStatus();
+                                        if (!DeviceStatus.isStatusUnLogin(status)) {
+                                            //已登录，直接向下走，
+                                            onQueryResultReturn(pSubscriber, result);
+                                            return;
+                                        }
+
+                                        // 未登录，再弹出retrieveGroupCode界面，再获取一次groupCode
+                                        if (TextUtils.isEmpty(loginConfig.getGroupCode())) {
+                                            schoolGroupCode = retriever.retrieveGroupCode(result.getRootCode());
+                                        } else {
+                                            schoolGroupCode = retriever.retrieveGroupCode(loginConfig
+                                                    .getGroupCode());
+                                        }
+                                    }
                                     //偶发异常，强行杀进程
                                     if (schoolGroupCode.equalsIgnoreCase(result.getRootCode())) {
                                         Log.e("yhq", "retrieveGroupCode not work root " +
