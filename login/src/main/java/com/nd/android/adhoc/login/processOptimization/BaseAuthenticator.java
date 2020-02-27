@@ -104,6 +104,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                     // 因为切换用户的时候，retrieveGroupCode有可能为空，这种情况下，重新拉一遍设备状态
                                     // 如果状态是已登录的，就直接进去了，未登录的，还要再走一遍retrieveGroupCode
                                     if (TextUtils.isEmpty(schoolGroupCode)) {
+                                        Log.e("yhq", "school group code is empty");
                                         result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
                                                 loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
                                         status = result.getStatus();
