@@ -20,7 +20,7 @@ ext {
     adhoc_basic_version = '1.8.453.92aa553-lsj0.7.x.0-SNAPSHOT'
 
 
-    mdm_biz_version = '1.8.536.e45e43c-hyksupport28-SNAPSHOT'
+    mdm_biz_version = '1.9.585.9b7fc84-features-lsj0.7.x.0assetsnlogin-SNAPSHO'
 
     device_control_version = '1.8.447.5b5285d-lsj0.7.9.0cpurate-SNAPSHOT'
     device_command_version = '2.1.325.1d82f9e'

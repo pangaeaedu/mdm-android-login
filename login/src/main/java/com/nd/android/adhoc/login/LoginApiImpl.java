@@ -9,7 +9,6 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.CrashAnalytics;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.util.app.LoginWayUtils;
 import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
 import com.nd.android.adhoc.login.exception.GetUserInfoServerException;
 import com.nd.android.adhoc.login.processOptimization.AssistantAuthenticSystem;
@@ -137,12 +136,6 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
     private GetUserInfoResponse fetchUserInfoAndSaveToSp() throws Exception {
         String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         GetUserInfoResponse response = getHttpService().getUserInfo(deviceID);
-
-        if(LoginWayUtils.getIsAutoLogin()){
-            //自动登录就设置昵称为空了
-            Logger.i(TAG, "auto login,set nick name to empty");
-            response.setNick_name("");
-        }
 
         if (response.isSuccess()) {
             getConfig().saveNickname(response.getNickName());
