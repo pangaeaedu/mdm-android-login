@@ -2,6 +2,9 @@ package com.nd.android.mdm.wifi_sdk.business.bean;
 
 import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
+
 import java.io.Serializable;
 
 /**
@@ -155,6 +158,9 @@ public class MdmWifiInfo implements Serializable {
     }
 
     public String getIp() {
+        if (TextUtils.isEmpty(mIp)) {
+            mIp = AdhocNetworkIpUtil.getCurrentIp(AdhocBasicConfig.getInstance().getAppContext());
+        }
         return mIp;
     }
 
