@@ -35,6 +35,7 @@ ext {
 
     policy_version = '2.1.146.10d8ca1'
 
+    adhoc_firewall_version = '0.7.55.316bbfa'
 
     androidBuildToolsVersion = '28.0.3'
     androidMinSdkVersion = 17

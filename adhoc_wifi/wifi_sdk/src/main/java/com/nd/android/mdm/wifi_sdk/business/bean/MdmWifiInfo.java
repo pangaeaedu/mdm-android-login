@@ -12,7 +12,7 @@ import java.io.Serializable;
  * <p>
  * Created by HuangYK on 2018/3/13.
  */
-public class MdmWifiInfo implements Serializable {
+public class MdmWifiInfo implements INetworkConnInfo,Serializable {
 
     private static final String NORMAL_MAC = "00:00:00:00:00";
 

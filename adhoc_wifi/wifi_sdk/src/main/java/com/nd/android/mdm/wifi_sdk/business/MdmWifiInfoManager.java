@@ -21,6 +21,8 @@ import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.MdmWifiStatusListene
 import com.nd.android.mdm.wifi_sdk.business.basic.broadcast.MdmWifiStatusReceiver;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
 import com.nd.android.mdm.wifi_sdk.business.basic.listener.MdmWifiListenerManager;
+import com.nd.android.mdm.wifi_sdk.business.bean.EthernetConnInfo;
+import com.nd.android.mdm.wifi_sdk.business.bean.INetworkConnInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiVendor;
 import com.nd.android.mdm.wifi_sdk.business.service.MdmWifiBizServiceFactory;
@@ -57,6 +59,9 @@ public final class MdmWifiInfoManager {
     private volatile static MdmWifiInfoManager sInstance = null;
 
     private final MdmWifiInfo mWifiInfo = new MdmWifiInfo();
+
+    private EthernetConnInfo mLanInfo = null;
+
     private AtomicBoolean mIsWiFiConnected = new AtomicBoolean(false);
 //    private AtomicBoolean mIsKeepRun = new AtomicBoolean(false);
 
@@ -142,6 +147,14 @@ public final class MdmWifiInfoManager {
     public WifiManager getWifiManager() {
         initWifiManager();
         return mWifiManager;
+    }
+
+    public INetworkConnInfo getLanConnInfo() {
+        if (mLanInfo == null) {
+            mLanInfo = new EthernetConnInfo();
+        }
+
+        return mLanInfo;
     }
 
     /**
