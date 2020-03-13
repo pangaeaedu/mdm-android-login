@@ -5,8 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
-import com.nd.android.adhoc.login.basicService.http.school.resp.IpSchoolCodeResp;
-import com.nd.android.adhoc.login.basicService.http.school.resp.LocationSchoolCodeResp;
+import com.nd.android.adhoc.login.basicService.http.school.resp.IpLocationSchoolCodeResp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,25 +15,24 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
         super(pBaseUrl);
     }
 
-    public IpSchoolCodeResp getSchoolCodeByIp(String pIp, String pDeviceToken) throws Exception {
+    public IpLocationSchoolCodeResp getSchoolCodeByIp(String pIp) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("ip", pIp);
-            map.put("device_token", pDeviceToken);
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
-            return postAction().post("/v1.1/enroll/ipinfo", IpSchoolCodeResp.class,
+            return postAction().post("/v2/group/ipinfo/", IpLocationSchoolCodeResp.class,
                     content, null);
         } catch (Exception pE) {
             Log.e("yhq", "IpLocationSchoolCodeDao error happpen:" + postAction().getBaseUrl()
-                    + "v1.1/enroll/ipinfo" + " " + "Msg:" + pE.getMessage());
+                    + "v2/group/ipinfo/" + " " + "Msg:" + pE.getMessage());
             throw new Exception(pE.getMessage());
         }
     }
 
-    public LocationSchoolCodeResp getSchoolCodeByLocation(String pLat, String pLgn,
-                                                          String pScope) throws Exception {
+    public IpLocationSchoolCodeResp getSchoolCodeByLocation(String pLat, String pLgn,
+                                                            int pScope) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("lat", pLat);
@@ -43,11 +41,11 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
-            return postAction().post("/v1.1/enroll/geoinfo/", LocationSchoolCodeResp.class,
+            return postAction().post("/v2/group/geoinfo/", IpLocationSchoolCodeResp.class,
                     content, null);
         } catch (Exception pE) {
             Log.e("yhq", "IpLocationSchoolCodeDao error happpen:" + postAction().getBaseUrl()
-                    + "v1.1/enroll/geoinfo/" + " " + "Msg:" + pE.getMessage());
+                    + "v2/group/geoinfo/" + " " + "Msg:" + pE.getMessage());
             throw new Exception(pE.getMessage());
         }
     }

@@ -3,8 +3,8 @@ package com.nd.android.adhoc.login.basicService.http.school.bean;
 public class SchoolInfo {
     private String groupcode;
     private String groupname;
-    private String province;
-    private String city;
+    private String governorate;
+    private String district;
 
     public String getGroupcode() {
         return groupcode;
@@ -14,11 +14,11 @@ public class SchoolInfo {
         return groupname;
     }
 
-    public String getProvince() {
-        return province;
+    public String getGovernorate() {
+        return getGovernorate();
     }
 
-    public String getCity() {
-        return city;
+    public String getDistrict() {
+        return district;
     }
 }
