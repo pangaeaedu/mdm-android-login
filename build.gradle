@@ -17,7 +17,7 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.8.453.92aa553-lsj0.7.x.0-SNAPSHOT'
+    adhoc_basic_version = '1.8.460.e181a35-lsj0.8.0.0-SNAPSHOT'
 
 
     mdm_biz_version = '1.9.585.9b7fc84-features-lsj0.7.x.0assetsnlogin-SNAPSHO'
