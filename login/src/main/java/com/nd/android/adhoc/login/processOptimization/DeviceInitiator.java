@@ -135,8 +135,10 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     @Override
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
                         if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
-                            return activeUser(ActivateUserType.AutoLogin, pResponse
-                                    .getSelSchoolGroupCode(), "");
+                            return activeUser(ActivateUserType.AutoLogin,
+                                    pResponse.getSelSchoolGroupCode(),
+                                    pResponse.getRootCode(),
+                                    "");
                         }
 
                         return Observable.just(pResponse.getStatus());
@@ -343,7 +345,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
         if (isAutoLogin) {
             Log.e("yhq", "confirm device id error, quit");
-            quitAppAfter(120);
+            sendFailedAndQuitApp(120);
         }
 
         throw new TimeoutException("after retry 3 time, confirm deivce id still timeout");
