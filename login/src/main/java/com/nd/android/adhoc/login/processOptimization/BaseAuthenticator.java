@@ -206,7 +206,8 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
                     String schoolGroupCode = pSchoolGroupCode;
 
-                    while (retryCount <= 3) {
+                    // 最多只试三次
+                    while (true) {
                         retryCount++;
                         if (loginConfig != null && loginConfig.isAutoLogin()) {
                             response = retryActivateUser(deviceID, serialNum, schoolGroupCode,
@@ -228,6 +229,11 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             pSubscriber.onNext(status);
                             pSubscriber.onCompleted();
                             return;
+                        }
+
+                        // 如果第四次失败，就不再去通知 选择 SchoolCode 了
+                        if (retryCount > 3) {
+                            break;
                         }
 
                         // 如果 status 是空的，表示没有查询到 学校，需要通知上层 重新选择学校，并且传递回新的 SchoolGroupCode
