@@ -494,7 +494,8 @@ public class MonitorModule implements IMonitor {
         if (MdmWifiInfoManager.getInstance().getIsWiFiConnected()) {
             data.put("mac", wifiInfo.getMac().replace(":", ""));
         } else {
-            data.put("mac", MdmWifiInfoManager.getInstance().getLanConnInfo().getMac());
+            String mac = MdmWifiInfoManager.getInstance().getLanConnInfo().getMac();
+            data.put("mac", mac.replace(":", ""));
         }
 
         data.put("link_speed", wifiInfo.getSpeed());
