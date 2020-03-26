@@ -490,7 +490,13 @@ public class MonitorModule implements IMonitor {
         data.put("ip", wifiInfo.getIp());
         data.put("ssid", wifiInfo.getSsid());
         data.put("rssi", wifiInfo.getRssi());
-        data.put("mac", wifiInfo.getMac().replace(":", ""));
+
+        if (MdmWifiInfoManager.getInstance().getIsWiFiConnected()) {
+            data.put("mac", wifiInfo.getMac().replace(":", ""));
+        } else {
+            data.put("mac", MdmWifiInfoManager.getInstance().getLanConnInfo().getMac());
+        }
+
         data.put("link_speed", wifiInfo.getSpeed());
         data.put("ap_mac", wifiInfo.getApMac());
         MdmWifiVendor vendor = wifiInfo.getVendor();
