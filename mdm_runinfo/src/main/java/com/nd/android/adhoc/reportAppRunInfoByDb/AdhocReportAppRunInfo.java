@@ -87,6 +87,7 @@ public class AdhocReportAppRunInfo {
             if(!mbIsWathcing){
                 return;
             }
+            Logger.i(TAG, "stop watching running info");
             //移除监听
             RunningAppWatchManager.getInstance().removeListeners(mAppListListenner);
 
