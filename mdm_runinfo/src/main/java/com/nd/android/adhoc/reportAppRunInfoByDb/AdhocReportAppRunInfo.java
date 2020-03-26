@@ -249,6 +249,7 @@ public class AdhocReportAppRunInfo {
         long lCacheTimeStamp = spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, System.currentTimeMillis());
         //如果缓存的时间与当前已经不是同一天，只做上报，把mMapRunningApps给清了；后续流程重新开始吧
         if(AppRunInfoReportUtils.getCurrentDayTimeStamp() != AppRunInfoReportUtils.getSpecifyTimeDayStamp(lCacheTimeStamp)){
+            Logger.i(TAG, "the same day");
             mMapRunningApps.clear();
             RunInfoReportHelper.reportToServerBusiness();
             return;

@@ -124,6 +124,7 @@ public class RunInfoReportHelper {
         List<IMdmRunInfoEntity> listEntity = MdmRunInfoDbOperatorFactory.getInstance().
                 getRunInfoDbOperator().getToReportRunInfo();
         if(AdhocDataCheckUtils.isCollectionEmpty(listEntity)){
+            Logger.i(TAG, "no app to report now");
             //没有可上报的数据了，删除当前时间戳之前的所有数据
             MdmRunInfoDbOperatorFactory.getInstance().
                     getRunInfoDbOperator().deleteUnUseableRunInfo();
@@ -134,7 +135,9 @@ public class RunInfoReportHelper {
     }
 
     private static void reportToServer(final JSONObject jsonData, final List<IMdmRunInfoEntity> listEntity){
+        Logger.i(TAG, "call reportToServer");
         if(null == jsonData || 0 == jsonData.length()){
+            Logger.i(TAG, "json empty");
             return;
         }
 
