@@ -97,19 +97,16 @@ public class AdhocReportAppRunInfo {
 
             //清除缓存
             ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB, "");
+//            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB, "");
+//            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, 0);
+//            MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().deleteAllData();
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_APP_LIST, "");
-            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, 0);
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST, "");
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
             spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0);
-            MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().deleteAllData();
 
             //重置内存
-            mlLastWriteCacheTime = 0;
-            mlLastReportTime = 0;
             mMapRunningApps.clear();
-
             mbIsWathcing = false;
         }
     }
@@ -225,6 +222,7 @@ public class AdhocReportAppRunInfo {
         mToReportDayData = null;
     }
 
+    /**维护一份会上报的APP列表*/
     private AdhocReportAppListDayData mToReportDayData;
     private AdhocReportAppListDayData getCurrentToReportDayData(){
         if(null == mToReportDayData){
@@ -242,15 +240,10 @@ public class AdhocReportAppRunInfo {
             mMapRunningApps = mGson.fromJson(strCache, new TypeToken<HashMap<String, MdmRunInfoEntity>>(){}.getType());
         }
 
-        //如果缓存里没有上次上报时间，就把当前时段的上报时间写上去，表示上一个时间段的数据已在当前时段汇报过, 这样与后续逻辑统一
-        if(0 == spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0)){
-            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, System.currentTimeMillis());
-        }
-
         long lCacheTimeStamp = spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, System.currentTimeMillis());
         //如果缓存的时间与当前已经不是同一天，只做上报，把mMapRunningApps给清了；后续流程重新开始吧
         if(AppRunInfoReportUtils.getCurrentDayTimeStamp() != AppRunInfoReportUtils.getSpecifyTimeDayStamp(lCacheTimeStamp)){
-            Logger.i(TAG, "the same day");
+            Logger.i(TAG, "not the same day");
             mMapRunningApps.clear();
             RunInfoReportHelper.reportToServerBusiness();
             return;
