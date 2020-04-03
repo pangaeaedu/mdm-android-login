@@ -3,6 +3,7 @@ package com.nd.android.adhoc.communicate.request.interceptor;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 
@@ -29,6 +30,12 @@ abstract class AdhocRequestInfoStrategyBasic {
 
         JSONObject jsonObject = new JSONObject();
         try {
+            String tenantId = AdhocRequestUtil.getPushTenantId(AdhocBasicConfig.getInstance().getAppContext());
+
+            if (!TextUtils.isEmpty(tenantId)) {
+                jsonObject.put("tenantid", tenantId);
+            }
+
             jsonObject.put("action", getAction(pRequest));
             jsonObject.put("method", getMethod());
             jsonObject.put("header", getHeader(pRequest));
