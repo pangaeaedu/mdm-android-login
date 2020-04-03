@@ -1,5 +1,10 @@
 package com.nd.android.adhoc.communicate.request.interceptor;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 
@@ -20,6 +25,10 @@ class AdhocRequestUtil {
     private static final String TAG = "AdhocRequestUtil";
 
     private static final String SUPPORT_CONTENT_TYPE = "application/json";
+
+    private static final String KEY_PUSH_TENANT_ID = "PUSH_TENANT_ID";
+
+    private static String sPushTenantId = null;
 
 
     /**
@@ -57,6 +66,30 @@ class AdhocRequestUtil {
         return "";
     }
 
+
+    static String getPushTenantId(@NonNull Context pContext) {
+
+        if (sPushTenantId != null) {
+            return sPushTenantId;
+        }
+
+        try {
+            ApplicationInfo appInfo = pContext.getPackageManager()
+                    .getApplicationInfo(pContext.getPackageName(),
+                            PackageManager.GET_META_DATA);
+
+            if (!appInfo.metaData.containsKey(KEY_PUSH_TENANT_ID)) {
+                return sPushTenantId = "";
+            }
+
+            return sPushTenantId = appInfo.metaData.getString(KEY_PUSH_TENANT_ID);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return sPushTenantId = "";
+    }
 
     /**
      * Returns true if the body in question probably contains human readable text. Uses a small sample
