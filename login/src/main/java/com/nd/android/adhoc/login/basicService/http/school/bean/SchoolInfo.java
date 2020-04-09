@@ -15,7 +15,7 @@ public class SchoolInfo {
     }
 
     public String getGovernorate() {
-        return getGovernorate();
+        return governorate;
     }
 
     public String getDistrict() {
