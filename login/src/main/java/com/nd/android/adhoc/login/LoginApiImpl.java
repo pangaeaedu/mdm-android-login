@@ -140,6 +140,7 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
         if (response.isSuccess()) {
             getConfig().saveNickname(response.getNickName());
             getConfig().saveUserID(response.getUser_id());
+            getConfig().saveDeviceCode(response.getDevice_code());
 
         }
 
