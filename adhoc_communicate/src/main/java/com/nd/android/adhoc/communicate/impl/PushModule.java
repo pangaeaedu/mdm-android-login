@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.nd.adhoc.push.adhoc.IAdhocPushChannelConnectListener;
+import com.nd.adhoc.push.adhoc.sdk.PushQoS;
 import com.nd.adhoc.push.adhoc.sdk.PushSdkModule;
 import com.nd.adhoc.push.core.IPushChannel;
 import com.nd.adhoc.push.core.IPushChannelConnectListener;
@@ -23,6 +24,7 @@ import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -269,20 +271,36 @@ class PushModule implements IPushModule {
 
     @Override
     public int sendUpStreamMsg(String msgid, long ttlSeconds, String contentType, String content) {
+        return sendUpStreamMsg("", msgid, ttlSeconds, contentType, content);
+    }
+
+    @Override
+    public int sendUpStreamMsg(String topic, String msgid, long ttlSeconds, String contentType, String content) {
         PushConnectStatus status = mPushChannel.getCurrentStatus();
         if (status != PushConnectStatus.Connected) {
-            cacheUpStreamMsg(msgid, ttlSeconds, contentType, content);
+            cacheUpStreamMsg(topic,msgid, ttlSeconds, contentType, content);
             start();
             return 0;
         }
 
-        return PushSdkModule.getInstance().sendUpStreamMsg(msgid, ttlSeconds, contentType, content);
+        return PushSdkModule.getInstance().sendUpStreamMsg(topic, msgid, ttlSeconds, contentType, content);
     }
 
-    private void cacheUpStreamMsg(String msgid, long ttlSeconds, String contentType,
+    @Override
+    public int publish(String topic, String msgid, PushQoS qos, String content) {
+        return PushSdkModule.getInstance().publish(topic, msgid, qos, content);
+    }
+
+    @Override
+    public void subscribe(String topic, PushQoS qos) {
+        HashMap<String,PushQoS> topics = new HashMap<>();
+        PushSdkModule.getInstance().subscribe(topics);
+    }
+
+    private void cacheUpStreamMsg(String topic,String msgid, long ttlSeconds, String contentType,
                                   String content) {
         Logger.d(TAG, "cacheUpStreamMsg: msgid =  " + msgid);
-        UpStreamData data = new UpStreamData(System.currentTimeMillis(), msgid, ttlSeconds,
+        UpStreamData data = new UpStreamData(topic,System.currentTimeMillis(), msgid, ttlSeconds,
                 contentType, content);
         mUpStreamMsgCache.add(data);
     }
@@ -313,10 +331,10 @@ class PushModule implements IPushModule {
 
             long expireTime = MdmTransferConfig.getRequestTimeout();
             if (System.currentTimeMillis() - data.getSendTime() > expireTime) {
-                Log.e(TAG, "discardTimeoutMsg id:" + data.getMsgID());
+                Log.e(TAG, "discardTimeoutMsg id:" + data.getMsgID()+ ", topic: " + data.getTopic());
                 mUpStreamMsgCache.remove(data);
             } else {
-                Log.e(TAG, "do not need discardTimeoutMsg: msg id:" + data.getMsgID());
+                Log.e(TAG, "do not need discardTimeoutMsg: msg id:" + data.getMsgID()+ ", topic: " + data.getTopic());
             }
         }
     }
@@ -330,11 +348,11 @@ class PushModule implements IPushModule {
 
             long expireTime = MdmTransferConfig.getRequestTimeout();
             if (System.currentTimeMillis() - data.getSendTime() < expireTime) {
-                Log.e(TAG, "resendMsgThenClearCache: msg id:" + data.getMsgID());
-                sendUpStreamMsg(data.getMsgID(), data.getTTLSeconds(), data.getContentType(),
+                Log.e(TAG, "resendMsgThenClearCache: msg id:" + data.getMsgID() + ", topic: " + data.getTopic());
+                sendUpStreamMsg(data.getTopic(), data.getMsgID(), data.getTTLSeconds(), data.getContentType(),
                         data.getContent());
             } else {
-                Log.e(TAG, "do not need resendMsgThenClearCache: msg id:" + data.getMsgID());
+                Log.e(TAG, "do not need resendMsgThenClearCache: msg id:" + data.getMsgID()+", topic: " + data.getTopic());
             }
         }
 
