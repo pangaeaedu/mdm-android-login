@@ -12,7 +12,7 @@ public class SchoolInfo {
     // https://pms.101.com/index.php?m=bug&f=view&bugID=493071
     // -- by hyk 20200414
     private String distance;
-    private String schoolName;
+    private String school_name;
 
     public String getGroupcode() {
         return groupcode;
@@ -34,7 +34,7 @@ public class SchoolInfo {
         return distance;
     }
 
-    public String getSchoolName() {
-        return schoolName;
+    public String getSchool_name() {
+        return school_name;
     }
 }
