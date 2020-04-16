@@ -34,7 +34,7 @@ public class LoginDao extends AdhocHttpDao {
             object.put("device_token",pDeviceToken);
             object.put("crtime", pTime);
             object.put("data", pData);
-            object.put("type", DeviceType.Android.getValue());
+            object.put("type", DeviceType.getDeviceType().getValue());
             String content = object.toString();
             String result = postAction().post("/v1.1/registe/policyset/",
                     String.class, content, null);
