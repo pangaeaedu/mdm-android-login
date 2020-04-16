@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.communicate.request.operator;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.nd.android.adhoc.communicate.receiver.IPushDataOperator;
 import com.nd.sdp.android.serviceloader.annotation.Service;
@@ -19,6 +20,8 @@ public class AdhocPushDataOperator_Feedback implements IPushDataOperator {
 
     @Override
     public void onPushDataArrived(@NonNull String pData) {
+        Log.d("yhq_push", "before AdhocPushDataOperator_Feedback onPushDataArrived");
         AdhocPushRequestOperator.receiveFeedback(pData);
+        Log.d("yhq_push", "after AdhocPushDataOperator_Feedback onPushDataArrived");
     }
 }
