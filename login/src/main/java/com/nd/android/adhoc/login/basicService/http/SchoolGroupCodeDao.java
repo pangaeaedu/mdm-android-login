@@ -7,14 +7,17 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
+import com.nd.android.adhoc.login.basicService.data.http.GroupPageNode;
 import com.nd.android.adhoc.login.basicService.data.http.GroupPageResponse;
 import com.nd.android.adhoc.login.basicService.data.http.MdmOrgNode;
+import com.nd.android.adhoc.login.basicService.data.http.ResponseDataConvertUtils;
 import com.nd.android.adhoc.login.basicService.data.http.RetrieveOrgNodeResponse;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNode;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeByGroupCode;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeResponse;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSubSchoolNodeResult;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,26 +46,29 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
                     +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
             throw pE;
         }
-//        List<MdmOrgNode> resultNodes = new ArrayList<>();
-//
-//        int offset = 0;
-//        while (true){
-//            GroupPageResponse response = getSubNodesByPage(pGroupID, offset, PageSize);
-//            if(response == null || response.getAaData() == null || response.getAaData().isEmpty()){
-//                return resultNodes;
-//            }
-//
-//            for (GroupPageNode node : response.getAaData()) {
-//                MdmOrgNode data = ResponseDataConvertUtils.convertFrom(node);
-//                resultNodes.add(data);
-//            }
-//
-//            offset+= response.getAaData().size();
-//
-//            if(response.getAaData().size() < PageSize){
-//                return resultNodes;
-//            }
-//        }
+    }
+
+    public List<MdmOrgNode> getSubNodesWithPageableInterface(String pGroupID) throws Exception{
+        List<MdmOrgNode> resultNodes = new ArrayList<>();
+
+        int offset = 0;
+        while (true){
+            GroupPageResponse response = getSubNodesByPage(pGroupID, offset, PageSize);
+            if(response == null || response.getAaData() == null || response.getAaData().isEmpty()){
+                return resultNodes;
+            }
+
+            for (GroupPageNode node : response.getAaData()) {
+                MdmOrgNode data = ResponseDataConvertUtils.convertFrom(node);
+                resultNodes.add(data);
+            }
+
+            offset+= response.getAaData().size();
+
+            if(response.getAaData().size() < PageSize){
+                return resultNodes;
+            }
+        }
     }
 
     public GroupPageResponse getSubNodesByPage(String pGroupID, int pOffset, int pLimit) throws Exception{
