@@ -62,12 +62,9 @@ public enum DeviceType {
 
                 sDeviceType = DeviceType.getDeviceTypeByValue(value);
 
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                sDeviceType = DeviceType.Android;
             }
-            sDeviceType = DeviceType.Android;
         }
 
         return sDeviceType;
