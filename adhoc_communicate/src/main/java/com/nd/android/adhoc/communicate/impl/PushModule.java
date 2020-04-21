@@ -105,6 +105,7 @@ class PushModule implements IPushModule {
 //                } else {
 //                    doCmdReceived(content);
 //                }
+                Logger.d("yhq_push", "after  onPushMessage:" + data);
             } catch (Exception e) {
                 e.printStackTrace();
                 Logger.e(TAG, "onPushDataArrived error:" + e.toString() +
