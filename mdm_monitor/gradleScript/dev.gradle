@@ -13,7 +13,7 @@ dependencies {
         exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
     }
 
-    compile("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
+    api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
     try{
         api project(':adhoc_wifi:wifi_sdk')

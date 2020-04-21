@@ -26,6 +26,14 @@ public class GetActivateUserResultResponse {
         return true;
     }
 
+    /**
+     * 010=激活进行中
+     * 020=mdm异常
+     * 030=自动激活失效（如果失效表示不再自动登录，输入用户名和密码登录）
+     * 040=超过设备运行被激活的次数（目前一台设备只运行同时被激活一次，所以表示该设备已经被用）
+     * 050=超过用户允许激活的设备数（目前一个用户只运行同时被注册一次，所以表示该用户已经被用）
+     * 060=组不存在
+     */
     public String getMsgcode(){
         return msgcode;
     }
@@ -52,6 +60,13 @@ public class GetActivateUserResultResponse {
         }
 
         return false;
+    }
+
+    /**
+     * 是否是 组（学校）不存在
+     */
+    public boolean isGroupNotFound() {
+        return msgcode.equalsIgnoreCase("060");
     }
 
     public String toString() {

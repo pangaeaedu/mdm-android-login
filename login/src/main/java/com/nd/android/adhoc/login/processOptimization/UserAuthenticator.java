@@ -181,7 +181,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(IUserLoginResult pResult) {
-                        return activeUser(ActivateUserType.Uc, "", pResult.getLoginToken());
+                        return activeUser(ActivateUserType.Uc, "","", pResult.getLoginToken());
                     }
                 });
     }
@@ -195,8 +195,9 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                     @Override
                     public Observable<DeviceStatus> call(final QueryDeviceStatusResponse pResponse) {
                         if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
-                            return activeUser(ActivateUserType.AutoLogin, pResponse
-                                    .getSelSchoolGroupCode(), "")
+                            return activeUser(ActivateUserType.AutoLogin,
+                                    pResponse.getSelSchoolGroupCode(),
+                                    pResponse.getRootCode(),"")
                                     .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
                                         @Override
                                         public Observable<DeviceStatus> call(DeviceStatus pStatus) {
@@ -216,7 +217,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                                     @Override
                                     public Observable<DeviceStatus> call(IUserLoginResult pResult) {
-                                        return activeUser(ActivateUserType.Uc, "", pResult
+                                        return activeUser(ActivateUserType.Uc, "","", pResult
                                                 .getLoginToken());
                                     }
                                 });

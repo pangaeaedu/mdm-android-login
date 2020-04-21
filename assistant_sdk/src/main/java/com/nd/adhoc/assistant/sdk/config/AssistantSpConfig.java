@@ -29,6 +29,9 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     private static final String KEY_USER_ID = "user_id";
 
+    // 设备编码，根据OMO 需求新增的一个字段
+    private static final String KEY_DEVICE_CODE = "device_code";
+
 
     private static final String KEY_DEVICE_STATUS_VALUE = "device_status_value";
     private static final String KEY_DEVICE_ID = "device_id";
@@ -156,6 +159,14 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getString(KEY_USER_ID);
     }
 
+    public void saveDeviceCode(String pDeviceCode) {
+        saveString(KEY_DEVICE_CODE, pDeviceCode);
+    }
+
+    public String getDeviceCode() {
+        return getString(KEY_DEVICE_CODE);
+    }
+
     public List<String> getAllPreviousLoginAccount(){
         String accounts = getString(KEY_PREVIOUS_LOGIN_ACCOUNT);
 
@@ -211,6 +222,7 @@ public class AssistantSpConfig extends BaseSpConfig {
 //        saveDeviceID("");
 //        saveSerialNum("");
         saveUserID("");
+        saveDeviceCode("");
         saveDeviceStatus(-1);
     }
 
