@@ -244,9 +244,17 @@ public class AdhocReportAppRunInfo {
         //如果缓存的时间与当前已经不是同一天，只做上报，把mMapRunningApps给清了；后续流程重新开始吧
         if(AppRunInfoReportUtils.getCurrentDayTimeStamp() != AppRunInfoReportUtils.getSpecifyTimeDayStamp(lCacheTimeStamp)){
             Logger.i(TAG, "not the same day");
+            for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
+                Logger.i(TAG, "id of " + entry.getKey() + " is " + entry.getValue().mstrId);
+            }
             mMapRunningApps.clear();
             RunInfoReportHelper.reportToServerBusiness();
             return;
+        }else if(!mMapRunningApps.isEmpty()){
+            Logger.i(TAG, "get some cache data with size " + mMapRunningApps.size());
+            for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
+                Logger.i(TAG, "id of " + entry.getKey() + " is " + entry.getValue().mstrId);
+            }
         }
 
         //取出当天的APP缓存
@@ -261,6 +269,7 @@ public class AdhocReportAppRunInfo {
 
             final long CLOSE_APP_RANGE_TIME = 20 * 60 * 1000;
             if(lCurTimeStamp - lCacheTimeStamp > CLOSE_APP_RANGE_TIME){
+                Logger.i(TAG, "forceFillUseTime");
                 for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
                     if(getCurrentToReportDayData().getMapApps().containsKey(entry.getKey())){
                         getCurrentToReportDayData().getMapApps().get(entry.getKey()).forceFillUseTime(lCacheTimeStamp + CLOSE_APP_RANGE_TIME);
