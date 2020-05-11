@@ -32,6 +32,9 @@ public class AssistantSpConfig extends BaseSpConfig {
     // 设备编码，根据OMO 需求新增的一个字段
     private static final String KEY_DEVICE_CODE = "device_code";
 
+    // 根据 OMO 增加对 groupcode 字段的解析，用于后期查询父节点级当前节点的名称等信息 -- by hyk 20200511
+    private static final String KEY_GROUP_CODE = "group_code";
+
 
     private static final String KEY_DEVICE_STATUS_VALUE = "device_status_value";
     private static final String KEY_DEVICE_ID = "device_id";
@@ -167,6 +170,14 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getString(KEY_DEVICE_CODE);
     }
 
+    public void saveGroupCode(String pGroupCode) {
+        saveString(KEY_GROUP_CODE, pGroupCode);
+    }
+
+    public String getGroupCode() {
+        return getString(KEY_GROUP_CODE);
+    }
+
     public List<String> getAllPreviousLoginAccount(){
         String accounts = getString(KEY_PREVIOUS_LOGIN_ACCOUNT);
 
@@ -223,6 +234,7 @@ public class AssistantSpConfig extends BaseSpConfig {
 //        saveSerialNum("");
         saveUserID("");
         saveDeviceCode("");
+        saveGroupCode("");
         saveDeviceStatus(-1);
     }
 
