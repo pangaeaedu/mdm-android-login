@@ -1,5 +1,6 @@
 package com.nd.android.adhoc.communicate.push;
 
+import com.nd.adhoc.push.adhoc.sdk.PushQoS;
 import com.nd.adhoc.push.core.IPushChannelDataListener;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
 
@@ -35,5 +36,11 @@ public interface IPushModule {
     void release();
 
     int sendUpStreamMsg(String msgid, long ttlSeconds, String contentType, String content);
+
+    int sendUpStreamMsg(String topic, String msgid, long ttlSeconds, String contentType, String content);
+
+    int publish(String topic, String msgid, PushQoS qos, String content);
+
+    void subscribe(String topic, PushQoS qos);
 
 }

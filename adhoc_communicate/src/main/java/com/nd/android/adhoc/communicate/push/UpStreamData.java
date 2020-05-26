@@ -6,53 +6,44 @@ public class UpStreamData {
     private long mTTLSeconds = 0;
     private String mContentType = "";
     private String mContent = "";
+    private String mTopic;
 
-    public UpStreamData(long pSendTime, String pMsgID, long pTTLSeconds, String pContentType,
+    public UpStreamData(String topic, long pSendTime, String pMsgID, long pTTLSeconds, String pContentType,
                         String pContent) {
         mSendTime = pSendTime;
         mMsgID = pMsgID;
         mTTLSeconds = pTTLSeconds;
         mContentType = pContentType;
         mContent = pContent;
+
+        mTopic = topic;
     }
 
     public long getSendTime() {
         return mSendTime;
     }
 
-    public void setSendTime(long pSendTime) {
-        mSendTime = pSendTime;
-    }
 
     public String getMsgID() {
         return mMsgID;
     }
 
-    public void setMsgID(String pMsgID) {
-        mMsgID = pMsgID;
-    }
 
     public long getTTLSeconds() {
         return mTTLSeconds;
     }
 
-    public void setTTLSeconds(long pTTLSeconds) {
-        mTTLSeconds = pTTLSeconds;
-    }
 
     public String getContentType() {
         return mContentType;
     }
 
-    public void setContentType(String pContentType) {
-        mContentType = pContentType;
-    }
 
     public String getContent() {
         return mContent;
     }
 
-    public void setContent(String pContent) {
-        mContent = pContent;
+    public String getTopic() {
+        return mTopic;
     }
 }

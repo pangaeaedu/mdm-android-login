@@ -3,6 +3,7 @@ package com.nd.android.adhoc.login.basicService.http;
 import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
+import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfoResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
 import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
 import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
@@ -64,4 +65,6 @@ public interface IHttpService {
     GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception;
 
     Boolean reportHardwareInfo(String pDeviceID, Map<String, Object> pInfo) throws Exception;
+
+    EnrollUserInfoResult setAssetCode(String strDeviceToken, String strAssetCode) throws Exception;
 }

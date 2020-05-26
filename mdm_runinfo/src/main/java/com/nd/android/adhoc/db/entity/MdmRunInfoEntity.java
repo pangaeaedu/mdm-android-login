@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.db.constant.MdmRunInfoDbConstant;
 import com.nd.android.adhoc.db.entity.intfc.IMdmRunInfoEntity;
 import com.nd.android.adhoc.utils.AppRunInfoReportUtils;
@@ -17,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @DatabaseTable(tableName = MdmRunInfoDbConstant.MDM_RUNINFO_TABLE_NAME)
 public class MdmRunInfoEntity implements IMdmRunInfoEntity {
+    private static final String TAG = "MdmRunInfoEntity";
 
     public static final String ID = "id";
     public static final String DAY_TIME_STAMP = "day_time_stamp";
@@ -135,6 +137,13 @@ public class MdmRunInfoEntity implements IMdmRunInfoEntity {
 
     private void refreshUseTime(long lDeadTimeToMinus){
         mlRunTime += lDeadTimeToMinus - mLastOpenTime;
+        if(mlRunTime < 0){
+            //负数一般是回调时间了。比如25号零点打开APP，又调回24号22点,
+            //这个时候归零是不可能归零的，这辈子都不能归零，
+            //就给他个五分钟运行时长，意思一下吧。
+            mlRunTime = 300 * 1000;
+            Logger.w(TAG, "force make a positive value");
+        }
         mlRunTime = Math.min(24 * 3600 * 1000L, mlRunTime);
         mLastOpenTime = System.currentTimeMillis();
     }

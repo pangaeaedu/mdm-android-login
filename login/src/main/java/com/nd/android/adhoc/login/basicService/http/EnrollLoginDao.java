@@ -41,7 +41,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
-            map.put("type", DeviceType.Android.getValue());
+            map.put("type", DeviceType.getDeviceType().getValue());
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
@@ -62,7 +62,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 //            Map<String, Object> map = new HashMap<>();
 //            map.put("device_token", pDeviceID);
 //            map.put("serial_no", pSerialNum);
-//            map.put("type", DeviceType.Android.getValue());
+//            map.put("type", DeviceType.getDeviceType().getValue());
 //
 //            Gson gson = new GsonBuilder().create();
 //            String content = gson.toJson(map);
@@ -84,7 +84,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 //            map.put("device_token", pDeviceID);
 //            map.put("serial_no", pSerialNum);
 //            map.put("login_auto", pAutoLogin);
-//            map.put("type", DeviceType.Android.getValue());
+//            map.put("type", DeviceType.getDeviceType().getValue());
 //
 //            Gson gson = new GsonBuilder().create();
 //            String content = gson.toJson(map);
@@ -106,7 +106,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             map.put("device_token", pDeviceID);
             map.put("serial_no", pSerialNum);
             map.put("login_auto", pAutoLogin);
-            map.put("type", DeviceType.Android.getValue());
+            map.put("type", DeviceType.getDeviceType().getValue());
             map.put("need_group", pNeedGroup);
 
             Gson gson = new GsonBuilder().create();
@@ -147,7 +147,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
             map.put("requestid", pRequestID);
-            map.put("type", DeviceType.Android.getValue());
+            map.put("type", DeviceType.getDeviceType().getValue());
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
@@ -168,7 +168,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
-            map.put("type", DeviceType.Android.getValue());
+            map.put("type", DeviceType.getDeviceType().getValue());
 
             Map<String, String> header = null;
             header = new HashMap<>();
@@ -200,7 +200,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
-            map.put("type", DeviceType.Android.getValue());
+            map.put("type", DeviceType.getDeviceType().getValue());
 
             Map<String, String> header = null;
             header = new HashMap<>();
@@ -251,7 +251,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("device_token", pDeviceID);
-            map.put("type", DeviceType.Android.getValue());
+            map.put("type", DeviceType.getDeviceType().getValue());
             map.put("pushid", pPushID);
 
             Gson gson = new GsonBuilder().create();
@@ -313,7 +313,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 //
 //        Map<String, Object> data = new HashMap<>();
 //        data.put("hardware", mapHardware);
-//        data.put("type", DeviceType.Android.getValue());  //设备类型，1代表android
+//        data.put("type", DeviceType.getDeviceType().getValue());  //设备类型，1代表android
 //        data.put("device_token", pDeviceID);
 //
 //        try {
@@ -338,7 +338,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
         Map<String, Object> data = new HashMap<>();
         data.put("hardware", mapHardware);
-        data.put("type", DeviceType.Android.getValue());  //设备类型，1代表android
+        data.put("type", DeviceType.getDeviceType().getValue());  //设备类型，1代表android
         data.put("device_token", pDeviceID);
 
         try {
@@ -359,7 +359,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
                                                    String pDeviceID) throws Exception {
         Map<String, Object> data = new HashMap<>();
         data.put("hardware", pHardwareMap);
-        data.put("type", DeviceType.Android.getValue());  //设备类型，1代表android
+        data.put("type", DeviceType.getDeviceType().getValue());  //设备类型，1代表android
         data.put("device_token", pDeviceID);
 
         try {

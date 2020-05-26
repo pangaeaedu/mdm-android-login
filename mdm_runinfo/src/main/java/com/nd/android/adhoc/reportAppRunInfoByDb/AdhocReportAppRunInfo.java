@@ -87,6 +87,7 @@ public class AdhocReportAppRunInfo {
             if(!mbIsWathcing){
                 return;
             }
+            Logger.i(TAG, "stop watching running info");
             //移除监听
             RunningAppWatchManager.getInstance().removeListeners(mAppListListenner);
 
@@ -96,19 +97,16 @@ public class AdhocReportAppRunInfo {
 
             //清除缓存
             ISharedPreferenceModel spModel = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext());
-            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB, "");
+//            spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_RUNNING_APP_MAP_VDB, "");
+//            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, 0);
+//            MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().deleteAllData();
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_APP_LIST, "");
-            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, 0);
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_FAILED_REPORTED_APP_LIST, "");
             spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
             spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0);
-            MdmRunInfoDbOperatorFactory.getInstance().getRunInfoDbOperator().deleteAllData();
 
             //重置内存
-            mlLastWriteCacheTime = 0;
-            mlLastReportTime = 0;
             mMapRunningApps.clear();
-
             mbIsWathcing = false;
         }
     }
@@ -224,6 +222,7 @@ public class AdhocReportAppRunInfo {
         mToReportDayData = null;
     }
 
+    /**维护一份会上报的APP列表*/
     private AdhocReportAppListDayData mToReportDayData;
     private AdhocReportAppListDayData getCurrentToReportDayData(){
         if(null == mToReportDayData){
@@ -241,17 +240,21 @@ public class AdhocReportAppRunInfo {
             mMapRunningApps = mGson.fromJson(strCache, new TypeToken<HashMap<String, MdmRunInfoEntity>>(){}.getType());
         }
 
-        //如果缓存里没有上次上报时间，就把当前时段的上报时间写上去，表示上一个时间段的数据已在当前时段汇报过, 这样与后续逻辑统一
-        if(0 == spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0)){
-            spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, System.currentTimeMillis());
-        }
-
         long lCacheTimeStamp = spModel.getLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TIME, System.currentTimeMillis());
         //如果缓存的时间与当前已经不是同一天，只做上报，把mMapRunningApps给清了；后续流程重新开始吧
         if(AppRunInfoReportUtils.getCurrentDayTimeStamp() != AppRunInfoReportUtils.getSpecifyTimeDayStamp(lCacheTimeStamp)){
+            Logger.i(TAG, "not the same day");
+            for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
+                Logger.i(TAG, "id of " + entry.getKey() + " is " + entry.getValue().mstrId);
+            }
             mMapRunningApps.clear();
             RunInfoReportHelper.reportToServerBusiness();
             return;
+        }else if(!mMapRunningApps.isEmpty()){
+            Logger.i(TAG, "get some cache data with size " + mMapRunningApps.size());
+            for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
+                Logger.i(TAG, "id of " + entry.getKey() + " is " + entry.getValue().mstrId);
+            }
         }
 
         //取出当天的APP缓存
@@ -266,6 +269,7 @@ public class AdhocReportAppRunInfo {
 
             final long CLOSE_APP_RANGE_TIME = 20 * 60 * 1000;
             if(lCurTimeStamp - lCacheTimeStamp > CLOSE_APP_RANGE_TIME){
+                Logger.i(TAG, "forceFillUseTime");
                 for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
                     if(getCurrentToReportDayData().getMapApps().containsKey(entry.getKey())){
                         getCurrentToReportDayData().getMapApps().get(entry.getKey()).forceFillUseTime(lCacheTimeStamp + CLOSE_APP_RANGE_TIME);

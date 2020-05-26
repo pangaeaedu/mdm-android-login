@@ -22,6 +22,7 @@ public class MdmOrgNode {
     private boolean onlineStatus = false;
     private String state = "";
     private String text = "";
+    private int hasSon;
 
     public MdmOrgNode() {
         super();
@@ -41,5 +42,13 @@ public class MdmOrgNode {
 
     public void setText(String pText){
         text = pText;
+    }
+
+    public int getHasSon() {
+        return hasSon;
+    }
+
+    public void setHasSon(int hasSon) {
+        this.hasSon = hasSon;
     }
 }

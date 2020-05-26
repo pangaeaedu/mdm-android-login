@@ -24,6 +24,15 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_basic_frame:$adhoc_basic_version")
     }
 
+    try {
+        api project(':adhoc-firewall')
+    } catch (Exception ignored) {
+        api("com.nd.sdp.android:adhoc-firewall:$adhoc_firewall_version"){
+            exclude group: 'com.nd.android.adhoc', module: 'adhoc_basic_control'
+            exclude group: 'com.nd.android.adhoc', module: 'device_control'
+        }
+
+    }
 
     api("com.android.support:support-v4:$androidSupportSdkVersion")
 

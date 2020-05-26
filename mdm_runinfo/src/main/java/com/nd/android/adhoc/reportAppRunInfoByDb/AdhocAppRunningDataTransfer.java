@@ -87,6 +87,7 @@ public class AdhocAppRunningDataTransfer {
         }
         Logger.i(TAG, "convert to report cache over");
         spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
+        spModel.applyPutLong(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_LAST_REPORT_TIME, 0);
     }
 
     private static void convertCacheAppListToDb(final ISharedPreferenceModel spModel){

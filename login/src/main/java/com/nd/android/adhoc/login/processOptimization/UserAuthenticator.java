@@ -11,7 +11,9 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
+import com.nd.android.adhoc.basic.util.app.LoginWayUtils;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.IPushModule;
@@ -35,6 +37,8 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class UserAuthenticator extends BaseAuthenticator implements IUserAuthenticator {
+
+    private static final String TAG = "UserAuthenticator";
 
     public UserAuthenticator(IDeviceStatusListener pProcessor) {
         super(pProcessor);
@@ -107,6 +111,12 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     private void enterLogoutUI() {
+        //TODO 嫩模情人杨亿万：这段代码是为了防止自动登录的情况下，后台注销会跳到账号登录页而存在，为临时策略，麻烦找机会改掉
+        if(LoginWayUtils.getIsAutoLogin()){
+            //非空即自动登录，不跳登录页了
+            Logger.i(TAG, "auto login way, do not need to jump to login activity");
+            return;
+        }
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         AdhocFrameFactory.getInstance().getAdhocRouter().build(AdhocRouteConstant.PATH_AFTER_LOGOUT)
                 .navigation(context, new NavCallback() {
