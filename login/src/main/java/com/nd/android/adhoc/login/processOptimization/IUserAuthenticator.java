@@ -15,4 +15,6 @@ public interface IUserAuthenticator {
                                    @NonNull final String pPassword,
                                    @NonNull final String pValidationCode);
     void logout();
+
+    void clearData();
 }

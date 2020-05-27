@@ -11,6 +11,7 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
     private CountDownLatch mCountDownLatch = new CountDownLatch(1);
     private String mGroupCode = null;
 
+
     @Override
     public String retrieveGroupCode(String pRootCode) throws Exception {
         showUI(pRootCode);
@@ -22,7 +23,20 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
         return mGroupCode;
     }
 
+    @Override
+    public String onGroupNotFound(String pRootCode) throws Exception {
+        groupNotFound(pRootCode);
+        try{
+            mCountDownLatch.await();
+        }catch (Exception ignored){
+
+        }
+        return mGroupCode;
+    }
+
     protected abstract void showUI(String pRootCode);
+
+    protected abstract void groupNotFound(String pRootCode);
 
     protected void setGroupCode(String sGroupCode){
         Exception e = new Exception("this is a log");
