@@ -16,6 +16,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
@@ -154,6 +155,13 @@ public class MonitorModule implements IMonitor {
                         if(MdmWifiStatus.CONNECTED != pStatus){
                             return;
                         }
+
+                        //会出现wifi connect事件到达的时候，deviceID还没有确认的情况，这种情况下，不要上报DevInfo
+                        String deviceToken = DeviceInfoManager.getInstance().getDeviceID();
+                        if(TextUtils.isEmpty(deviceToken)){
+                            return;
+                        }
+
                         responseDevInfo();
                     }
                 }
