@@ -83,12 +83,13 @@ public class EthernetConnInfo implements INetworkConnInfo {
                     return gateway.getHostAddress();
                 }
             }
-        } else {
-            String gateway = Util.jni_getprop("dhcp.eth0.gateway");
-            return gateway;
         }
 
-        return "";
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return "";
+        }
+
+        return Util.jni_getprop("dhcp.eth0.gateway");
     }
 
     @Override
