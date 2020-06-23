@@ -54,6 +54,10 @@ public class EthernetConnInfo implements INetworkConnInfo {
 
     @Override
     public String getDns() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return "8.8.8.8";
+        }
+
         List<String> dnsList = Util.getDefaultDNS(getContext());
         if (dnsList.isEmpty()) {
             return "";
