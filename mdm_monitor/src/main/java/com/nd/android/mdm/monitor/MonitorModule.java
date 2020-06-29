@@ -495,83 +495,165 @@ public class MonitorModule implements IMonitor {
 
         //WIFI信息
         MdmWifiInfo wifiInfo = MdmWifiInfoManager.getInstance().getWifiInfo();
-        data.put("ip", wifiInfo.getIp());
-        data.put("ssid", wifiInfo.getSsid());
-        data.put("rssi", wifiInfo.getRssi());
+//        data.put("ip", wifiInfo.getIp());
+        putJsonData(data,"ip",wifiInfo.getIp());
+
+//        data.put("ssid", wifiInfo.getSsid());
+        putJsonData(data,"ssid",wifiInfo.getSsid());
+
+//        data.put("rssi", wifiInfo.getRssi());
+        putJsonData(data,"rssi",wifiInfo.getRssi());
 
         if (MdmWifiInfoManager.getInstance().getIsWiFiConnected()) {
-            data.put("mac", wifiInfo.getMac().replace(":", ""));
+//            data.put("mac", wifiInfo.getMac().replace(":", ""));
+
+            putJsonData(data,"mac", wifiInfo.getMac().replace(":", ""));
         } else {
             String mac = MdmWifiInfoManager.getInstance().getLanConnInfo().getMac();
-            data.put("mac", mac.replace(":", ""));
+//            data.put("mac", mac.replace(":", ""));
+
+            putJsonData(data,"mac", mac.replace(":", ""));
         }
 
-        data.put("link_speed", wifiInfo.getSpeed());
-        data.put("ap_mac", wifiInfo.getApMac());
+//        data.put("link_speed", wifiInfo.getSpeed());
+        putJsonData(data,"link_speed",wifiInfo.getSpeed());
+
+
+
+//        data.put("ap_mac", wifiInfo.getApMac());
+        putJsonData(data,"ap_mac",wifiInfo.getApMac());
+
+
         MdmWifiVendor vendor = wifiInfo.getVendor();
-        data.put("ap_factory", vendor == null ? "" : vendor.getVendorName());
+//        data.put("ap_factory", vendor == null ? "" : vendor.getVendorName());
+        putJsonData(data, "ap_factory", vendor == null ? "" : vendor.getVendorName());
 
         //网络类型
-        data.put("netType", AdhocNetworkUtil.getNetWorkStateString());
+//        data.put("netType", AdhocNetworkUtil.getNetWorkStateString());
+        putJsonData(data,"netType",  AdhocNetworkUtil.getNetWorkStateString());
+
         //SIM卡信息
         String strTemp = AdhocNetworkUtil.getNetworkOperatorName();
         if(null == strTemp){
             strTemp = "";
         }
-        data.put("carrier", strTemp);
+//        data.put("carrier", strTemp);
+        putJsonData(data,"carrier", strTemp);
+
         strTemp = AdhocDeviceUtil.getSimLine1Numeber();
         if(null == strTemp){
             strTemp = "";
         }
-        data.put("sim", strTemp);
+//        data.put("sim", strTemp);
+        putJsonData(data,"sim", strTemp);
 
         //设备信息
-        data.put("model", Build.MODEL);
-        data.put("battery", batteryLevel);
-        data.put("charge", batteryIsCharging);
-        data.put("cpu_rate", (int) MonitorUtil.getCpuInfo()[8]);
-        data.put("serialnum", DeviceHelper.getSerialNumberThroughControl());
-        data.put("terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
-        data.put("resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
-        data.put("bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
+//        data.put("model", Build.MODEL);
+        putJsonData(data,"model", Build.MODEL);
+
+//        data.put("battery", batteryLevel);
+        putJsonData(data,"battery", batteryLevel);
+
+//        data.put("charge", batteryIsCharging);
+        putJsonData(data,"charge", batteryIsCharging);
+
+//        data.put("cpu_rate", (int) MonitorUtil.getCpuInfo()[8]);
+        putJsonData(data,"cpu_rate", (int) MonitorUtil.getCpuInfo()[8]);
+
+//        data.put("serialnum", DeviceHelper.getSerialNumberThroughControl());
+        putJsonData(data,"serialnum", DeviceHelper.getSerialNumberThroughControl());
+
+//        data.put("terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
+        putJsonData(data,"terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
+
+//        data.put("resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
+        putJsonData(data,"resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
+
+//        data.put("bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
+        putJsonData(data,"bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
+
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            data.put("imei", ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
+//            data.put("imei", ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
+            putJsonData(data,"imei", ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
         }
 
         //系统、软件信息
-        data.put("sys_version", Build.VERSION.RELEASE);
-        data.put("language", Locale.getDefault().getDisplayLanguage());
-        data.put("isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
-        data.put("panelId", DeviceHelper.getSerialNumberThroughControl());
+//        data.put("sys_version", Build.VERSION.RELEASE);
+        putJsonData(data,"sys_version", Build.VERSION.RELEASE);
+
+//        data.put("language", Locale.getDefault().getDisplayLanguage());
+        putJsonData(data,"language", Locale.getDefault().getDisplayLanguage());
+
+//        data.put("isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
+        putJsonData(data,"isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
+
+//        data.put("panelId", DeviceHelper.getSerialNumberThroughControl());
+        putJsonData(data,"panelId", DeviceHelper.getSerialNumberThroughControl());
+
         IControl_DeviceRomName control_deviceRomName = ControlFactory.getInstance().getControl(IControl_DeviceRomName.class);
         if (control_deviceRomName != null) {
-            data.put("romName", control_deviceRomName.getRomName());
+//            data.put("romName", control_deviceRomName.getRomName());
+            putJsonData(data,"romName", control_deviceRomName.getRomName());
+
         }
         IControl_DeviceRomVersion control_deviceRomVersion = ControlFactory.getInstance().getControl(IControl_DeviceRomVersion.class);
         if (control_deviceRomVersion != null) {
-            data.put("romVersion", control_deviceRomVersion.getRomVersion());
+//            data.put("romVersion", control_deviceRomVersion.getRomVersion());
+            putJsonData(data,"romVersion", control_deviceRomVersion.getRomVersion());
+
         }
 
         //硬件信息
         long[] memInfo = MonitorUtil.getMemoryInfo();
-        data.put("memory_total", memInfo[0]);
-        data.put("memory_free", memInfo[0] - memInfo[4]);
+//        data.put("memory_total", memInfo[0]);
+        putJsonData(data,"memory_total", memInfo[0]);
+
+//        data.put("memory_free", memInfo[0] - memInfo[4]);
+        putJsonData(data,"memory_free", memInfo[0] - memInfo[4]);
+
         long[] sdcardInfo = MonitorUtil.getSdcardInfo();
-        data.put("system_space_total", sdcardInfo[0]);
-        data.put("system_space_free", sdcardInfo[1]);
-        data.put("sd_total", sdcardInfo[2]);
-        data.put("sd_free", sdcardInfo[3]);
+//        data.put("system_space_total", sdcardInfo[0]);
+        putJsonData(data,"system_space_total", sdcardInfo[0]);
+
+//        data.put("system_space_free", sdcardInfo[1]);
+        putJsonData(data,"system_space_free", sdcardInfo[1]);
+
+//        data.put("sd_total", sdcardInfo[2]);
+        putJsonData(data,"sd_total", sdcardInfo[2]);
+
+//        data.put("sd_free", sdcardInfo[3]);
+        putJsonData(data,"sd_free", sdcardInfo[3]);
 
         //助手信息
         long[] traficBytes = MonitorUtil.getTraficByte();
-        data.put("upload", traficBytes[2]);
-        data.put("download", traficBytes[3]);
-        data.put("AppVerCode", AdhocDeviceUtil.getPackageVerCode(mContext));
+//        data.put("upload", traficBytes[2]);
+        putJsonData(data,"upload", traficBytes[2]);
+
+//        data.put("download", traficBytes[3]);
+        putJsonData(data,"download", traficBytes[3]);
+
+//        data.put("AppVerCode", AdhocDeviceUtil.getPackageVerCode(mContext));
+        putJsonData(data,"AppVerCode", AdhocDeviceUtil.getPackageVerCode(mContext));
 
         PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(mContext);
-        data.put("AppVerName", packageInfo == null ? "" : packageInfo.versionName);
-        data.put("AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
+//        data.put("AppVerName", packageInfo == null ? "" : packageInfo.versionName);
+        putJsonData(data,"AppVerName", packageInfo == null ? "" : packageInfo.versionName);
+
+//        data.put("AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
+        putJsonData(data,"AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
         return data;
+    }
+
+
+    private void putJsonData(JSONObject jsonObject, String key, Object data) throws JSONException {
+        if (data == null) {
+            return;
+        }
+        if (data instanceof CharSequence && TextUtils.isEmpty((CharSequence) data)) {
+            return;
+        }
+
+        jsonObject.put(key, data);
     }
 
 //    private IDeviceInfoEvent mDeviceInfoEvent = new IDeviceInfoEvent() {
