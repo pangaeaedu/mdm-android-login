@@ -393,8 +393,8 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
             // 失败了
             if (!queryResult.isSuccess()) {
-
-                if (queryResult.isGroupNotFound()) {
+                // 自动登录的情况下，并且组织不存在，才返回空，去通知重新选择组织，否则直接通知失败
+                if (isAutoLogin() && queryResult.isGroupNotFound()) {
                     // 学校不存在的错误，直接返回
                     return null;
                 }
