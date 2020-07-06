@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.policy;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.nd.android.adhoc.RunningAppWatchManager;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
@@ -54,12 +55,12 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     }
 
     @Override
-    public AdhocPolicyErrorCode stop() throws AdhocException {
+    public AdhocPolicyErrorCode stop(@Nullable IAdhocPolicyEntity pNewPolicyEntity) throws AdhocException {
         try{
             RunningAppWatchManager.getInstance().stopWatching();
         }catch (Exception e){
             throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
-        return super.stop();
+        return super.stop(pNewPolicyEntity);
     }
 }
