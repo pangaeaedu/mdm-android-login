@@ -1,6 +1,7 @@
 package com.nd.android.adhoc.communicate.policy;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
@@ -61,13 +62,13 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
     }
 
     @Override
-    public AdhocPolicyErrorCode stop() throws AdhocException {
+    public AdhocPolicyErrorCode stop(@Nullable IAdhocPolicyEntity pNewPolicyEntity) throws AdhocException {
         try {
             MdmTransferConfig.setNetworkChannel(AdhocNetworkChannel.CHANNEL_PUSH);
             MdmTransferConfig.setRequestTimeout(0);
         } catch (Exception e) {
             throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
-        return super.stop();
+        return super.stop(pNewPolicyEntity);
     }
 }
