@@ -30,6 +30,8 @@ dependencies {
         }
     }
 
+    api("com.nd.android.adhoc:mdm_biz_sdk_impl:$mdm_biz_sdk_version")
+
     try {
         api project(':assistant_sdk')
     } catch (Exception ignored) {

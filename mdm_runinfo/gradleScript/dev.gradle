@@ -2,6 +2,7 @@ dependencies {
 
     api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_db:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc_basic_ui:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_app:$adhoc_basic_version")
 
 //    compile ("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
