@@ -81,6 +81,7 @@ public class AppUsageRequestActivity extends Activity {
             if (sCallback != null) {
                 sCallback.onCallback(0, RESULT_OK, null);
             }
+            finish();
             return;
         }
 
