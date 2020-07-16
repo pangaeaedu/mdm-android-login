@@ -21,6 +21,8 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
+import com.nd.android.adhoc.basic.util.net.speed.NetSpeedBean;
+import com.nd.android.adhoc.basic.util.net.speed.NetSpeedUtil;
 import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
@@ -417,9 +419,9 @@ public class MonitorModule implements IMonitor {
             case IMonitor.LINK_SPEED:
                 return getNetworkInfo().linkSpeed;
             case IMonitor.UPLOAD:
-                return getNetworkInfo().uploadSpeed;
+                return NetSpeedUtil.getNetSpeed(mContext.getApplicationInfo().uid).getTxSpeed();
             case IMonitor.DOWNLOAD:
-                return getNetworkInfo().downloadSpeed;
+                return NetSpeedUtil.getNetSpeed(mContext.getApplicationInfo().uid).getRxSpeed();
             case IMonitor.SSID:
                 return getNetworkInfo().ssid;
             case IMonitor.BATTERY:
@@ -624,13 +626,14 @@ public class MonitorModule implements IMonitor {
 //        data.put("sd_free", sdcardInfo[3]);
         putJsonData(data,"sd_free", sdcardInfo[3]);
 
-        //助手信息
-        long[] traficBytes = MonitorUtil.getTraficByte();
+        NetSpeedBean speedBean = NetSpeedUtil.getNetSpeed(mContext.getApplicationInfo().uid);
+        long rxBytes = speedBean.getRxSpeed();
+        long txBytes = speedBean.getTxSpeed();
 //        data.put("upload", traficBytes[2]);
-        putJsonData(data,"upload", traficBytes[2]);
+        putJsonData(data,"upload", txBytes);
 
 //        data.put("download", traficBytes[3]);
-        putJsonData(data,"download", traficBytes[3]);
+        putJsonData(data,"download", rxBytes);
 
 //        data.put("AppVerCode", AdhocDeviceUtil.getPackageVerCode(mContext));
         putJsonData(data,"AppVerCode", AdhocDeviceUtil.getPackageVerCode(mContext));
