@@ -268,8 +268,10 @@ public class AdhocAppUsageFactory {
 
         //再计算一次当前应用的运行时间，因为当前应用，最后得不到MOVE_TO_BACKGROUND 的timeStamp
         AppInformation information = mapData.get(context.getPackageName());
-        information.setTimeStampMoveToBackGround(now);
-        information.calculateRunningTime();
+        if (information != null) {
+            information.setTimeStampMoveToBackGround(now);
+            information.calculateRunningTime();
+        }
 
         return new ArrayList<>(mapData.values());
     }
