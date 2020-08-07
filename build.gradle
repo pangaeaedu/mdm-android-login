@@ -2,10 +2,15 @@ buildscript {
     apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config.gradle'
 
     repositories {
-        maven {
-            name 'nd nexus android-public'
-            url "http://nexus.sdp.nd/nexus/content/groups/android-public/"
+
+        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+            maven {
+                url 'http://192.168.252.25:8081/repository/maven-public/'
+            }
+        } else {
+            maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
         }
+
         mavenCentral()
         jcenter()
     }
@@ -17,12 +22,12 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.8.460.e181a35-lsj0.8.0.0-SNAPSHOT'
+    adhoc_basic_version = '1.8.495.9524206'
 
 
     mdm_biz_version = '1.10.631.2671509'
 
-    device_control_version = '1.8.494.82ada8f'
+    device_control_version = '1.9.515.217eff2-xiaomihuawei-SNAPSHOT'
     device_command_version = '2.1.325.1d82f9e'
 
     location_verison = '1.7.105.8d65b0b'
@@ -46,10 +51,15 @@ ext {
 
 allprojects {
     repositories {
-        maven {
-            name 'nd nexus android-public'
-            url "http://nexus.sdp.nd/nexus/content/groups/android-public/"
+
+        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+            maven {
+                url 'http://192.168.252.25:8081/repository/maven-public/'
+            }
+        } else {
+            maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
         }
+
         mavenCentral()
         jcenter()
 
