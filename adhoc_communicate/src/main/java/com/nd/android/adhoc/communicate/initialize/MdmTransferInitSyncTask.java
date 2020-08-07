@@ -1,5 +1,8 @@
 package com.nd.android.adhoc.communicate.initialize;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -22,8 +25,21 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
     public void doInitSync(@NonNull IAdhocInitCallback pCallback) {
         try {
             Log.e("yhq", "init Transfer lib");
-            libadhoc.setContext(AdhocBasicConfig.getInstance().getAppContext());
-            MdmTransferFactory.getCommunicationModule().startAdhoc();
+            Context context = AdhocBasicConfig.getInstance().getAppContext();
+            libadhoc.setContext(context);
+            try {
+                ApplicationInfo appInfo = context.getPackageManager()
+                        .getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+                boolean excludeAdhoc = appInfo.metaData.getBoolean("EXCLUDE_ADHOC");
+                Log.i("yhq", "doInitSync: exclude adhoc = " + excludeAdhoc);
+                if (!excludeAdhoc) {
+                    MdmTransferFactory.getCommunicationModule().startAdhoc();
+                }
+            } catch (Exception pE) {
+                pE.printStackTrace();
+                MdmTransferFactory.getCommunicationModule().startAdhoc();
+            }
+
             MdmTransferFactory.getPushModel().start();
             pCallback.onSuccess();
         } catch (Exception e) {
