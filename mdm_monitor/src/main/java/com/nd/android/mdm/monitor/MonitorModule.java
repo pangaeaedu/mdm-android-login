@@ -31,6 +31,7 @@ import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_CpuUsageRate;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
+import com.nd.android.adhoc.control.define.IControl_IMEI;
 import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
@@ -572,9 +573,11 @@ public class MonitorModule implements IMonitor {
 //        data.put("bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
         putJsonData(data,"bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
 
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+        IControl_IMEI control_imei = ControlFactory.getInstance().getControl(IControl_IMEI.class);
+        if (control_imei != null) {
 //            data.put("imei", ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
-            putJsonData(data,"imei", ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
+            putJsonData(data, "imei", control_imei.getIMEI(0));
+            putJsonData(data, "imei2", control_imei.getIMEI(1));
         }
 
         //系统、软件信息
