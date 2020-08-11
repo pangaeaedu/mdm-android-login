@@ -14,6 +14,7 @@ import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IAdhocPushConnectListener;
 import com.nd.android.adhoc.communicate.push.listener.IPushConnectListener;
+import com.nd.android.adhoc.control.define.IControl_IMEI;
 import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
@@ -21,6 +22,7 @@ import com.nd.android.adhoc.login.processOptimization.utils.LoginArgumentUtils;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
 import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
+import com.nd.android.mdm.basic.ControlFactory;
 
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -301,10 +303,18 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         String buildSn = AdhocDeviceUtil.getBuildSN(context);
         String cpuSn = AdhocDeviceUtil.getCpuSN();
-        String imei = AdhocDeviceUtil.getIMEI(context);
         String wifiMac = AdhocDeviceUtil.getWifiMac(context);
 
         String lanMac = AdhocDeviceUtil.getEthernetMac();
+
+        String imei = AdhocDeviceUtil.getIMEI(context);
+        String imei2 = null;
+
+        IControl_IMEI control_imei = ControlFactory.getInstance().getControl(IControl_IMEI.class);
+        if(control_imei != null){
+            imei = control_imei.getIMEI(0);
+            imei2 = control_imei.getIMEI(1);
+        }
 
         if (TextUtils.isEmpty(wifiMac) && TextUtils.isEmpty(lanMac)) {
             throw new RetrieveMacException();
@@ -324,11 +334,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     wifiMac = AdhocDeviceUtil.getWifiMac(context);
                 }
 
-                Log.e("yhq", "input buildSn:" + buildSn + " cpuSn:" + cpuSn + " imei:" + imei
+                Log.e("yhq", "input buildSn:" + buildSn + " cpuSn:" + cpuSn + " imei:" + imei+ " imei2:" + imei2
                         + " wifiMac:" + wifiMac + " lanMac:" + lanMac + " blueToothMac:" + blueToothMac + " serialNo:" + serialNo
                         + " androidID:" + androidID + " localDeviceID:" + pLocalDeviceID);
                 Map<String, Object> hardwareMaps = LoginArgumentUtils.genHardwareMap(buildSn,
-                        cpuSn, imei, wifiMac, lanMac, blueToothMac, serialNo, androidID);
+                        cpuSn, imei, wifiMac, lanMac, blueToothMac, serialNo, androidID, imei2);
                 response = getHttpService().confirmDeviceID(hardwareMaps, pLocalDeviceID);
                 if (response != null) {
                     Log.e("yhq", "deviceID response:" + response.getDeviceID());

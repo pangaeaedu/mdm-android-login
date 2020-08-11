@@ -16,6 +16,13 @@ public class LoginArgumentUtils {
     public static Map<String, Object> genHardwareMap(String  pBuildSn, String pCpuSn,
                                                      String pIMEI, String pWifiMac, String pLanMac,
                                                      String pBlueToothMac, String pSerialNo, String pAndroidID){
+        return genHardwareMap(pBuildSn, pCpuSn, pIMEI, pWifiMac, pLanMac, pBlueToothMac, pSerialNo, pAndroidID, null);
+    }
+
+    @NonNull
+    public static Map<String, Object> genHardwareMap(String  pBuildSn, String pCpuSn,
+                                                     String pIMEI, String pWifiMac, String pLanMac,
+                                                     String pBlueToothMac, String pSerialNo, String pAndroidID, String pIMEI2){
         Map<String, Object> mapHardware = new HashMap<>();
 
         if(!TextUtils.isEmpty(pBuildSn)) {
@@ -28,6 +35,10 @@ public class LoginArgumentUtils {
 
         if(!TextUtils.isEmpty(pIMEI)) {
             mapHardware.put("imei", pIMEI);
+        }
+
+        if(!TextUtils.isEmpty(pIMEI)) {
+            mapHardware.put("imei2", pIMEI2);
         }
 
         if(!TextUtils.isEmpty(pWifiMac)) {
