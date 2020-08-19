@@ -48,10 +48,10 @@ public class AdhocAppUsageFactory {
 
     private static Subscription sTimeSub;
 
-    private static long sLastResponseTime = 1594569600000L;
+    private static long sLastResponseTime;
 
     public static void start() {
-//        sLastResponseTime = getLastResponseTime();
+        sLastResponseTime = getLastResponseTime();
 
         // 如果从来都没有上报过，就把当前时间设置为最后上报时间，方便下次进行比对
         long curTime = System.currentTimeMillis();
@@ -162,7 +162,7 @@ public class AdhocAppUsageFactory {
 
         // 计算当前和开始上报时间差几天
         int days = endDay - startDay;
-        if (days <= 0) {
+        if (days < 0) {
             Logger.d(TAG, "getUsageStatsList: days <=0 , return null");
             return null;
         }
