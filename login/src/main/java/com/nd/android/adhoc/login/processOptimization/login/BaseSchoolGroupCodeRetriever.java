@@ -1,7 +1,11 @@
 package com.nd.android.adhoc.login.processOptimization.login;
 
+import android.provider.Settings;
 import android.util.Log;
 
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.util.system.rom.AdhocRomFactory;
+import com.nd.android.adhoc.control.xiaomi.rom.AdhocRomStrategy_Xiaomi;
 import com.nd.android.adhoc.loginapi.ISchoolGroupCodeRetriever;
 
 import java.util.concurrent.CountDownLatch;
@@ -13,10 +17,19 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
 
     @Override
     public String retrieveGroupCode(String pRootCode) throws Exception {
+        boolean isXiaomi = AdhocRomFactory.getInstance().getRomStrategy() instanceof AdhocRomStrategy_Xiaomi;
+
+        while (isXiaomi) {
+            if (Settings.Global.getInt(AdhocBasicConfig.getInstance().getAppContext().getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 0) == 1) {
+                break;
+            }
+            Thread.sleep(3 * 1000);
+        }
+
         showUI(pRootCode);
-        try{
+        try {
             mCountDownLatch.await();
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
         return mGroupCode;
@@ -24,11 +37,11 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
 
     protected abstract void showUI(String pRootCode);
 
-    protected void setGroupCode(String sGroupCode){
+    protected void setGroupCode(String sGroupCode) {
         Exception e = new Exception("this is a log");
         e.printStackTrace();
 
-        Log.e(TAG, "setGroupCode:"+sGroupCode);
+        Log.e(TAG, "setGroupCode:" + sGroupCode);
         mGroupCode = sGroupCode;
         mCountDownLatch.countDown();
     }
