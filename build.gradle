@@ -27,8 +27,8 @@ ext {
 
     mdm_biz_version = '1.10.631.2671509'
 
-    device_control_version = '1.9.515.217eff2-xiaomihuawei-SNAPSHOT'
-    device_command_version = '2.1.325.1d82f9e'
+    device_control_version = '1.9.521.0361105'
+    device_command_version = '2.6.420.2395e22'
 
     location_verison = '1.7.105.8d65b0b'
     file_transfer_version = '1.1.34.3cff954'
@@ -43,7 +43,7 @@ ext {
     adhoc_firewall_version = '0.7.55.316bbfa'
 
     androidBuildToolsVersion = '28.0.3'
-    androidMinSdkVersion = 17
+    androidMinSdkVersion = 18
     androidTargetSdkVersion = 28
     androidCompileSdkVersion = 28
     androidSupportSdkVersion = '28.0.0'

@@ -103,6 +103,13 @@ dependencies {
     api('com.nd.sdp.uc:nducsdk_implenment:0.0.1.8.nducsdk.release')
     api('com.nd.sdp.uc:nducsdk:0.0.1.8.nducsdk.release')
 
+    try {
+        api project(':device_control_xiaomi')
+    } catch (Exception ignored) {
+        api ("com.nd.android.adhoc:device_control_xiaomi:$device_control_version"){
+        }
+    }
+
 }
 
 configurations.all {
