@@ -4,6 +4,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.rom.AdhocRomFactory;
 import com.nd.android.adhoc.control.xiaomi.rom.AdhocRomStrategy_Xiaomi;
 import com.nd.android.adhoc.loginapi.ISchoolGroupCodeRetriever;
@@ -19,6 +20,7 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
     public String retrieveGroupCode(String pRootCode) throws Exception {
         boolean isXiaomi = AdhocRomFactory.getInstance().getRomStrategy() instanceof AdhocRomStrategy_Xiaomi;
 
+        Logger.d(TAG, "Settings.Global.DEVICE_PROVISIONED value = " + Settings.Global.getInt(AdhocBasicConfig.getInstance().getAppContext().getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 0));
         while (isXiaomi) {
             if (Settings.Global.getInt(AdhocBasicConfig.getInstance().getAppContext().getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 0) == 1) {
                 break;
