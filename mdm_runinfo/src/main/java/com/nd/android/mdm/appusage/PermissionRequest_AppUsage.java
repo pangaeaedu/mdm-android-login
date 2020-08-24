@@ -64,6 +64,10 @@ public class PermissionRequest_AppUsage extends AdhocPermissionRequestAbs {
         if (AdhocPackageUtil.checkPackageInstalled("com.nd.adhoc.systemservice")) {
             return true;
         }
+        // 已经安装了 华为控制包
+        if (AdhocPackageUtil.checkPackageInstalled("com.nd.android.adhoc.huawei.sdkprovider")) {
+            return true;
+        }
 
         try {
             Context context = AdhocBasicConfig.getInstance().getAppContext();

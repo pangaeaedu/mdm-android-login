@@ -18,7 +18,9 @@ import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
+import com.nd.android.adhoc.control.define.IControl_AppUsage;
 import com.nd.android.adhoc.reportAppRunInfoByDb.RunInfoReportResult;
+import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONArray;
@@ -180,28 +182,33 @@ public class AdhocAppUsageFactory {
 
             List<UsageStats> usageStats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begintime, oneDayEndTime);
             List<AppInformation> informations = getAccurateDailyStatsList(context, usageStats, m, begintime, oneDayEndTime);
+            IControl_AppUsage usage = ControlFactory.getInstance().getControl(IControl_AppUsage.class);
+            JSONObject runinfoitem ;
+                try {
+                    if (usage != null) {
+                        String statsList = usage.getUsageStatsList(begintime, oneDayEndTime);
+                        runinfoitem = new JSONObject(statsList);
+                    } else {
+                        runinfoitem = new JSONObject();
+                        runinfoitem.put("time", begintime);
 
-            JSONObject runinfoitem = new JSONObject();
-            try {
-                runinfoitem.put("time", begintime);
+                        JSONArray infoArray = new JSONArray();
+                        for (AppInformation information : informations) {
 
-                JSONArray infoArray = new JSONArray();
-                for (AppInformation information : informations) {
+                            JSONObject infoItem = new JSONObject();
+                            infoItem.put("runtime", information.getUsedTimebyDay());
+                            infoItem.put("package", information.getPackageName());
+                            infoItem.put("appname", information.getLabel());
+                            infoItem.put("runcount", information.getTimes());
 
-                    JSONObject infoItem = new JSONObject();
-                    infoItem.put("runtime", information.getUsedTimebyDay());
-                    infoItem.put("package", information.getPackageName());
-                    infoItem.put("appname", information.getLabel());
-                    infoItem.put("runcount", information.getTimes());
-
-                    infoArray.put(infoItem);
+                            infoArray.put(infoItem);
+                        }
+                        runinfoitem.put("info", infoArray);
+                    }
+                } catch (JSONException e) {
+                    Logger.e(TAG, "getUsageStatsList: make runinfolist error:" + e);
+                    return null;
                 }
-                runinfoitem.put("info", infoArray);
-
-            } catch (JSONException e) {
-                Logger.e(TAG, "getUsageStatsList: make runinfolist error:" + e);
-                return null;
-            }
             runinfolist.put(runinfoitem);
 
             begintime += oneDay;
