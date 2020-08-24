@@ -5,8 +5,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
+import com.nd.android.adhoc.login.basicService.data.http.DeviceGroupPath;
 import com.nd.android.adhoc.login.basicService.data.http.GroupPageNode;
 import com.nd.android.adhoc.login.basicService.data.http.GroupPageResponse;
 import com.nd.android.adhoc.login.basicService.data.http.MdmOrgNode;
@@ -16,6 +18,7 @@ import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNode;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeByGroupCode;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSchoolNodeResponse;
 import com.nd.android.adhoc.login.basicService.data.http.SearchSubSchoolNodeResult;
+import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -174,6 +177,21 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
         }catch (Exception pE){
             Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ getAction().getBaseUrl()
                     +"/v2/group/grouppath?groupcode="+ groupcode + " " + "Msg:"+pE.getMessage());
+            throw pE;
+        }
+    }
+
+    public DeviceGroupPath getDeviceGroupPaths() throws Exception{
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("devicetoken", DeviceHelper.getDeviceToken());
+
+            // 从服务端取一次最新的
+            return new AdhocHttpDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl())
+                    .getAction().get("/v2/device/grouppath", DeviceGroupPath.class, params);
+        }catch (Exception pE){
+            Log.e("yhq", "getDeviceGroupPaths error happpen:"+ getAction().getBaseUrl()
+                    +"v2/device/grouppath" + " Msg:"+pE.getMessage());
             throw pE;
         }
     }
