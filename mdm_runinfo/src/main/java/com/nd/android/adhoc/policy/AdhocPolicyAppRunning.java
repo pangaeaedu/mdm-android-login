@@ -1,16 +1,19 @@
 package com.nd.android.adhoc.policy;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.nd.android.adhoc.RunningAppWatchManager;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.policy.api.AdhocPolicyTaskAbs;
 import com.nd.android.adhoc.policy.api.IAdhocPolicyEntity;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyErrorCode;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyException;
 import com.nd.android.adhoc.policy.api.constant.AdhocPolicyMsgCode;
+import com.nd.android.mdm.appusage.AdhocAppUsageFactory;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
 import org.json.JSONObject;
@@ -39,14 +42,28 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
             Logger.i(TAG, "executeTask");
             JSONObject jsonObject = new JSONObject(pPolicyEntity.getData());
 
-            // 1 = push上行，0 = http/https，默认 1
+            // 1 = 开启，0 = 关闭，默认 1
             int enable = jsonObject.optInt("enable", 1);
 
-            if(1 == enable){
-                RunningAppWatchManager.getInstance().init();
-            }else {
-                RunningAppWatchManager.getInstance().stopWatching();
+            // 装了 SystemService，走旧的逻辑
+            // 如果 SDK < 23，也走旧的逻辑
+            if (AdhocPackageUtil.checkPackageInstalled("com.nd.adhoc.systemservice")
+                    || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                if (1 == enable) {
+                    RunningAppWatchManager.getInstance().init();
+                } else {
+                    RunningAppWatchManager.getInstance().stopWatching();
+                }
+                return super.executeTask(pPolicyEntity);
             }
+
+            // 走新的逻辑
+            if (1 == enable) {
+                AdhocAppUsageFactory.start();
+            } else {
+                AdhocAppUsageFactory.cancel();
+            }
+
             return super.executeTask(pPolicyEntity);
         } catch (Exception e) {
             Logger.w(TAG, "executeTask error: " + e);
