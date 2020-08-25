@@ -164,7 +164,7 @@ public class AdhocAppUsageFactory {
 
         // 计算当前和开始上报时间差几天
         int days = endDay - startDay;
-        if (days < 0) {
+        if (days <= 0) {
             Logger.d(TAG, "getUsageStatsList: days <=0 , return null");
             return null;
         }
