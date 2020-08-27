@@ -6,6 +6,8 @@ import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -17,6 +19,7 @@ import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
+import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.control.define.IControl_AppUsage;
 import com.nd.android.adhoc.reportAppRunInfoByDb.RunInfoReportResult;
@@ -182,6 +185,7 @@ public class AdhocAppUsageFactory {
 
             List<UsageStats> usageStats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, begintime, oneDayEndTime);
             List<AppInformation> informations = getAccurateDailyStatsList(context, usageStats, m, begintime, oneDayEndTime);
+
             IControl_AppUsage usage = ControlFactory.getInstance().getControl(IControl_AppUsage.class);
             JSONObject runinfoitem ;
                 try {
@@ -194,6 +198,19 @@ public class AdhocAppUsageFactory {
 
                         JSONArray infoArray = new JSONArray();
                         for (AppInformation information : informations) {
+
+                            // 1、自身应用 不上报
+                            // 2、时长小于3分钟 不上报
+                            if (context.getPackageName().equals(information.getPackageName())
+                                    || information.getUsedTimebyDay() < 3 * 60 * 1000) {
+                                continue;
+                            }
+
+                            // 3、包信息取不到，或者是系统应用，不上报
+                            PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(context, information.getPackageName());
+                            if (packageInfo == null || (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                                continue;
+                            }
 
                             JSONObject infoItem = new JSONObject();
                             infoItem.put("runtime", information.getUsedTimebyDay());
