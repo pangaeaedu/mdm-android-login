@@ -28,7 +28,7 @@ public class AssistantBasicServiceFactory {
     }
 
     public AssistantSpConfig getSpConfig(){
-        Context ctx = AdhocBasicConfig.getInstance().getAppContext();
+        Context ctx = AdhocBasicConfig.getInstance().getStorageContext();
         if(mSpConfig == null){
             synchronized (this){
                 if(mSpConfig == null){
