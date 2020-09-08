@@ -29,7 +29,6 @@ import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
-import com.nd.android.mdm.biz.deliver.api.IDeliverProcessor;
 
 import rx.Observable;
 import rx.Observer;
@@ -65,14 +64,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         enterLogoutUI();
 
         clearPolicy();
-
-        IDeliverProcessor deliverProcessor = (IDeliverProcessor) AdhocFrameFactory.getInstance().getAdhocRouter()
-                .build(IDeliverProcessor.ROUTE_PATH).navigation();
-        if (deliverProcessor == null) {
-            Logger.e(TAG, "cann't find IDeliverProcessor");
-            return;
-        }
-        deliverProcessor.stopRequest(0, null);
     }
 
     private void clearPolicy() {

@@ -65,9 +65,11 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     @Override
                     public void call(Subscriber<? super QueryDeviceStatusResponse> pSubscriber) {
                         try {
+                            Log.e("yhq", " start run queryDeviceStatusFromServer");
                             String serialNum = DeviceHelper.getSerialNumberThroughControl();
 
                             if (TextUtils.isEmpty(pDeviceID) || TextUtils.isEmpty(serialNum)) {
+                                Log.e("yhq", " queryDeviceStatusFromServer error 1");
                                 pSubscriber.onError(new DeviceIDNotSetException());
                                 return;
                             }
@@ -75,6 +77,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
                             QueryDeviceStatusResponse result = null;
                             if (isAutoLogin()) {
+                                Log.e("yhq", " queryDeviceStatusFromServer isAutoLogin 1");
                                 // 自动登录的情况下，要把autoLogin的值1带上去
                                 result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
                                         loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
