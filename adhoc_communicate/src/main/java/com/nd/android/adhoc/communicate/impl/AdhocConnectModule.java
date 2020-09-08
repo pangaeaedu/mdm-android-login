@@ -14,7 +14,7 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
-import com.nd.android.adhoc.basic.util.storage.AdhocStorageUtil;
+import com.nd.android.adhoc.basic.util.storage.AdhocStorageAdapter;
 import com.nd.android.adhoc.basic.util.storage.ZipCompressorUtil;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
@@ -90,8 +90,8 @@ class AdhocConnectModule implements IAdhocConnectModule {
         public void onServiceConnected(ComponentName name, IBinder binder) {
             mAdhoc = IAdhoc.Stub.asInterface(binder);
             try {
-                String logPath = AdhocStorageUtil.getSDCardFilesDir(mContext,"log/adhoclog/");
-                String receivePath = AdhocStorageUtil.getSDCardFilesDir(mContext, "adhocrecv/");
+                String logPath = AdhocStorageAdapter.getFilesDir("log/adhoclog/");
+                String receivePath = AdhocStorageAdapter.getFilesDir("adhocrecv/");
                 mAdhoc.setLogPathAndName(logPath, "adhoc");
                 mAdhoc.setRecvFilePath(receivePath);
                 mAdhoc.setMasterName("teacher");
@@ -214,8 +214,8 @@ class AdhocConnectModule implements IAdhocConnectModule {
                 }
                 if (file.isDirectory()) {
                     try {
-                        String zipPath = String.format("%s/%s/%s.zip", AdhocStorageUtil.getSdCardPath(), mContext.getPackageName(), file.getName());
-                        if (pLocalPath.equalsIgnoreCase(String.format("%s/%s", AdhocStorageUtil.getSdCardPath(), mContext.getPackageName(), file.getName()))) {
+                        String zipPath = String.format("%s/%s.zip", AdhocStorageAdapter.getFilesDir("adhocfile"), file.getName());
+                        if (pLocalPath.equalsIgnoreCase(String.format("%s/%s", AdhocStorageAdapter.getFilesDir("adhocfile"), file.getName()))) {
 //                        new DialogEvent("can not send this folder").post();
                             AdhocToastModule.getInstance().showToast("can not send this folder");
                             subscriber.onCompleted();
