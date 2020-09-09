@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: file('gradleScript/dev.gradle')
+apply from: file('gradleScript/smartcan.gradle')
 //apply from: file('gradleScript/unittest4sdk.gradle')
 
 if (!project.hasProperty('LOCAL_BUILD_ENV')) {

@@ -23,6 +23,9 @@ public class EnvUtils {
         Log.e(TAG, "setCsEnv name:" + pEnvModule.getName()
                 + " csBaseUrl:" + pEnvModule.getCsBaseUrl() + " csBaseDownUrl:" + pEnvModule.getCsBaseDownUrl());
 
+        CsManager.setIsDirectBoot(AdhocBasicConfig.getInstance().isEncrypStorageModel());
+        CsBaseManager.setIsDirectBoot(AdhocBasicConfig.getInstance().isEncrypStorageModel());
+
         CsManager.setContentBaseUrl(pEnvModule.getCsBaseUrl());
         CsBaseManager.setContentBaseUrl(pEnvModule.getCsBaseUrl());
 
