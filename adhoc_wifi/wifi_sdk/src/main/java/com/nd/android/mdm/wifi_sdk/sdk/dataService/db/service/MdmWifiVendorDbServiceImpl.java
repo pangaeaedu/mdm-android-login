@@ -49,13 +49,13 @@ class MdmWifiVendorDbServiceImpl implements IMdmWifiVendorDbService {
     }
 
     private void initDbFile(String pDbName) {
-        File dbFile = AdhocBasicConfig.getInstance().getAppContext().getDatabasePath(pDbName);
+        File dbFile = AdhocBasicConfig.getInstance().getStorageContext().getDatabasePath(pDbName);
         if (dbFile == null || dbFile.exists()) {
             return;
         }
 
         AdhocAssetsFileUtil.copyFile2SdCard(
-                AdhocBasicConfig.getInstance().getAppContext(),
+                AdhocBasicConfig.getInstance().getStorageContext(),
                 "vendor/" + pDbName,
                 dbFile.getPath());
     }
