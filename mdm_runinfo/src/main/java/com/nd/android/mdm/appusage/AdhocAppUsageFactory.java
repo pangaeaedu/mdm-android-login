@@ -114,6 +114,10 @@ public class AdhocAppUsageFactory {
 
 
                         try {
+                            if (TextUtils.isEmpty(jsonObject.toString())) {
+                                // 整个数据都为空就不报了
+                                return;
+                            }
                             RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
                                     RunInfoReportResult.class, jsonObject.toString());
 
