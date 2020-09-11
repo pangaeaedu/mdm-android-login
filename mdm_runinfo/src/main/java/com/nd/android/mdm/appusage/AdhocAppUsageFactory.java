@@ -109,6 +109,8 @@ public class AdhocAppUsageFactory {
 
                         JSONObject jsonObject = generateRespJson(runinfolist);
 
+                        // 不管是否成功，都更新最后一次上报的时间
+                        setLastResponseTime(curTime);
 
                         try {
                             RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
@@ -126,9 +128,6 @@ public class AdhocAppUsageFactory {
                                 return;
                             }
                             Logger.i(TAG, "上报成功");
-
-                            //成功了，清除需要补报的缓存
-                            setLastResponseTime(curTime);
 
                         } catch (AdhocHttpException e) {
                             Logger.e(TAG, "report app usage request error: " + e);
