@@ -120,6 +120,14 @@ public class AppInformation {
 
     }
 
+    @Override
+    public String toString() {
+        return "AppInformation{" +
+                "packageName='" + packageName + '\'' +
+                ", label='" + label + '\'' +
+                ", times=" + times +
+                '}';
+    }
 
     // 返回开机时间，单位微妙
     public static long bootTime() {

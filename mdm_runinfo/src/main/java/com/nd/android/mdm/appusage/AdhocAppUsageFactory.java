@@ -202,17 +202,21 @@ public class AdhocAppUsageFactory {
 
                         JSONArray infoArray = new JSONArray();
                         for (AppInformation information : informations) {
+                            Logger.d(TAG, "==========》AppInformation: " + information.toString() + "《==========");
 
                             // 1、自身应用 不上报
                             // 2、时长小于3分钟 不上报
                             if (context.getPackageName().equals(information.getPackageName())
                                     || information.getUsedTimebyDay() < 3 * 60 * 1000) {
+
+                                Logger.d(TAG, "used time by day < 3 min, throw away...");
                                 continue;
                             }
 
                             // 3、包信息取不到，或者是系统应用，不上报
                             PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(context, information.getPackageName());
                             if (packageInfo == null || (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                                Logger.d(TAG, "can not get package info, throw away...");
                                 continue;
                             }
 
