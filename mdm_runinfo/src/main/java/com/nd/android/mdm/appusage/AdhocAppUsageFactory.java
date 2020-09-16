@@ -19,6 +19,9 @@ import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
+import com.nd.android.adhoc.basic.timing.AdhocTimingApi;
+import com.nd.android.adhoc.basic.timing.AdhocTimingCallbackAbs;
+import com.nd.android.adhoc.basic.timing.AdhocTimingParams;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.control.define.IControl_AppUsage;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -54,6 +58,8 @@ public class AdhocAppUsageFactory {
     private static Subscription sTimeSub;
 
     private static long sLastResponseTime;
+
+    private static long sReportEndTime;
 
     public static void start() {
         sLastResponseTime = getLastResponseTime();
@@ -76,10 +82,58 @@ public class AdhocAppUsageFactory {
 //        model.putLong(KEY_LAST_RESPONSE_TIME, 0);
     }
 
+    private static final String APP_USAGE_TIMER_ID = "APP_USAGE_TIMER_ID";
+    private static void randomReport(final JSONObject jsonObject, final long lCurTimeMs){
+        AdhocTimingApi.removeTimingCallback(APP_USAGE_TIMER_ID);
+        AdhocTimingApi.unRegisterTiming(AdhocBasicConfig.getInstance().getAppContext(), APP_USAGE_TIMER_ID);
+
+        AdhocTimingParams beginTimingParams = new AdhocTimingParams(APP_USAGE_TIMER_ID, lCurTimeMs + getRandomMs());
+        final AdhocTimingCallbackAbs callback = new AdhocTimingCallbackAbs(APP_USAGE_TIMER_ID) {
+            @Override
+            public void onTrigger() {
+                String strTimeId = getTimingId();
+                Logger.i(TAG, "timing " + strTimeId + " now calls back");
+
+                try {
+                    RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
+                            RunInfoReportResult.class, jsonObject.toString());
+
+                    int errorCode;
+                    if (result == null) {
+                        errorCode = -111;
+                    } else {
+                        errorCode = result.getMiErrorCode();
+                    }
+
+                    if (errorCode != 0) {
+                        Logger.e(TAG, "report app usage failed: errorCode = " + errorCode);
+                        //上报失败，重试随机上报
+                        if(isTwoTimeTheSameDay(sReportEndTime, System.currentTimeMillis())){
+                            randomReport(jsonObject, System.currentTimeMillis());
+                            return;
+                        }
+                    }else {
+                        //上报成功，写个日志，设置成功时间
+                        Logger.i(TAG, "上报成功");
+                        setLastResponseTime(sReportEndTime);
+                    }
+                } catch (AdhocHttpException e) {
+                    Logger.e(TAG, "report app usage request error: " + e);
+                }
+
+                AdhocTimingApi.removeTimingCallback(strTimeId);
+                //重新开始两分钟定时器
+                startTimer();
+            }
+        };
+
+        AdhocTimingApi.addTimingCallback(callback);
+        AdhocTimingApi.registerTiming(AdhocBasicConfig.getInstance().getAppContext(), beginTimingParams);
+    }
+
     private static void startTimer() {
         AdhocRxJavaUtil.doUnsubscribe(sTimeSub);
-
-        sTimeSub = Observable.interval(0, 1, TimeUnit.MINUTES)
+        sTimeSub = Observable.interval(0, 2, TimeUnit.MINUTES)
                 .observeOn(Schedulers.io())
                 .subscribe(new Subscriber<Long>() {
                     @Override
@@ -95,53 +149,35 @@ public class AdhocAppUsageFactory {
                     @Override
                     public void onNext(Long aLong) {
                         final long curTime = System.currentTimeMillis();
+                        //如果上次上报成功时间与当前是同一天，那就不用干活了
+                        if(isTwoTimeTheSameDay(sLastResponseTime, curTime)){
+                            Logger.i(TAG, "the same day as last report day");
+                            return;
+                        }
 
+                        Logger.i(TAG, "begin to collect app usages");
                         JSONArray runinfolist = getUsageStatsList(
                                 AdhocBasicConfig.getInstance().getAppContext(),
                                 sLastResponseTime,
-                                System.currentTimeMillis());
+                                curTime);
                         if (runinfolist == null) {
                             Logger.d(TAG, "runinfolist = null");
                             return;
                         }
                         Logger.d(TAG, "runinfolist = " + runinfolist);
 
-
                         JSONObject jsonObject = generateRespJson(runinfolist);
-
-                        // 不管是否成功，都更新最后一次上报的时间
-                        setLastResponseTime(curTime);
-
-
-                        try {
-                            if (TextUtils.isEmpty(jsonObject.toString())) {
-                                // 整个数据都为空就不报了
-                                return;
-                            }
-                            RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
-                                    RunInfoReportResult.class, jsonObject.toString());
-
-                            int errorCode;
-                            if (result == null) {
-                                errorCode = -111;
-                            } else {
-                                errorCode = result.getMiErrorCode();
-                            }
-
-                            if (errorCode != 0) {
-                                Logger.e(TAG, "report app usage failed: errorCode = " + errorCode);
-                                return;
-                            }
-                            Logger.i(TAG, "上报成功");
-
-                        } catch (AdhocHttpException e) {
-                            Logger.e(TAG, "report app usage request error: " + e);
+                        if (TextUtils.isEmpty(jsonObject.toString())) {
+                            // 整个数据都为空就不报了
+                            return;
                         }
-
+                        //先暂停后台统计定时器，待上报后恢复
+                        AdhocRxJavaUtil.doUnsubscribe(sTimeSub);
+                        sReportEndTime = curTime;
+                        randomReport(jsonObject, curTime);
                     }
                 });
     }
-
 
     //统计当天的应用使用时间
     @TargetApi(Build.VERSION_CODES.M)
@@ -154,20 +190,23 @@ public class AdhocAppUsageFactory {
         // 将开始时间设置为 当天的 00:00:00
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTimeInMillis(pStartTime);
-
         startCalendar.set(Calendar.HOUR_OF_DAY, 0);
         startCalendar.set(Calendar.MINUTE, 0);
         startCalendar.set(Calendar.SECOND, 0);
         startCalendar.set(Calendar.MILLISECOND, 0);
 
-
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTimeInMillis(pEndTime);
-
 
         int startDay = startCalendar.get(Calendar.DAY_OF_YEAR);
 
         int endDay = endCalendar.get(Calendar.DAY_OF_YEAR);
+
+        //最多只报30天，以防push数据包爆了
+        if(endDay - startDay > 30){
+            startCalendar.add(Calendar.DATE, endDay - startDay - 30);
+            startDay = startCalendar.get(Calendar.DAY_OF_YEAR);
+        }
 
         // 计算当前和开始上报时间差几天
         int days = endDay - startDay;
@@ -176,12 +215,9 @@ public class AdhocAppUsageFactory {
             return null;
         }
 
-
         long begintime = startCalendar.getTimeInMillis();
 
         final long oneDay = 24 * 60 * 60 * 1000; // 23:59:59 的时间
-
-
         JSONArray runinfolist = new JSONArray();
 
         for (int i = 1; i <= days; i++) {
@@ -349,6 +385,25 @@ public class AdhocAppUsageFactory {
         sb.append("/v1/device/appruninfo");
 
         return sb.toString();
+    }
+
+    private static boolean isTwoTimeTheSameDay(long lFirstTimeMs, long lSecondTimeMs){
+        Calendar firstCal = Calendar.getInstance();
+        firstCal.setTimeInMillis(lFirstTimeMs);
+
+        Calendar secondCal = Calendar.getInstance();
+        secondCal.setTimeInMillis(lSecondTimeMs);
+
+        return firstCal.get(Calendar.DAY_OF_YEAR) == secondCal.get(Calendar.DAY_OF_YEAR);
+    }
+
+    private static long getRandomMs(){
+        Random random = new Random(System.currentTimeMillis());
+        /*随机3000秒内上报*/
+        int RANDOM_MS_BOUND = 3000 * 1000;
+        long lSecondsDelay = random.nextInt(RANDOM_MS_BOUND);
+        Logger.i(TAG, "will report "+ lSecondsDelay + " milli seconds later");
+        return lSecondsDelay;
     }
 
     private static long getLastResponseTime() {
