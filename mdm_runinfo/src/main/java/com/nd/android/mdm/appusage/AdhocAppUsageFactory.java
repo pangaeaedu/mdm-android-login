@@ -262,9 +262,7 @@ public class AdhocAppUsageFactory {
             }
         }
 
-        //这个是相对比较精确的
-        long bootTime = AppInformation.bootTime();
-        UsageEvents events = m.queryEvents(bootTime, now);
+        UsageEvents events = m.queryEvents(begintime, now);
 
         UsageEvents.Event e = new UsageEvents.Event();
         while (events.hasNextEvent()) {

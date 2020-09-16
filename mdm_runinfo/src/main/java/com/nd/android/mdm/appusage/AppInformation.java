@@ -126,6 +126,7 @@ public class AppInformation {
                 "packageName='" + packageName + '\'' +
                 ", label='" + label + '\'' +
                 ", times=" + times +
+                ", usedtimebyday=" + UsedTimebyDay +
                 '}';
     }
 
