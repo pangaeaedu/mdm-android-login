@@ -8,6 +8,7 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.smartcan.content.CsManager;
 import com.nd.smartcan.content.base.CsBaseManager;
 import com.nd.uc.account.NdUc;
+import com.nd.uc.account.OtherParamsBuilder;
 import com.nd.uc.account.interfaces.ICurrentUser;
 
 public class EnvUtils {
@@ -22,6 +23,9 @@ public class EnvUtils {
         Log.e(TAG, "setCsEnv name:" + pEnvModule.getName()
                 + " csBaseUrl:" + pEnvModule.getCsBaseUrl() + " csBaseDownUrl:" + pEnvModule.getCsBaseDownUrl());
 
+        CsManager.setIsDirectBoot(AdhocBasicConfig.getInstance().isEncrypStorageModel());
+        CsBaseManager.setIsDirectBoot(AdhocBasicConfig.getInstance().isEncrypStorageModel());
+
         CsManager.setContentBaseUrl(pEnvModule.getCsBaseUrl());
         CsBaseManager.setContentBaseUrl(pEnvModule.getCsBaseUrl());
 
@@ -35,6 +39,7 @@ public class EnvUtils {
                 + " protocolUrl:" + pEnvModule.getUcNewVersionBaseUrl()
                 + " orgcode:" + pEnvModule.getUcOrgCode());
         NdUc.buildConfiguration().withAppId(pEnvModule.getUcAppID()). //设置appId
+                withParamsMap(OtherParamsBuilder.create().withDirectBoot(AdhocBasicConfig.getInstance().isEncrypStorageModel()).build()).//设置自启动加密模式
                 withAccountType(ICurrentUser.ACCOUNT_TYPE_ORG). //设置帐户类型
                 withBaseUrl(pEnvModule.getUcNewVersionBaseUrl()). //设置BaseUrl
                 withContext(AdhocBasicConfig.getInstance().getAppContext()).

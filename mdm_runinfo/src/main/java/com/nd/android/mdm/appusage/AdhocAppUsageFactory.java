@@ -167,9 +167,29 @@ public class AdhocAppUsageFactory {
                         Logger.d(TAG, "runinfolist = " + runinfolist);
 
                         JSONObject jsonObject = generateRespJson(runinfolist);
-                        if (TextUtils.isEmpty(jsonObject.toString())) {
-                            // 整个数据都为空就不报了
-                            return;
+
+                        // 不管是否成功，都更新最后一次上报的时间
+                        setLastResponseTime(curTime);
+
+                        try {
+                            RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
+                                    RunInfoReportResult.class, jsonObject.toString());
+
+                            int errorCode;
+                            if (result == null) {
+                                errorCode = -111;
+                            } else {
+                                errorCode = result.getMiErrorCode();
+                            }
+
+                            if (errorCode != 0) {
+                                Logger.e(TAG, "report app usage failed: errorCode = " + errorCode);
+                                return;
+                            }
+                            Logger.i(TAG, "上报成功");
+
+                        } catch (AdhocHttpException e) {
+                            Logger.e(TAG, "report app usage request error: " + e);
                         }
                         //先暂停后台统计定时器，待上报后恢复
                         AdhocRxJavaUtil.doUnsubscribe(sTimeSub);
