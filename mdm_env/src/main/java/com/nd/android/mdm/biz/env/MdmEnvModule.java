@@ -19,12 +19,14 @@ class MdmEnvModule implements IMdmEnvModule {
     @SerializedName("pushport")
     int mPushPort;
 
-
     @SerializedName("push_app_id")
     String mPushAppId;
 
     @SerializedName("push_app_key")
     String mPushAppKey;
+
+    @SerializedName("pushlbs")
+    String mPushLbs;
 
     @SerializedName("downloadservicename")
     String mDownloadServiceName;
@@ -80,6 +82,11 @@ class MdmEnvModule implements IMdmEnvModule {
     @Override
     public String getPushAppKey() {
         return mPushAppKey;
+    }
+
+    @Override
+    public String getPushLbs() {
+        return mPushLbs;
     }
 
     public int getPushPort() {
