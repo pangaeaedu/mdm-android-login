@@ -31,10 +31,7 @@ import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 
 import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 public class UserAuthenticator extends BaseAuthenticator implements IUserAuthenticator {
 
@@ -45,33 +42,49 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     public void logout() {
-        Log.e("yhq", "logout");
-        getConfig().clearData();
+        Log.d("yhq", "logout");
 
-        IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
-                .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
-        if (api == null) {
+        if (!_clearData()) {
             return;
         }
-
-        api.onLogout();
-
-        //登出的时候，不要清掉DeviceID。DeviceID只有在切换环境的时候才会被清理
-        DeviceInfoManager.getInstance().resetStatusAndPushIDSubject();
-        mDeviceStatusListener.onDeviceStatusChanged(DeviceStatus.Init);
 
         ActivityStackManager.INSTANCE.closeAllActivitys();
         enterLogoutUI();
 
+    }
+
+    @Override
+    public void clearData() {
+        _clearData();
+    }
+
+    private boolean _clearData(){
+        Log.d("yhq", "_clearData");
+
+        IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
+        if (api == null) {
+            Log.e("yhq", "_clearData failed, IAdhocLoginStatusNotifier not found");
+            return false;
+        }
+
+        api.onLogout();
+
         clearPolicy();
+        getConfig().clearData();
+
+        //登出的时候，不要清掉DeviceID。DeviceID只有在切换环境的时候才会被清理
+        DeviceInfoManager.getInstance().resetStatusAndPushIDSubject();
+        mDeviceStatusListener.onDeviceStatusChanged(DeviceStatus.Init);
+        return true;
     }
 
     private void clearPolicy() {
         Log.d("yhq", "clearPolicy");
-        Observable
-                .create(new Observable.OnSubscribe<Void>() {
-                    @Override
-                    public void call(Subscriber<? super Void> pSubscriber) {
+//        Observable
+//                .create(new Observable.OnSubscribe<Void>() {
+//                    @Override
+//                    public void call(Subscriber<? super Void> pSubscriber) {
                         try {
                             IAdhocPolicyLifeCycleProvider policyLifeCycleProvider =
                                     (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
@@ -79,34 +92,35 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                             if (policyLifeCycleProvider != null) {
                                 Log.d("yhq", "IAdhocPolicyLifeCycleProvider clearPolicy");
                                 policyLifeCycleProvider.clearPolicy();
-                                pSubscriber.onNext(null);
-                                pSubscriber.onCompleted();
+//                                pSubscriber.onNext(null);
+//                                pSubscriber.onCompleted();
                             } else {
                                 Log.d("yhq", "IAdhocPolicyLifeCycleProvider not found");
                             }
                         } catch (Exception pE) {
-                            pSubscriber.onError(pE);
+//                            pSubscriber.onError(pE);
+                            Log.d("yhq", "UserAuthenticator,  clearPolicy error: " + pE);
                         }
 
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Void>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(Void pVoid) {
-
-                    }
-                });
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Observer<Void>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(Void pVoid) {
+//
+//                    }
+//                });
 
     }
 

@@ -66,6 +66,17 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
     }
 
     @Override
+    public void clearData() {
+        IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                .getUserAuthenticator();
+        if (authenticator == null) {
+            return;
+        }
+
+        authenticator.clearData();
+    }
+
+    @Override
     public Observable<DeviceStatus> login(@NonNull final String pUserName, @NonNull final String pPassword) {
         return login(pUserName, pPassword, "");
     }

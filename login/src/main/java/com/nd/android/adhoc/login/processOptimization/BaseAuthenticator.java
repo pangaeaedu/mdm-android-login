@@ -86,6 +86,25 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
                                 DeviceStatus status = result.getStatus();
                                 if (DeviceStatus.isStatusUnLogin(status)) {
+
+                                    // 如果服务端状态是未登录的，但是本地还是登录的，那么这里需要清除一下本地的数据
+                                    if (getConfig().isActivated()) {
+                                        Log.d("yhq", "queryDeviceStatusFromServer, server status is unlogin, but local status is login, need clear local data ");
+
+//                                        ILoginApi api = (ILoginApi) AdhocFrameFactory.getInstance().getAdhocRouter()
+//                                                .build(LoginApiRoutePathConstants.PATH_LOGINAPI_LOGIN).navigation();
+//                                        if (api != null) {
+//                                            api.clearData();
+//                                        }
+
+                                        IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                                                .getUserAuthenticator();
+                                        if (authenticator != null) {
+                                            authenticator.clearData();
+                                        }
+
+                                    }
+
 //                                    Iterator<ISchoolGroupCodeRetriever> interceptors = AnnotationServiceLoader
 //                                            .load(ISchoolGroupCodeRetriever.class).iterator();
 //                                    if (!interceptors.hasNext()) {
@@ -100,7 +119,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 //                                    String schoolGroupCode = retriever.retrieveGroupCode(result.getRootCode());
 
                                     // 封装了 通过注入 回调上层 去获取 schoolcode 的代码，改为以下写法 -- by hyk 20200318
-                                    String schoolGroupCode = getSchoolCode(result.getRootCode());
+                                    String schoolGroupCode = getSchoolCode(result.getRootCode(), false);
 
 
                                     // 因为切换用户的时候，retrieveGroupCode有可能为空，这种情况下，重新拉一遍设备状态
@@ -124,7 +143,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 //                                            schoolGroupCode = retriever.retrieveGroupCode(loginConfig
 //                                                    .getGroupCode());
 //                                        }
-                                        schoolGroupCode = getSchoolCode(result.getRootCode());
+                                        schoolGroupCode = getSchoolCode(result.getRootCode(), false);
                                     }
 
                                     //偶发异常，强行杀进程
@@ -265,7 +284,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         }
 
                         // 如果 status 是空的，表示没有查询到 学校，需要通知上层 重新选择学校，并且传递回新的 SchoolGroupCode
-                        schoolGroupCode = getSchoolCode(pRootCode);
+                        schoolGroupCode = getSchoolCode(pRootCode, true);
 
                         if (TextUtils.isEmpty(schoolGroupCode)) {
                             Logger.e("yhq", "activeUser getSchoolCode return empty");
@@ -297,7 +316,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         });
     }
 
-    private String getSchoolCode(String pRootCode) throws Exception {
+    private String getSchoolCode(String pRootCode, boolean isSchoolNotFound) throws Exception {
         Iterator<ISchoolGroupCodeRetriever> interceptors = AnnotationServiceLoader
                 .load(ISchoolGroupCodeRetriever.class).iterator();
         if (!interceptors.hasNext()) {
@@ -307,16 +326,24 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
         // 把取回的school groupCode放在result中，返回给下一个调用点
         Log.e("yhq", "retrieveGroupCode root group code:" + pRootCode);
-        String schoolGroupCode = "";
         ISchoolGroupCodeRetriever retriever = interceptors.next();
         UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
 
+        String realRootCode;
+
         if (loginConfig==null || TextUtils.isEmpty(loginConfig.getGroupCode())) {
-            schoolGroupCode = retriever.retrieveGroupCode(pRootCode);
+            realRootCode = pRootCode;
         } else {
-            schoolGroupCode = retriever.retrieveGroupCode(loginConfig
-                    .getGroupCode());
+            realRootCode = loginConfig.getGroupCode();
         }
+
+        String schoolGroupCode;
+        if (isSchoolNotFound) {
+            schoolGroupCode = retriever.onGroupNotFound(realRootCode);
+        } else {
+            schoolGroupCode = retriever.retrieveGroupCode(realRootCode);
+        }
+
 
         // 把取回的school groupCode放在result中，返回给下一个调用点
 //        Logger.e("yhq", "getSchoolCode, root group code:" + pRootCode);

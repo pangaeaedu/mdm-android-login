@@ -14,6 +14,8 @@ public interface ILoginApi extends IProvider {
     void enterLoginUI(@NonNull Context pContext);
     void logout();
 
+    void clearData();
+
     Observable<DeviceStatus> login(@NonNull final String pUserName,
                                    @NonNull final String pPassword);
 
