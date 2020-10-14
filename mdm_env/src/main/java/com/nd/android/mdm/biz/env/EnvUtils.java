@@ -44,7 +44,6 @@ public class EnvUtils {
                 withBaseUrl(pEnvModule.getUcNewVersionBaseUrl()). //设置BaseUrl
                 withContext(AdhocBasicConfig.getInstance().getAppContext()).
                 withAgreementBaseUrl(pEnvModule.getUcProtocolUpdateUrl()).
-                configDegradeStrategy(10, 300).
                 build().init();
     }
 

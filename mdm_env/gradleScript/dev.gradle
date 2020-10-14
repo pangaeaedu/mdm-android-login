@@ -16,25 +16,11 @@ dependencies {
         }
 //    }
 
-    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.2.6.4.ucsdk.release'){
-        transitive = true
-        changing = true
-    }
-
-    api('com.nd.android.smartcan:content:1.4.4.2.cs.release'){
-        transitive = true
-        changing = true
-    }
-
     try {
         api project(':adhoc_basic_log')
     } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
     }
-
-    api('com.nd.android.smartcan:smartcan-accountclient-aar:1.3.1.5.ucsdk.boot-SNAPSHOT')
-    api('com.nd.sdp.uc:nducsdk_implenment:0.0.7.0.nducsdk.boot-SNAPSHOT')
-    api('com.nd.sdp.uc:nducsdk:0.0.7.0.nducsdk.boot-SNAPSHOT')
 }
 
 

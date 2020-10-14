@@ -56,8 +56,9 @@ public class UserLoginThoughUC11 implements IUserLogin {
                     String macKey = user.getMacToken().getMacKey();
                     String url = module.getUrl()+"/v1.1/enroll/activate/";
                     String loginToken = AuthorityUtils.mac(url, HttpMethod.POST, accessToken, macKey);
+
                     IUserLoginResult result = new UcLoginResultImp(pUserName,
-                            user.getCurrentUserInfo(OtherParamsBuilder.create().withForceNet(true).withAllowDegrade(true).build()).getNickName(), loginToken);
+                            user.getCurrentUserInfo().getNickName(), loginToken);
                     pSubscriber.onNext(result);
                     pSubscriber.onCompleted();
                 } catch (NdUcSdkException pE) {

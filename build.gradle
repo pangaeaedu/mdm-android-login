@@ -3,13 +3,13 @@ buildscript {
 
     repositories {
 
-        if (project.hasProperty('LOCAL_BUILD_ENV')) {
-            maven {
-                url 'http://192.168.252.25:8081/repository/maven-public/'
-            }
-        } else {
+//        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+//            maven {
+//                url 'http://192.168.252.25:8081/repository/maven-public/'
+//            }
+//        } else {
             maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
-        }
+//        }
 
         mavenCentral()
         jcenter()
@@ -54,13 +54,13 @@ ext {
 allprojects {
     repositories {
 
-        if (project.hasProperty('LOCAL_BUILD_ENV')) {
-            maven {
-                url 'http://192.168.252.25:8081/repository/maven-public/'
-            }
-        } else {
+//        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+//            maven {
+//                url 'http://192.168.252.25:8081/repository/maven-public/'
+//            }
+//        } else {
             maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
-        }
+//        }
 
         mavenCentral()
         jcenter()
