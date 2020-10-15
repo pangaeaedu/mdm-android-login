@@ -167,29 +167,9 @@ public class AdhocAppUsageFactory {
                         Logger.d(TAG, "runinfolist = " + runinfolist);
 
                         JSONObject jsonObject = generateRespJson(runinfolist);
-
-                        // 不管是否成功，都更新最后一次上报的时间
-                        setLastResponseTime(curTime);
-
-                        try {
-                            RunInfoReportResult result = new AdhocHttpDao(getHost()).postAction().post(generateServerUrl(),
-                                    RunInfoReportResult.class, jsonObject.toString());
-
-                            int errorCode;
-                            if (result == null) {
-                                errorCode = -111;
-                            } else {
-                                errorCode = result.getMiErrorCode();
-                            }
-
-                            if (errorCode != 0) {
-                                Logger.e(TAG, "report app usage failed: errorCode = " + errorCode);
-                                return;
-                            }
-                            Logger.i(TAG, "上报成功");
-
-                        } catch (AdhocHttpException e) {
-                            Logger.e(TAG, "report app usage request error: " + e);
+                        if (TextUtils.isEmpty(jsonObject.toString())) {
+                            // 整个数据都为空就不报了
+                            return;
                         }
                         //先暂停后台统计定时器，待上报后恢复
                         AdhocRxJavaUtil.doUnsubscribe(sTimeSub);
@@ -248,48 +228,48 @@ public class AdhocAppUsageFactory {
 
             IControl_AppUsage usage = ControlFactory.getInstance().getControl(IControl_AppUsage.class);
             JSONObject runinfoitem ;
-                try {
-                    if (usage != null) {
-                        String statsList = usage.getUsageStatsList(begintime, oneDayEndTime);
-                        runinfoitem = new JSONObject(statsList);
-                    } else {
-                        runinfoitem = new JSONObject();
-                        runinfoitem.put("time", begintime);
+            try {
+                if (usage != null) {
+                    String statsList = usage.getUsageStatsList(begintime, oneDayEndTime);
+                    runinfoitem = new JSONObject(statsList);
+                } else {
+                    runinfoitem = new JSONObject();
+                    runinfoitem.put("time", begintime);
 
-                        JSONArray infoArray = new JSONArray();
-                        for (AppInformation information : informations) {
-                            Logger.d(TAG, "==========》AppInformation: " + information.toString() + "《==========");
+                    JSONArray infoArray = new JSONArray();
+                    for (AppInformation information : informations) {
+                        Logger.d(TAG, "==========》AppInformation: " + information.toString() + "《==========");
 
-                            // 1、自身应用 不上报
-                            // 2、时长小于3分钟 不上报
-                            if (context.getPackageName().equals(information.getPackageName())
-                                    || information.getUsedTimebyDay() < 3 * 60 * 1000) {
+                        // 1、自身应用 不上报
+                        // 2、时长小于3分钟 不上报
+                        if (context.getPackageName().equals(information.getPackageName())
+                                || information.getUsedTimebyDay() < 3 * 60 * 1000) {
 
-                                Logger.d(TAG, "used time by day < 3 min, throw away...");
-                                continue;
-                            }
-
-                            // 3、包信息取不到，或者是系统应用，不上报
-                            PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(context, information.getPackageName());
-                            if (packageInfo == null || (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                                Logger.d(TAG, "can not get package info, throw away...");
-                                continue;
-                            }
-
-                            JSONObject infoItem = new JSONObject();
-                            infoItem.put("runtime", information.getUsedTimebyDay());
-                            infoItem.put("package", information.getPackageName());
-                            infoItem.put("appname", information.getLabel());
-                            infoItem.put("runcount", information.getTimes());
-
-                            infoArray.put(infoItem);
+                            Logger.d(TAG, "used time by day < 3 min, throw away...");
+                            continue;
                         }
-                        runinfoitem.put("info", infoArray);
+
+                        // 3、包信息取不到，或者是系统应用，不上报
+                        PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(context, information.getPackageName());
+                        if (packageInfo == null || (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                            Logger.d(TAG, "can not get package info, throw away...");
+                            continue;
+                        }
+
+                        JSONObject infoItem = new JSONObject();
+                        infoItem.put("runtime", information.getUsedTimebyDay());
+                        infoItem.put("package", information.getPackageName());
+                        infoItem.put("appname", information.getLabel());
+                        infoItem.put("runcount", information.getTimes());
+
+                        infoArray.put(infoItem);
                     }
-                } catch (JSONException e) {
-                    Logger.e(TAG, "getUsageStatsList: make runinfolist error:" + e);
-                    return null;
+                    runinfoitem.put("info", infoArray);
                 }
+            } catch (JSONException e) {
+                Logger.e(TAG, "getUsageStatsList: make runinfolist error:" + e);
+                return null;
+            }
             runinfolist.put(runinfoitem);
 
             begintime += oneDay;
