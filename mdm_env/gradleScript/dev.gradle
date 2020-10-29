@@ -21,6 +21,9 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
     }
+
+    api('com.nd.sdp.uc:nducsdk_implenment:0.0.7.5.nducsdk.release')
+    api('com.nd.sdp.uc:nducsdk:0.0.7.5.nducsdk.release')
 }
 
 
