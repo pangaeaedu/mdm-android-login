@@ -46,6 +46,7 @@ import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiStatusChangeL
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiVendor;
 import com.nd.eci.sdk.utils.MonitorUtil;
+import com.nd.screen.Screenshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -395,7 +396,7 @@ public class MonitorModule implements IMonitor {
 
     @Override
     public Bitmap screenShot() {
-        return ScreenCapture.getInstance().getScreenshot();
+        return Screenshot.getInstance().getScreenshot();
     }
 
     @Override
