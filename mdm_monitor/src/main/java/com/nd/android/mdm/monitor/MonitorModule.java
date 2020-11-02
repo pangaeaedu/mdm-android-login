@@ -1,6 +1,5 @@
 package com.nd.android.mdm.monitor;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +10,6 @@ import android.graphics.Bitmap;
 import android.hardware.usb.UsbManager;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
@@ -49,7 +46,6 @@ import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiStatusChangeL
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiVendor;
 import com.nd.eci.sdk.utils.MonitorUtil;
-import com.nd.screen.Screenshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -399,7 +395,7 @@ public class MonitorModule implements IMonitor {
 
     @Override
     public Bitmap screenShot() {
-        return Screenshot.getInstance().getScreenshot();
+        return ScreenCapture.getInstance().getScreenshot();
     }
 
     @Override

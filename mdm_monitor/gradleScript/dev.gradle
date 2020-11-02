@@ -9,9 +9,9 @@ dependencies {
     }
 
 
-    api("com.nd.sdp.adhoc:screen-capture:$screen_capture_version") {
-        exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
-    }
+//    api("com.nd.sdp.adhoc:screen-capture:$screen_capture_version") {
+//        exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
+//    }
 
     api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
 
