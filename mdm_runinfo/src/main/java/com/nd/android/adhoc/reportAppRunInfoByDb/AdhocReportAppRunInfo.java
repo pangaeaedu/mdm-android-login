@@ -62,7 +62,7 @@ public class AdhocReportAppRunInfo {
 
     private void generateExcluedPackages(){
         mSetExcluded = new HashSet<>();
-        mSetExcluded.add("com.nd.pad.eci.demo");
+        mSetExcluded.add(AdhocBasicConfig.getInstance().getAppContext().getPackageName());
     }
 
     private AdhocReportAppRunInfo() {
