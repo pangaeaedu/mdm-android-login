@@ -77,12 +77,12 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
                             QueryDeviceStatusResponse result = null;
                             if (isAutoLogin()) {
-                                Log.e("yhq", " queryDeviceStatusFromServer isAutoLogin 1");
+                                Logger.i("yhq", " queryDeviceStatusFromServer isAutoLogin 1");
                                 // 自动登录的情况下，要把autoLogin的值1带上去
                                 result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
                                         loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
-                                Log.e("yhq", "user auto login QueryDeviceStatusResponse:"
-                                        + result.toString());
+                                Logger.i("yhq", "user auto login QueryDeviceStatusResponse:"
+                                        + result.getStatus());
 
                                 DeviceStatus status = result.getStatus();
                                 if (DeviceStatus.isStatusUnLogin(status)) {
@@ -148,7 +148,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
                                     //偶发异常，强行杀进程
                                     if (schoolGroupCode.equalsIgnoreCase(result.getRootCode())) {
-                                        Log.e("yhq", "retrieveGroupCode not work root " +
+                                        Logger.d("yhq", "retrieveGroupCode not work root " +
                                                 "code:" + result.getRootCode() + " selected:" + schoolGroupCode
                                                 + " quit app");
                                         sendFailedAndQuitApp(120);
@@ -161,19 +161,19 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                 }
                             } else {
                                 result = getHttpService().getDeviceStatus(pDeviceID, serialNum);
-                                Log.e("yhq", "QueryDeviceStatusResponse:" + result.toString());
+                                Logger.d("yhq", "QueryDeviceStatusResponse:" + result.toString());
                             }
 
                             onQueryResultReturn(pSubscriber, result);
 
                         } catch (Exception e) {
-                            Log.e("yhq", "queryDeviceStatusFromServer error:" + e.getMessage());
+                            Logger.e("yhq", "queryDeviceStatusFromServer error:" + e.getMessage());
                             CrashAnalytics.INSTANCE.reportException(e);
                             //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
                             if (isAutoLogin()) {
                                 DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
                                 if (DeviceStatus.isStatusUnLogin(status)) {
-                                    Log.e("yhq", "auto login device status:" + status.toString());
+                                    Logger.i("yhq", "auto login device status:" + status.toString());
                                     sendFailedAndQuitApp(120);
                                     return;
                                 }
@@ -218,7 +218,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     protected void sendFailedAndQuitApp(int pSec) {
         DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
         try {
-            Log.e("yhq", "sendFailedAndQuitApp " + pSec);
+            Logger.e("yhq", "sendFailedAndQuitApp " + pSec);
             Thread.sleep(pSec * 1000);
             ActivityStackManager.INSTANCE.closeAllActivitys();
             System.exit(0);

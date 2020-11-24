@@ -9,6 +9,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
@@ -52,18 +53,18 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     private IPushConnectListener mPushConnectListener = new IAdhocPushConnectListener() {
         @Override
         public void onPushDeviceToken(String deviceToken) {
-            Log.e("yhq", "onPushDeviceToken:" + deviceToken);
+            Logger.d("yhq", "onPushDeviceToken:" + deviceToken);
             onConnected();
         }
 
         @Override
         public void onConnected() {
-            Log.e("yhq", "push sdk onConnected");
+            Logger.i("yhq", "push sdk onConnected");
             if (mSubBindPushID != null) {
                 return;
             }
 
-            Log.e("yhq", "before call subject");
+            Logger.i("yhq", "before call subject");
             mSubBindPushID = DeviceInfoManager.getInstance().getConfirmDeviceIDSubject().take(1)
                     .flatMap(new Func1<String, Observable<Boolean>>() {
                         @Override
@@ -72,7 +73,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                                 @Override
                                 public void call(Subscriber<? super Boolean> pSubscriber) {
                                     try {
-                                        Log.e("yhq", "before call bindPushIDToDeviceID");
+                                        Logger.i("yhq", "before call bindPushIDToDeviceID");
                                         bindPushIDToDeviceID();
                                         HardwareInfoCompleteManager.getInstance()
                                                 .reportHardwareInfoIfNecessary();
@@ -91,14 +92,14 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     .subscribe(new Subscriber<Boolean>() {
                         @Override
                         public void onCompleted() {
-                            Log.e("yhq", "bind push id complete");
+                            Logger.i("yhq", "bind push id complete");
                             mSubBindPushID = null;
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
-                            Log.e("yhq", "bind push id error:" + e.getMessage());
+                            Logger.e("yhq", "bind push id error:" + e.getMessage());
                             mSubBindPushID = null;
 
                             if (e instanceof DeviceTokenNotFoundException) {
@@ -108,7 +109,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                         @Override
                         public void onNext(Boolean pO) {
-                            Log.e("yhq", "bind push id onNext");
+                            Logger.i("yhq", "bind push id onNext");
                             mSubBindPushID = null;
                         }
                     });
@@ -116,13 +117,13 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         @Override
         public void onDisconnected() {
-            Log.e("yhq", "push sdk onDisconnected");
+            Logger.i("yhq", "push sdk onDisconnected");
         }
     };
 
 
     private void clearSpDeviceIDThenQuit() {
-        Log.e("yhq", "clearSpDeviceIDThenQuit");
+        Logger.i("yhq", "clearSpDeviceIDThenQuit");
 
         DeviceIDSPUtils.saveDeviceIDToSp("");
 
@@ -131,7 +132,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
-        Log.e("yhq", "actualQueryDeviceStatus:" + pDeviceID);
+        Logger.d("yhq", "actualQueryDeviceStatus:" + pDeviceID);
         return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
@@ -149,7 +150,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> queryDeviceStatus() {
-        Log.e("yhq", "queryDeviceStatus");
+        Logger.i("yhq", "queryDeviceStatus");
         final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         if (TextUtils.isEmpty(deviceID)) {
             return confirmDeviceID()
@@ -165,7 +166,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     private Observable<String> confirmDeviceID() {
-        Log.e("yhq", "confirmDeviceID");
+        Logger.i("yhq", "confirmDeviceID");
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> pSubscriber) {
@@ -180,7 +181,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     String deviceID = DeviceIDSPUtils.loadThirdVersionDeviceIDFromSp();
                     Context context = AdhocBasicConfig.getInstance().getAppContext();
 
-                    Log.e("yhq", "third sp device id:" + deviceID);
+                    Logger.d("yhq", "third sp device id:" + deviceID);
                     if (!TextUtils.isEmpty(deviceID)) {
                         DeviceInfoManager.getInstance().setDeviceID(deviceID);
 
@@ -206,7 +207,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     pSubscriber.onNext(deviceID);
                     pSubscriber.onCompleted();
                 } catch (Exception e) {
-                    Log.e("yhq", e.getMessage());
+                    Logger.e("yhq", e.getMessage());
                     pSubscriber.onError(e);
                 }
             }
@@ -230,7 +231,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             @Override
                             public void onCompleted() {
                                 synchronized (DeviceInitiator.this) {
-                                    Log.e("yhq", "init complete");
+                                    Logger.i("yhq", "init complete");
                                     mInitSubject.onCompleted();
                                     mInitSubject = null;
                                 }
@@ -238,7 +239,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.e("yhq", "init error:" + e.getMessage());
+                                Logger.e("yhq", "init error:" + e.getMessage());
                                 e.printStackTrace();
 
                                 synchronized (DeviceInitiator.this) {
@@ -276,11 +277,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         }
 
         if (!TextUtils.isEmpty(secondVersionID)) {
-            Log.e("yhq", "use second version:" + secondVersionID);
+            Logger.d("yhq", "use second version:" + secondVersionID);
             return secondVersionID;
         }
 
-        Log.e("yhq", "use first version:" + firstVersionID);
+        Logger.d("yhq", "use first version:" + firstVersionID);
         return firstVersionID;
     }
 
@@ -289,11 +290,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         String sdCardDeviceID = DeviceIDSPUtils.loadDeviceIDFromSdCard(context);
         String deviceID = "";
         if (!TextUtils.isEmpty(sdCardDeviceID)) {
-            Log.e("yhq", "sd card device id:" + sdCardDeviceID);
+            Logger.d("yhq", "sd card device id:" + sdCardDeviceID);
             deviceID = sdCardDeviceID;
         } else {
             deviceID = DeviceIDSPUtils.generateDeviceID();
-            Log.e("yhq", "generate device id:" + deviceID);
+            Logger.d("yhq", "generate device id:" + deviceID);
         }
 
         return deviceID;
@@ -328,20 +329,20 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         ConfirmDeviceIDResponse response = null;
         for (int i = 0; i <= 2; i++) {
             try {
-                Log.e("yhq", "confirm device id round:" + i);
+                Logger.i("yhq", "confirm device id round:" + i);
 
                 if (TextUtils.isEmpty(wifiMac)) {
                     wifiMac = AdhocDeviceUtil.getWifiMac(context);
                 }
 
-                Log.e("yhq", "input buildSn:" + buildSn + " cpuSn:" + cpuSn + " imei:" + imei+ " imei2:" + imei2
+                Logger.d("yhq", "input buildSn:" + buildSn + " cpuSn:" + cpuSn + " imei:" + imei+ " imei2:" + imei2
                         + " wifiMac:" + wifiMac + " lanMac:" + lanMac + " blueToothMac:" + blueToothMac + " serialNo:" + serialNo
                         + " androidID:" + androidID + " localDeviceID:" + pLocalDeviceID);
                 Map<String, Object> hardwareMaps = LoginArgumentUtils.genHardwareMap(buildSn,
                         cpuSn, imei, wifiMac, lanMac, blueToothMac, serialNo, androidID, imei2);
                 response = getHttpService().confirmDeviceID(hardwareMaps, pLocalDeviceID);
                 if (response != null) {
-                    Log.e("yhq", "deviceID response:" + response.getDeviceID());
+                    Logger.d("yhq", "deviceID response:" + response.getDeviceID());
                     return response;
                 }
             } catch (Exception pE) {
@@ -354,7 +355,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         //查询设备状态时发现异常，如果是自动登录，并且是未激活的设备，退出
         if (isAutoLogin) {
-            Log.e("yhq", "confirm device id error, quit");
+            Logger.i("yhq", "confirm device id error, quit");
             sendFailedAndQuitApp(120);
         }
 

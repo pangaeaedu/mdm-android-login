@@ -36,7 +36,7 @@ public class DeviceInfoManager {
         mUserLoginConfig = pLoginConfig;
     }
 
-    @Nullable
+    @NonNull
     public UserLoginConfig getUserLoginConfig(){
         return mUserLoginConfig;
     }
