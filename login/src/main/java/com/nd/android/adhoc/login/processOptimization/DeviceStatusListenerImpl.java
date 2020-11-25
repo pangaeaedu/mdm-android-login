@@ -6,6 +6,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
+import com.nd.android.adhoc.warning.api.provider.IAdhocWarningLifeCycleProvider;
 
 import rx.Observable;
 import rx.Observer;
@@ -97,5 +98,13 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
             return;
         }
         policyLifeCycleProvider.updatePolicy();
+
+        IAdhocWarningLifeCycleProvider warningLifeCycleProvider =
+                (IAdhocWarningLifeCycleProvider) AdhocFrameFactory.getInstance()
+                        .getAdhocRouter().build(IAdhocWarningLifeCycleProvider.ROUTE_PATH).navigation();
+        if (warningLifeCycleProvider == null) {
+            return;
+        }
+        warningLifeCycleProvider.updateWarning();
     }
 }

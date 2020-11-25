@@ -15,6 +15,7 @@ import com.nd.android.adhoc.loginapi.IInitApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
 import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
+import com.nd.android.adhoc.warning.api.provider.IAdhocWarningLifeCycleProvider;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
 import rx.Observer;
@@ -75,5 +76,13 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
             return;
         }
         policyLifeCycleProvider.updatePolicy();
+
+        IAdhocWarningLifeCycleProvider warningLifeCycleProvider =
+                (IAdhocWarningLifeCycleProvider) AdhocFrameFactory.getInstance()
+                        .getAdhocRouter().build(IAdhocWarningLifeCycleProvider.ROUTE_PATH).navigation();
+        if (warningLifeCycleProvider == null) {
+            return;
+        }
+        warningLifeCycleProvider.updateWarning();
     }
 }

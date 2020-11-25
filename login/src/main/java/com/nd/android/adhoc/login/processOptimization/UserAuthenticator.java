@@ -29,6 +29,7 @@ import com.nd.android.adhoc.loginapi.exception.NetworkUnavailableException;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
+import com.nd.android.adhoc.warning.api.provider.IAdhocWarningLifeCycleProvider;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -92,10 +93,18 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                             if (policyLifeCycleProvider != null) {
                                 Log.d("yhq", "IAdhocPolicyLifeCycleProvider clearPolicy");
                                 policyLifeCycleProvider.clearPolicy();
-//                                pSubscriber.onNext(null);
-//                                pSubscriber.onCompleted();
                             } else {
                                 Log.d("yhq", "IAdhocPolicyLifeCycleProvider not found");
+                            }
+
+                            IAdhocWarningLifeCycleProvider warningLifeCycleProvider =
+                                    (IAdhocWarningLifeCycleProvider) AdhocFrameFactory.getInstance()
+                                            .getAdhocRouter().build(IAdhocWarningLifeCycleProvider.ROUTE_PATH).navigation();
+                            if (warningLifeCycleProvider != null) {
+                                Log.d("yhq", "IAdhocWarningLifeCycleProvider clearWarning");
+                                warningLifeCycleProvider.clearWarning();
+                            } else {
+                                Log.d("yhq", "IAdhocWarningLifeCycleProvider not found");
                             }
                         } catch (Exception pE) {
 //                            pSubscriber.onError(pE);

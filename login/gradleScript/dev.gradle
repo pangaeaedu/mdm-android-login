@@ -74,6 +74,14 @@ dependencies {
         }
     }
 
+    try {
+        api project(':adhoc_warning_api')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc:adhoc_warning_api:$policy_version") {
+            exclude group: 'com.nd.android.adhoc', module: 'mdm_biz_sdk_impl'
+        }
+    }
+
     try{
         api project (':mdm_env')
     }catch (Exception ignored){
