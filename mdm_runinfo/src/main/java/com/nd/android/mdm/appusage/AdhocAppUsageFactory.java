@@ -164,7 +164,7 @@ public class AdhocAppUsageFactory {
                             Logger.d(TAG, "runinfolist = null");
                             return;
                         }
-                        Logger.d(TAG, "runinfolist = " + runinfolist);
+                        Logger.d(TAG, "runinfolist.size " + runinfolist.length());
 
                         JSONObject jsonObject = generateRespJson(runinfolist);
                         if (TextUtils.isEmpty(jsonObject.toString())) {
@@ -238,7 +238,7 @@ public class AdhocAppUsageFactory {
 
                     JSONArray infoArray = new JSONArray();
                     for (AppInformation information : informations) {
-                        Logger.d(TAG, "==========》AppInformation: " + information.toString() + "《==========");
+                        Logger.d(TAG, "==========》AppInformation: " + information.getPackageName() + "《==========");
 
                         // 1、自身应用 不上报
                         // 2、时长小于3分钟 不上报
@@ -261,6 +261,7 @@ public class AdhocAppUsageFactory {
                         infoItem.put("package", information.getPackageName());
                         infoItem.put("appname", information.getLabel());
                         infoItem.put("runcount", information.getTimes());
+                        Logger.d(TAG, "put infoitem");
 
                         infoArray.put(infoItem);
                     }

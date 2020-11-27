@@ -103,11 +103,11 @@ class AppRunInfoBizOperator implements IAppRunInfoBizOperator {
             return false;
         }
 
-        Logger.d(TAG, "postAppRunInfo, info json: " + infojson);
         try {
             String result =
                     new AppRunInfoDao()
                             .postAppRunInfo(infojson.toString(), DeviceHelper.getDeviceToken());
+            Logger.d(TAG, "postAppRun info json success");
             return true;
         } catch (AdhocHttpException e) {
             Logger.e(TAG, "post app run info json error: " + e.getMessage());
