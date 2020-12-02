@@ -500,7 +500,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         String pushID = module.getDeviceId();
         String existPushID = getConfig().getPushID();
 
-        Log.e("yhq", "push id:" + pushID + " exist push id:" + existPushID);
+        Logger.d("yhq", "push id:" + pushID + " exist push id:" + existPushID);
         if (TextUtils.isEmpty(pushID)) {
             Exception exception = new Exception("get push id from push module return empty");
             CrashAnalytics.INSTANCE.reportException(exception);
@@ -508,7 +508,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         }
 
         if (pushID.equalsIgnoreCase(existPushID)) {
-            Log.e("yhq", "notify pushid exist:" + existPushID);
+            Logger.d("yhq", "notify pushid exist:" + existPushID);
             DeviceInfoManager.getInstance().notifyPushID(pushID);
             return;
         }
@@ -519,7 +519,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
         getHttpService().bindDeviceIDToPushID(deviceID, pushID);
         getConfig().savePushID(pushID);
-        Log.e("yhq", "notify pushid after bind:" + pushID);
+        Logger.d("yhq", "notify pushid after bind:" + pushID);
         DeviceInfoManager.getInstance().notifyPushID(pushID);
     }
 }

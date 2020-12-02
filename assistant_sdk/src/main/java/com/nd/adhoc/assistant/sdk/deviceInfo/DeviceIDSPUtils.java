@@ -7,6 +7,7 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.adhoc.basic.util.permission.AdhocRxPermissions;
 
@@ -44,7 +45,7 @@ public class DeviceIDSPUtils {
                             if(!bOK){
                                 Log.e(TAG, "SaveDeviceIDToSdFile failed");
                             } else {
-                                Log.e("yhq", "SaveDeviceIDToSdFile success:"+pDeviceID);
+                                Logger.d("yhq", "SaveDeviceIDToSdFile success:"+pDeviceID);
                             }
                         }
 

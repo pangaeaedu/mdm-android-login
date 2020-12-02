@@ -31,8 +31,7 @@ public class SetAssetCodeDao extends AdhocHttpDao {
                     header);
             return response;
         }catch (Exception pE){
-            Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/userInfo"+" " + "Msg:"+pE.getMessage());
+            Log.e("lsj", "SchoolGroupCodeDao error happpen setAssetCode:"+pE.getMessage());
             throw pE;
         }
     }

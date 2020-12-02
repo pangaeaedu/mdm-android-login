@@ -3,11 +3,11 @@ package com.nd.adhoc.assistant.sdk.deviceInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.utils.MD5ArithmeticUtils;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.control.define.IControl_DeviceSerial;
 import com.nd.android.mdm.basic.ControlFactory;
 
@@ -45,10 +45,10 @@ public class DeviceHelper {
 
     public static String getDeviceTokenFromSystem(){
         String serialNum = getSerialNumber();
-        Log.e("serial", "normal serial:"+serialNum);
+        Logger.d("serial", "normal serial:"+serialNum);
         if(TextUtils.isEmpty(serialNum) || serialNum.equalsIgnoreCase(Build.UNKNOWN)){
             serialNum = getSerialNumForOPSG();
-            Log.e("serial", "opsg serial:"+serialNum);
+            Logger.d("serial", "opsg serial:"+serialNum);
         }
 
         String id = getUniqueID()+serialNum;

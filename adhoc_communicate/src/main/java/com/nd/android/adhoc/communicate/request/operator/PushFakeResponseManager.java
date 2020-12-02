@@ -1,11 +1,10 @@
 package com.nd.android.adhoc.communicate.request.operator;
 
-import android.util.Log;
-
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.push.core.IPushChannel;
 import com.nd.adhoc.push.core.IPushChannelDataListener;
 import com.nd.adhoc.push.core.IPushRecvData;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.utils.PushDataUtils;
 
@@ -37,17 +36,17 @@ public class PushFakeResponseManager {
     }
 
     public void addRequest(String pMsgID, String pContent){
-        Log.d(TAG, "msgID:"+pMsgID+" addRequest:"+pContent);
+        Logger.d(TAG, "msgID:"+pMsgID+" addRequest:"+pContent);
         String action = PushDataUtils.getAction(pContent);
         if(action.equalsIgnoreCase("/v1/device/cmdresult/")
                 || action.equalsIgnoreCase("/v2/cmd/batchresult/")){
-            Log.d(TAG, "msgID:"+pMsgID+" put data:"+pContent);
+            Logger.d(TAG, "msgID:"+pMsgID+" put data:"+pContent);
             mCmdResultCache.put(pMsgID, pContent);
         }
     }
 
     public void notifyMessageSendResult(String pMsgID, int pErrorCode){
-        Log.e(TAG, "notifyMessageSendResult msgID:"+pMsgID+" error code:"+pErrorCode);
+        Logger.d(TAG, "notifyMessageSendResult msgID:"+pMsgID+" error code:"+pErrorCode);
         if(mCmdResultCache.containsKey(pMsgID)){
             String fakeMsg = "";
             if(pErrorCode == 0){
@@ -58,7 +57,7 @@ public class PushFakeResponseManager {
                         DeviceHelper.getDeviceToken());
             }
 
-            Log.e(TAG, "fake msg:"+fakeMsg);
+            Logger.d(TAG, "fake msg:"+fakeMsg);
             AdhocPushRequestOperator.receiveFeedback(fakeMsg);
             mCmdResultCache.remove(pMsgID);
 

@@ -45,8 +45,7 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
             MdmOrgNode[] nodes = new Gson().fromJson(array,MdmOrgNode[].class);
             return Arrays.asList(nodes);
         }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/getUserInfo/"+" " + "Msg:"+pE.getMessage());
+            Log.e("yhq", "EnrollLoginDao error happpen getSubNodes:"+pE.getMessage());
             throw pE;
         }
     }
@@ -92,8 +91,7 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
                     header);
             return response;
         }catch (Exception pE){
-            Log.e("yhq", "SchoolGroupCodeDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1/group/groupPage?groupCode"+" " + "Msg:"+pE.getMessage());
+            Log.e("yhq", "SchoolGroupCodeDao error happpen getSubNodesByPage:"+pE.getMessage());
             throw pE;
         }
     }
@@ -129,8 +127,7 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
                     SearchSubSchoolNodeResult.class, null, header);
             return response;
         }catch (Exception pE){
-            Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ getAction().getBaseUrl()
-                    +"/v2/group/school" + " " + "Msg:"+pE.getMessage());
+            Log.e("lsj", "SchoolGroupCodeDao error happpen getSubNodesByGroupCode:"+pE.getMessage());
             throw pE;
         }
     }
@@ -157,8 +154,7 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
             .getType());
             return nodes;
         }catch (Exception pE){
-            Log.e("yhq", "SchoolGroupCodeDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1/group/grouppath?schoolid="+" " + "Msg:"+pE.getMessage());
+            Log.e("yhq", "SchoolGroupCodeDao error happpen searchSchoolID:"+pE.getMessage());
             throw pE;
         }
     }
@@ -175,8 +171,7 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
                     SearchSchoolNodeByGroupCode.class, null, header);
             return result;
         }catch (Exception pE){
-            Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ getAction().getBaseUrl()
-                    +"/v2/group/grouppath?groupcode="+ groupcode + " " + "Msg:"+pE.getMessage());
+            Log.e("lsj", "SchoolGroupCodeDao error happpen searchByGroupCode:"+pE.getMessage());
             throw pE;
         }
     }
@@ -190,8 +185,7 @@ public class SchoolGroupCodeDao extends AdhocHttpDao {
             return new AdhocHttpDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl())
                     .getAction().get("/v2/device/grouppath", DeviceGroupPath.class, params);
         }catch (Exception pE){
-            Log.e("yhq", "getDeviceGroupPaths error happpen:"+ getAction().getBaseUrl()
-                    +"v2/device/grouppath" + " Msg:"+pE.getMessage());
+            Log.e("yhq", "getDeviceGroupPaths error happpen getDeviceGroupPaths:"+pE.getMessage());
             throw pE;
         }
     }

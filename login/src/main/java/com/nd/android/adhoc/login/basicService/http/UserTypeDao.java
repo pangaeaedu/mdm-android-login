@@ -29,8 +29,7 @@ public class UserTypeDao extends AdhocHttpDao {
             String type = (String) response.get("user_type");
             return type;
         }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/usertype/"+" " + "Msg:"+pE.getMessage());
+            Log.e("yhq", "EnrollLoginDao error happpen getUserType:"+pE.getMessage());
             throw pE;
         }
     }
