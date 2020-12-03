@@ -42,7 +42,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     public void logout() {
-        Log.d("yhq", "logout");
+        Logger.i("yhq", "logout");
 
         if (!_clearData()) {
             return;
@@ -59,12 +59,12 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     private boolean _clearData(){
-        Log.d("yhq", "_clearData");
+        Logger.i("yhq", "_clearData");
 
         IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
                 .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
         if (api == null) {
-            Log.e("yhq", "_clearData failed, IAdhocLoginStatusNotifier not found");
+            Logger.w("yhq", "_clearData failed, IAdhocLoginStatusNotifier not found");
             return false;
         }
 
@@ -80,7 +80,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     private void clearPolicy() {
-        Log.d("yhq", "clearPolicy");
+        Logger.i("yhq", "clearPolicy");
 //        Observable
 //                .create(new Observable.OnSubscribe<Void>() {
 //                    @Override
@@ -90,16 +90,16 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                                     (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
                                             .getAdhocRouter().build(IAdhocPolicyLifeCycleProvider.ROUTE_PATH).navigation();
                             if (policyLifeCycleProvider != null) {
-                                Log.d("yhq", "IAdhocPolicyLifeCycleProvider clearPolicy");
+                                Logger.i("yhq", "IAdhocPolicyLifeCycleProvider clearPolicy");
                                 policyLifeCycleProvider.clearPolicy();
 //                                pSubscriber.onNext(null);
 //                                pSubscriber.onCompleted();
                             } else {
-                                Log.d("yhq", "IAdhocPolicyLifeCycleProvider not found");
+                                Logger.w("yhq", "IAdhocPolicyLifeCycleProvider not found");
                             }
                         } catch (Exception pE) {
 //                            pSubscriber.onError(pE);
-                            Log.d("yhq", "UserAuthenticator,  clearPolicy error: " + pE);
+                            Logger.e("yhq", "UserAuthenticator,  clearPolicy error: " + pE);
                         }
 
 //                    }
@@ -164,7 +164,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword,
                                           final String pValidationCode) {
-        Log.e("yhq", "login");
+        Logger.i("yhq", "login");
         final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         if (TextUtils.isEmpty(deviceID)) {
             return Observable.error(new DeviceIDNotSetException());
@@ -190,7 +190,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
             return Observable.error(new LoginUserOrPwdEmptyException());
         }
 
-        Log.e("yhq", "direct login");
+        Logger.i("yhq", "direct login");
         return getLogin().login(pUserName, pPassword, pValidationCode)
                 .flatMap(new Func1<IUserLoginResult, Observable<DeviceStatus>>() {
                     @Override
@@ -203,7 +203,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     private Observable<DeviceStatus> queryDeviceStatusThenLogin(String pDeviceID,
                                                                 final String pUserName,
                                                                 final String pPassword){
-        Log.e("yhq", "queryDeviceStatusThenLogin");
+        Logger.i("yhq", "queryDeviceStatusThenLogin");
         return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override

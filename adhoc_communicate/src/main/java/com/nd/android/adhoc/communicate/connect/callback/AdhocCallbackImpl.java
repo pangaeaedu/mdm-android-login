@@ -7,7 +7,6 @@ import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
-import com.nd.android.adhoc.communicate.utils.BroadcastUtil;
 import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.eci.sdk.IAdhocCallback;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
@@ -106,7 +105,7 @@ public class AdhocCallbackImpl implements IAdhocCallback {
         }
 
         doCmdReceived(bytes);
-        Logger.d(TAG, "on Cmd Arrive : session Id = " + sessionId + ", from = " + "" + ", data length = " + bytes.length);
+        Logger.i(TAG, "onCmdArrive : session Id = " + sessionId + ", data length = " + bytes.length);
     }
 
     @Override
@@ -118,8 +117,8 @@ public class AdhocCallbackImpl implements IAdhocCallback {
 
         doCmdReceived(bytes);
 
-        String strLog = String.format("on cmd arrive:%s", new String(bytes));
-        Logger.d(TAG, strLog);
+        Logger.i(TAG, "onCmdArriveEx : session Id = " + l + ", data length = " + bytes.length);
+        Logger.d(TAG, "onCmdArriveEx: " + new String(bytes));
     }
 
     @Override
@@ -149,9 +148,9 @@ public class AdhocCallbackImpl implements IAdhocCallback {
     @Override
     public int onFileArriveBegin(long sessionId, String filePath, byte[] bytes, int totalSize) throws RemoteException {
 
-        String strLog = "On File Arrive Begin : session Id = " + sessionId + ", file path = " + filePath + ", file size = " + totalSize;
-        BroadcastUtil.sendLogBroadcast(strLog);
-        Logger.d(TAG, strLog);
+        Logger.i(TAG, "onFileArriveBegin, sessionId = " + sessionId + ", totalSize = " + totalSize);
+        Logger.d(TAG, "onFileArriveBegin : sessionId = " + sessionId + ", filePath = " + filePath + ", totalSize = " + totalSize);
+
         fileInfos.put(sessionId, new String(bytes));
         String fileName = new File(filePath).getName();
         // todo zyb的写法 只能沿用,没法改
@@ -164,9 +163,8 @@ public class AdhocCallbackImpl implements IAdhocCallback {
     @Override
     public void onFileArriveProgress(long sessionId, int totalSize, int recvSize) throws RemoteException {
 
-        String strLog = "On File Arrive Progress : session Id = " + sessionId + ", file size = " + totalSize + ", recv size = " + recvSize;
-        BroadcastUtil.sendLogBroadcast(strLog);
-        Logger.d(TAG, strLog);
+        Logger.i(TAG, "onFileArriveProgress, sessionId = " + sessionId + ", totalSize = " + totalSize + ", recvSize =" + recvSize);
+
         // todo zyb的写法 只能沿用,没法改
         String fileName = fileNames.get(sessionId);
 
@@ -176,10 +174,9 @@ public class AdhocCallbackImpl implements IAdhocCallback {
 
     @Override
     public void onFileArriveComplete(long sessionId, String filePath) throws RemoteException {
+        Logger.i(TAG, "onFileArriveComplete, sessionId = " + sessionId);
+        Logger.d(TAG, "onFileArriveComplete, sessionId = " + sessionId + ", filePath = " + filePath);
 
-        String strLog = "On File Arrive Complete : session Id = " + sessionId + ", file path = " + filePath;
-        BroadcastUtil.sendLogBroadcast(strLog);
-        Logger.d(TAG, strLog);
         String info = fileInfos.remove(sessionId);
         if (info != null && !info.isEmpty()) {
             // 自组网发送文件时可以携带一个消息,消息只在start的时候获取,但有时在结束时才用,因此在结束时才触发,感觉这么写不合理,但是流程需要
@@ -200,9 +197,8 @@ public class AdhocCallbackImpl implements IAdhocCallback {
     @Override
     public void onFileArriveException(long sessionId, int errorCode, String errorMsg) throws RemoteException {
 
-        String strLog = "On File Arrive Exception : session Id = " + String.valueOf(sessionId) + ", errorCode = " + errorCode + ", errMsg = " + errorMsg;
-        Logger.e(TAG, strLog);
-        BroadcastUtil.sendLogBroadcast(strLog);
+        Logger.i(TAG, "onFileArriveException, sessionId = " + sessionId + ", errorCode = " + errorCode + ", errorMsg = " + errorMsg);
+
         String info = fileInfos.remove(sessionId);
         if (info != null && !info.isEmpty()) {
             onCmdArrive(sessionId, info.getBytes());

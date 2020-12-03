@@ -53,6 +53,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     private IPushConnectListener mPushConnectListener = new IAdhocPushConnectListener() {
         @Override
         public void onPushDeviceToken(String deviceToken) {
+            Logger.i("yhq", "onPushDeviceToken:");
             Logger.d("yhq", "onPushDeviceToken:" + deviceToken);
             onConnected();
         }
@@ -132,6 +133,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     }
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
+        Logger.i("yhq", "actualQueryDeviceStatus");
         Logger.d("yhq", "actualQueryDeviceStatus:" + pDeviceID);
         return queryDeviceStatusFromServer(pDeviceID)
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {

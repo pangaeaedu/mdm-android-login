@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class UserTypeDao extends AdhocHttpDao {
             String type = (String) response.get("user_type");
             return type;
         }catch (Exception pE){
-            Log.e("yhq", "EnrollLoginDao error happpen getUserType:"+pE.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen getUserType:"+pE.getMessage());
             throw pE;
         }
     }

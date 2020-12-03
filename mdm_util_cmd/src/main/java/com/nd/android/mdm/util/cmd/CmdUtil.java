@@ -125,7 +125,7 @@ public class CmdUtil {
             Logger.d(TAG, "uninstall package " + packageName + " success");
             return true;
         } else {
-            Logger.e(TAG,  result);
+            Logger.d(TAG, "uninstall package " + packageName + " failed");
             return false;
         }
     }

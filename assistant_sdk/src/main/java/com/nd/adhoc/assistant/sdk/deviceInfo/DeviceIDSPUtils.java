@@ -35,7 +35,7 @@ public class DeviceIDSPUtils {
                         if (!pDeviceID.equalsIgnoreCase(idInCache)) {
                            boolean bOK = DeviceIDFileUtils.saveDeviceIDToCacheFile(pContext, encrypt);
                             if(!bOK){
-                                Log.e(TAG, "saveDeviceIDToCacheFile failed");
+                                Logger.w(TAG, "saveDeviceIDToCacheFile failed");
                             }
                         }
 
@@ -43,9 +43,10 @@ public class DeviceIDSPUtils {
                         if (!pDeviceID.equalsIgnoreCase(idInSdFile)) {
                             boolean bOK = DeviceIDFileUtils.saveDeviceIDToSdFile(pContext, encrypt);
                             if(!bOK){
-                                Log.e(TAG, "SaveDeviceIDToSdFile failed");
+                                Logger.w(TAG, "SaveDeviceIDToSdFile failed");
                             } else {
-                                Logger.d("yhq", "SaveDeviceIDToSdFile success:"+pDeviceID);
+                                Logger.i("yhq", "SaveDeviceIDToSdFile success");
+                                Logger.d("yhq", "SaveDeviceIDToSdFile success:" + pDeviceID);
                             }
                         }
 

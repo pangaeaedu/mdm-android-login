@@ -96,7 +96,7 @@ public class DeviceInfoManager {
     }
 
     private void clearDeviceID(){
-        Log.e("yhq", "clearDeviceID");
+        Logger.i("yhq", "clearDeviceID");
         mDeviceID = "";
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         DeviceIDSPUtils.saveDeviceIDToSp("");

@@ -56,6 +56,7 @@ public class LoginDao extends AdhocHttpDao {
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
 
+            Logger.i(TAG, "bind device id request");
             Logger.d(TAG, "bind device id request:" + content);
             BindResult result = postAction().post("/v1.1/registe/pushid/", BindResult.class,
                     content, null);

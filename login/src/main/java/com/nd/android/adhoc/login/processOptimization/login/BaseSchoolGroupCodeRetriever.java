@@ -57,7 +57,7 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
         Exception e = new Exception("this is a log");
         e.printStackTrace();
 
-        Log.e(TAG, "setGroupCode:" + sGroupCode);
+        Logger.i(TAG, "setGroupCode:" + sGroupCode);
         mGroupCode = sGroupCode;
         mCountDownLatch.countDown();
     }

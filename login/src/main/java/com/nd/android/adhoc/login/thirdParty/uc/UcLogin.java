@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.push.UserActivateResult;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
@@ -23,7 +24,7 @@ public class UcLogin implements IThirdPartyLogin {
     private IUserActivateListener mActivateListener = new IUserActivateListener() {
         @Override
         public void onUserActivateResult(UserActivateResult pResult) {
-            Log.e(TAG, "onUserActivateResult" + pResult.sessionid);
+            Logger.i(TAG, "onUserActivateResult" + pResult.sessionid);
             if (TextUtils.isEmpty(mCurSessionID)) {
                 return;
             }

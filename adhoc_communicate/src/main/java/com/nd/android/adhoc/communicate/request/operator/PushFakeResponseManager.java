@@ -36,17 +36,19 @@ public class PushFakeResponseManager {
     }
 
     public void addRequest(String pMsgID, String pContent){
-        Logger.d(TAG, "msgID:"+pMsgID+" addRequest:"+pContent);
+        Logger.i(TAG, "addRequest, msgID:" + pMsgID);
+        Logger.d(TAG, "addRequest, msgID:" + pMsgID + " addRequest:" + pContent);
         String action = PushDataUtils.getAction(pContent);
         if(action.equalsIgnoreCase("/v1/device/cmdresult/")
                 || action.equalsIgnoreCase("/v2/cmd/batchresult/")){
-            Logger.d(TAG, "msgID:"+pMsgID+" put data:"+pContent);
+            Logger.i(TAG, "put data, msgID:" + pMsgID);
+            Logger.d(TAG, "put data, msgID:" + pMsgID + ", content:" + pContent);
             mCmdResultCache.put(pMsgID, pContent);
         }
     }
 
     public void notifyMessageSendResult(String pMsgID, int pErrorCode){
-        Logger.d(TAG, "notifyMessageSendResult msgID:"+pMsgID+" error code:"+pErrorCode);
+        Logger.i(TAG, "notifyMessageSendResult msgID:" + pMsgID + " error code:" + pErrorCode);
         if(mCmdResultCache.containsKey(pMsgID)){
             String fakeMsg = "";
             if(pErrorCode == 0){
