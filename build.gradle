@@ -39,7 +39,7 @@ ext {
     screen_capture_version = '1.5.2.327.bec9c42-feature-rtmpcb0.8.2-SNAPSHOT'
     adhoc_push_util_version = '0.5.27.112.a03c223-features-lbwedgecompute-SNAPSHOT'
 
-    policy_version = '2.6.202.cf92410-hyknewpolicy-SNAPSHOT'
+    policy_version = '2.6.208.fa89a1c-hyknewpolicy.dev'
     deliver_version = '2.3.160.4670ee0-features-lsj0.8.xhighschool-SNAPSHOT'
 
     adhoc_firewall_version = '0.7.55.316bbfa'
