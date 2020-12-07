@@ -9,6 +9,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.db.factory.AdhocDatabaseFactory;
 import com.nd.android.adhoc.basic.db.helper.AdhocDatabaseHelper;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.mdm.wifi_sdk.sdk.dataService.db.entity.MdmWifiEntityHelper;
 import com.nd.android.mdm.wifi_sdk.sdk.dataService.db.entity.intfc.IMdmWifiPwdEntity;
 import com.nd.android.mdm.wifi_sdk.sdk.dataService.db.service.intfc.IMdmWifiPwdDbService;
@@ -53,7 +54,7 @@ class MdmWifiPwdDbServiceImpl implements IMdmWifiPwdDbService {
             Dao.CreateOrUpdateStatus status = mMdmWifiPwDao.createOrUpdate(pEntity);
             return status != null && (status.isCreated() || status.isUpdated());
         } catch (SQLException e) {
-            Log.e(TAG, "saveOrUpdateMdmWifiPwd: " + e);
+            Logger.e(TAG, "saveOrUpdateMdmWifiPwd: " + e);
         }
         return false;
     }
@@ -69,7 +70,7 @@ class MdmWifiPwdDbServiceImpl implements IMdmWifiPwdDbService {
             }
             return entityList.get(0);
         } catch (SQLException e) {
-            Log.e(TAG, "getWifiPwdEntity: " + e);
+            Logger.e(TAG, "getWifiPwdEntity: " + e);
         }
         return null;
     }
@@ -81,7 +82,7 @@ class MdmWifiPwdDbServiceImpl implements IMdmWifiPwdDbService {
             deleteBuilder.where().eq(IMdmWifiPwdEntity.FIELD_SSID, pSsid);
             return deleteBuilder.delete() > 0;
         } catch (SQLException e) {
-            Log.e(TAG, "deleteWifiPwdEntity: " + e);
+            Logger.e(TAG, "deleteWifiPwdEntity: " + e);
         }
         return false;
     }

@@ -81,7 +81,7 @@ public class PermissionRequest_AppUsage extends AdhocPermissionRequestAbs {
             return aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, info.uid, info.packageName)
                     == AppOpsManager.MODE_ALLOWED;
         } catch (PackageManager.NameNotFoundException e) {
-            Logger.w(TAG, "checkGranted error: " + e);
+            Logger.e(TAG, "checkGranted error: " + e);
         }
         return false;
     }

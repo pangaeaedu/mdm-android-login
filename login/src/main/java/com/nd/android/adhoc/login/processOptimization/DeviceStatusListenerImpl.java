@@ -5,6 +5,7 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.android.adhoc.warning.api.provider.IAdhocWarningLifeCycleProvider;
 
@@ -26,7 +27,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
             return;
         }
 
-        Log.e("yhq", "onDeviceActivated");
+        Logger.i("yhq", "onDeviceActivated");
         mSubscription = DeviceInfoManager.getInstance()
                 .getPushIDSubject().asObservable().take(1)   //取第一个，将长监听转成单次监听，
                 .flatMap(new Func1<String, Observable<Void>>() {// 这样取一次后，后续的调用流就能走到onComplete
@@ -35,10 +36,10 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
                         try {
                             updatePolicy();
 //                            requestPolicySet();
-                            Log.e("yhq", "requestPolicySet finish");
+                            Logger.i("yhq", "requestPolicySet finish");
                             return Observable.just(null);
                         } catch (Exception e) {
-                            Log.e("yhq", "requestPolicySet error:"+e.getMessage());
+                            Logger.e("yhq", "requestPolicySet error:"+e.getMessage());
                             return Observable.error(e);
                         }
                     }
@@ -64,7 +65,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
 
     @Override
     public void onDeviceStatusChanged(DeviceStatus pStatus) {
-        Log.e("yhq", "onDeviceStatusChanged:"+pStatus);
+        Logger.i("yhq", "onDeviceStatusChanged:"+pStatus);
         DeviceInfoManager.getInstance().setCurrentStatus(pStatus);
         if (pStatus == DeviceStatus.Activated) {
             onDeviceActivated();

@@ -3,9 +3,7 @@ package com.nd.android.adhoc.communicate.request.operator;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.nd.android.adhoc.basic.log.CrashAnalytics;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.communicate.constant.AdhocCommunicateConstant;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 
 import org.json.JSONException;
@@ -51,6 +49,7 @@ public class AdhocPushRequestOperator {
             msgid = UUID.randomUUID().toString();
         }
 
+        Logger.i(TAG, "doRequest: msgid = " + msgid);
         Logger.d(TAG, "doRequest: msgid = " + msgid + ", content = " + content);
 
         final String finalMsgid = msgid;
@@ -127,6 +126,7 @@ public class AdhocPushRequestOperator {
                                 }
                             }
 
+                            Logger.i(TAG, "message_id = " + finalMsgid + ", code = " + code + ", message = " + message);
                             Logger.d(TAG, "message_id = " + finalMsgid + ", code = " + code + ", message = " + message + ", resultContent = " + result);
 
                             Response.Builder builder = new Response.Builder();
@@ -138,7 +138,7 @@ public class AdhocPushRequestOperator {
 
                             return builder.build();
                         } catch (Exception e) {
-                            Logger.w(TAG, "parsing result error: " + e);
+                            Logger.e(TAG, "doRequest error, parsing result error: " + e);
 
                             Response.Builder builder = new Response.Builder();
                             builder.body(ResponseBody.create(MediaType.parse("application/json; charset=UTF-8"), result))
@@ -163,13 +163,10 @@ public class AdhocPushRequestOperator {
 
 
     static void receiveFeedback(String pContent) {
+        Logger.i(TAG, "receiveFeedback");
+
         if (TextUtils.isEmpty(pContent)) {
-            CrashAnalytics.INSTANCE.reportException(
-                    AdhocCommunicateConstant.CMP_NAME,
-                    String.valueOf(DEFAULT_ERROR_CODE),
-                    "receiveFeedback content is empty",
-                    new Exception("receiveFeedback content is empty"),
-                    null);
+            Logger.w(TAG, "receiveFeedback, but content is empty");
             return;
         }
         mPushFeedbackSub.onNext(pContent);

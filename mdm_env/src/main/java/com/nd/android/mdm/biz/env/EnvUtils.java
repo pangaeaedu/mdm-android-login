@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.smartcan.content.CsManager;
 import com.nd.smartcan.content.base.CsBaseManager;
 import com.nd.uc.account.NdUc;
@@ -20,7 +21,7 @@ public class EnvUtils {
     }
 
     public static void setCsEnv(@NonNull IMdmEnvModule pEnvModule) {
-        Log.e(TAG, "setCsEnv name:" + pEnvModule.getName()
+        Logger.d(TAG, "setCsEnv name:" + pEnvModule.getName()
                 + " csBaseUrl:" + pEnvModule.getCsBaseUrl() + " csBaseDownUrl:" + pEnvModule.getCsBaseDownUrl());
 
         CsManager.setIsDirectBoot(AdhocBasicConfig.getInstance().isEncrypStorageModel());
@@ -34,7 +35,9 @@ public class EnvUtils {
     }
 
     public static void setUcEnv(@NonNull IMdmEnvModule pEnvModule) {
-        Log.e(TAG, "setUcEnv appid:" + pEnvModule.getUcAppID()
+        Logger.i(TAG, "setUcEnv");
+
+        Logger.d(TAG, "setUcEnv appid:" + pEnvModule.getUcAppID()
                 + " newversionUrl:" + pEnvModule.getUcNewVersionBaseUrl()
                 + " protocolUrl:" + pEnvModule.getUcNewVersionBaseUrl()
                 + " orgcode:" + pEnvModule.getUcOrgCode());

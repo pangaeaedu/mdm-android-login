@@ -8,6 +8,7 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
@@ -42,7 +43,7 @@ public class HardwareInfoCompleteManager {
             boolean isWifiMacReported = getConfig().isWifiMacReported();
             boolean isLanMacReported = getConfig().isLanMacReported();
             if (isWifiMacReported && isLanMacReported) {
-                Log.d(TAG, "lan mac and wifi mac reported");
+                Logger.i(TAG, "lan mac and wifi mac reported");
                 return;
             }
 
@@ -57,7 +58,7 @@ public class HardwareInfoCompleteManager {
                 if (!TextUtils.isEmpty(wifiMac)) {
                     hardwareInfo.put("wifi_mac", wifiMac);
                 } else {
-                    Log.e(TAG, "wifi mac not found");
+                    Logger.w(TAG, "wifi mac not found");
                 }
             }
 
@@ -66,12 +67,12 @@ public class HardwareInfoCompleteManager {
                 if (!TextUtils.isEmpty(lanMac)) {
                     hardwareInfo.put("lan_mac", lanMac);
                 } else {
-                    Log.e(TAG, "lan mac not found");
+                    Logger.w(TAG, "lan mac not found");
                 }
             }
 
             if (TextUtils.isEmpty(wifiMac) && TextUtils.isEmpty(lanMac)) {
-                Log.e(TAG, "lan mac and wifi mac not found");
+                Logger.w(TAG, "lan mac and wifi mac not found");
                 return;
             }
 
@@ -80,12 +81,12 @@ public class HardwareInfoCompleteManager {
             boolean bOk = getHttpService().reportHardwareInfo(deviceID, hardwareInfo);
             if (bOk) {
                 if (!TextUtils.isEmpty(wifiMac)) {
-                    Log.e(TAG, "wifi mac reported");
+                    Logger.w(TAG, "wifi mac reported");
                     getConfig().setWifiMacReported(true);
                 }
 
                 if (!TextUtils.isEmpty(lanMac)) {
-                    Log.e(TAG, "lan mac reported");
+                    Logger.w(TAG, "lan mac reported");
                     getConfig().setLanMacReported(true);
                 }
             }

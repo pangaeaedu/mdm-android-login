@@ -485,7 +485,7 @@ public class LoginActivity extends AdhocBaseActivity implements View.OnClickList
             return;
         }
 
-        Log.e(TAG, "onLoginFailed:" + pThrowable);
+        Logger.e(TAG, "onLoginFailed:" + pThrowable);
         showErrorToast(pThrowable);
         mLoginPanel.setVisibility(View.VISIBLE);
         mLoginStatus.setVisibility(View.GONE);

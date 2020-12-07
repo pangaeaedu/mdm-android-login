@@ -7,6 +7,7 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.adhoc.basic.util.permission.AdhocRxPermissions;
 
@@ -34,7 +35,7 @@ public class DeviceIDSPUtils {
                         if (!pDeviceID.equalsIgnoreCase(idInCache)) {
                            boolean bOK = DeviceIDFileUtils.saveDeviceIDToCacheFile(pContext, encrypt);
                             if(!bOK){
-                                Log.e(TAG, "saveDeviceIDToCacheFile failed");
+                                Logger.w(TAG, "saveDeviceIDToCacheFile failed");
                             }
                         }
 
@@ -42,9 +43,10 @@ public class DeviceIDSPUtils {
                         if (!pDeviceID.equalsIgnoreCase(idInSdFile)) {
                             boolean bOK = DeviceIDFileUtils.saveDeviceIDToSdFile(pContext, encrypt);
                             if(!bOK){
-                                Log.e(TAG, "SaveDeviceIDToSdFile failed");
+                                Logger.w(TAG, "SaveDeviceIDToSdFile failed");
                             } else {
-                                Log.e("yhq", "SaveDeviceIDToSdFile success:"+pDeviceID);
+                                Logger.i("yhq", "SaveDeviceIDToSdFile success");
+                                Logger.d("yhq", "SaveDeviceIDToSdFile success:" + pDeviceID);
                             }
                         }
 

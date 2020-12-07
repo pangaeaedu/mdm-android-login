@@ -3,6 +3,7 @@ package com.nd.android.adhoc.login.basicService.http;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfo;
 import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfoResult;
@@ -31,8 +32,7 @@ public class SetAssetCodeDao extends AdhocHttpDao {
                     header);
             return response;
         }catch (Exception pE){
-            Log.e("lsj", "SchoolGroupCodeDao error happpen:"+ postAction().getBaseUrl()
-                    +"/v1.1/enroll/userInfo"+" " + "Msg:"+pE.getMessage());
+            Logger.e("lsj", "SchoolGroupCodeDao error happpen setAssetCode:"+pE.getMessage());
             throw pE;
         }
     }

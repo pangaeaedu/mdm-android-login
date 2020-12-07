@@ -6,6 +6,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.constant.AhdocHttpConstants;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
@@ -49,8 +50,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/getUserInfo/", GetUserInfoResponse.class,
                     content, null);
         } catch (Exception pE) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/getUserInfo/" + " " + "Msg:" + pE.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:getUserInfo:" + pE.getMessage());
             throw new GetUserInfoServerException(pE.getMessage());
         }
     }
@@ -115,8 +115,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/getDeviceStatus/", QueryDeviceStatusResponse.class,
                     content, null);
         } catch (Exception pE) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/getDeviceStatus/" + " " + "Msg:" + pE.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:queryDeviceStatus:" + pE.getMessage());
             throw new QueryDeviceStatusServerException(pE.getMessage());
         }
     }
@@ -134,8 +133,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/login/", LoginUserResponse.class,
                     content, null);
         } catch (Exception pE) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/login/" + " " + "Msg:" + pE.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:loginUser" + pE.getMessage());
             throw new LoginUserServerException(pE.getMessage());
         }
 
@@ -155,8 +153,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/getActivateResult/", GetActivateUserResultResponse.class,
                     content, null);
         } catch (Exception pE) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/getActivateResult/" + " " + "Msg:" + pE.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:getActivateResult:" + pE.getMessage());
             throw new QueryActivateUserResultException(pE.getMessage());
         }
 
@@ -185,8 +182,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
                     content, header);
         } catch (Exception pE) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/activate/" + " " + "Msg:" + pE.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:activateUser:" + pE.getMessage());
             throw new ActivateUserServerException(pE.getMessage());
         }
 
@@ -222,8 +218,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             return postAction().post("/v1.1/enroll/activate/", ActivateUserResponse.class,
                     content, header);
         } catch (Exception pE) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/activate/" + " " + "Msg:" + pE.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:activateUser:" + pE.getMessage());
             throw new ActivateUserServerException(pE.getMessage());
         }
 
@@ -241,8 +236,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             postAction().post("/v1.1/enroll/policyset/",
                     String.class, content, null);
         } catch (Exception e) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/policyset/" + " " + "Msg:" + e.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:requestPolicySet:" + e.getMessage());
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }
@@ -259,8 +253,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return postAction().post("/v1.1/enroll/pushid/", BindPushIDResponse.class, content, null);
         } catch (Exception e) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/pushid/" + " " + "Msg:" + e.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:bindDeviceIDToPushID:" + e.getMessage());
             throw new BindPushIDServerException(e.getMessage());
         }
     }
@@ -324,7 +317,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 //                    content, null);
 //        } catch (Exception e) {
 //            e.printStackTrace();
-//            Log.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
+//            Logger.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
 //                    +"/v1.1/enroll/getDeviceToken/"+" " + "Msg:"+e.getMessage());
 //            throw new ConfirmIDServerException(e.getMessage());
 //        }
@@ -349,8 +342,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
                     content, null);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/getDeviceToken/" + " " + "Msg:" + e.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:confirmDeviceID:" + e.getMessage());
             throw new ConfirmIDServerException(e.getMessage());
         }
     }
@@ -370,8 +362,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
                     content, null);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/getDeviceToken/" + " " + "Msg:" + e.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:confirmDeviceID:" + e.getMessage());
             throw new ConfirmIDServerException(e.getMessage());
         }
     }
@@ -407,8 +398,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             return false;
         } catch (Exception e) {
-            Log.e("yhq", "EnrollLoginDao error happpen:" + postAction().getBaseUrl()
-                    + "/v1.1/enroll/dtoken/completion" + " " + "Msg:" + e.getMessage());
+            Logger.e("yhq", "EnrollLoginDao error happpen:reportHardwareInfo:" + e.getMessage());
             throw new BindPushIDServerException(e.getMessage());
         }
     }

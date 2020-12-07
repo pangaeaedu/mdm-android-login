@@ -245,7 +245,7 @@ public class AdhocReportAppRunInfo {
         if(AppRunInfoReportUtils.getCurrentDayTimeStamp() != AppRunInfoReportUtils.getSpecifyTimeDayStamp(lCacheTimeStamp)){
             Logger.i(TAG, "not the same day");
             for (Map.Entry<String, MdmRunInfoEntity> entry : mMapRunningApps.entrySet()) {
-                Logger.i(TAG, "id of " + entry.getKey() + " is " + entry.getValue().mstrId);
+                Logger.d(TAG, "id of " + entry.getKey() + " is " + entry.getValue().mstrId);
             }
             mMapRunningApps.clear();
             RunInfoReportHelper.reportToServerBusiness();

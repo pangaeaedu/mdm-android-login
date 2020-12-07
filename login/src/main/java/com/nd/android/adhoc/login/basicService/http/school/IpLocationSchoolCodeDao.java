@@ -33,8 +33,7 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
             return postAction().post("/v2/group/ipinfo/", IpLocationSchoolCodeResp.class,
                     content, null);
         } catch (Exception pE) {
-            Log.e(TAG, "IpLocationSchoolCodeDao error happpen:" + postAction().getBaseUrl()
-                    + "v2/group/ipinfo/" + " " + "Msg:" + pE.getMessage());
+            Logger.e(TAG, "IpLocationSchoolCodeDao error happpen getSchoolCodeByIp:"  + pE.getMessage());
             throw new Exception(pE.getMessage());
         }
     }
@@ -53,8 +52,7 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
             return postAction().post("/v2/group/geoinfo/", IpLocationSchoolCodeResp.class,
                     content, null);
         } catch (Exception pE) {
-            Log.e(TAG, "IpLocationSchoolCodeDao error happpen:" + postAction().getBaseUrl()
-                    + "v2/group/geoinfo/" + " " + "Msg:" + pE.getMessage());
+            Logger.e(TAG, "IpLocationSchoolCodeDao error happpen getSchoolCodeByLocation:" + pE.getMessage());
             throw new Exception(pE.getMessage());
         }
     }

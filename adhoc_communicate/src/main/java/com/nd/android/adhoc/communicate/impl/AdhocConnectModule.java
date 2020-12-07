@@ -54,7 +54,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
     public void startAdhoc() {
 
         Context context = AdhocBasicConfig.getInstance().getAppContext();
-        Logger.d(TAG, "AdhocConnectModule ready");
+        Logger.i(TAG, "AdhocConnectModule ready");
         Intent intent = new Intent(context, AdhocService.class);
         context.bindService(intent, mConn, Context.BIND_AUTO_CREATE);
 //        IntentFilter intentFilter = new IntentFilter();
@@ -98,7 +98,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
                 mAdhoc.startAndJoin(null, 0, 12580, logPath, "adhoc", receivePath, mAdhocCallback);
                 synchronized (mTurnIdLock) {
                     if (!TextUtils.isEmpty(mTurnId)) {
-                        Logger.d(TAG, "set turnid " + mTurnId);
+                        Logger.i(TAG, "set turnid " + mTurnId);
                         mAdhoc.setTurnId(mTurnId);
                     }
                 }
@@ -158,7 +158,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
 //            new MessageEvent(json.toString()).post();
             sendMessage(json.toString());
         } catch (JSONException e) {
-            Logger.e(TAG, ExceptionUtils.getStackTrace(e));
+            Logger.e(TAG, "sendLoginInfo error: " + ExceptionUtils.getStackTrace(e));
         }
 
     }
@@ -250,7 +250,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
                 mAdhoc.setTurnId(pTurnId);
                 Logger.d(TAG, "set turnid " + pTurnId);
             } catch (RemoteException e) {
-                Logger.d(TAG, "set turnid " + pTurnId + "exception:" + e.toString());
+                Logger.e(TAG, "set turnid " + pTurnId + "exception:" + e.toString());
             }
         } else {
             Logger.d(TAG, "ignore turnid event , turnid :" + pTurnId);
@@ -266,6 +266,7 @@ class AdhocConnectModule implements IAdhocConnectModule {
             AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
                 @Override
                 public void call(Subscriber<? super Void> subscriber) {
+                    Logger.i(TAG, "adhoc send message");
                     Logger.d(TAG, "adhoc send message:" + pMessage);
                     try {
                         byte[] data = pMessage.getBytes();

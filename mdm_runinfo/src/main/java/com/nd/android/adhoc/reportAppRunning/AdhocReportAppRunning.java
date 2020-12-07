@@ -249,7 +249,7 @@ public class AdhocReportAppRunning {
             try {
                 getCurrentToReportHourData().reportToServer(new JSONObject(strToReportCache));
             } catch (JSONException e) {
-                Logger.e(TAG, "什么鸟数据");
+                Logger.e(TAG, "loadCache parse error: " + e);
                 e.printStackTrace();
                 spModel.applyPutString(AppRunInfoReportConstant.OPS_SP_KEY_CACHE_TO_REPORT_DATA, "");
             }
