@@ -22,7 +22,7 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '2.0.557.36203c1-hykencrypstorage-SNAPSHOT'
+    adhoc_basic_version = '2.0.566.859be95.hykencrypstorage'
 
     mdm_biz_version = '1.14.696.a04c010-hykencrypstorage-SNAPSHOT'
 
@@ -39,7 +39,7 @@ ext {
     screen_capture_version = '1.5.2.327.bec9c42-feature-rtmpcb0.8.2-SNAPSHOT'
     adhoc_push_util_version = '0.5.27.112.a03c223-features-lbwedgecompute-SNAPSHOT'
 
-    policy_version = '2.5.188.2f28e62-hykencrypstorage.dev'
+    policy_version = '2.6.214.616ae89.hyknewpolicy'
     deliver_version = '2.3.160.4670ee0-features-lsj0.8.xhighschool-SNAPSHOT'
 
     adhoc_firewall_version = '0.7.55.316bbfa'
