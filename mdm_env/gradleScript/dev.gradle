@@ -8,7 +8,7 @@ dependencies {
 //    } catch (Exception ignored) {
         api("com.nd.android.adhoc.basic:adhoc_basic_sp:$adhoc_basic_version")
 //    }
-
+    api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
 //    try {
 //        api project(':adhoc_basic:adhoc_util_storage')
 //    } catch (Exception ignored) {

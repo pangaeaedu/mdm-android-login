@@ -12,14 +12,15 @@ import com.nd.android.mdm.biz.common.ErrorCode;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
 /**
- * MDM自身的自动升级
+ * 保活的自动升级
  */
 @Keep
 @Service(IAutoUpdatePackages.class)
-public class AutoUpdate_MDM implements IAutoUpdatePackages {
+public class AutoUpdate_KeepAlive implements IAutoUpdatePackages {
     @Override
     public UpdateConfiguration getConfigration() {
         UpdateConfiguration configuration = new UpdateConfiguration();
+        configuration.setPackageName("com.nd.adhoc.keepaliveservice");
         configuration.setInstallPackage(new IInstallPackage() {
             @Override
             public boolean installPackage(Context context, String strApkPath) {
