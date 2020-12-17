@@ -5,7 +5,7 @@ buildscript {
 
         if (project.hasProperty('LOCAL_BUILD_ENV')) {
             maven {
-                url 'http://192.168.252.25:8081/repository/maven-public/'
+                url 'http://172.24.140.41/repository/maven-public/'
             }
         } else {
             maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
@@ -22,10 +22,10 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.9.505.fcbb773-hykencrypstorage-SNAPSHOT'
+    adhoc_basic_version = '1.9.527.0836902.foromo2096'
 
 
-    mdm_biz_version = '1.10.631.2671509'
+    mdm_biz_version = '1.13.685.5196554.foromo2.9.0.6'
 
     device_control_version = '1.10.526.c19b3b3'
     device_command_version = '2.6.420.2395e22'
@@ -57,7 +57,7 @@ allprojects {
 
         if (project.hasProperty('LOCAL_BUILD_ENV')) {
             maven {
-                url 'http://192.168.252.25:8081/repository/maven-public/'
+                url 'http://172.24.140.41/repository/maven-public/'
             }
         } else {
             maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }

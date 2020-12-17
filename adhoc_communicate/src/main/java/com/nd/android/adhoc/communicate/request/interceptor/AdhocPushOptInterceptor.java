@@ -36,6 +36,7 @@ class AdhocPushOptInterceptor implements Interceptor {
                 {
                     add(new AdhocRequestInfoStrategy_Get());
                     add(new AdhocRequestInfoStrategy_Post());
+                    add(new AdhocRequestInfoStrategy_Put());
                 }
             };
 
