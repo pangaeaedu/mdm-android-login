@@ -257,6 +257,9 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveDeviceCode("");
         saveGroupCode("");
         saveDeviceStatus(-1);
+
+        saveNodeCode("");
+        saveNodeName("");
     }
 
 
