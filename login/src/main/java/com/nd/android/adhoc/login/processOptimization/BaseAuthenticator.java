@@ -57,6 +57,47 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         api.onLogin(loginInfo);
     }
 
+    //queryDeviceStatusFromServer那个方法加了其他的业务代码，这里是纯从服务端取状态
+    protected Observable<DeviceStatus> reallyQueryDeviceStatusFromServer(final String pDeviceID) {
+        Log.e("lsj", "reallyQueryDeviceStatusFromServer");
+        return Observable
+                .create(new Observable.OnSubscribe<DeviceStatus>() {
+                    @Override
+                    public void call(Subscriber<? super DeviceStatus> pSubscriber) {
+                        try {
+                            Log.i("lsj", " start run reallyQueryDeviceStatusFromServer");
+                            String serialNum = DeviceHelper.getSerialNumberThroughControl();
+
+                            if (TextUtils.isEmpty(pDeviceID) || TextUtils.isEmpty(serialNum)) {
+                                Log.i("lsj", " reallyQueryDeviceStatusFromServer error 1");
+                                pSubscriber.onError(new DeviceIDNotSetException());
+                                return;
+                            }
+
+                            UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                            QueryDeviceStatusResponse result = null;
+                            DeviceStatus status = null;
+                            if (isAutoLogin()) {
+                                Log.e("lsj", " reallyQueryDeviceStatusFromServer isAutoLogin 1");
+                                // 自动登录的情况下，要把autoLogin的值1带上去
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
+                                        loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                Log.e("lsj", "user auto login reallyQueryDeviceStatusFromServer:"
+                                        + result.toString());
+                                status = result.getStatus();
+                            } else {
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum);
+                                Log.e("lsj", "QueryDeviceStatusResponse:" + result.toString());
+                                status = result.getStatus();
+                            }
+                            pSubscriber.onNext(status);
+                            pSubscriber.onCompleted();
+                        } catch (Exception e) {
+                            pSubscriber.onError(e);
+                        }
+                    }
+                });
+    }
 
     protected Observable<QueryDeviceStatusResponse> queryDeviceStatusFromServer(final String pDeviceID) {
         Log.e("yhq", "queryDeviceStatusFromServer");
