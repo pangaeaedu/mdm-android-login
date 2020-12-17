@@ -48,35 +48,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         MdmTransferFactory.getPushModel().addConnectListener(mPushConnectListener);
     }
 
-    public void checkLocalStatusAndServer(){
-        reallyQueryDeviceStatusFromServer(DeviceInfoManager.getInstance().getDeviceID())
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<DeviceStatus>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onNext(DeviceStatus statusOfServer) {
-                        if(null != statusOfServer){
-                            DeviceStatus statusOfLocal = DeviceInfoManager.getInstance().getCurrentStatus();
-                            if(null == statusOfLocal){
-                                return;
-                            }
-
-                            mDeviceStatusListener.onDeviceStatusChanged(statusOfServer);
-                            if(DeviceStatus.isStatusUnLogin(statusOfServer) && !DeviceStatus.isStatusUnLogin(statusOfLocal)){
-                                System.exit(-1);
-                            }
-                        }
-                    }
-                });
-    }
 
     private IPushConnectListener mPushConnectListener = new IAdhocPushConnectListener() {
         @Override
@@ -92,9 +63,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 return;
             }
 
-            if(1 == DeviceInfoManager.getInstance().getNeedQueryStatusFromServer()){
-                checkLocalStatusAndServer();
-            }
             Log.e("yhq", "before call subject");
             mSubBindPushID = DeviceInfoManager.getInstance().getConfirmDeviceIDSubject().take(1)
                     .flatMap(new Func1<String, Observable<Boolean>>() {
@@ -160,7 +128,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         ActivityStackManager.INSTANCE.closeAllActivitys();
         System.exit(0);
-
     }
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {

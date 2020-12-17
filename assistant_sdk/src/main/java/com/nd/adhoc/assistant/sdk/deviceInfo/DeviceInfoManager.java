@@ -27,7 +27,6 @@ public class DeviceInfoManager {
 
     private String mDeviceID = "";
     private DeviceStatus mDeviceStatus = null;
-    private int mNeedQueryStatusFromServer = 0;///0：初始化状态　1：需要查询服务端状态　2：已获取服务端状态
 
     private BehaviorSubject<String> mPushIDSubject = BehaviorSubject.create();
 
@@ -63,7 +62,6 @@ public class DeviceInfoManager {
     public void setCurrentStatus(DeviceStatus pStatus) {
         Logger.e("yhq", "setCurrentStatus:"+pStatus.getValue());
         mDeviceStatus = pStatus;
-        mNeedQueryStatusFromServer = 2;
         getConfig().saveDeviceStatus(pStatus.getValue());
     }
 
@@ -111,16 +109,5 @@ public class DeviceInfoManager {
         mDeviceStatus = null;
         mPushIDSubject.onCompleted();
         mPushIDSubject = BehaviorSubject.create();
-    }
-
-    public int getNeedQueryStatusFromServer() {
-        return mNeedQueryStatusFromServer;
-    }
-
-    public void setNeedQueryStatusFromServer(int needQueryStatusFromServer) {
-        if(needQueryStatusFromServer >mNeedQueryStatusFromServer){
-            mNeedQueryStatusFromServer = needQueryStatusFromServer;
-        }
-
     }
 }
