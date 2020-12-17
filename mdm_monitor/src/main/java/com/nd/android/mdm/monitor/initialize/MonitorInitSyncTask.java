@@ -9,12 +9,12 @@ import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitPriority;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitSyncAbs;
 import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
 import com.nd.android.mdm.monitor.MonitorModule;
-import com.nd.sdp.android.serviceloader.annotation.Service;
 
 /**
  * Created by HuangYK on 2018/12/6.
  */
-@Service(AdhocAppInitSyncAbs.class)
+//@Service(AdhocAppInitSyncAbs.class)
+@Deprecated
 public class MonitorInitSyncTask extends AdhocAppInitSyncAbs {
 
     @Override
