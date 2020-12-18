@@ -8,6 +8,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
@@ -57,6 +58,62 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         api.onLogin(loginInfo);
     }
 
+    private static boolean msIsReallyQuery = false;
+    //queryDeviceStatusFromServer那个方法加了其他的业务代码，这里是纯从服务端取状态
+    protected Observable<DeviceStatus> reallyQueryDeviceStatusFromServer(final String pDeviceID) {
+        Log.e("yhq", "reallyQueryDeviceStatusFromServer");
+        return Observable
+                .create(new Observable.OnSubscribe<DeviceStatus>() {
+                    @Override
+                    public void call(Subscriber<? super DeviceStatus> pSubscriber) {
+                        if(msIsReallyQuery){
+                            pSubscriber.onError(new AdhocException("is already querying"));
+                            return;
+                        }
+                        msIsReallyQuery = true;
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            Log.i("yhq", " start run reallyQueryDeviceStatusFromServer");
+                            String serialNum = DeviceHelper.getSerialNumberThroughControl();
+
+                            if (TextUtils.isEmpty(pDeviceID) || TextUtils.isEmpty(serialNum)) {
+                                Log.i("yhq", " reallyQueryDeviceStatusFromServer error 1");
+                                msIsReallyQuery = false;
+                                pSubscriber.onError(new DeviceIDNotSetException());
+                                return;
+                            }
+
+                            UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                            QueryDeviceStatusResponse result = null;
+                            DeviceStatus status = null;
+                            if (isAutoLogin()) {
+                                Log.i("yhq", " reallyQueryDeviceStatusFromServer isAutoLogin 1");
+                                // 自动登录的情况下，要把autoLogin的值1带上去
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
+                                        loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                Log.i("yhq", "user auto login reallyQueryDeviceStatusFromServer:"
+                                        + result.toString());
+                                status = result.getStatus();
+                            } else {
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum);
+                                Log.i("yhq", "really QueryDeviceStatusResponse:" + result.toString());
+                                status = result.getStatus();
+                            }
+                            msIsReallyQuery = false;
+                            pSubscriber.onNext(status);
+                            pSubscriber.onCompleted();
+                        } catch (Exception e) {
+                            Log.e("yhq", "really query exception:" + e);
+                            msIsReallyQuery = false;
+                            pSubscriber.onError(e);
+                        }
+                    }
+                });
+    }
 
     protected Observable<QueryDeviceStatusResponse> queryDeviceStatusFromServer(final String pDeviceID) {
         Log.e("yhq", "queryDeviceStatusFromServer");
