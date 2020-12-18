@@ -4,10 +4,12 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
@@ -223,6 +225,29 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             @Override
                             public Observable<DeviceStatus> call(String pDeviceID) {
                                 return queryDeviceStatus();
+                            }
+                        })
+                        // 这里要去获取当前登录后的归属节点信息
+                        .map(new Func1<DeviceStatus, DeviceStatus>() {
+                            @Override
+                            public DeviceStatus call(DeviceStatus deviceStatus) {
+                                if (DeviceStatus.Activated == deviceStatus) {
+                                    try {
+                                        String deviceId = AssistantBasicServiceFactory.getInstance().getSpConfig().getDeviceID();
+                                        String serialNum = DeviceHelper.getSerialNumberThroughControl();
+                                        UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                                        QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceId, serialNum,
+                                                loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                        if (DeviceStatus.Activated == result.getStatus()) {
+                                            // 记录当前的节点 code 和 名称
+                                            getConfig().saveNodeCode(result.getNodecode());
+                                            getConfig().saveNodeName(result.getNodename());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                return deviceStatus;
                             }
                         })
                         .subscribeOn(Schedulers.io())

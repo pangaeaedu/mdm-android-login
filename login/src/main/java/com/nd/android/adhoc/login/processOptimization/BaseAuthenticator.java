@@ -197,10 +197,6 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 //                            }
 
         if (curStatus == DeviceStatus.Activated) {
-            // 记录当前的节点 code 和 名称
-            getConfig().saveNodeCode(result.getNodecode());
-            getConfig().saveNodeName(result.getNodename());
-
             notifyLogin(getConfig().getAccountNum(), getConfig().getNickname());
         }
 
