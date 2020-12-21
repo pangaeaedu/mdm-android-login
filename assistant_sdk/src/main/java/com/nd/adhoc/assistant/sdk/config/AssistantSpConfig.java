@@ -117,8 +117,16 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveString(KEY_PUSH_ID, pPushID);
     }
 
+    public void savePushIDSync(String pPushID) {
+        saveStringSync(KEY_PUSH_ID, pPushID);
+    }
+
     public void clearPushID(){
         savePushID("");
+    }
+
+    public void clearPushIDSync(){
+        savePushIDSync("");
     }
 
     public String getSerialNum() {
