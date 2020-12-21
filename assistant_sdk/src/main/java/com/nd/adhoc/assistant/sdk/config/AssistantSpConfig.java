@@ -68,6 +68,10 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveString(KEY_DEVICE_ID, pDeviceID);
     }
 
+    public void saveDeviceIDSync(String pDeviceID) {
+        saveStringSync(KEY_DEVICE_ID, pDeviceID);
+    }
+
     public boolean isActivated() {
         DeviceStatus status = DeviceStatus.fromValue(getDeviceStatus());
         if(DeviceStatus.isStatusUnLogin(status)){

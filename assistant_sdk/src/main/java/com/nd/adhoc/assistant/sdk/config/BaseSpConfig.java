@@ -16,6 +16,13 @@ public class BaseSpConfig {
         mSpName = pSpName;
     }
 
+    public void saveStringSync(String key,String value){
+        if (TextUtils.isEmpty(key)){
+            return;
+        }
+        getDefault().edit().putString(key,value).commit();
+    }
+
     public void saveString(String key,String value){
         if (TextUtils.isEmpty(key)){
             return;
