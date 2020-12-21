@@ -74,6 +74,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
                             mDeviceStatusListener.onDeviceStatusChanged(statusOfServer);
                             if(DeviceStatus.isStatusUnLogin(statusOfServer) && !DeviceStatus.isStatusUnLogin(statusOfLocal)){
+                                DeviceIDSPUtils.saveDeviceIDToSp("");
                                 Logger.e(TAG, "differnet status, exit");
                                 System.exit(0);
                             }
