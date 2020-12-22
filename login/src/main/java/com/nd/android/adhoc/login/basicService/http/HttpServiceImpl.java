@@ -91,6 +91,19 @@ public class HttpServiceImpl implements IHttpService {
         return response;
     }
 
+    public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo, ActivateUserType pUserType,
+                                             String pLoginToken) throws Exception {
+        EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
+        ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo, pDeviceSerialNo, pUserType,
+                pLoginToken);
+
+        if (!response.isSuccess()) {
+            throw new ActivateUserServerException("active user failed");
+        }
+
+        return response;
+    }
+
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
                                              String pSchoolGroupCode,
                                              ActivateUserType pUserType,

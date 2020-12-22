@@ -128,6 +128,28 @@ public class DeviceHelper {
         return getSerialNumber();
     }
 
+
+    public static String getDeviceSerialNumberThroughControl(){
+        IControl_DeviceSerial serial = ControlFactory.getInstance().getControl
+                (IControl_DeviceSerial.class);
+        if(serial == null){
+            return "";
+        }
+        try {
+            String serialNum = serial.getSerialNumber();
+            if(TextUtils.isEmpty(serialNum)){
+                return getSerialNumber();
+            }
+
+            return serialNum;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return getSerialNumber();
+    }
+
+
     public static String getSerialNumber() {
         String serialNo = android.os.Build.SERIAL;
         if (!TextUtils.isEmpty(serialNo)) {

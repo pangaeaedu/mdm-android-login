@@ -295,6 +295,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                 try {
                     String deviceID = DeviceInfoManager.getInstance().getDeviceID();
                     String serialNum = DeviceHelper.getSerialNumberThroughControl();
+                    String deviceSerialNumber = DeviceHelper.getDeviceSerialNumberThroughControl();
                     if (TextUtils.isEmpty(deviceID) || TextUtils.isEmpty(serialNum)) {
                         Exception exception = new Exception("deviceID:" + deviceID + " serial " +
                                 "num:" + serialNum);
@@ -317,7 +318,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                             response = retryActivateUser(deviceID, serialNum, schoolGroupCode,
                                     pUserType, pLoginToken, loginConfig.getActivateRealType());
                         } else {
-                            response = getHttpService().activateUser(deviceID, serialNum, pUserType, pLoginToken);
+                            response = getHttpService().activateUser(deviceID, serialNum, deviceSerialNumber, pUserType, pLoginToken);
                         }
 
                         if (response == null) {
