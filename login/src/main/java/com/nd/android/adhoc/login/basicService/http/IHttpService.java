@@ -29,13 +29,13 @@ public interface IHttpService {
 
     BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws Exception;
 
-    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
-                                      ActivateUserType pUserType, String pLoginToken) throws Exception;
+//    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
+//                                      ActivateUserType pUserType, String pLoginToken) throws Exception;
 
     ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo, ActivateUserType pUserType,
                                       String pLoginToken) throws Exception;
 
-    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pSchoolGroupCode,
+    ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo , String pSchoolGroupCode,
                                       ActivateUserType pUserType, String pLoginToken,
                                       int pRealType) throws Exception;
 

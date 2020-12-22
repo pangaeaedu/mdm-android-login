@@ -315,7 +315,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     while (true) {
                         retryCount++;
                         if (loginConfig != null && loginConfig.isAutoLogin()) {
-                            response = retryActivateUser(deviceID, serialNum, schoolGroupCode,
+                            response = retryActivateUser(deviceID, serialNum, deviceSerialNumber, schoolGroupCode,
                                     pUserType, pLoginToken, loginConfig.getActivateRealType());
                         } else {
                             response = getHttpService().activateUser(deviceID, serialNum, deviceSerialNumber, pUserType, pLoginToken);
@@ -412,6 +412,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     //自动登录的情况下，需要把realtype传上去，重试三次，因为大量请求的情况下，激活有可能失败
     private ActivateUserResponse retryActivateUser(String pDeviceID, String pSerialNum,
+                                                   String pDeviceSerialNumber,
                                                    String pSchoolGroupCode,
                                                    ActivateUserType pUserType, String pLoginToken,
                                                    int pActivateRealType) throws Exception {
@@ -422,7 +423,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             ActivateUserResponse response = null;
             try {
                 response = getHttpService().activateUser(pDeviceID,
-                        pSerialNum, pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType);
+                        pSerialNum, pDeviceSerialNumber,pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType);
                 if (response != null && response.getErrcode() == 0) {
                     return response;
                 }
