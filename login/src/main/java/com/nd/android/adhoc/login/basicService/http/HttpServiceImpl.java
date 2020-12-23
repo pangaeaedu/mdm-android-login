@@ -111,8 +111,8 @@ public class HttpServiceImpl implements IHttpService {
                                              String pLoginToken, int pRealType) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
         ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo,
-                pDeviceSerialNo,
                 pSchoolGroupCode,
+                pDeviceSerialNo,
                 pUserType,
                 pLoginToken, pRealType);
 

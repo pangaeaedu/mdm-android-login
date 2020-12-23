@@ -136,7 +136,7 @@ public class DeviceHelper {
             return "";
         }
         try {
-            String serialNum = serial.getSerialNumber();
+            String serialNum = serial.getDeviceSerialNumber();
             if(TextUtils.isEmpty(serialNum)){
                 return getSerialNumber();
             }
