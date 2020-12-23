@@ -1,5 +1,6 @@
 package com.nd.android.mdm.appusage;
 
+import android.Manifest;
 import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.permission.AdhocPermissionRequestAbs;
@@ -77,9 +79,14 @@ public class PermissionRequest_AppUsage extends AdhocPermissionRequestAbs {
             if (aom == null) {
                 return false;
             }
-            aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, info.uid, info.packageName);
-            return aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, info.uid, info.packageName)
-                    == AppOpsManager.MODE_ALLOWED;
+
+
+
+
+            int mode =  aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, info.uid, info.packageName);
+            return (mode == AppOpsManager.MODE_ALLOWED
+                    || (mode == AppOpsManager.MODE_DEFAULT && ContextCompat.checkSelfPermission(context, Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED));
+
         } catch (PackageManager.NameNotFoundException e) {
             Logger.e(TAG, "checkGranted error: " + e);
         }
