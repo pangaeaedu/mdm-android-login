@@ -179,7 +179,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
                         if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
                             return activeUser(ActivateUserType.AutoLogin,
-                                    pResponse.getSelSchoolGroupCode(),
+                                    "",
                                     pResponse.getRootCode(),
                                     "");
                         }
