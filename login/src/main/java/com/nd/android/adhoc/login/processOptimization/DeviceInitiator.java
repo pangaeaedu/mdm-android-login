@@ -281,6 +281,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                                             // 记录当前的节点 code 和 名称
                                             getConfig().saveNodeCode(result.getNodecode());
                                             getConfig().saveNodeName(result.getNodename());
+                                            getConfig().saveGroupCode(result.getNodecode());
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
