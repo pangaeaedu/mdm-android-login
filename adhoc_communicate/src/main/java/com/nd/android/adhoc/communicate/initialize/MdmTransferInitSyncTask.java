@@ -27,13 +27,14 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
         try {
             Logger.e("yhq", "init Transfer lib");
             Context context = AdhocBasicConfig.getInstance().getAppContext();
-            libadhoc.setContext(context);
+            MdmTransferFactory.getPushModel().start();
             try {
                 ApplicationInfo appInfo = context.getPackageManager()
                         .getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
                 boolean excludeAdhoc = appInfo.metaData.getBoolean("EXCLUDE_ADHOC");
                 Logger.i("yhq", "doInitSync: exclude adhoc = " + excludeAdhoc);
                 if (!excludeAdhoc) {
+                    libadhoc.setContext(context);
                     MdmTransferFactory.getCommunicationModule().startAdhoc();
                 }
             } catch (Exception pE) {
@@ -41,7 +42,6 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
                 MdmTransferFactory.getCommunicationModule().startAdhoc();
             }
 
-            MdmTransferFactory.getPushModel().start();
             pCallback.onSuccess();
         } catch (Exception e) {
             pCallback.onFailed(AdhocException.newException(e));

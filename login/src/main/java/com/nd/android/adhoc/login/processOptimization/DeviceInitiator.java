@@ -47,6 +47,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         super(pProcessor);
 
         MdmTransferFactory.getPushModel().addConnectListener(mPushConnectListener);
+
+        // 补丁：这里是为了解决激活时 由于 push 连接非常快，并且已经回调过 onPushDeviceToken 了 这里才去塞监听，导致监听无法回调的问题  -- by hyk 2021-01-07
+        if (MdmTransferFactory.getPushModel().isConnected()) {
+            mPushConnectListener.onConnected();
+        }
     }
 
 
