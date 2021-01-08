@@ -17,6 +17,7 @@ import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
@@ -207,7 +208,7 @@ public class MonitorModule implements IMonitor {
 //        MdmTransferFactory.getCommunicationModule().setDeviceInfoEvent(mDeviceInfoEvent);
 //        MdmTransferFactory.getCommunicationModule().setConnectListener(mAdhocConnectListener);
 
-        mContext = pContext.getApplicationContext();
+        mContext = AdhocBasicConfig.getInstance().getAppContext();
 //        mExecuteTime = new HashMap<>();
 //        mBackgroundThread = new HandlerThread("monitorthread");
 //        mBackgroundThread.start();
