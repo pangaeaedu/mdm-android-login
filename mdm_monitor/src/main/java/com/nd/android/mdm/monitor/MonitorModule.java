@@ -134,6 +134,7 @@ public class MonitorModule implements IMonitor {
 
 
     private MonitorModule() {
+        Logger.i(TAG, "application context is " + AdhocBasicConfig.getInstance().getAppContext());
         mContext = AdhocBasicConfig.getInstance().getAppContext();
 //        ILocationNavigation locationNavigation =
 //                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
