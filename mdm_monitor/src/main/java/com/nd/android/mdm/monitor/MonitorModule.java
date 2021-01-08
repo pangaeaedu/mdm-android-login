@@ -1,6 +1,5 @@
 package com.nd.android.mdm.monitor;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +10,6 @@ import android.graphics.Bitmap;
 import android.hardware.usb.UsbManager;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
@@ -137,6 +134,7 @@ public class MonitorModule implements IMonitor {
 
 
     private MonitorModule() {
+        mContext = AdhocBasicConfig.getInstance().getAppContext();
 //        ILocationNavigation locationNavigation =
 //                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
 //        if (locationNavigation != null) {
@@ -207,8 +205,6 @@ public class MonitorModule implements IMonitor {
     public void init(Context pContext) {
 //        MdmTransferFactory.getCommunicationModule().setDeviceInfoEvent(mDeviceInfoEvent);
 //        MdmTransferFactory.getCommunicationModule().setConnectListener(mAdhocConnectListener);
-
-        mContext = AdhocBasicConfig.getInstance().getAppContext();
 //        mExecuteTime = new HashMap<>();
 //        mBackgroundThread = new HandlerThread("monitorthread");
 //        mBackgroundThread.start();
