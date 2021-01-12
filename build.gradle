@@ -22,7 +22,7 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '2.0.566.859be95.hykencrypstorage'
+    adhoc_basic_version = '2.1.593.c5241b3.hykinitopt'
 
     mdm_biz_version = '1.14.696.a04c010-hykencrypstorage-SNAPSHOT'
 

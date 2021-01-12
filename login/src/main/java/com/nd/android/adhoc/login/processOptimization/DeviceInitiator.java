@@ -2,15 +2,14 @@ package com.nd.android.adhoc.login.processOptimization;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.ui.activity.ActivityStackManager;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IAdhocPushConnectListener;
@@ -133,8 +132,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
         DeviceIDSPUtils.saveDeviceIDToSp("");
 
-        ActivityStackManager.INSTANCE.closeAllActivitys();
-        System.exit(0);
+        AdhocExitAppManager.exitApp(0);
     }
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {

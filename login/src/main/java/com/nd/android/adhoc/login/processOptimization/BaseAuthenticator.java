@@ -8,6 +8,7 @@ import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
+import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
@@ -217,14 +218,17 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     }
 
     protected void sendFailedAndQuitApp(int pSec) {
+        Logger.e("yhq", "sendFailedAndQuitApp " + pSec);
         DeviceActivateBroadcastUtils.sendActivateFailedBroadcast();
-        try {
-            Logger.e("yhq", "sendFailedAndQuitApp " + pSec);
-            Thread.sleep(pSec * 1000);
-            ActivityStackManager.INSTANCE.closeAllActivitys();
-            System.exit(0);
-        } catch (Exception ignored) {
-        }
+
+        AdhocExitAppManager.exitApp(pSec * 1000);
+//        try {
+//            Thread.sleep(pSec * 1000);
+//            ActivityStackManager.INSTANCE.closeAllActivitys();
+//            System.exit(0);
+//
+//        } catch (Exception ignored) {
+//        }
     }
 
     protected Observable<DeviceStatus> activeUser(final ActivateUserType pUserType,
@@ -384,8 +388,10 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                 pE.printStackTrace();
             }
         }
-        ActivityStackManager.INSTANCE.closeAllActivitys();
-        System.exit(0);
+
+//        ActivityStackManager.INSTANCE.closeAllActivitys();
+//        System.exit(0);
+        AdhocExitAppManager.exitApp(0);
         return null;
     }
 
