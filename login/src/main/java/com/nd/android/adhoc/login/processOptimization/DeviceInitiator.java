@@ -58,6 +58,30 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
     public void checkLocalStatusAndServer(){
         reallyQueryDeviceStatusFromServer(DeviceInfoManager.getInstance().getDeviceID())
+                // 这里增加 如果当前状态是 已激活的，要获取一下 nodename、nodecode、groupcode 信息
+                .map(new Func1<DeviceStatus, DeviceStatus>() {
+                    @Override
+                    public DeviceStatus call(DeviceStatus deviceStatus) {
+                        if (DeviceStatus.Activated == deviceStatus) {
+                            try {
+                                String deviceId = AssistantBasicServiceFactory.getInstance().getSpConfig().getDeviceID();
+                                String serialNum = DeviceHelper.getSerialNumberThroughControl();
+                                UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                                QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceId, serialNum,
+                                        loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                if (DeviceStatus.Activated == result.getStatus()) {
+                                    // 记录当前的节点 code 和 名称
+                                    getConfig().saveNodeCode(result.getNodecode());
+                                    getConfig().saveNodeName(result.getNodename());
+                                    getConfig().saveGroupCode(result.getNodecode());
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return deviceStatus;
+                    }
+                })
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Subscriber<DeviceStatus>() {
