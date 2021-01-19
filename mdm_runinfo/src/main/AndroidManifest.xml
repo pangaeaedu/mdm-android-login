@@ -1,11 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.nd.android.mdm.runinfo">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.nd.android.mdm.runinfo">
 
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <application>
         <activity
             android:name="com.nd.android.mdm.appusage.AppUsageRequestActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
     </application>
 </manifest>
