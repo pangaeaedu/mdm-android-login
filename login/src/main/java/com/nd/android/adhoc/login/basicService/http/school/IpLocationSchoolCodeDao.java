@@ -27,7 +27,7 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("ip", pIp);
-            map.put("groupcpde", pRootCode);
+            map.put("groupcode", pRootCode);
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
@@ -49,7 +49,7 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
             map.put("scope", pScope);
             map.put("maptype", pMapType);
 
-            map.put("groupcpde", pRootCode);
+            map.put("groupcode", pRootCode);
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
