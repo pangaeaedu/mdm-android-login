@@ -33,11 +33,11 @@ public interface IHttpService {
 //                                      ActivateUserType pUserType, String pLoginToken) throws Exception;
 
     ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo, ActivateUserType pUserType,
-                                      String pLoginToken) throws Exception;
+                                      String pLoginToken,String pOrgId) throws Exception;
 
     ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo , String pSchoolGroupCode,
                                       ActivateUserType pUserType, String pLoginToken,
-                                      int pRealType) throws Exception;
+                                      int pRealType,String pOrgId) throws Exception;
 
     GetOldTokenResult getOldDeviceToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
                                         String pBlueToothMac, String pSerialNo, String pDeviceToken) throws Exception;

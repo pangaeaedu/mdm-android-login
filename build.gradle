@@ -27,7 +27,7 @@ ext {
 
     mdm_biz_version = '1.13.685.5196554.foromo2.9.0.6'
 
-    device_control_version = '1.11.548.f5f9d00.cbkeepaliveautoupdate'
+    device_control_version = '1.16.551.da6f56c.cbkeepaliveautoupdate'
     device_command_version = '2.6.420.2395e22'
 
     location_verison = '1.7.105.8d65b0b'

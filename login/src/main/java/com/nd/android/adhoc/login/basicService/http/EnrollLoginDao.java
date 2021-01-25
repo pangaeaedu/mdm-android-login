@@ -193,7 +193,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 //    }
 
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo,
-                                             ActivateUserType pUserType, String pLoginToken)
+                                             ActivateUserType pUserType, String pLoginToken,String pOrgId)
             throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -209,7 +209,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
             map.put("serial_no", pSerialNo);
             map.put("device_num", pDeviceSerialNo);
-
+            map.put("org_id",pOrgId);
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
 
@@ -227,7 +227,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
                                              String pSchoolGroupCode,
                                              String pDeviceSerialNo,
                                              ActivateUserType pUserType, String pLoginToken,
-                                             int pRealType)
+                                             int pRealType,String pOrgId)
             throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -248,7 +248,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
             map.put("realtype", pRealType);
             map.put("serial_no", pSerialNo);
             map.put("device_num", pDeviceSerialNo);
-
+            map.put("org_id",pOrgId);
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
 
