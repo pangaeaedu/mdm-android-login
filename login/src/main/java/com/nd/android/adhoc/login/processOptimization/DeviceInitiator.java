@@ -22,11 +22,14 @@ import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.utils.LoginArgumentUtils;
+import com.nd.android.adhoc.loginapi.IUserLoginWayConfirmRetrieve;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
 import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
 import com.nd.android.mdm.basic.ControlFactory;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -203,6 +206,23 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
         Log.e("yhq", "actualQueryDeviceStatus:" + pDeviceID);
         return queryDeviceStatusFromServer(pDeviceID)
+                .map(new Func1<QueryDeviceStatusResponse, QueryDeviceStatusResponse>() {
+                    @Override
+                    public QueryDeviceStatusResponse call(QueryDeviceStatusResponse response) {
+                        if(!response.getDeleteStatus()){
+                            Logger.e(TAG, "non delete status");
+                            return response;
+                        }
+                        Iterator<IUserLoginWayConfirmRetrieve> interceptors = AnnotationServiceLoader
+                                .load(IUserLoginWayConfirmRetrieve.class, IUserLoginWayConfirmRetrieve.class.getClassLoader()).iterator();
+                        if (!interceptors.hasNext()) {
+                            Logger.e(TAG, "no IUserLoginWayConfirmRetrieve impl, which means go on");
+                            return response;
+                        }
+                        interceptors.next().pauseAutoLogin();
+                        return response;
+                    }
+                })
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
@@ -257,8 +277,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     } else {
                         deviceID = loadDeviceIDFromPrevSpOrSDCard();
-
-
                         ConfirmDeviceIDResponse result = confirmDeviceIDFromServer(deviceID);
 
                         if (!result.isSuccess()) {

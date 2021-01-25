@@ -23,6 +23,7 @@ public class QueryDeviceStatusResponse {
 
     private String nodecode = "";
     private String nodename = "";
+    private boolean delete_status = false;
 
     private String selSchoolGroupCode = "";
 
@@ -80,5 +81,9 @@ public class QueryDeviceStatusResponse {
                 + " login_auto:" + login_auto
                 + " nick_name:" + nick_name
                 + " jobnum:" + jobnum;
+    }
+
+    public boolean getDeleteStatus() {
+        return delete_status;
     }
 }
