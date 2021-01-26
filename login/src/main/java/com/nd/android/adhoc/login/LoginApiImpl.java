@@ -77,11 +77,6 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
     }
 
     @Override
-    public Observable<DeviceStatus> login(@NonNull final String pUserName, @NonNull final String pPassword) {
-        return login(pUserName, pPassword, "");
-    }
-
-    @Override
     public Observable<DeviceStatus> login(@NonNull final String pUserName, @NonNull final String
             pPassword, final String pValidationCode) {
         //如果device id没有设置上去，说明初始化没有完成，则要先走一次初始化的动作
@@ -108,6 +103,29 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
         IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
                 .getUserAuthenticator();
         return authenticator.login(pUserName, pPassword, pValidationCode);
+    }
+
+    @Override
+    public Observable<DeviceStatus> login(@NonNull final String pRootCode, @NonNull final String pSchoolCode) {
+        if (TextUtils.isEmpty(DeviceInfoManager.getInstance().getDeviceID())) {
+        IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance()
+                .getDeviceInitiator();
+
+        return initiator.init()
+                .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
+                    @Override
+                    public Observable<DeviceStatus> call(DeviceStatus pStatus) {
+                        if (DeviceStatus.isStatusUnLogin(pStatus)) {
+                            IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                                    .getUserAuthenticator();
+                            return authenticator.login(pRootCode, pSchoolCode);
+                        }
+
+                        return Observable.error(new AutoLoginMeetUserLoginException("unknown"));
+                    }
+                });
+    }
+        return null;
     }
 
 
