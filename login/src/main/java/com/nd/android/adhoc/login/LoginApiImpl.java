@@ -108,24 +108,28 @@ public class LoginApiImpl extends BaseAbilityProvider implements ILoginApi {
     @Override
     public Observable<DeviceStatus> login(@NonNull final String pRootCode, @NonNull final String pSchoolCode) {
         if (TextUtils.isEmpty(DeviceInfoManager.getInstance().getDeviceID())) {
-        IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance()
-                .getDeviceInitiator();
 
-        return initiator.init()
-                .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
-                    @Override
-                    public Observable<DeviceStatus> call(DeviceStatus pStatus) {
-                        if (DeviceStatus.isStatusUnLogin(pStatus)) {
-                            IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
-                                    .getUserAuthenticator();
-                            return authenticator.login(pRootCode, pSchoolCode);
+            IDeviceInitiator initiator = AssistantAuthenticSystem.getInstance()
+                    .getDeviceInitiator();
+
+            return initiator.init()
+                    .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
+                        @Override
+                        public Observable<DeviceStatus> call(DeviceStatus pStatus) {
+                            if (DeviceStatus.isStatusUnLogin(pStatus)) {
+                                IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                                        .getUserAuthenticator();
+                                return authenticator.login(pRootCode, pSchoolCode);
+                            }
+
+                            return Observable.error(new AutoLoginMeetUserLoginException("unknown"));
                         }
+                    });
+        }
 
-                        return Observable.error(new AutoLoginMeetUserLoginException("unknown"));
-                    }
-                });
-    }
-        return null;
+        IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                .getUserAuthenticator();
+        return authenticator.login(pRootCode, pSchoolCode);
     }
 
 
