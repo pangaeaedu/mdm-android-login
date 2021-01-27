@@ -7,6 +7,7 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.assistant.sdk.deviceInfo.LoginType;
 import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
@@ -313,7 +314,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                     // 最多只试三次
                     while (true) {
                         retryCount++;
-                        if (loginConfig != null && loginConfig.isAutoLogin()) {
+                        if (loginConfig != null && (loginConfig.isAutoLogin() || loginConfig.getLoginType() == LoginType.TYPE_ORG)) {
                             response = retryActivateUser(deviceID, serialNum, deviceSerialNumber, schoolGroupCode,
                                     pUserType, pLoginToken, loginConfig.getActivateRealType(),orgId);
                         } else {
