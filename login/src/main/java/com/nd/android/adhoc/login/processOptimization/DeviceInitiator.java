@@ -209,6 +209,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 .map(new Func1<QueryDeviceStatusResponse, QueryDeviceStatusResponse>() {
                     @Override
                     public QueryDeviceStatusResponse call(QueryDeviceStatusResponse response) {
+                        if(!response.isAutoLogin()){
+                            Logger.e(TAG, "non autologin");
+                            return response;
+                        }
+
                         if(!response.getDeleteStatus()){
                             Logger.e(TAG, "non delete status");
                             return response;
