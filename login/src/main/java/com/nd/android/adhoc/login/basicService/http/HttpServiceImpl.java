@@ -92,10 +92,10 @@ public class HttpServiceImpl implements IHttpService {
 //    }
 
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo, ActivateUserType pUserType,
-                                             String pLoginToken) throws Exception {
+                                             String pLoginToken,String pOrgId) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
         ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo, pDeviceSerialNo, pUserType,
-                pLoginToken);
+                pLoginToken,pOrgId);
 
         if (!response.isSuccess()) {
             throw new ActivateUserServerException("active user failed");
@@ -108,13 +108,13 @@ public class HttpServiceImpl implements IHttpService {
                                              String pDeviceSerialNo,
                                              String pSchoolGroupCode,
                                              ActivateUserType pUserType,
-                                             String pLoginToken, int pRealType) throws Exception {
+                                             String pLoginToken, int pRealType,String pOrgId) throws Exception {
         EnrollLoginDao dao = new EnrollLoginDao(getBaseUrl());
         ActivateUserResponse response = dao.activateUser(pDeviceID, pSerialNo,
                 pSchoolGroupCode,
                 pDeviceSerialNo,
                 pUserType,
-                pLoginToken, pRealType);
+                pLoginToken, pRealType,pOrgId);
 
         return response;
     }

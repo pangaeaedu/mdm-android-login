@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.log.Logger;
-import com.nd.android.adhoc.basic.service.AdhocIntentService;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiConstant;
 
 /**

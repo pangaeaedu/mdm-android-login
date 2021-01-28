@@ -7,6 +7,7 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.assistant.sdk.deviceInfo.LoginType;
 import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
@@ -303,22 +304,21 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         pSubscriber.onError(exception);
                         return;
                     }
-
+                    String orgId = DeviceHelper.getOrgIdThroughControl();
                     ActivateUserResponse response;
 
                     DeviceStatus status;
                     int retryCount = 0;
 
                     String schoolGroupCode = pSchoolGroupCode;
-
                     // 最多只试三次
                     while (true) {
                         retryCount++;
-                        if (loginConfig != null && loginConfig.isAutoLogin()) {
+                        if (loginConfig != null && (loginConfig.isAutoLogin() || loginConfig.getLoginType() == LoginType.TYPE_ORG)) {
                             response = retryActivateUser(deviceID, serialNum, deviceSerialNumber, schoolGroupCode,
-                                    pUserType, pLoginToken, loginConfig.getActivateRealType());
+                                    pUserType, pLoginToken, loginConfig.getActivateRealType(),orgId);
                         } else {
-                            response = getHttpService().activateUser(deviceID, serialNum, deviceSerialNumber, pUserType, pLoginToken);
+                            response = getHttpService().activateUser(deviceID, serialNum, deviceSerialNumber, pUserType, pLoginToken,orgId);
                         }
 
                         if (response == null) {
@@ -415,7 +415,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                                                    String pDeviceSerialNumber,
                                                    String pSchoolGroupCode,
                                                    ActivateUserType pUserType, String pLoginToken,
-                                                   int pActivateRealType) throws Exception {
+                                                   int pActivateRealType,String pOrgId) throws Exception {
         //自动登录的情况下，需要把realtype传上去，重试三次，因为大
         Log.e("yhq", "retryActivateUser school group code:" + pSchoolGroupCode);
         final int RetryTime = 3;
@@ -423,7 +423,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             ActivateUserResponse response = null;
             try {
                 response = getHttpService().activateUser(pDeviceID,
-                        pSerialNum, pDeviceSerialNumber,pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType);
+                        pSerialNum, pDeviceSerialNumber,pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType,pOrgId);
                 if (response != null && response.getErrcode() == 0) {
                     return response;
                 }

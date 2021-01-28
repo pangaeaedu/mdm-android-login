@@ -9,6 +9,7 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.utils.MD5ArithmeticUtils;
 import com.nd.android.adhoc.control.define.IControl_DeviceSerial;
+import com.nd.android.adhoc.control.define.IControl_OrgId;
 import com.nd.android.mdm.basic.ControlFactory;
 
 import java.io.BufferedReader;
@@ -126,6 +127,19 @@ public class DeviceHelper {
         }
 
         return getSerialNumber();
+    }
+
+    public static String getOrgIdThroughControl(){
+        IControl_OrgId control = ControlFactory.getInstance().getControl
+                (IControl_OrgId.class);
+        try {
+            if (control != null) {
+                return control.getOrgId();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
 
