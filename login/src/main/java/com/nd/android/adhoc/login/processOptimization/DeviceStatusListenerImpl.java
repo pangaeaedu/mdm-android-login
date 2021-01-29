@@ -1,14 +1,19 @@
 package com.nd.android.adhoc.login.processOptimization;
 
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -25,40 +30,82 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
             return;
         }
 
+        IPushModule module = MdmTransferFactory.getPushModel();
+        String pushID = module.getDeviceId();
+
+        String spPushId = AssistantBasicServiceFactory.getInstance().getSpConfig().getPushID();
         Log.e("yhq", "onDeviceActivated");
-        mSubscription = DeviceInfoManager.getInstance()
-                .getPushIDSubject().asObservable().take(1)   //取第一个，将长监听转成单次监听，
-                .flatMap(new Func1<String, Observable<Void>>() {// 这样取一次后，后续的调用流就能走到onComplete
-                    @Override
-                    public Observable<Void> call(String pS) {
-                        try {
-                            updatePolicy();
+
+        if (TextUtils.isEmpty(spPushId) || !spPushId.equals(pushID)) {
+            Log.e("yhq", "subject pushId observable");
+
+            mSubscription = DeviceInfoManager.getInstance()
+                    .getPushIDSubject().asObservable().take(1)   //取第一个，将长监听转成单次监听，
+                    .flatMap(new Func1<String, Observable<Void>>() {// 这样取一次后，后续的调用流就能走到onComplete
+                        @Override
+                        public Observable<Void> call(String pS) {
+                            try {
+                                updatePolicy();
 //                            requestPolicySet();
-                            Log.e("yhq", "requestPolicySet finish");
-                            return Observable.just(null);
-                        } catch (Exception e) {
-                            Log.e("yhq", "requestPolicySet error:"+e.getMessage());
-                            return Observable.error(e);
+                                Log.e("yhq", "requestPolicySet finish");
+                                return Observable.just(null);
+                            } catch (Exception e) {
+                                Log.e("yhq", "requestPolicySet error:" + e.getMessage());
+                                return Observable.error(e);
+                            }
                         }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Void>() {
-                    @Override
-                    public void onCompleted() {
-                        mSubscription = null;
-                    }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Observer<Void>() {
+                        @Override
+                        public void onCompleted() {
+                            mSubscription = null;
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        mSubscription = null;
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            mSubscription = null;
+                        }
 
-                    @Override
-                    public void onNext(Void pVoid) {
-                    }
-                });
+                        @Override
+                        public void onNext(Void pVoid) {
+                        }
+                    });
+            return;
+        }
+
+        Log.e("yhq", "subject pushId observable");
+        mSubscription = Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    updatePolicy();
+//                            requestPolicySet();
+                    Log.e("yhq", "requestPolicySet finish");
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    Log.e("yhq", "requestPolicySet error:" + e.getMessage());
+                    subscriber.onError(e);
+                }
+            }
+        }).subscribe(new Subscriber<Void>() {
+            @Override
+            public void onCompleted() {
+                mSubscription = null;
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mSubscription = null;
+            }
+
+            @Override
+            public void onNext(Void aVoid) {
+
+            }
+        });
+
     }
 
     @Override
