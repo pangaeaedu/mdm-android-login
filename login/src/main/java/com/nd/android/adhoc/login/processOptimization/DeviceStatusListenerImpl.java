@@ -7,6 +7,7 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.IPushModule;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
@@ -26,7 +27,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
     // 设备状态是激活的情况下，每次都要去请求PolicySet.
     // 前提是PushID取到了。所以如果PushID没取到，还得等着
     private void onDeviceActivated(){
-        if(mSubscription != null){
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
             return;
         }
 
@@ -36,7 +37,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
         String spPushId = AssistantBasicServiceFactory.getInstance().getSpConfig().getPushID();
         Log.e("yhq", "onDeviceActivated");
 
-        if (TextUtils.isEmpty(spPushId) || !spPushId.equals(pushID)) {
+        if (TextUtils.isEmpty(spPushId) || !spPushId.equals(pushID) || !module.isConnected()) {
             Log.e("yhq", "subject pushId observable");
 
             mSubscription = DeviceInfoManager.getInstance()
@@ -59,12 +60,14 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
                     .subscribe(new Observer<Void>() {
                         @Override
                         public void onCompleted() {
+                            AdhocRxJavaUtil.doUnsubscribe(mSubscription);
                             mSubscription = null;
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
+                            AdhocRxJavaUtil.doUnsubscribe(mSubscription);
                             mSubscription = null;
                         }
 
@@ -92,11 +95,13 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
         }).subscribe(new Subscriber<Void>() {
             @Override
             public void onCompleted() {
+                AdhocRxJavaUtil.doUnsubscribe(mSubscription);
                 mSubscription = null;
             }
 
             @Override
             public void onError(Throwable e) {
+                AdhocRxJavaUtil.doUnsubscribe(mSubscription);
                 mSubscription = null;
             }
 
