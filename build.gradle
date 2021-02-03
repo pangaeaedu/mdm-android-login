@@ -22,13 +22,14 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '1.9.530.784a6a9.foromo2096'
+    adhoc_basic_version = '2.0.566.859be95.hykencrypstorage'
 
+    mdm_biz_version = '1.14.696.a04c010-hykencrypstorage-SNAPSHOT'
 
     mdm_biz_version = '1.13.685.5196554.foromo2.9.0.6'
 
     device_control_version = '1.16.551.da6f56c.cbkeepaliveautoupdate'
-    device_command_version = '2.6.420.2395e22'
+    device_command_version = '2.7.467.d816dd8-features.dev'
 
     location_verison = '1.7.105.8d65b0b'
     file_transfer_version = '1.1.34.3cff954'
@@ -40,7 +41,7 @@ ext {
     screen_capture_version = '1.5.2.327.bec9c42-feature-rtmpcb0.8.2-SNAPSHOT'
     adhoc_push_util_version = '0.5.27.112.a03c223-features-lbwedgecompute-SNAPSHOT'
 
-    policy_version = '2.3.176.b3b8f52'
+    policy_version = '2.6.214.616ae89.hyknewpolicy'
     deliver_version = '2.3.160.4670ee0-features-lsj0.8.xhighschool-SNAPSHOT'
 
     adhoc_firewall_version = '0.7.55.316bbfa'

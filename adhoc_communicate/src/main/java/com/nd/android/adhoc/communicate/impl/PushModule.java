@@ -84,9 +84,10 @@ class PushModule implements IPushModule {
         public void onPushDataArrived(IPushChannel pChannel, IPushRecvData pData) {
             try {
                 String data = new String(pData.getContent());
-                Logger.e(TAG, "onPushMessage:" + data);
                 JSONObject object = new JSONObject(data);
                 int type = object.optInt("msgtype");
+
+                Logger.i(TAG, "onPushMessage, onPushDataArrived: msgtype = " + type);
 
                 for (IPushDataOperator pushDataOperator : mPushDataOperators) {
                     if (pushDataOperator == null) {
@@ -105,11 +106,12 @@ class PushModule implements IPushModule {
 //                } else {
 //                    doCmdReceived(content);
 //                }
-                Logger.d("yhq_push", "after  onPushMessage:" + data);
+//                Logger.d("yhq_push", "after  onPushMessage:" + data);
             } catch (Exception e) {
                 e.printStackTrace();
-                Logger.e(TAG, "onPushDataArrived error:" + e.toString() +
-                        "\n with messege:" + new String(pData.getContent()));
+                Logger.e(TAG, "onPushDataArrived error:" + e.toString());
+                Logger.d(TAG, "onPushDataArrived error:" + e.toString() +
+                        ", with messege:" + new String(pData.getContent()));
             }
         }
 
@@ -119,7 +121,7 @@ class PushModule implements IPushModule {
     };
 
     PushModule() {
-        Logger.d(TAG, "init push module");
+        Logger.i(TAG, "init push module");
         mContext = AdhocBasicConfig.getInstance().getAppContext();
         mConnectListeners = new CopyOnWriteArrayList<>();
 
@@ -149,7 +151,7 @@ class PushModule implements IPushModule {
         }
 
         mPushChannel = channels.get(0);
-        Logger.d(TAG, "initPushChannel :" + mPushChannel.getClass().getCanonicalName());
+        Logger.i(TAG, "initPushChannel :" + mPushChannel.getClass().getCanonicalName());
         mPushChannel.addConnectListener(mChannelConnectListener);
         mPushChannel.addDataListener(mChannelDataListener);
         mPushChannel.init(mContext)
@@ -167,7 +169,7 @@ class PushModule implements IPushModule {
 
                     @Override
                     public void onNext(Boolean pBoolean) {
-                        Logger.d(TAG, "init push channel result:" + pBoolean);
+                        Logger.i(TAG, "init push channel result:" + pBoolean);
                     }
                 });
     }
@@ -190,7 +192,7 @@ class PushModule implements IPushModule {
     @Override
     public void start() {
 
-        Logger.d(TAG, "do start");
+        Logger.i(TAG, "do start");
         mPushChannel.start()
                 .observeOn(Schedulers.from(mExecutorService))
                 .subscribe(new Observer<Boolean>() {
@@ -300,14 +302,14 @@ class PushModule implements IPushModule {
 
     private void cacheUpStreamMsg(String topic,String msgid, long ttlSeconds, String contentType,
                                   String content) {
-        Logger.d(TAG, "cacheUpStreamMsg: msgid =  " + msgid);
+        Logger.i(TAG, "cacheUpStreamMsg: msgid =  " + msgid);
         UpStreamData data = new UpStreamData(topic,System.currentTimeMillis(), msgid, ttlSeconds,
                 contentType, content);
         mUpStreamMsgCache.add(data);
     }
 
     private synchronized void notifyConnectStatus() {
-        Logger.d(TAG, "notifyConnectStatus");
+        Logger.i(TAG, "notifyConnectStatus");
 
         discardTimeoutMsg();
 
@@ -324,7 +326,7 @@ class PushModule implements IPushModule {
 
     private void discardTimeoutMsg() {
         //CopyOnWriteArrayList不能通过　iterator删除，直接边循环边删除
-        Logger.d(TAG, "discardTimeoutMsg: mUpStreamMsgCache.size = " + mUpStreamMsgCache.size());
+        Logger.i(TAG, "discardTimeoutMsg: mUpStreamMsgCache.size = " + mUpStreamMsgCache.size());
         for (UpStreamData data : mUpStreamMsgCache) {
             if (data == null) {
                 continue;
@@ -332,16 +334,16 @@ class PushModule implements IPushModule {
 
             long expireTime = MdmTransferConfig.getRequestTimeout();
             if (System.currentTimeMillis() - data.getSendTime() > expireTime) {
-                Log.e(TAG, "discardTimeoutMsg id:" + data.getMsgID()+ ", topic: " + data.getTopic());
+                Logger.i(TAG, "discardTimeoutMsg id:" + data.getMsgID()+ ", topic: " + data.getTopic());
                 mUpStreamMsgCache.remove(data);
             } else {
-                Log.e(TAG, "do not need discardTimeoutMsg: msg id:" + data.getMsgID()+ ", topic: " + data.getTopic());
+                Logger.i(TAG, "do not need discardTimeoutMsg: msg id:" + data.getMsgID()+ ", topic: " + data.getTopic());
             }
         }
     }
 
     private void resendMsgThenClearCache() {
-        Logger.d(TAG, "resendMsgThenClearCache: mUpStreamMsgCache.size = " + mUpStreamMsgCache.size());
+        Logger.i(TAG, "resendMsgThenClearCache: mUpStreamMsgCache.size = " + mUpStreamMsgCache.size());
         for (UpStreamData data : mUpStreamMsgCache) {
             if (data == null) {
                 continue;
@@ -349,11 +351,11 @@ class PushModule implements IPushModule {
 
             long expireTime = MdmTransferConfig.getRequestTimeout();
             if (System.currentTimeMillis() - data.getSendTime() < expireTime) {
-                Log.e(TAG, "resendMsgThenClearCache: msg id:" + data.getMsgID() + ", topic: " + data.getTopic());
+                Logger.i(TAG, "resendMsgThenClearCache: msg id:" + data.getMsgID() + ", topic: " + data.getTopic());
                 sendUpStreamMsg(data.getTopic(), data.getMsgID(), data.getTTLSeconds(), data.getContentType(),
                         data.getContent());
             } else {
-                Log.e(TAG, "do not need resendMsgThenClearCache: msg id:" + data.getMsgID()+", topic: " + data.getTopic());
+                Logger.i(TAG, "do not need resendMsgThenClearCache: msg id:" + data.getMsgID()+", topic: " + data.getTopic());
             }
         }
 

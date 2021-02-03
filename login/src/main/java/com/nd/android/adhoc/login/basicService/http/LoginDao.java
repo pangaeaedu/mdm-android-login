@@ -56,13 +56,14 @@ public class LoginDao extends AdhocHttpDao {
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
 
-            Logger.d(TAG,"bind device id request:"+content);
+            Logger.i(TAG, "bind device id request");
+            Logger.d(TAG, "bind device id request:" + content);
             BindResult result = postAction().post("/v1.1/registe/pushid/", BindResult.class,
                     content, null);
-            Logger.d(TAG,"bind device result:"+result.isSuccess());
+            Logger.i(TAG, "bind device result:" + result.isSuccess());
             return result;
         } catch (RuntimeException e) {
-            Logger.d(TAG,"bind device id result:"+e.getMessage());
+            Logger.e(TAG, "bind device id result:" + e.getMessage());
             throw new AdhocHttpException("", AhdocHttpConstants.ADHOC_HTTP_ERROR);
         }
     }

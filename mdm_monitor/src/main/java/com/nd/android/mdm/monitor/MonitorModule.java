@@ -570,6 +570,8 @@ public class MonitorModule implements IMonitor {
 //        data.put("resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
         putJsonData(data,"resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
 
+        putJsonData(data,"device_size_inch", AdhocDeviceUtil.getScreenSizeInch());
+
 //        data.put("bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
         putJsonData(data,"bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
 

@@ -6,12 +6,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.log.Logger;
 
 public class DeviceActivateBroadcastUtils {
     private static final String TAG = "yhq";
 
     public static void sendActivateSuccessBroadcast(){
-        Log.e(TAG, "sendActivateSuccessBroadcast: com.nd.sdp.adhoc.main.ui.login.activated");
+        Logger.i(TAG, "sendActivateSuccessBroadcast");
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         Intent intent = new Intent();
         intent.setAction("com.nd.sdp.adhoc.main.ui.login.activated");
@@ -19,7 +20,7 @@ public class DeviceActivateBroadcastUtils {
     }
 
     public static void sendActivateFailedBroadcast(){
-        Log.e(TAG, "sendActivateFailedBroadcast: com.nd.sdp.adhoc.main.ui.login.activated.failed");
+        Logger.i(TAG, "sendActivateFailedBroadcast");
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         Intent intent = new Intent();
         intent.setAction("com.nd.sdp.adhoc.main.ui.login.activated.failed");

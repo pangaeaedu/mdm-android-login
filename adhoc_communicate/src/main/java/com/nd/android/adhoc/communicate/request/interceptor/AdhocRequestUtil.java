@@ -51,8 +51,9 @@ class AdhocRequestUtil {
             if (contentType != null && contentType.toString().trim().contains(SUPPORT_CONTENT_TYPE)) {
                 charset = contentType.charset(Charset.forName("UTF-8"));
             } else {
-                Logger.w(TAG, contentType != null ? "Unsupported contentType: " + contentType.toString() : "contentType is null");
-                throw new AdhocException(contentType != null ? "Unsupported contentType: " + contentType.toString() : "contentType is null");
+                String pMessage = contentType != null ? "Unsupported contentType: " + contentType.toString() : "contentType is null";
+                Logger.w(TAG, pMessage);
+                throw new AdhocException(pMessage);
             }
             if (isPlaintext(buffer)) {
                 return buffer.readString(charset);

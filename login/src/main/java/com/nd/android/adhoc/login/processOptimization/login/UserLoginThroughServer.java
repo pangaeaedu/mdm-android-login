@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDEncryptUtils;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.login.basicService.BasicServiceFactory;
 import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.http.IHttpService;
@@ -39,7 +40,7 @@ public class UserLoginThroughServer implements IUserLogin {
                     Iterator<IUserLoginInterceptor> interceptors = AnnotationServiceLoader
                             .load(IUserLoginInterceptor.class).iterator();
                     if (!interceptors.hasNext()) {
-                        Log.e("UserIntercept", "interceptor not found");
+                        Logger.i("UserIntercept", "interceptor not found");
                         pSubscriber.onNext(returnResult);
                         pSubscriber.onCompleted();
                         return;
@@ -48,7 +49,7 @@ public class UserLoginThroughServer implements IUserLogin {
                     IUserLoginInterceptor firstInterceptor = interceptors.next();
                     boolean needContinue = firstInterceptor.isNeedContinueLogin(pUserName,
                             pPassword);
-                    Log.e("UserIntercept", "interceptor found");
+                    Logger.i("UserIntercept", "interceptor found");
                     if(needContinue){
                         pSubscriber.onNext(returnResult);
                         pSubscriber.onCompleted();

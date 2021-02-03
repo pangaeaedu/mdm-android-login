@@ -7,6 +7,7 @@ import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.IPushModule;
@@ -35,7 +36,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
         String pushID = module.getDeviceId();
 
         String spPushId = AssistantBasicServiceFactory.getInstance().getSpConfig().getPushID();
-        Log.e("yhq", "onDeviceActivated");
+        Logger.i("yhq", "onDeviceActivated");
 
         if (TextUtils.isEmpty(spPushId) || !spPushId.equals(pushID) || !module.isConnected()) {
             Log.e("yhq", "subject pushId observable");
@@ -48,10 +49,10 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
                             try {
                                 updatePolicy();
 //                            requestPolicySet();
-                                Log.e("yhq", "requestPolicySet finish");
+                                Logger.i("yhq", "requestPolicySet finish");
                                 return Observable.just(null);
                             } catch (Exception e) {
-                                Log.e("yhq", "requestPolicySet error:" + e.getMessage());
+                                Logger.e("yhq", "requestPolicySet error:" + e.getMessage());
                                 return Observable.error(e);
                             }
                         }
@@ -66,7 +67,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
 
                         @Override
                         public void onError(Throwable e) {
-                            e.printStackTrace();
+                            Logger.e(TAG, "subject pushid error: " + e);
                             AdhocRxJavaUtil.doUnsubscribe(mSubscription);
                             mSubscription = null;
                         }
@@ -85,10 +86,10 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
                 try {
                     updatePolicy();
 //                            requestPolicySet();
-                    Log.e("yhq", "requestPolicySet finish");
+                    Logger.i("yhq", "requestPolicySet finish");
                     subscriber.onCompleted();
                 } catch (Exception e) {
-                    Log.e("yhq", "requestPolicySet error:" + e.getMessage());
+                    Logger.e("yhq", "requestPolicySet error:" + e.getMessage());
                     subscriber.onError(e);
                 }
             }
@@ -115,7 +116,7 @@ public class DeviceStatusListenerImpl extends BaseAbilityProvider implements IDe
 
     @Override
     public void onDeviceStatusChanged(DeviceStatus pStatus) {
-        Log.e("yhq", "onDeviceStatusChanged:"+pStatus);
+        Logger.i("yhq", "onDeviceStatusChanged:"+pStatus);
         DeviceInfoManager.getInstance().setCurrentStatus(pStatus);
         if (pStatus == DeviceStatus.Activated) {
             onDeviceActivated();

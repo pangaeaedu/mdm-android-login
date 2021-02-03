@@ -41,7 +41,7 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
             return;
         }
 
-        Log.e("yhq", "init Device");
+        Logger.i("yhq", "init Device");
         api.initDevice()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<DeviceStatus>() {
@@ -56,7 +56,7 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
                             return;
                         }
 
-                        Log.e("yhq", "init Device error:" + e.getMessage());
+                        Logger.e("yhq", "init Device error:" + e.getMessage());
                         if(!TextUtils.isEmpty(DeviceInfoManager.getInstance().getDeviceID())) {
                             updatePolicy();
                         }
@@ -83,7 +83,7 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
     }
 
     private void updatePolicy() {
-        Log.e("yhq", "init Device updatePolicy");
+        Logger.i("yhq", "init Device updatePolicy");
         IAdhocPolicyLifeCycleProvider policyLifeCycleProvider =
                 (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
                         .getAdhocRouter().build(IAdhocPolicyLifeCycleProvider.ROUTE_PATH).navigation();

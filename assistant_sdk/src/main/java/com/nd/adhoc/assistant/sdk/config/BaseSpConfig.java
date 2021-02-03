@@ -1,17 +1,19 @@
 package com.nd.adhoc.assistant.sdk.config;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
+import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 
 
 public class BaseSpConfig {
     private String mSpName = "";
-    private SharedPreferences mPreferences = null;
+    private ISharedPreferenceModel mPreferences = null;
     private Context mContext = null;
 
-    public BaseSpConfig(@NonNull Context pContext, @NonNull String pSpName){
+    public BaseSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         mContext = pContext;
         mSpName = pSpName;
     }
@@ -20,80 +22,80 @@ public class BaseSpConfig {
         if (TextUtils.isEmpty(key)){
             return;
         }
-        getDefault().edit().putString(key,value).commit();
+        getDefault().putString(key, value).commit();
     }
 
     public void saveString(String key,String value){
         if (TextUtils.isEmpty(key)){
             return;
         }
-        getDefault().edit().putString(key,value).apply();
+        getDefault().putString(key, value).apply();
     }
 
-    public void saveLong(String key,long value){
-        if (TextUtils.isEmpty(key)){
+    public void saveLong(String key, long value) {
+        if (TextUtils.isEmpty(key)) {
             return;
         }
-        getDefault().edit().putLong(key,value).apply();
+        getDefault().putLong(key, value).apply();
     }
 
-    public void saveInt(String key,int value){
-        if (TextUtils.isEmpty(key)){
+    public void saveInt(String key, int value) {
+        if (TextUtils.isEmpty(key)) {
             return;
         }
-        getDefault().edit().putInt(key,value).apply();
+        getDefault().putInt(key, value).apply();
     }
 
-    public Boolean getBoolean(@NonNull String pKey){
-        if(TextUtils.isEmpty(pKey)){
+    public Boolean getBoolean(@NonNull String pKey) {
+        if (TextUtils.isEmpty(pKey)) {
             return false;
         }
 
         return getDefault().getBoolean(pKey, false);
     }
 
-    public void saveBoolean(String pKey, boolean pValue){
-        if (TextUtils.isEmpty(pKey)){
+    public void saveBoolean(String pKey, boolean pValue) {
+        if (TextUtils.isEmpty(pKey)) {
             return;
         }
-        getDefault().edit().putBoolean(pKey,pValue).apply();
+        getDefault().putBoolean(pKey, pValue).apply();
     }
 
-    public String getString(String key){
-        if (TextUtils.isEmpty(key)){
+    public String getString(String key) {
+        if (TextUtils.isEmpty(key)) {
             return "";
         }
-        return getDefault().getString(key,"");
+        return getDefault().getString(key, "");
     }
 
-    public long getLong(String key){
-        if (TextUtils.isEmpty(key)){
+    public long getLong(String key) {
+        if (TextUtils.isEmpty(key)) {
             return 0;
         }
-        return getDefault().getLong(key,0);
+        return getDefault().getLong(key, 0);
     }
 
-    public long getLong(String key,long defaultValue){
-        if (TextUtils.isEmpty(key)){
+    public long getLong(String key, long defaultValue) {
+        if (TextUtils.isEmpty(key)) {
             return defaultValue;
         }
-        return getDefault().getLong(key,defaultValue);
+        return getDefault().getLong(key, defaultValue);
     }
 
-    public int getInt(String key,int defaultValue){
-        if (TextUtils.isEmpty(key)){
+    public int getInt(String key, int defaultValue) {
+        if (TextUtils.isEmpty(key)) {
             return defaultValue;
         }
-        return getDefault().getInt(key,defaultValue);
+        return getDefault().getInt(key, defaultValue);
     }
 
-    private SharedPreferences getDefault(){
-        if(mPreferences == null){
-            if(mContext == null){
+    private ISharedPreferenceModel getDefault() {
+        if (mPreferences == null) {
+            if (mContext == null) {
                 throw new RuntimeException("get content from appfactory failed");
             }
 
-            mPreferences = mContext.getSharedPreferences(mSpName, Context.MODE_PRIVATE);
+            mPreferences = SharedPreferenceFactory.getInstance().getModel(mContext, mSpName, Context.MODE_PRIVATE);
         }
         return mPreferences;
     }

@@ -134,9 +134,9 @@ public class librtmp implements ScreenCaptureDataCallback {
     }
 
     private boolean doConnect() {
-        Logger.d(TAG, "doConnect");
+        Logger.i(TAG, "doConnect");
         boolean connret = connect(mUrl, mWidth, mHeight, mFrameRate);
-        Logger.d(TAG, "doConnect result = " + connret);
+        Logger.i(TAG, "doConnect result = " + connret);
         if (!mStarted.get()) {
             if (connret) {
                 doDisconnect();
@@ -171,7 +171,7 @@ public class librtmp implements ScreenCaptureDataCallback {
     }
 
     private void startInputStream(int type) {
-        Logger.d(TAG, "startInputStream:" + type);
+        Logger.i(TAG, "startInputStream:" + type);
         if (mType != type) {
             stopInputStream();
         }
@@ -183,25 +183,25 @@ public class librtmp implements ScreenCaptureDataCallback {
                 FloatCamera.show(mContext, type, mWidth, mHeight, mFrameRate, mBitRate, mQuality, sSendCallback);
                 return;
             case TYPE_SCREEN:
-                Logger.d(TAG, "TYPE_SCREEN");
+                Logger.i(TAG, "TYPE_SCREEN");
                 notifyStart();
                 postDesktopResolution();
         }
     }
 
     private void stopInputStream() {
-        Logger.d(TAG, "librtmp stop inputstream:" + mType);
+        Logger.i(TAG, "librtmp stop inputstream:" + mType);
         switch (mType) {
             case TYPE_NONE:
                 return;
             case TYPE_SCREEN:
-                Logger.d(TAG, "stop screencast");
+                Logger.i(TAG, "stop screencast");
                 notifyStop();
                 break;
             case TYPE_CAMERA_BACK:
             case TYPE_CAMERA_FRONT:
 //                    NativeVideoCapture.JNIStopVideoCapture();
-                Logger.d(TAG, "stop camera");
+                Logger.i(TAG, "stop camera");
                 FloatCamera.hide();
                 notifyStop();
                 break;
@@ -210,11 +210,11 @@ public class librtmp implements ScreenCaptureDataCallback {
     }
 
     private void notifyStart() {
-        Logger.d(TAG, "notifyStart sysVersion:" + sysVersion+"; sScreenCaptureCallbacks.size:"+sScreenCaptureCallbacks.size());
+        Logger.i(TAG, "notifyStart sysVersion:" + sysVersion+"; sScreenCaptureCallbacks.size:"+sScreenCaptureCallbacks.size());
         if (sysVersion >= Build.VERSION_CODES.LOLLIPOP) {
-            Logger.d(TAG, "notifyStart sysVersion");
+            Logger.i(TAG, "notifyStart sysVersion");
             ScreencastActivity.startCapture(mWidth, mHeight, mFrameRate, mBitRate, sSendCallback);
-            Logger.d(TAG, "notifyStart sysVersion end");
+            Logger.i(TAG, "notifyStart sysVersion end");
         }// else {
         if (sScreenCaptureCallbacks.size() > 0) {
             for (ScreenCaptureCallback screenCaptureCallback : sScreenCaptureCallbacks) {
@@ -238,7 +238,7 @@ public class librtmp implements ScreenCaptureDataCallback {
     }
 
     private void doDisconnect() {
-        Logger.d(TAG, "doDisconnect");
+        Logger.i(TAG, "doDisconnect");
         try {
             close();
         } catch (Exception e) {
@@ -256,7 +256,7 @@ public class librtmp implements ScreenCaptureDataCallback {
         boolean ret = sendH264Packet(data, length);
 //        Logger.d(TAG, String.format("rtmp send video = %d, time = %d , ret = %b", length, System.currentTimeMillis() - time, ret));
 
-        Logger.d(TAG, "sendVideoStream, sendH264Packet result: " + ret);
+        Logger.i(TAG, "sendVideoStream, sendH264Packet result: " + ret);
         if (!ret) {
             mExecutor.submit(new Runnable() {
                 @Override
@@ -281,7 +281,7 @@ public class librtmp implements ScreenCaptureDataCallback {
         Logger.d(TAG, "librtmp connect, url = " + url + ", width = " + width + ", height = " + height + ", frameRate = " + frameRate);
 
         if (mRtmpConnected.get()) {
-            Logger.d(TAG, "rtmp is connected,close rtmp");
+            Logger.i(TAG, "rtmp is connected,close rtmp");
             close();
         }
         mConnecting.set(true);
@@ -298,16 +298,18 @@ public class librtmp implements ScreenCaptureDataCallback {
         boolean ret = native_connect(url, width, height, frameRate);
         mConnecting.set(false);
         if (ret) {
+            Logger.i(TAG, "connect to server success");
             Logger.d(TAG, "connect to " + url + " success");
         } else {
-            Logger.e(TAG, "connect to " + url + " failed");
+            Logger.i(TAG, "connect to server failed");
+            Logger.d(TAG, "connect to " + url + " failed");
         }
         mRtmpConnected.set(ret);
         return ret;
     }
 
     private void close() {
-        Logger.d(TAG, "librtmp close");
+        Logger.i(TAG, "librtmp close");
 //        try {
 //            fos.close();
 //        } catch (IOException e) {
@@ -316,7 +318,7 @@ public class librtmp implements ScreenCaptureDataCallback {
         try{
             native_close();
         }catch (Exception e){
-            Logger.w(TAG, "librtmp close error: " + e);
+            Logger.e(TAG, "librtmp close error: " + e);
         }
     }
 

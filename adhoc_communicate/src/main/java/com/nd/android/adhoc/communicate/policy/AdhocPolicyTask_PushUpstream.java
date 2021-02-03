@@ -38,7 +38,7 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
 
     @Override
     public AdhocPolicyErrorCode executeTask(@NonNull IAdhocPolicyEntity pPolicyEntity) throws AdhocException {
-        if (TextUtils.isEmpty(pPolicyEntity.getData())) {
+        if (TextUtils.isEmpty(pPolicyEntity.getRealData())) {
             throw new AdhocPolicyException("updateTask failed: pPolicyData is empty", AdhocPolicyMsgCode.ERROR_POLICY_DATA_IS_EMPTY);
         }
 

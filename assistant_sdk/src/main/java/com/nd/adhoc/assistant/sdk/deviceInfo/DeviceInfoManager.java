@@ -37,7 +37,7 @@ public class DeviceInfoManager {
         mUserLoginConfig = pLoginConfig;
     }
 
-    @Nullable
+    @NonNull
     public UserLoginConfig getUserLoginConfig(){
         return mUserLoginConfig;
     }
@@ -98,7 +98,7 @@ public class DeviceInfoManager {
     }
 
     private void clearDeviceID(){
-        Log.e("yhq", "clearDeviceID");
+        Logger.i("yhq", "clearDeviceID");
         mDeviceID = "";
         Context context = AdhocBasicConfig.getInstance().getAppContext();
         DeviceIDSPUtils.saveDeviceIDToSp("");
