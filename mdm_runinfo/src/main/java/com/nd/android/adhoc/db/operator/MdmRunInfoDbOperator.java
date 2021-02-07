@@ -192,4 +192,15 @@ class MdmRunInfoDbOperator implements IMdmRunInfoDbOperator {
         }
         return false;
     }
+
+    @Override
+    public boolean dropTable() {
+        try {
+            mRunInfoDbDao.executeRawNoArgs("drop table " + mRunInfoDbDao.getTableName());
+            return true;
+        } catch (SQLException e) {
+            Logger.e(TAG, "dropTable " + mRunInfoDbDao.getTableName() + " error: " + e);
+        }
+        return false;
+    }
 }

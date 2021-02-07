@@ -47,8 +47,7 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
 
             // 装了 SystemService，走旧的逻辑
             // 如果 SDK < 23，也走旧的逻辑
-            if (AdhocPackageUtil.checkPackageInstalled("com.nd.adhoc.systemservice")
-                    || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (isCountSelf()) {
                 if (1 == enable) {
                     RunningAppWatchManager.getInstance().init();
                 } else {
@@ -74,10 +73,23 @@ public class AdhocPolicyAppRunning extends AdhocPolicyTaskAbs {
     @Override
     public AdhocPolicyErrorCode stop(@Nullable IAdhocPolicyEntity pNewPolicyEntity) throws AdhocException {
         try{
-            RunningAppWatchManager.getInstance().stopWatching();
+            if(isCountSelf()){
+                RunningAppWatchManager.getInstance().stopWatching();
+            }else {
+                AdhocAppUsageFactory.cancel();
+            }
         }catch (Exception e){
             throw new AdhocPolicyException("stop error: " + e, AdhocPolicyMsgCode.ERROR_UNKNOW);
         }
         return super.stop(pNewPolicyEntity);
+    }
+
+    /**
+     * MDM自己统计
+     * @return
+     */
+    private boolean isCountSelf(){
+        return  AdhocPackageUtil.checkPackageInstalled("com.nd.adhoc.systemservice")
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.M;
     }
 }

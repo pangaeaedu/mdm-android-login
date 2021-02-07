@@ -119,7 +119,17 @@ class AppRunInfoDbOperator implements IAppRunInfoDbOperator {
             Logger.e(TAG, "getEntity error: " + e);
         }
 
-
         return null;
+    }
+
+    @Override
+    public boolean dropTable() {
+        try {
+            mDbDao.executeRawNoArgs("drop table " + mDbDao.getTableName());
+            return true;
+        } catch (SQLException e) {
+            Logger.e(TAG, "dropTable " + mDbDao.getTableName() + " error: " + e);
+        }
+        return false;
     }
 }
