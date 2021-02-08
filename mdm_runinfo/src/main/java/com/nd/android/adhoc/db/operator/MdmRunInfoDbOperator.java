@@ -7,6 +7,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.DatabaseConnection;
+import com.j256.ormlite.table.TableUtils;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.db.factory.AdhocDatabaseFactory;
 import com.nd.android.adhoc.basic.db.helper.AdhocDatabaseHelper;
@@ -26,7 +27,7 @@ import java.util.concurrent.Callable;
  */
 class MdmRunInfoDbOperator implements IMdmRunInfoDbOperator {
 
-    private static final String TAG = "MdmDeliverH5DbOperator";
+    private static final String TAG = "MdmRunInfoDbOperator";
 
 
     private Dao<IMdmRunInfoEntity, Void> mRunInfoDbDao = null;
@@ -197,6 +198,7 @@ class MdmRunInfoDbOperator implements IMdmRunInfoDbOperator {
     public boolean dropTable() {
         try {
             mRunInfoDbDao.executeRawNoArgs("drop table " + mRunInfoDbDao.getTableName());
+            TableUtils.createTableIfNotExists(mRunInfoDbDao.getConnectionSource(), MdmRunInfoEntity.class);
             return true;
         } catch (SQLException e) {
             Logger.e(TAG, "dropTable " + mRunInfoDbDao.getTableName() + " error: " + e);

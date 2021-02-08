@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.table.TableUtils;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.db.factory.AdhocDatabaseFactory;
 import com.nd.android.adhoc.basic.db.helper.AdhocDatabaseHelper;
@@ -126,6 +127,7 @@ class AppRunInfoDbOperator implements IAppRunInfoDbOperator {
     public boolean dropTable() {
         try {
             mDbDao.executeRawNoArgs("drop table " + mDbDao.getTableName());
+            TableUtils.createTableIfNotExists(mDbDao.getConnectionSource(), AppRunInfoEntityHelper.getAppRunInfoEntityClass());
             return true;
         } catch (SQLException e) {
             Logger.e(TAG, "dropTable " + mDbDao.getTableName() + " error: " + e);
