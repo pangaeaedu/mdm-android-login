@@ -9,6 +9,12 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.sdp.adhoc:screen-capture:$screen_capture_version")
     }
+
+    try {
+        api project(':screen-capture-lollipop')
+    } catch (Exception ignored) {
+        api("com.nd.sdp.adhoc:screen-capture-lollipop:$screen_capture_version")
+    }
 }
 
 
