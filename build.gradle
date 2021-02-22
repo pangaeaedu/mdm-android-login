@@ -22,21 +22,19 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '2.0.590.233224c.foromo'
+    adhoc_basic_version = '2.0.593.a50a65e.foromo'
 
-    mdm_biz_version = '1.14.696.a04c010-hykencrypstorage-SNAPSHOT'
-
-    device_control_version = '1.16.551.da6f56c.cbkeepaliveautoupdate'
-    device_command_version = '2.7.478.6266417.foromo'
+    device_control_version = '1.16.594.84d6572.foromo'
+    device_command_version = '2.7.487.5aa6052.foromo'
 
     location_verison = '1.7.105.8d65b0b'
     file_transfer_version = '1.1.34.3cff954'
 
-    mdm_biz_sdk_version = '0.6.33.0fe4574-yhqaddUc11-SNAPSHOT'
+    mdm_biz_sdk_version = '0.8.34.e5bbaba.foromo'
 
     // 下面这三个后续也需要发布为正式版本
     adhoc_sdk_version = '1.2.21.2089-develop-SNAPSHOT'
-    screen_capture_version = '1.5.2.327.bec9c42-feature-rtmpcb0.8.2-SNAPSHOT'
+    screen_capture_version = '1.8.368.c34f7b7.foromo'
     adhoc_push_util_version = '0.5.27.112.a03c223-features-lbwedgecompute-SNAPSHOT'
 
     policy_version = '2.6.214.616ae89.hyknewpolicy'

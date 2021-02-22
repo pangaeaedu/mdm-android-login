@@ -26,4 +26,6 @@ public interface IMdmRunInfoDbOperator {
     boolean saveOrUpdateRunInfo(List<IMdmRunInfoEntity> listEntity);
 
     boolean deleteAllData();
+
+    boolean dropTable();
 }

@@ -42,6 +42,12 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     protected IDeviceStatusListener mDeviceStatusListener = null;
 
     private static String TAG = "BaseAuthenticator";
+    protected static String mOrgId;
+
+    /**没错，这个接口很挫，是为了让mainActivity在加载的时候不去弹出设置组织界面*/
+    public static String getOrgId() {
+        return mOrgId;
+    }
 
     public BaseAuthenticator(IDeviceStatusListener pListener) {
         mDeviceStatusListener = pListener;
@@ -134,13 +140,16 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
                             UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
                             QueryDeviceStatusResponse result = null;
-                            if (isAutoLogin()) {
+                            //orgId必须在激活流程之前取出来，而不能在调激活接口的时候取，这样可以用它作为判断条件，走异于其它设备激活的流程
+                            mOrgId = DeviceHelper.getOrgIdThroughControl();
+                            //这里增加的orgId非空的判断，是为了AP7设备激活时上报orgId这个逻辑能够正常走下去，并且不跳到选择组织的界面
+                            if (isAutoLogin() && TextUtils.isEmpty(mOrgId)) {
                                 Logger.i("yhq", " queryDeviceStatusFromServer isAutoLogin 1");
                                 // 自动登录的情况下，要把autoLogin的值1带上去
                                 result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
                                         loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
                                 Logger.i("yhq", "user auto login QueryDeviceStatusResponse:"
-                                        + result.getStatus());
+                                        + result.toString());
 
                                 DeviceStatus status = result.getStatus();
                                 if (DeviceStatus.isStatusUnLogin(status)) {
@@ -305,7 +314,6 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         pSubscriber.onError(exception);
                         return;
                     }
-                    String orgId = DeviceHelper.getOrgIdThroughControl();
                     ActivateUserResponse response;
 
                     DeviceStatus status;
@@ -317,9 +325,9 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         retryCount++;
                         if (loginConfig != null && (loginConfig.isAutoLogin() || loginConfig.getLoginType() == LoginType.TYPE_ORG)) {
                             response = retryActivateUser(deviceID, serialNum, deviceSerialNumber, schoolGroupCode,
-                                    pUserType, pLoginToken, loginConfig.getActivateRealType(),orgId);
+                                    pUserType, pLoginToken, loginConfig.getActivateRealType(),mOrgId);
                         } else {
-                            response = getHttpService().activateUser(deviceID, serialNum, deviceSerialNumber, pUserType, pLoginToken,orgId);
+                            response = getHttpService().activateUser(deviceID, serialNum, deviceSerialNumber, pUserType, pLoginToken,mOrgId);
                         }
 
                         if (response == null) {

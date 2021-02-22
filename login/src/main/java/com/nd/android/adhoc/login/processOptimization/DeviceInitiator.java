@@ -234,7 +234,8 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
-                        if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
+                        //这里增加的orgId非空的判断，是为了AP7设备激活时上报orgId这个逻辑能够正常走下去，并且不跳到选择组织的界面
+                        if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled || !TextUtils.isEmpty(mOrgId)) {
                             return activeUser(ActivateUserType.AutoLogin,
                                     "",
                                     pResponse.getRootCode(),
