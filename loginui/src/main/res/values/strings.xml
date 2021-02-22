@@ -1,6 +1,5 @@
 <resources>
     <string name="user_connecting_str">Logging in…</string>
-
     <string name="login_commit">OK</string>
     <string name="login_auto">Auto</string>
     <string name="login_clear">Clear</string>
@@ -10,11 +9,9 @@
     <string name="login_loading">Logging in</string>
     <string name="login_psd">Password</string>
 
-
     <string name="submit">LOG IN</string>
     <string name="record_passwd">Record</string>
     <string name="auto_login">Auto Login</string>
-
 
     <string name="login_error_uc_verification">UC verification failed</string>
     <string name="login_error_user_binded">The account has been bound</string>
