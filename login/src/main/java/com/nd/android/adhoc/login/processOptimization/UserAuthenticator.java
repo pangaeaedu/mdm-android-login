@@ -284,14 +284,7 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                                     .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
                                         @Override
                                         public Observable<DeviceStatus> call(DeviceStatus pStatus) {
-                                            if (TextUtils.isEmpty(pResponse.getJobnum())) {
-                                                return Observable.error(new
-                                                        AutoLoginMeetUserLoginException(""));
-                                            } else {
-                                                return Observable.error(new
-                                                        AutoLoginMeetUserLoginException
-                                                        ("" + pResponse.getJobnum()));
-                                            }
+                                            return Observable.just(pStatus);
                                         }
                                     });
 //                        }
