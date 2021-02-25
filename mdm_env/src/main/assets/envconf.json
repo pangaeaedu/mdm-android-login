@@ -18,7 +18,9 @@
             "uc_protocol_update_url": "",
             "uc_new_version_base_url": "https://uc-gateway.beta.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "mdm"
+            "uc_org_code": "mdm",
+            "p2p_base_url": "172.24.132.143:8612",
+            "download_type": 1
         },
         {
             "name": "Test",
@@ -37,7 +39,9 @@
             "uc_protocol_update_url": "",
             "uc_new_version_base_url": "https://uc-gateway.beta.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "mdm_pre"
+            "uc_org_code": "mdm_pre",
+            "p2p_base_url": "172.24.132.143:8612",
+            "download_type": 1
         },
         {
             "name": "China",
@@ -56,7 +60,9 @@
             "uc_protocol_update_url": "https://uc.101.com",
             "uc_new_version_base_url": "https://uc-gateway.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "MDM_PRODUCT"
+            "uc_org_code": "MDM_PRODUCT",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 0
         },
         {
             "name": "WholeWorld",
@@ -75,7 +81,9 @@
             "uc_protocol_update_url": "https://uc-personal-web.aws.101.com",
             "uc_new_version_base_url": "https://uc-gateway-aws.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "ND_MDM"
+            "uc_org_code": "ND_MDM",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 0
         },
         {
             "name": "Egypt",
@@ -94,7 +102,9 @@
             "uc_protocol_update_url": "https://uc-gateway.moe.gov.eg/v1.1/",
             "uc_new_version_base_url": "https://uc-gateway.moe.gov.eg/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "MDM"
+            "uc_org_code": "MDM",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 0
         },
         {
             "name": "EgyptDrill",
@@ -113,7 +123,9 @@
             "uc_protocol_update_url": "https://omo-uc-gateway.moe.101.com/v1.1/",
             "uc_new_version_base_url": "https://omo-uc-gateway.moe.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "MDM"
+            "uc_org_code": "MDM",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 0
         },
         {
             "name": "EgyptDrillPre",
@@ -132,7 +144,9 @@
             "uc_protocol_update_url": "https://omopre-uc-gateway.moe.101.com/v1.1/",
             "uc_new_version_base_url": "https://omopre-uc-gateway.moe.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "MDM"
+            "uc_org_code": "MDM",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 0
         },
         {
             "name": "EgyptMS",
@@ -145,7 +159,9 @@
             "apm_server": "",
             "exception_report_host_name": "",
             "cs_base_url": "http://egcs-mdm.moe.101.com/v0.1/",
-            "cs_base_down_url": "http://egcs-mdm.moe.101.com/v0.1/"
+            "cs_base_down_url": "http://egcs-mdm.moe.101.com/v0.1/",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 0
         },
         {
             "name": "ShanXi",
@@ -164,7 +180,9 @@
             "uc_protocol_update_url": "https://uc-gateway.beta.101.com/v1.1/",
             "uc_new_version_base_url": "",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "MDM"
+            "uc_org_code": "MDM",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 0
         },
         {
             "name": "Prepoduction",
@@ -183,7 +201,9 @@
             "uc_protocol_update_url": "https://uc-personal-beta.101.com",
             "uc_new_version_base_url": "https://uc-gateway.beta.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "mdm_pre"
+            "uc_org_code": "mdm_pre",
+            "p2p_base_url": "43.231.144.62:8612",
+            "download_type": 1
         },
         {
             "name": "MdmTest",
@@ -202,7 +222,9 @@
             "uc_protocol_update_url": "",
             "uc_new_version_base_url": "https://uc-gateway.beta.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "mdm_pre"
+            "uc_org_code": "mdm_pre",
+            "p2p_base_url": "172.24.132.143:8612",
+            "download_type": 1
         },
         {
             "name": "EgyptCLTest",
@@ -221,7 +243,9 @@
             "uc_protocol_update_url": "https://uc-gateway.beta.101.com/v1.1/",
             "uc_new_version_base_url": "https://uc-gateway.beta.101.com/v1.1/",
             "uc_app_id": "bc954f54-b9b9-4fae-97d2-b6a4085c3014",
-            "uc_org_code": "MDM"
+            "uc_org_code": "MDM",
+            "p2p_base_url": "172.24.132.143:8612",
+            "download_type": 1
         }
     ]
 }

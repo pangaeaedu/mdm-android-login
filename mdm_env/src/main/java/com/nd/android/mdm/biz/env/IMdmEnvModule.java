@@ -39,4 +39,9 @@ public interface IMdmEnvModule {
     String getUcAppID();
 
     String getUcOrgCode();
+
+    String getP2PBaseUrl();
+
+    //0为默认 1为P2P
+    int getDownloadType();
 }

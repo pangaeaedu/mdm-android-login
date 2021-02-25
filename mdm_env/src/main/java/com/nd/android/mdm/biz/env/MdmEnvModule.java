@@ -55,6 +55,12 @@ class MdmEnvModule implements IMdmEnvModule {
     @SerializedName("uc_org_code")
     String mUcOrgCode;
 
+    @SerializedName("p2p_base_url")
+    String mP2PBaseUrl;
+
+    @SerializedName("download_type")
+    int mDownloadType;
+
     public MdmEnvModule() {
     }
 
@@ -136,6 +142,16 @@ class MdmEnvModule implements IMdmEnvModule {
     @Override
     public String getUcOrgCode() {
         return mUcOrgCode;
+    }
+
+    @Override
+    public String getP2PBaseUrl() {
+        return mP2PBaseUrl;
+    }
+
+    @Override
+    public int getDownloadType() {
+        return mDownloadType;
     }
 
 }
