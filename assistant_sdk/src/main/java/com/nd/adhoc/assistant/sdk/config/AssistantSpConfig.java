@@ -47,6 +47,8 @@ public class AssistantSpConfig extends BaseSpConfig {
     private static final String KEY_WIFI_MAC_REPORTED = "wifi_mac_reported";
     private static final String KEY_LAN_MAC_REPORTED = "lan_mac_reported";
 
+    private String mstrPushId = "";
+
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
     }
@@ -110,14 +112,16 @@ public class AssistantSpConfig extends BaseSpConfig {
     }
 
     public String getPushID() {
-        return getString(KEY_PUSH_ID);
+        return mstrPushId;
     }
 
     public void savePushID(String pPushID) {
+        mstrPushId = pPushID;
         saveString(KEY_PUSH_ID, pPushID);
     }
 
     public void savePushIDSync(String pPushID) {
+        mstrPushId = pPushID;
         saveStringSync(KEY_PUSH_ID, pPushID);
     }
 
