@@ -261,9 +261,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                 });
     }
 
-
-
-
     private Observable<DeviceStatus> queryDeviceStatusThenLoginByCode(String pDeviceID,
                                                                 final String pRootCode,
                                                                 final String pSchoolCode){
