@@ -34,7 +34,7 @@ ext {
 
     // 下面这三个后续也需要发布为正式版本
     adhoc_sdk_version = '1.2.21.2089-develop-SNAPSHOT'
-    screen_capture_version = '1.8.368.c34f7b7.foromo'
+    screen_capture_version = '1.8.369.630b35f.foromo'
     adhoc_push_util_version = '0.5.27.112.a03c223-features-lbwedgecompute-SNAPSHOT'
 
     policy_version = '2.6.195.7e68d85.foromo'
