@@ -3,13 +3,13 @@ buildscript {
 
     repositories {
 
-        if (project.hasProperty('LOCAL_BUILD_ENV')) {
-            maven {
-                url 'http://172.24.140.41/repository/maven-public/'
-            }
-        } else {
+//        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+//            maven {
+//                url 'http://172.24.140.41/repository/maven-public/'
+//            }
+//        } else {
             maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
-        }
+//        }
 
         mavenCentral()
         jcenter()
@@ -37,7 +37,7 @@ ext {
     screen_capture_version = '1.8.368.c34f7b7.foromo'
     adhoc_push_util_version = '0.5.27.112.a03c223-features-lbwedgecompute-SNAPSHOT'
 
-    policy_version = '2.6.214.616ae89.hyknewpolicy'
+    policy_version = '2.6.195.7e68d85.foromo'
     deliver_version = '2.3.160.4670ee0-features-lsj0.8.xhighschool-SNAPSHOT'
 
     adhoc_firewall_version = '0.7.55.316bbfa'
@@ -53,13 +53,13 @@ ext {
 allprojects {
     repositories {
 
-        if (project.hasProperty('LOCAL_BUILD_ENV')) {
-            maven {
-                url 'http://172.24.140.41/repository/maven-public/'
-            }
-        } else {
+//        if (project.hasProperty('LOCAL_BUILD_ENV')) {
+//            maven {
+//                url 'http://172.24.140.41/repository/maven-public/'
+//            }
+//        } else {
             maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
-        }
+//        }
 
         mavenCentral()
         jcenter()
