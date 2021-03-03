@@ -25,9 +25,9 @@ ext {
     adhoc_basic_version = '2.0.593.a50a65e.foromo'
 
     device_control_version = '1.16.594.84d6572.foromo'
-    device_command_version = '2.7.491.db07c1c.foromo'
+    device_command_version = '2.7.494.6120579.foromo'
 
-    location_verison = '1.7.105.8d65b0b'
+    location_verison = '1.10.123.c51344b.foromo'
     file_transfer_version = '1.1.34.3cff954'
 
     mdm_biz_sdk_version = '0.8.34.e5bbaba.foromo'

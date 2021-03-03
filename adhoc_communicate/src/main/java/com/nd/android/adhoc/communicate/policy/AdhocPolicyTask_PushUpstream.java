@@ -43,7 +43,7 @@ public class AdhocPolicyTask_PushUpstream extends AdhocPolicyTaskAbs {
         }
 
         try {
-            JSONObject jsonObject = new JSONObject(pPolicyEntity.getData());
+            JSONObject jsonObject = new JSONObject(pPolicyEntity.getRealData());
 
             // 1 = push上行，0 = http/https，默认 1
             int enable = jsonObject.optInt("enable", 1);
