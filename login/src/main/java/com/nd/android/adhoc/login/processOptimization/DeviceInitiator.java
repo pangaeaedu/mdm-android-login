@@ -207,7 +207,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
 
     public Observable<DeviceStatus> actualQueryDeviceStatus(final String pDeviceID) {
         Logger.i("yhq", "actualQueryDeviceStatus");
-        Logger.d("yhq", "actualQueryDeviceStatus:" + pDeviceID);
         return queryDeviceStatusFromServer(pDeviceID)
                 .map(new Func1<QueryDeviceStatusResponse, QueryDeviceStatusResponse>() {
                     @Override
@@ -221,6 +220,17 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             Logger.e(TAG, "non delete status");
                             return response;
                         }
+
+                        //服务端delete，但本地是激活状态，说明下发的离线删除指令过期了，则强制一下数据
+                        if (getConfig().isActivated()) {
+                            Logger.i(TAG, "server delete status, but local activated");
+                            IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                                    .getUserAuthenticator();
+                            if (authenticator != null) {
+                                authenticator.clearData();
+                            }
+                        }
+
                         Iterator<IUserLoginWayConfirmRetrieve> interceptors = AnnotationServiceLoader
                                 .load(IUserLoginWayConfirmRetrieve.class, IUserLoginWayConfirmRetrieve.class.getClassLoader()).iterator();
                         if (!interceptors.hasNext()) {
