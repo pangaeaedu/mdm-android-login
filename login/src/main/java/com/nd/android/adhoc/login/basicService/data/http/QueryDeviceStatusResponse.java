@@ -21,6 +21,10 @@ public class QueryDeviceStatusResponse {
     private String groupcode = "";    // 组织节点的根节点
     public String requestid = "";
 
+    private String nodecode = "";
+    private String nodename = "";
+    private boolean delete_status = false;
+
     private String selSchoolGroupCode = "";
 
     public boolean isSuccess(){
@@ -62,11 +66,24 @@ public class QueryDeviceStatusResponse {
     public String getRootCode(){
         return groupcode;
     }
+
+    public String getNodecode() {
+        return nodecode;
+    }
+
+    public String getNodename() {
+        return nodename;
+    }
+
     public String toString() {
         return "errcode:" + errcode
                 + " status:" + status
                 + " login_auto:" + login_auto
                 + " nick_name:" + nick_name
                 + " jobnum:" + jobnum;
+    }
+
+    public boolean getDeleteStatus() {
+        return delete_status;
     }
 }

@@ -128,6 +128,11 @@ public class DeviceIDSPUtils {
         config.saveDeviceID(pDeviceID);
     }
 
+    public static void saveDeviceIDToThirdVersionSpSync(String pDeviceID){
+        AssistantSpConfig config = AssistantBasicServiceFactory.getInstance().getSpConfig();
+        config.saveDeviceIDSync(pDeviceID);
+    }
+
     public static String loadDeviceIDFromSdCard(Context pContext){
         return DeviceIDFileUtils.loadDeviceIDFromSdCard(pContext);
     }

@@ -1,7 +1,5 @@
 <resources>
-
     <string name="user_connecting_str">正在登陆中…</string>
-
     <string name="login_commit">确认</string>
     <string name="login_auto">自动</string>
     <string name="login_clear">清除</string>
@@ -9,7 +7,7 @@
     <string name="login_input_name">请输入账号</string>
     <string name="login_input_pwd">请输入密码</string>
     <string name="login_loading">正在登陆中</string>
-
+    <string name="login_psd">密码</string>
 
     <string name="submit">登录</string>
     <string name="record_passwd">记住密码</string>
@@ -19,16 +17,10 @@
     <string name="login_error_user_binded">用户已绑定</string>
     <string name="login_error_device_binded">设备已绑定</string>
     <string name="login_error_other">激活用户失败</string>
-
-
-
     <string name="current_environment">当前环境</string>
     <string name="please_environment">切换环境</string>
     <string name="environment_settings">设置</string>
-
     <string name="mdm_name_str">101 MDM</string>
-    <string name="login_psd">密码</string>
 
     <string name="login_uc_error">UC 登录失败</string>
-
 </resources>

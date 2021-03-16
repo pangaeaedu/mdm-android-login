@@ -1,0 +1,3 @@
+<resources>
+    <string name="communicate_download_success_but_info_not_match">Downloading succeeds,but file info does not match</string>
+</resources>

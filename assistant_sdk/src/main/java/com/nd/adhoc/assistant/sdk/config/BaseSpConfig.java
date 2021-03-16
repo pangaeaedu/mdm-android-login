@@ -18,8 +18,15 @@ public class BaseSpConfig {
         mSpName = pSpName;
     }
 
-    public void saveString(String key, String value) {
-        if (TextUtils.isEmpty(key)) {
+    public void saveStringSync(String key,String value){
+        if (TextUtils.isEmpty(key)){
+            return;
+        }
+        getDefault().putString(key, value).commit();
+    }
+
+    public void saveString(String key,String value){
+        if (TextUtils.isEmpty(key)){
             return;
         }
         getDefault().putString(key, value).apply();

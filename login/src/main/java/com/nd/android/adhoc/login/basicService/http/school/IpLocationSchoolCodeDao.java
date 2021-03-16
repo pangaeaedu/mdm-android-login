@@ -23,10 +23,11 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
         super(pBaseUrl);
     }
 
-    public IpLocationSchoolCodeResp getSchoolCodeByIp(String pIp) throws Exception {
+    public IpLocationSchoolCodeResp getSchoolCodeByIp(String pRootCode, String pIp) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
             map.put("ip", pIp);
+            map.put("groupcode", pRootCode);
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);
@@ -38,7 +39,7 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
         }
     }
 
-    public IpLocationSchoolCodeResp getSchoolCodeByLocation(@NonNull String pLat, @NonNull String pLgn, int pMapType,
+    public IpLocationSchoolCodeResp getSchoolCodeByLocation(String pRootCode, @NonNull String pLat, @NonNull String pLgn, int pMapType,
                                                             int pScope) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -46,6 +47,8 @@ public class IpLocationSchoolCodeDao extends AdhocHttpDao {
             map.put("lgn", pLgn);
             map.put("scope", pScope);
             map.put("maptype", pMapType);
+
+            map.put("groupcode", pRootCode);
 
             Gson gson = new GsonBuilder().create();
             String content = gson.toJson(map);

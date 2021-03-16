@@ -9,11 +9,11 @@ import rx.Observable;
 public interface IUserAuthenticator {
 
     Observable<DeviceStatus> login(@NonNull final String pUserName,
-                                   @NonNull final String pPassword);
-
-    Observable<DeviceStatus> login(@NonNull final String pUserName,
                                    @NonNull final String pPassword,
                                    @NonNull final String pValidationCode);
+
+    Observable<DeviceStatus> login(@NonNull final String pRootCode, @NonNull final String pSchoolCode);
+
     void logout();
 
     void clearData();

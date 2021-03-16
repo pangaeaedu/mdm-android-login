@@ -6,12 +6,15 @@ import android.util.Log;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.push.adhoc.sdk.PushSdkModule;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitPriority;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitSyncAbs;
 import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.login.processOptimization.DeviceInitiator;
+import com.nd.android.adhoc.login.processOptimization.IDeviceStatusListener;
 import com.nd.android.adhoc.loginapi.IInitApi;
 import com.nd.android.adhoc.loginapi.LoginApiRoutePathConstants;
 import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
@@ -59,6 +62,18 @@ public class AdhocDeviceInitSyncAbs extends AdhocAppInitSyncAbs {
                             updatePolicy();
                         }
                         pCallback.onSuccess();
+
+                        DeviceInfoManager.getInstance().setNeedQueryStatusFromServer(1);
+                        if(1 == DeviceInfoManager.getInstance().getNeedQueryStatusFromServer()
+                                && PushSdkModule.getInstance().isConnected()){
+                            Logger.i("yhq", "use DeviceInitiator to check status");
+                            new DeviceInitiator(new IDeviceStatusListener(){
+                                @Override
+                                public void onDeviceStatusChanged(DeviceStatus pStatus) {
+
+                                }
+                            }).checkLocalStatusAndServer();
+                        }
                     }
 
                     @Override

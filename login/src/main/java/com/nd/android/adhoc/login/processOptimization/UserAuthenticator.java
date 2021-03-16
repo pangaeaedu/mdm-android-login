@@ -166,11 +166,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
     }
 
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
-                                          @NonNull final String pPassword) {
-        return login(pUserName, pPassword, "");
-    }
-
-    public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword,
                                           final String pValidationCode) {
         Logger.i("yhq", "login");
@@ -209,6 +204,33 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                 });
     }
 
+    @Override
+    public Observable<DeviceStatus> login(@NonNull final String pRootCode, @NonNull String pSchoolCode) {
+        Log.e("yhq", "login");
+        final String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+        if (TextUtils.isEmpty(deviceID)) {
+            return Observable.error(new DeviceIDNotSetException());
+        }
+
+        IPushModule module = MdmTransferFactory.getPushModel();
+        String pushID = module.getDeviceId();
+
+        if(!TextUtils.isEmpty(pushID)){
+            DeviceInfoManager.getInstance().notifyPushID(pushID);
+        }
+
+        Context context = AdhocBasicConfig.getInstance().getAppContext();
+        if (!AdhocNetworkUtil.isNetWrokAvaiable(context)) {
+            return Observable.error(new NetworkUnavailableException());
+        }
+
+//        DeviceStatus status = DeviceInfoManager.getInstance().getCurrentStatus();
+//        if (status == DeviceStatus.Init) {
+            return queryDeviceStatusThenLoginByCode(deviceID, pRootCode, pSchoolCode);
+//        }
+//        return null;
+    }
+
     private Observable<DeviceStatus> queryDeviceStatusThenLogin(String pDeviceID,
                                                                 final String pUserName,
                                                                 final String pPassword){
@@ -244,6 +266,35 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                                                 .getLoginToken());
                                     }
                                 });
+                    }
+                });
+    }
+
+    private Observable<DeviceStatus> queryDeviceStatusThenLoginByCode(String pDeviceID,
+                                                                final String pRootCode,
+                                                                final String pSchoolCode){
+        Log.e("yhq", "queryDeviceStatusThenLogin");
+        return queryDeviceStatusFromServer(pDeviceID)
+                .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
+                    @Override
+                    public Observable<DeviceStatus> call(final QueryDeviceStatusResponse pResponse) {
+
+                        if (pResponse.getStatus() == DeviceStatus.Activated) {
+                            return Observable.just(DeviceStatus.Activated);
+                        }
+
+//                        if (pResponse.getStatus() == DeviceStatus.Enrolled) {
+                            return activeUser(ActivateUserType.AutoLogin,
+                                    pSchoolCode,
+                                    pRootCode, "")
+                                    .flatMap(new Func1<DeviceStatus, Observable<DeviceStatus>>() {
+                                        @Override
+                                        public Observable<DeviceStatus> call(DeviceStatus pStatus) {
+                                            return Observable.just(pStatus);
+                                        }
+                                    });
+//                        }
+
                     }
                 });
     }

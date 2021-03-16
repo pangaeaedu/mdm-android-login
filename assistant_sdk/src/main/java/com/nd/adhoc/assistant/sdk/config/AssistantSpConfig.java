@@ -35,6 +35,9 @@ public class AssistantSpConfig extends BaseSpConfig {
     // 根据 OMO 增加对 groupcode 字段的解析，用于后期查询父节点级当前节点的名称等信息 -- by hyk 20200511
     private static final String KEY_GROUP_CODE = "group_code";
 
+    private static final String KEY_NODE_CODE = "node_code";
+    private static final String KEY_NODE_NAME = "node_name";
+
 
     private static final String KEY_DEVICE_STATUS_VALUE = "device_status_value";
     private static final String KEY_DEVICE_ID = "device_id";
@@ -43,6 +46,8 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     private static final String KEY_WIFI_MAC_REPORTED = "wifi_mac_reported";
     private static final String KEY_LAN_MAC_REPORTED = "lan_mac_reported";
+
+    private String mstrPushId = "";
 
     public AssistantSpConfig(@NonNull Context pContext, @NonNull String pSpName) {
         super(pContext, pSpName);
@@ -63,6 +68,10 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     public void saveDeviceID(String pDeviceID) {
         saveString(KEY_DEVICE_ID, pDeviceID);
+    }
+
+    public void saveDeviceIDSync(String pDeviceID) {
+        saveStringSync(KEY_DEVICE_ID, pDeviceID);
     }
 
     public boolean isActivated() {
@@ -103,15 +112,25 @@ public class AssistantSpConfig extends BaseSpConfig {
     }
 
     public String getPushID() {
-        return getString(KEY_PUSH_ID);
+        return mstrPushId;
     }
 
     public void savePushID(String pPushID) {
+        mstrPushId = pPushID;
         saveString(KEY_PUSH_ID, pPushID);
+    }
+
+    public void savePushIDSync(String pPushID) {
+        mstrPushId = pPushID;
+        saveStringSync(KEY_PUSH_ID, pPushID);
     }
 
     public void clearPushID(){
         savePushID("");
+    }
+
+    public void clearPushIDSync(){
+        savePushIDSync("");
     }
 
     public String getSerialNum() {
@@ -178,6 +197,24 @@ public class AssistantSpConfig extends BaseSpConfig {
         return getString(KEY_GROUP_CODE);
     }
 
+    public void saveNodeCode(String pNodeCode) {
+        saveString(KEY_NODE_CODE, pNodeCode);
+    }
+
+    public String getNodeCode() {
+        return getString(KEY_NODE_CODE);
+    }
+
+    public void saveNodeName(String pNodeName) {
+        saveString(KEY_NODE_NAME, pNodeName);
+    }
+
+    public String getNodeName() {
+        return getString(KEY_NODE_NAME);
+    }
+
+
+
     public List<String> getAllPreviousLoginAccount(){
         String accounts = getString(KEY_PREVIOUS_LOGIN_ACCOUNT);
 
@@ -236,6 +273,9 @@ public class AssistantSpConfig extends BaseSpConfig {
         saveDeviceCode("");
         saveGroupCode("");
         saveDeviceStatus(-1);
+
+        saveNodeCode("");
+        saveNodeName("");
     }
 
 

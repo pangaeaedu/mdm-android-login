@@ -3,10 +3,12 @@ package com.nd.android.adhoc.login.processOptimization;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.nd.adhoc.assistant.sdk.AssistantBasicServiceFactory;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
 import com.nd.android.adhoc.basic.log.Logger;
@@ -19,11 +21,14 @@ import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 import com.nd.android.adhoc.login.processOptimization.utils.LoginArgumentUtils;
+import com.nd.android.adhoc.loginapi.IUserLoginWayConfirmRetrieve;
 import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
 import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
 import com.nd.android.adhoc.loginapi.exception.RetrieveMacException;
 import com.nd.android.mdm.basic.ControlFactory;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
@@ -53,6 +58,63 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         }
     }
 
+    public void checkLocalStatusAndServer(){
+        reallyQueryDeviceStatusFromServer(DeviceInfoManager.getInstance().getDeviceID())
+                // 这里增加 如果当前状态是 已激活的，要获取一下 nodename、nodecode、groupcode 信息
+                .map(new Func1<DeviceStatus, DeviceStatus>() {
+                    @Override
+                    public DeviceStatus call(DeviceStatus deviceStatus) {
+                        if (DeviceStatus.Activated == deviceStatus) {
+                            try {
+                                String deviceId = AssistantBasicServiceFactory.getInstance().getSpConfig().getDeviceID();
+                                String serialNum = DeviceHelper.getSerialNumberThroughControl();
+                                UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                                QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceId, serialNum,
+                                        loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                if (DeviceStatus.Activated == result.getStatus()) {
+                                    // 记录当前的节点 code 和 名称
+                                    getConfig().saveNodeCode(result.getNodecode());
+                                    getConfig().saveNodeName(result.getNodename());
+                                    getConfig().saveGroupCode(result.getNodecode());
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        return deviceStatus;
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<DeviceStatus>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(DeviceStatus statusOfServer) {
+                        if(null != statusOfServer){
+                            DeviceStatus statusOfLocal = DeviceInfoManager.getInstance().getCurrentStatus();
+                            if(null == statusOfLocal){
+                                return;
+                            }
+
+                            mDeviceStatusListener.onDeviceStatusChanged(statusOfServer);
+                            if(DeviceStatus.isStatusUnLogin(statusOfServer) && !DeviceStatus.isStatusUnLogin(statusOfLocal)){
+//                                DeviceIDSPUtils.saveDeviceIDToSp("");
+                                DeviceIDSPUtils.saveDeviceIDToThirdVersionSpSync("");
+                                getConfig().clearPushIDSync();
+                                Logger.e(TAG, "differnet status, exit");
+                                System.exit(0);
+                            }
+                        }
+                    }
+                });
+    }
 
     private IPushConnectListener mPushConnectListener = new IAdhocPushConnectListener() {
         @Override
@@ -67,6 +129,11 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
             Logger.i("yhq", "push sdk onConnected");
             if (mSubBindPushID != null) {
                 return;
+            }
+
+            if(1 == DeviceInfoManager.getInstance().getNeedQueryStatusFromServer()){
+                Logger.e("yhq", "check status when connected");
+                checkLocalStatusAndServer();
             }
 
             Logger.i("yhq", "before call subject");
@@ -139,12 +206,46 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
         Logger.i("yhq", "actualQueryDeviceStatus");
         Logger.d("yhq", "actualQueryDeviceStatus:" + pDeviceID);
         return queryDeviceStatusFromServer(pDeviceID)
+                .map(new Func1<QueryDeviceStatusResponse, QueryDeviceStatusResponse>() {
+                    @Override
+                    public QueryDeviceStatusResponse call(QueryDeviceStatusResponse response) {
+                        if(!response.isAutoLogin()){
+                            Logger.e(TAG, "non autologin");
+                            return response;
+                        }
+
+                        if(!response.getDeleteStatus()){
+                            Logger.e(TAG, "non delete status");
+                            return response;
+                        }
+
+                        //服务端delete，但本地是激活状态，说明下发的离线删除指令过期了，则强制一下数据
+                        if (getConfig().isActivated()) {
+                            Logger.i(TAG, "server delete status, but local activated");
+                            IUserAuthenticator authenticator = AssistantAuthenticSystem.getInstance()
+                                    .getUserAuthenticator();
+                            if (authenticator != null) {
+                                authenticator.clearData();
+                            }
+                        }
+
+                        Iterator<IUserLoginWayConfirmRetrieve> interceptors = AnnotationServiceLoader
+                                .load(IUserLoginWayConfirmRetrieve.class, IUserLoginWayConfirmRetrieve.class.getClassLoader()).iterator();
+                        if (!interceptors.hasNext()) {
+                            Logger.e(TAG, "no IUserLoginWayConfirmRetrieve impl, which means go on");
+                            return response;
+                        }
+                        interceptors.next().pauseAutoLogin();
+                        return response;
+                    }
+                })
                 .flatMap(new Func1<QueryDeviceStatusResponse, Observable<DeviceStatus>>() {
                     @Override
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
-                        if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
+                        //这里增加的orgId非空的判断，是为了AP7设备激活时上报orgId这个逻辑能够正常走下去，并且不跳到选择组织的界面
+                        if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled || !TextUtils.isEmpty(mOrgId)) {
                             return activeUser(ActivateUserType.AutoLogin,
-                                    pResponse.getSelSchoolGroupCode(),
+                                    "",
                                     pResponse.getRootCode(),
                                     "");
                         }
@@ -193,8 +294,6 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
                     } else {
                         deviceID = loadDeviceIDFromPrevSpOrSDCard();
-
-
                         ConfirmDeviceIDResponse result = confirmDeviceIDFromServer(deviceID);
 
                         if (!result.isSuccess()) {
@@ -229,6 +328,30 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                             @Override
                             public Observable<DeviceStatus> call(String pDeviceID) {
                                 return queryDeviceStatus();
+                            }
+                        })
+                        // 这里要去获取当前登录后的归属节点信息
+                        .map(new Func1<DeviceStatus, DeviceStatus>() {
+                            @Override
+                            public DeviceStatus call(DeviceStatus deviceStatus) {
+                                if (DeviceStatus.Activated == deviceStatus) {
+                                    try {
+                                        String deviceId = AssistantBasicServiceFactory.getInstance().getSpConfig().getDeviceID();
+                                        String serialNum = DeviceHelper.getSerialNumberThroughControl();
+                                        UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                                        QueryDeviceStatusResponse result = getHttpService().getDeviceStatus(deviceId, serialNum,
+                                                loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                        if (DeviceStatus.Activated == result.getStatus()) {
+                                            // 记录当前的节点 code 和 名称
+                                            getConfig().saveNodeCode(result.getNodecode());
+                                            getConfig().saveNodeName(result.getNodename());
+                                            getConfig().saveGroupCode(result.getNodecode());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                return deviceStatus;
                             }
                         })
                         .subscribeOn(Schedulers.io())

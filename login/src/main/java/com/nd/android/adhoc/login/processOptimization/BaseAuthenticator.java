@@ -7,7 +7,9 @@ import android.util.Log;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.adhoc.assistant.sdk.deviceInfo.LoginType;
 import com.nd.adhoc.assistant.sdk.deviceInfo.UserLoginConfig;
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
 import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
@@ -41,6 +43,12 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
     protected IDeviceStatusListener mDeviceStatusListener = null;
 
     private static String TAG = "BaseAuthenticator";
+    protected static String mOrgId;
+
+    /**没错，这个接口很挫，是为了让mainActivity在加载的时候不去弹出设置组织界面*/
+    public static String getOrgId() {
+        return mOrgId;
+    }
 
     public BaseAuthenticator(IDeviceStatusListener pListener) {
         mDeviceStatusListener = pListener;
@@ -58,6 +66,62 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
         api.onLogin(loginInfo);
     }
 
+    private static boolean msIsReallyQuery = false;
+    //queryDeviceStatusFromServer那个方法加了其他的业务代码，这里是纯从服务端取状态
+    protected Observable<DeviceStatus> reallyQueryDeviceStatusFromServer(final String pDeviceID) {
+        Log.e("yhq", "reallyQueryDeviceStatusFromServer");
+        return Observable
+                .create(new Observable.OnSubscribe<DeviceStatus>() {
+                    @Override
+                    public void call(Subscriber<? super DeviceStatus> pSubscriber) {
+                        if(msIsReallyQuery){
+                            pSubscriber.onError(new AdhocException("is already querying"));
+                            return;
+                        }
+                        msIsReallyQuery = true;
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            Log.i("yhq", " start run reallyQueryDeviceStatusFromServer");
+                            String serialNum = DeviceHelper.getSerialNumberThroughControl();
+
+                            if (TextUtils.isEmpty(pDeviceID) || TextUtils.isEmpty(serialNum)) {
+                                Log.i("yhq", " reallyQueryDeviceStatusFromServer error 1");
+                                msIsReallyQuery = false;
+                                pSubscriber.onError(new DeviceIDNotSetException());
+                                return;
+                            }
+
+                            UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
+                            QueryDeviceStatusResponse result = null;
+                            DeviceStatus status = null;
+                            if (isAutoLogin()) {
+                                Log.i("yhq", " reallyQueryDeviceStatusFromServer isAutoLogin 1");
+                                // 自动登录的情况下，要把autoLogin的值1带上去
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
+                                        loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
+                                Log.i("yhq", "user auto login reallyQueryDeviceStatusFromServer:"
+                                        + result.toString());
+                                status = result.getStatus();
+                            } else {
+                                result = getHttpService().getDeviceStatus(pDeviceID, serialNum);
+                                Log.i("yhq", "really QueryDeviceStatusResponse:" + result.toString());
+                                status = result.getStatus();
+                            }
+                            msIsReallyQuery = false;
+                            pSubscriber.onNext(status);
+                            pSubscriber.onCompleted();
+                        } catch (Exception e) {
+                            Log.e("yhq", "really query exception:" + e);
+                            msIsReallyQuery = false;
+                            pSubscriber.onError(e);
+                        }
+                    }
+                });
+    }
 
     protected Observable<QueryDeviceStatusResponse> queryDeviceStatusFromServer(final String pDeviceID) {
         Logger.i("yhq", "queryDeviceStatusFromServer");
@@ -77,13 +141,16 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
                             UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
                             QueryDeviceStatusResponse result = null;
-                            if (isAutoLogin()) {
+                            //orgId必须在激活流程之前取出来，而不能在调激活接口的时候取，这样可以用它作为判断条件，走异于其它设备激活的流程
+                            mOrgId = DeviceHelper.getOrgIdThroughControl();
+                            //这里增加的orgId非空的判断，是为了AP7设备激活时上报orgId这个逻辑能够正常走下去，并且不跳到选择组织的界面
+                            if (isAutoLogin() && TextUtils.isEmpty(mOrgId)) {
                                 Logger.i("yhq", " queryDeviceStatusFromServer isAutoLogin 1");
                                 // 自动登录的情况下，要把autoLogin的值1带上去
                                 result = getHttpService().getDeviceStatus(pDeviceID, serialNum,
                                         loginConfig.getAutoLogin(), loginConfig.getNeedGroup());
                                 Logger.i("yhq", "user auto login QueryDeviceStatusResponse:"
-                                        + result.getStatus());
+                                        + result.toString());
 
                                 DeviceStatus status = result.getStatus();
                                 if (DeviceStatus.isStatusUnLogin(status)) {
@@ -243,6 +310,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                 try {
                     String deviceID = DeviceInfoManager.getInstance().getDeviceID();
                     String serialNum = DeviceHelper.getSerialNumberThroughControl();
+                    String deviceSerialNumber = DeviceHelper.getDeviceSerialNumberThroughControl();
                     if (TextUtils.isEmpty(deviceID) || TextUtils.isEmpty(serialNum)) {
                         Exception exception = new Exception("deviceID:" + deviceID + " serial " +
                                 "num:" + serialNum);
@@ -250,22 +318,20 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
                         pSubscriber.onError(exception);
                         return;
                     }
-
                     ActivateUserResponse response;
 
                     DeviceStatus status;
                     int retryCount = 0;
 
                     String schoolGroupCode = pSchoolGroupCode;
-
                     // 最多只试三次
                     while (true) {
                         retryCount++;
-                        if (loginConfig != null && loginConfig.isAutoLogin()) {
-                            response = retryActivateUser(deviceID, serialNum, schoolGroupCode,
-                                    pUserType, pLoginToken, loginConfig.getActivateRealType());
+                        if (loginConfig != null && (loginConfig.isAutoLogin() || loginConfig.getLoginType() == LoginType.TYPE_ORG)) {
+                            response = retryActivateUser(deviceID, serialNum, deviceSerialNumber, schoolGroupCode,
+                                    pUserType, pLoginToken, loginConfig.getActivateRealType(),mOrgId);
                         } else {
-                            response = getHttpService().activateUser(deviceID, serialNum, pUserType, pLoginToken);
+                            response = getHttpService().activateUser(deviceID, serialNum, deviceSerialNumber, pUserType, pLoginToken,mOrgId);
                         }
 
                         if (response == null) {
@@ -359,9 +425,10 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
 
     //自动登录的情况下，需要把realtype传上去，重试三次，因为大量请求的情况下，激活有可能失败
     private ActivateUserResponse retryActivateUser(String pDeviceID, String pSerialNum,
+                                                   String pDeviceSerialNumber,
                                                    String pSchoolGroupCode,
                                                    ActivateUserType pUserType, String pLoginToken,
-                                                   int pActivateRealType) throws Exception {
+                                                   int pActivateRealType,String pOrgId) throws Exception {
         //自动登录的情况下，需要把realtype传上去，重试三次，因为大
         Logger.i("yhq", "retryActivateUser school group code:" + pSchoolGroupCode);
         final int RetryTime = 3;
@@ -369,7 +436,7 @@ public abstract class BaseAuthenticator extends BaseAbilityProvider {
             ActivateUserResponse response = null;
             try {
                 response = getHttpService().activateUser(pDeviceID,
-                        pSerialNum, pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType);
+                        pSerialNum, pDeviceSerialNumber,pSchoolGroupCode, pUserType, pLoginToken, pActivateRealType,pOrgId);
                 if (response != null && response.getErrcode() == 0) {
                     return response;
                 }

@@ -2,7 +2,6 @@ package com.nd.android.mdm.runinfo.sdk.db.operator;
 
 import android.support.annotation.NonNull;
 
-
 import com.nd.android.mdm.runinfo.sdk.db.entity.IAppRunInfoEntity;
 
 import java.util.List;
@@ -26,4 +25,5 @@ public interface IAppRunInfoDbOperator {
 
     IAppRunInfoEntity getEntity(String pPackageName, long pDayOfDate, int pHour);
 
+    boolean dropTable();
 }

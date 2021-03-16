@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
@@ -25,9 +24,10 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
     @Override
     public void doInitSync(@NonNull IAdhocInitCallback pCallback) {
         try {
-            Logger.e("yhq", "init Transfer lib");
-            Context context = AdhocBasicConfig.getInstance().getAppContext();
+            Logger.i("yhq", "init Transfer lib");
             MdmTransferFactory.getPushModel().start();
+
+            Context context = AdhocBasicConfig.getInstance().getAppContext();
             try {
                 ApplicationInfo appInfo = context.getPackageManager()
                         .getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);

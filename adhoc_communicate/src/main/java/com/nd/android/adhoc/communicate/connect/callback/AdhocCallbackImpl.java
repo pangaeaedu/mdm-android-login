@@ -3,8 +3,10 @@ package com.nd.android.adhoc.communicate.connect.callback;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.adhoc.communicate.R;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.connect.listener.IAdocFileTransferListener;
 import com.nd.android.mdm.biz.common.ErrorCode;
@@ -188,7 +190,8 @@ public class AdhocCallbackImpl implements IAdhocCallback {
         if (filePath.contains(fileName)) {
             notifyFileArriveComplete(sessionId, filePath);
         } else {
-            notifyFileArriveException(sessionId, fileName, ErrorCode.FAILED, "文件下载成功信息不匹配");
+            notifyFileArriveException(sessionId, fileName, ErrorCode.FAILED, AdhocBasicConfig.getInstance().getAppContext().getString(
+                    R.string.communicate_download_success_but_info_not_match));
         }
 
         fileNames.remove(sessionId);

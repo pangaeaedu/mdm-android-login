@@ -28,7 +28,7 @@ public class IpLocationSchoolCodeUtil {
 
     private static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    public static Observable<IpLocationSchoolCodeResp> getSchoolCodeByIP() {
+    public static Observable<IpLocationSchoolCodeResp> getSchoolCodeByIP(final String pRootCode) {
         return Observable.create(new Observable.OnSubscribe<IpLocationSchoolCodeResp>() {
             @Override
             public void call(Subscriber<? super IpLocationSchoolCodeResp> pSubscriber) {
@@ -40,7 +40,7 @@ public class IpLocationSchoolCodeUtil {
                     }
 
                     IpLocationSchoolCodeDao dao = new IpLocationSchoolCodeDao(getBaseUrl());
-                    IpLocationSchoolCodeResp resp = dao.getSchoolCodeByIp(ip);
+                    IpLocationSchoolCodeResp resp = dao.getSchoolCodeByIp(pRootCode,ip);
                     pSubscriber.onNext(resp);
                     pSubscriber.onCompleted();
                 } catch (Exception pE) {
@@ -50,7 +50,7 @@ public class IpLocationSchoolCodeUtil {
         });
     }
 
-    public static Observable<IpLocationSchoolCodeResp> getSchoolCodeByLocation(final int pRadius) {
+    public static Observable<IpLocationSchoolCodeResp> getSchoolCodeByLocation(final String pRootCode, final int pRadius) {
         return Observable
                 .create(new Observable.OnSubscribe<IpLocationSchoolCodeResp>() {
                     @Override
@@ -82,7 +82,7 @@ public class IpLocationSchoolCodeUtil {
                                             try {
                                                 IpLocationSchoolCodeDao dao = new IpLocationSchoolCodeDao(getBaseUrl());
                                                 IpLocationSchoolCodeResp resp = dao
-                                                        .getSchoolCodeByLocation("" + location.getLat(),
+                                                        .getSchoolCodeByLocation(pRootCode, "" + location.getLat(),
                                                                 "" + location.getLon(), location.getMapType(), pRadius);
 
                                                 locationNavigation.removeLocationListener(listener);
