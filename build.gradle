@@ -22,27 +22,27 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '2.1.607.cbb5b9b'
+    adhoc_basic_version = '2.1.621.deb89b4'
 
-    mdm_biz_version = '1.16.718.9ff5e02.hykinitopt'
+    mdm_biz_version = '1.16.780.44edc28'
 
-    device_control_version = '1.16.629.2bd8690'
-    device_command_version = '2.7.489.6242030.hykinitopt'
+    device_control_version = '1.16.635.23ca841'
+    device_command_version = '2.7.516.8a57b07'
 
     location_verison = '1.7.105.8d65b0b'
     file_transfer_version = '1.1.34.3cff954'
 
-    mdm_biz_sdk_version = '0.8.34.e5bbaba.foromo'
+    mdm_biz_sdk_version = '0.8.42.3463b3e'
 
     // 下面这三个后续也需要发布为正式版本
     adhoc_sdk_version = '1.2.21.2089-develop-SNAPSHOT'
-    screen_capture_version = '1.8.369.630b35f.foromo'
-    adhoc_push_util_version = '0.5.27.112.a03c223-features-lbwedgecompute-SNAPSHOT'
+    screen_capture_version = '1.8.371.80f53f5'
+    adhoc_push_util_version = '0.5.38.135.e9d53b4'
 
-    policy_version = '2.7.231.c05ca54.hykinitopt'
+    policy_version = '2.7.239.8bc907e'
     deliver_version = '2.3.160.4670ee0-features-lsj0.8.xhighschool-SNAPSHOT'
 
-    adhoc_firewall_version = '0.7.55.316bbfa'
+    adhoc_firewall_version = '1.0.70.66e3c98'
 
     androidBuildToolsVersion = '28.0.3'
     androidMinSdkVersion = 18
