@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 //@Target 这个注解需要使用的地方 PARAMETER=注解将被使用到方法的参数中
 @Target({PARAMETER})
 //显式声明被定义的整数值，除了@IntDef还有@LongDef @StringDef等等
-@IntDef(value = {LoginType.TYPE_UC, LoginType.TYPE_ORG})
+@IntDef(value = {LoginType.TYPE_UC, LoginType.TYPE_ORG, LoginType.TYPE_AUTO})
 public @interface LoginTypeRange {
 
 }
