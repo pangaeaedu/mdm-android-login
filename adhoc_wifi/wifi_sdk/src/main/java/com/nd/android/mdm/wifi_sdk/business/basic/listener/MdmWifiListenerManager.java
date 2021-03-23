@@ -2,6 +2,7 @@ package com.nd.android.mdm.wifi_sdk.business.basic.listener;
 
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.android.mdm.wifi_sdk.business.MdmWifiInfoManager;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 
@@ -48,6 +49,9 @@ public class MdmWifiListenerManager {
 //        mStateChangeListeners.remove(pListener);
 //    }
 
+    public boolean isInfoListenerEmpty(){
+        return mInfoUpdateListeners.isEmpty();
+    }
 
     public void addInfoUpdateListener(IMdmWifiInfoUpdateListener pListener) {
         if (pListener == null) {
@@ -55,10 +59,15 @@ public class MdmWifiListenerManager {
         }
 
         mInfoUpdateListeners.add(pListener);
+        MdmWifiInfoManager.getInstance().starStateTimer();
     }
 
     public void removeInfoUpdateListener(IMdmWifiInfoUpdateListener pListener) {
         mInfoUpdateListeners.remove(pListener);
+
+        if(mInfoUpdateListeners.isEmpty()){
+            MdmWifiInfoManager.getInstance().stopStateTimer();
+        }
     }
 
     public void addStatusChangeListener(IMdmWifiStatusChangeListener pListener) {

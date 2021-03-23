@@ -51,7 +51,7 @@ public final class MdmWifiInfoManager {
     private static final String TAG = "MdmWifiInfoManager";
 
     private static final long sNotifyStateChangeDuration = 1;
-    private static final long sUpdateWifiInfoDuration = 3;
+    private static final long sUpdateWifiInfoDuration = 6666;
 
 
     private static final int LEVEL_NUMBER = 4;
@@ -459,12 +459,11 @@ public final class MdmWifiInfoManager {
 
         }
 
-        Logger.d(TAG, "after updateWifiInfo: "
-                + "IP = " + mWifiInfo.getIp()
-                + ", SSID = " + mWifiInfo.getSsid()
-                + ", APMAC = " + mWifiInfo.getApMac()
-        );
-//        Logger.e(TAG, "updateWifiInfo return true");
+//        Logger.d(TAG, "after updateWifiInfo: "
+//                + "IP = " + mWifiInfo.getIp()
+//                + ", SSID = " + mWifiInfo.getSsid()
+//                + ", APMAC = " + mWifiInfo.getApMac()
+//        );
         return true;
     }
 
@@ -516,11 +515,19 @@ public final class MdmWifiInfoManager {
         }
     }
 
-    private void starStateTimer() {
-        if (AdhocRxJavaUtil.isSubscribed(mStateTimerSub)) {
+    public void starStateTimer() {
+        if(MdmWifiInfoManager.getInstance().getWifiListenerManager().isInfoListenerEmpty()){
+            //没有Listener,不用开启定时器了
+            Logger.i(TAG, "try to start timer, but no listener");
             return;
         }
-        mStateTimerSub = Observable.interval(sUpdateWifiInfoDuration, TimeUnit.SECONDS)
+
+        if (AdhocRxJavaUtil.isSubscribed(mStateTimerSub)) {
+            Logger.i(TAG, "already start");
+            return;
+        }
+        Logger.i(TAG, "let's start");
+        mStateTimerSub = Observable.interval(sUpdateWifiInfoDuration, TimeUnit.MILLISECONDS)
                 .filter(new Func1<Long, Boolean>() {
                     @Override
                     public Boolean call(Long aLong) {
@@ -554,7 +561,8 @@ public final class MdmWifiInfoManager {
                 });
     }
 
-    private void stopStateTimer() {
+    public void stopStateTimer() {
+        Logger.i(TAG, "stop timer");
         AdhocRxJavaUtil.doUnsubscribe(mStateTimerSub);
     }
 
