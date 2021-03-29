@@ -38,6 +38,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         super(pBaseUrl);
     }
 
+//
     public GetUserInfoResponse getUserInfo(String pDeviceID) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -55,6 +56,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         }
     }
 
+//
     @Deprecated
     public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum)
             throws Exception {
@@ -77,6 +79,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         return queryDeviceStatus(pDeviceID, pSerialNum, 0);
     }
 
+//
     public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum, int
             pAutoLogin) throws Exception {
 //        try {
@@ -99,6 +102,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         return queryDeviceStatus(pDeviceID, pSerialNum, pAutoLogin, 0);
     }
 
+//
     public QueryDeviceStatusResponse queryDeviceStatus(String pDeviceID, String pSerialNum, int
             pAutoLogin, int pNeedGroup) throws Exception {
         try {
@@ -120,6 +124,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         }
     }
 
+//
     public LoginUserResponse loginUser(String pEncryptUsername, String pEncryptPassword)
             throws Exception {
         try {
@@ -139,6 +144,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
     }
 
+//
     public GetActivateUserResultResponse getActivateResult(String pDeviceID, String pRequestID)
             throws Exception {
         try {
@@ -189,6 +195,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 //
 //    }
 
+//
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo, String pDeviceSerialNo,
                                              ActivateUserType pUserType, String pLoginToken,String pOrgId)
             throws Exception {
@@ -219,6 +226,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
 
     }
 
+//
     public ActivateUserResponse activateUser(String pDeviceID, String pSerialNo,
                                              String pSchoolGroupCode,
                                              String pDeviceSerialNo,
@@ -274,6 +282,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
         }
     }
 
+//
     public BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws Exception {
         try {
             Map<String, Object> map = new HashMap<>();
@@ -291,51 +300,12 @@ public class EnrollLoginDao extends AdhocHttpDao {
         }
     }
 
-    /*
-    "hardware":{
-      "build_sn": "08002800A8C5"  //设备唯一标识，選填
-      "cpu_sn": "08002800A8C5"  //设备唯一标识，選填
-      "imei": "08002800A8C5"  //设备唯一标识，選填
-      "wifi_mac": "08002800A8C5"  //设备唯一标识，選填
-      "btooth_mac": "08002800A8C5"  //设备唯一标识，選填
-      "android_id":"xxxxxxxx"  //之前的serial_no
-      "serial_no": "08002800A8C5"  //设备唯一标识，選填
-    }
-   "devicetype":1  //设备类型
-   "devicetoken":"xxxxxxxx" //新的devicetoken
-    */
-//    public ConfirmDeviceIDResponse confirmDeviceID(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-//                                                      String pBlueToothMac, String pSerialNo, String pAndroidID,
-//                                                      String pDeviceID) throws Exception{
-//        Map<String, Object> mapHardware = new HashMap<>();
-//
-//        if(!TextUtils.isEmpty(pBuildSn)) {
-//            mapHardware.put("build_sn", pBuildSn);
-//        }
-//
-//        if(!TextUtils.isEmpty(pCpuSn)){
-//            mapHardware.put("cpu_sn", pCpuSn);
-//        }
-//
-//        if(!TextUtils.isEmpty(pIMEI)) {
-//            mapHardware.put("imei", pIMEI);
-//        }
-//
-//        if(!TextUtils.isEmpty(pWifiMac)) {
-//            mapHardware.put("wifi_mac", pWifiMac);
-//        }
-//
-//        if(!TextUtils.isEmpty(pBlueToothMac)) {
-//            mapHardware.put("btooth_mac", pBlueToothMac);
-//        }
-//
-//        if(!TextUtils.isEmpty(pSerialNo)){
-//            mapHardware.put("serial_no", pSerialNo);
-//        }
-//
-//        if(!TextUtils.isEmpty(pAndroidID)) {
-//            mapHardware.put("android_id", pAndroidID);
-//        }
+
+//    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
+//                                                   String pWifiMac, String pLanMac, String pBlueToothMac,
+//                                                   String pSerialNo, String pAndroidID, String pDeviceID) throws Exception {
+//        Map<String, Object> mapHardware = LoginArgumentUtils.genHardwareMap(pBuildSn, pCpuSn, pIMEI, pWifiMac,
+//                pLanMac, pBlueToothMac, pSerialNo, pAndroidID);
 //
 //        Map<String, Object> data = new HashMap<>();
 //        data.put("hardware", mapHardware);
@@ -350,36 +320,12 @@ public class EnrollLoginDao extends AdhocHttpDao {
 //                    content, null);
 //        } catch (Exception e) {
 //            e.printStackTrace();
-//            Logger.e("yhq", "EnrollLoginDao error happpen:"+ postAction().getBaseUrl()
-//                    +"/v1.1/enroll/getDeviceToken/"+" " + "Msg:"+e.getMessage());
+//            Logger.e("yhq", "EnrollLoginDao error happpen:confirmDeviceID:" + e.getMessage());
 //            throw new ConfirmIDServerException(e.getMessage());
 //        }
 //    }
 
-    public ConfirmDeviceIDResponse confirmDeviceID(String pBuildSn, String pCpuSn, String pIMEI,
-                                                   String pWifiMac, String pLanMac, String pBlueToothMac,
-                                                   String pSerialNo, String pAndroidID, String pDeviceID) throws Exception {
-        Map<String, Object> mapHardware = LoginArgumentUtils.genHardwareMap(pBuildSn, pCpuSn, pIMEI, pWifiMac,
-                pLanMac, pBlueToothMac, pSerialNo, pAndroidID);
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("hardware", mapHardware);
-        data.put("type", DeviceType.getDeviceType().getValue());  //设备类型，1代表android
-        data.put("device_token", pDeviceID);
-
-        try {
-            Gson gson = new GsonBuilder().create();
-            String content = gson.toJson(data);
-
-            return postAction().post("/v1.1/enroll/getDeviceToken/", ConfirmDeviceIDResponse.class,
-                    content, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.e("yhq", "EnrollLoginDao error happpen:confirmDeviceID:" + e.getMessage());
-            throw new ConfirmIDServerException(e.getMessage());
-        }
-    }
-
+//
     public ConfirmDeviceIDResponse confirmDeviceID(Map<String, Object> pHardwareMap,
                                                    String pDeviceID) throws Exception {
         Map<String, Object> data = new HashMap<>();
@@ -410,6 +356,7 @@ public class EnrollLoginDao extends AdhocHttpDao {
     "xxxxx":"xxxxxx" //更多硬件信息
 }
      */
+//
     public Boolean reportHardwareInfo(String pDeviceID, Map<String, Object> pInfos) throws
             Exception {
         try {

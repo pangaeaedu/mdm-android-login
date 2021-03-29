@@ -28,6 +28,7 @@ dependencies {
     api ("com.nd.android.adhoc:device_control:$device_control_version"){
     }
 
+    api project(':device_status:device_info')
 //    api ("com.alibaba:druid:1.0.12")
 }
 

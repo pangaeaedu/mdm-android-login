@@ -24,7 +24,22 @@ include ":mdm_monitor"              // Monitor Module
 include ":mdm_runinfo"              // 应用运行信息收集
 //include ":mdm_autoupdate"              // 应用运行信息收集
 
-include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
+//include ":mdm_cmd:mdm_basic_cmd"    // MDM 指令基础实现模块
+
+
+
+
+
+include ':device_status:device_info'                // 设备信息 模块
+
+include ':device_status:device_activate_dao_api'     // 设备激活 Dao 接口 模块
+include ':device_status:device_activate_dao_impl'    // 设备激活 Dao 实现 模块
+
+include ':device_status:device_status_biz_api'       // 设备激活 业务层 接口 模块
+include ':device_status:device_status_biz'           // 设备激活 业务层 接口 模块
+
+include ':device_status:device_status_dao_api'     // 设备状态 Dao 接口 模块
+include ':device_status:device_status_dao_impl'    // 设备状态 Dao 实现 模块
 
 
 

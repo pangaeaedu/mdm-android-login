@@ -22,7 +22,7 @@ buildscript {
 }
 
 ext {
-    adhoc_basic_version = '2.1.621.deb89b4'
+    adhoc_basic_version = '2.1.636.51cafdf'
 
     mdm_biz_version = '1.16.780.44edc28'
 

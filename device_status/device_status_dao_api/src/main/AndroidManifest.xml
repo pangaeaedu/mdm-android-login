@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.nd.android.aioe.device.status.dao.api">
+
+    <application>
+
+        <!--<receiver android:name=".MdmEnvBroadcastReceiver"-->
+            <!--android:exported="true"-->
+            <!--android:enabled="true">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.nd.mdm.env.switch" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
+    </application>
+
+</manifest>

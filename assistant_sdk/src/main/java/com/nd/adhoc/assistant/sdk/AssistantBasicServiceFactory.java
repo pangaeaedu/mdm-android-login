@@ -37,7 +37,7 @@ public class AssistantBasicServiceFactory {
             }
         }
 
-        return mSpConfig;
+        return DeviceInfoSpConfig.;
     }
 
     public void addLogoutListener(ILogoutEventListener pListener){
