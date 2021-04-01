@@ -9,7 +9,6 @@ import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.adhoc.basic.util.string.AdhocTextUtil;
-import com.nd.android.aioe.device.status.biz.api.DeviceStatus;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class DeviceInfoSpConfig {
     private static final String KEY_NODE_NAME = "node_name";
 
 
-    private static final String KEY_DEVICE_STATUS_VALUE = "device_status_value";
+//    private static final String KEY_DEVICE_STATUS_VALUE = "device_status_value";
     private static final String KEY_DEVICE_ID = "device_id";
 
     private static final String KEY_PREVIOUS_LOGIN_ACCOUNT = "previous_login_account";
@@ -53,7 +52,7 @@ public class DeviceInfoSpConfig {
 
     private static String mstrPushId = "";
 
-    private static ISharedPreferenceModel sPreferences;
+    private static final ISharedPreferenceModel sPreferences;
 
     static {
         sPreferences = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext(), "assistant_data", Context.MODE_PRIVATE);
@@ -64,14 +63,14 @@ public class DeviceInfoSpConfig {
     }
 
 
-    public static void saveDeviceStatus(int pStatusValue) {
-        sPreferences.putInt(KEY_DEVICE_STATUS_VALUE, pStatusValue).apply();
-    }
+//    public static void saveDeviceStatus(int pStatusValue) {
+//        sPreferences.putInt(KEY_DEVICE_STATUS_VALUE, pStatusValue).apply();
+//    }
 
     //默认值为-1
-    public static int getDeviceStatus() {
-        return sPreferences.getInt(KEY_DEVICE_STATUS_VALUE, -1);
-    }
+//    public static int getDeviceStatus() {
+//        return sPreferences.getInt(KEY_DEVICE_STATUS_VALUE, -1);
+//    }
 
     public static String getDeviceID() {
         return sPreferences.getString(KEY_DEVICE_ID);
@@ -85,10 +84,10 @@ public class DeviceInfoSpConfig {
         sPreferences.putString(KEY_DEVICE_ID, pDeviceID).commit();
     }
 
-    public static boolean isActivated() {
-        DeviceStatus status = DeviceStatus.fromValue(getDeviceStatus());
-        return !status.isUnActivated();
-    }
+//    public static boolean isActivated() {
+//        DeviceStatus status = DeviceStatus.fromValue(getDeviceStatus());
+//        return !status.isUnActivated();
+//    }
 
     public static void saveActivated(boolean pActivated) {
         sPreferences.putBoolean(KEY_ACTIVATED, pActivated).apply();
@@ -278,7 +277,7 @@ public class DeviceInfoSpConfig {
         saveUserID("");
         saveDeviceCode("");
         saveGroupCode("");
-        saveDeviceStatus(-1);
+//        saveDeviceStatus(-1);
 
         saveNodeCode("");
         saveNodeName("");

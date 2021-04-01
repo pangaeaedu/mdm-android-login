@@ -2,6 +2,7 @@ package com.nd.android.aioe.device.info.util;
 
 import android.Manifest;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
@@ -17,7 +18,7 @@ import rx.schedulers.Schedulers;
 
 public class DeviceIDSPUtils {
 
-    private static final String TAG = "DeviceIDSPUtils";
+    private static final String TAG = "DeviceStatus";
 
     // DeviceID不一样，报日志
     public static void startNewThreadToCheckDeviceIDIntegrity(final Context pContext,
@@ -40,11 +41,12 @@ public class DeviceIDSPUtils {
                         String idInSdFile = DeviceIDFileUtils.loadFromSDCardFile(pContext);
                         if (!pDeviceID.equalsIgnoreCase(idInSdFile)) {
                             boolean bOK = DeviceIDFileUtils.saveDeviceIDToSdFile(pContext, encrypt);
+
                             if(!bOK){
                                 Logger.w(TAG, "SaveDeviceIDToSdFile failed");
                             } else {
-                                Logger.i("yhq", "SaveDeviceIDToSdFile success");
-                                Logger.d("yhq", "SaveDeviceIDToSdFile success:" + pDeviceID);
+                                Logger.i(TAG, "DeviceIDSPUtils, saveDeviceIDToSdFile success");
+                                Logger.d(TAG, "DeviceIDSPUtils, saveDeviceIDToSdFile success:" + pDeviceID);
                             }
                         }
 
@@ -111,6 +113,7 @@ public class DeviceIDSPUtils {
         return DeviceIDFileUtils.loadDeviceIDFromSdCard(pContext);
     }
 
+    @NonNull
     public static String generateDeviceID(){
         return "V3"+UUID.randomUUID().toString().replace("-", "");
     }

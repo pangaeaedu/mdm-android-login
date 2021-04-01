@@ -1,8 +1,11 @@
 dependencies {
     api("com.android.support:support-annotations:$androidSupportSdkVersion")
 
-    api project(':device_status:device_status_dao_api')
+    api project(':device_status:device_status_dao')
 
+
+
+    api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
 }
 
 

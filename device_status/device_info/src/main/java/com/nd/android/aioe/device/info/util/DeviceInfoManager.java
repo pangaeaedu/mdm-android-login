@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
-import com.nd.android.aioe.device.status.biz.api.DeviceStatus;
+import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
 import rx.subjects.BehaviorSubject;
 
@@ -42,44 +42,45 @@ public class DeviceInfoManager {
 
     public void setDeviceID(@NonNull String pDeviceID) {
         mDeviceID = pDeviceID;
-        notifyDeviceID(mDeviceID);
+//        notifyDeviceID(mDeviceID);
     }
 
     public String getDeviceID() {
         return mDeviceID;
     }
 
-    public DeviceStatus getCurrentStatus() {
-        if (mDeviceStatus == null) {
-            int status = DeviceInfoSpConfig.getDeviceStatus();
-            mDeviceStatus = DeviceStatus.fromValue(status);
-        }
+//    public DeviceStatus getCurrentStatus() {
+//        if (mDeviceStatus == null) {
+//            int status = DeviceInfoSpConfig.getDeviceStatus();
+//            mDeviceStatus = DeviceStatus.fromValue(status);
+//        }
+//
+//        return mDeviceStatus;
+//    }
 
-        return mDeviceStatus;
-    }
+//    public void setCurrentStatus(DeviceStatus pStatus) {
+//        Logger.e("yhq", "setCurrentStatus:"+pStatus.getValue());
+//        mDeviceStatus = pStatus;
+//        mNeedQueryStatusFromServer = 2;
+//        DeviceInfoSpConfig.saveDeviceStatus(pStatus.getValue());
+//    }
 
-    public void setCurrentStatus(DeviceStatus pStatus) {
-        Logger.e("yhq", "setCurrentStatus:"+pStatus.getValue());
-        mDeviceStatus = pStatus;
-        mNeedQueryStatusFromServer = 2;
-        DeviceInfoSpConfig.saveDeviceStatus(pStatus.getValue());
-    }
+//    public BehaviorSubject<String> getPushIDSubject() {
+//        return mPushIDSubject;
+//    }
 
-    public BehaviorSubject<String> getPushIDSubject() {
-        return mPushIDSubject;
-    }
+//    public void notifyPushID(String pPushID) {
+//        mPushIDSubject.onNext(pPushID);
+//    }
 
-    public void notifyPushID(String pPushID) {
-        mPushIDSubject.onNext(pPushID);
-    }
+//    public BehaviorSubject<String> getConfirmDeviceIDSubject(){
+//        return mConfirmDeviceIDSubject;
+//    }
 
-    public BehaviorSubject<String> getConfirmDeviceIDSubject(){
-        return mConfirmDeviceIDSubject;
-    }
-
-    public void notifyDeviceID(String pDeviceID) {
-        mConfirmDeviceIDSubject.onNext(pDeviceID);
-    }
+    @Deprecated
+//    public void notifyDeviceID(String pDeviceID) {
+//        mConfirmDeviceIDSubject.onNext(pDeviceID);
+//    }
 
 
 
@@ -108,14 +109,14 @@ public class DeviceInfoManager {
         mPushIDSubject = BehaviorSubject.create();
     }
 
-    public int getNeedQueryStatusFromServer() {
-        return mNeedQueryStatusFromServer;
-    }
+//    public int getNeedQueryStatusFromServer() {
+//        return mNeedQueryStatusFromServer;
+//    }
 
-    public void setNeedQueryStatusFromServer(int needQueryStatusFromServer) {
-        if(needQueryStatusFromServer >mNeedQueryStatusFromServer){
-            mNeedQueryStatusFromServer = needQueryStatusFromServer;
-        }
-
-    }
+//    public void setNeedQueryStatusFromServer(int needQueryStatusFromServer) {
+//        if(needQueryStatusFromServer >mNeedQueryStatusFromServer){
+//            mNeedQueryStatusFromServer = needQueryStatusFromServer;
+//        }
+//
+//    }
 }

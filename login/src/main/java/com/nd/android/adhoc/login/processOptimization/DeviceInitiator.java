@@ -131,6 +131,7 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                 return;
             }
 
+            // 这个应邀移到 device status 业务层
             if(1 == DeviceInfoManager.getInstance().getNeedQueryStatusFromServer()){
                 Logger.e("yhq", "check status when connected");
                 checkLocalStatusAndServer();

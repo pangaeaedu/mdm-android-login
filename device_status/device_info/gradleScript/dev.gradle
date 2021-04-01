@@ -9,7 +9,7 @@ dependencies {
 //    api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version")
     api("com.nd.android.adhoc:device_control:$device_control_version")
 
-    api project(':device_status:device_status_dao_api')
+//    api project(':device_status:device_status_dao_api')
 
     api project(':device_status:device_status_biz_api')
 

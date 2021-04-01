@@ -57,6 +57,9 @@ class PushModule implements IPushModule {
     private IPushChannelConnectListener mChannelConnectListener = new IAdhocPushChannelConnectListener() {
         @Override
         public void onPushDeviceToken(String deviceToken) {
+
+
+
             for (IPushConnectListener listener : mConnectListeners) {
                 if (listener instanceof IAdhocPushConnectListener) {
                     ((IAdhocPushConnectListener) listener).onPushDeviceToken(deviceToken);

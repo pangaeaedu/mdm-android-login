@@ -87,6 +87,7 @@ dependencies {
     }
 
 
+//    api project(':device_status:device_status_biz_api')
 //    api project (":awspushchannel")
 
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")

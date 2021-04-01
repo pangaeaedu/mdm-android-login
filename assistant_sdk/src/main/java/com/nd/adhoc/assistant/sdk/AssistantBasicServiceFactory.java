@@ -8,6 +8,7 @@ import com.nd.adhoc.assistant.sdk.eventListener.ILoginEventListener;
 import com.nd.adhoc.assistant.sdk.eventListener.ILogoutEventListener;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;
+import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -37,7 +38,7 @@ public class AssistantBasicServiceFactory {
             }
         }
 
-        return DeviceInfoSpConfig.;
+        return DeviceInfoSpConfig.get;
     }
 
     public void addLogoutListener(ILogoutEventListener pListener){
