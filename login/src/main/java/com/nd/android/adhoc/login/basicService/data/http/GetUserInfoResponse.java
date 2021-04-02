@@ -25,18 +25,18 @@ public class GetUserInfoResponse {
     public String school_name = "";
 
     //标识唯一id，目前OMO那边title名称为:设备标识
-    public String objctid = "";
+    public String objectid = "";
 
 
     public int errcode = 0;
     public int msgcode = 0;
 
-    public void setObjctid(String strObjId){
-        objctid = strObjId;
+    public void setObjectid(String strObjId){
+        objectid = strObjId;
     }
 
-    public String getObjctid(){
-        return objctid;
+    public String getObjectid(){
+        return objectid;
     }
 
     public void setNick_name(String strNickName){
