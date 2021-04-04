@@ -23,7 +23,7 @@ class SchoolCodeGetter {
         }
 
         // 把取回的school groupCode放在result中，返回给下一个调用点
-        Logger.i(TAG, "SchoolCodeGetter, retrieveGroupCode root group code:" + pRootCode);
+        Logger.i(TAG, "getSchoolCode, retrieveGroupCode root group code:" + pRootCode);
 
         ISchoolGroupCodeRetriever retriever = interceptors.next();
 

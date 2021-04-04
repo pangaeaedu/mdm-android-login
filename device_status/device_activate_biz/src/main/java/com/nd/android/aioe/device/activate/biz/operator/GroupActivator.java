@@ -17,8 +17,6 @@ import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 class GroupActivator {
 
-    private static final String TAG = "DeviceActivate";
-
     public static DeviceActivateModel activate(@NonNull String pSchoolCode) throws Exception {
 
         String deviceID = DeviceInfoManager.getInstance().getDeviceID();

@@ -11,11 +11,11 @@ import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 class ActivateResultChecker {
 
-    private static final String TAG = "DeviceActivateResultChecker";
+    private static final String TAG = "DeviceActivate";
 
 
     public static CheckActivateModel checkActivateResult(int pTimes, String pDeviceID, String pRequestID) throws Exception {
-        Logger.i(TAG, "checkActivateResult");
+        Logger.i(TAG, "ActivateResultChecker, checkActivateResult");
 
         for (int i = 0; i < pTimes; i++) {
             try {
@@ -28,7 +28,7 @@ class ActivateResultChecker {
             try {
                 model = getDeviceActivateDao().getActivateResult(CheckActivateModel.class, pDeviceID, DeviceType.getValue(), pRequestID);
             } catch (Exception e) {
-                Logger.e(TAG, "getActivateResult error: " + e);
+                Logger.e(TAG, "ActivateResultChecker, getActivateResult error: " + e);
             }
 
             // 结果为空，继续尝试
@@ -45,7 +45,7 @@ class ActivateResultChecker {
                     return null;
                 }
 
-                Logger.e(TAG, "GetActivateUserModel:" + model);
+                Logger.d(TAG, "GetActivateUserModel:" + model);
                 // 激活中，就去重试
                 if (model.isActivateStillProcessing()) {
                     Logger.e(TAG, "checkActivateResult, status still processing, retry again");
