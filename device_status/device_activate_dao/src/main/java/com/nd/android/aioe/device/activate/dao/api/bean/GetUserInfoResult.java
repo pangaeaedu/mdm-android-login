@@ -12,21 +12,21 @@ package com.nd.android.aioe.device.activate.dao.api.bean;
 //        "school_name":"xxxx学校" //学校名称，如果有配置的话有
 
 public class GetUserInfoResult {
-    public String requestid = "";
-    public String nick_name = "";
-    public String user_id = "";
+    private String requestid = "";
+    private String nick_name = "";
+    private String user_id = "";
 
     // 设备编码，根据OMO 需求新增的一个字段 -- by hyk 20200410
-    public String device_code = "";
+    private String device_code = "";
 
     // 根据 OMO 增加对 groupcode 字段的解析，用于后期查询父节点级当前节点的名称等信息 -- by hyk 20200511
-    public String groupcode = "";
-    public String groupname = "";
-    public String school_name = "";
+    private String groupcode = "";
+    private String groupname = "";
+    private String school_name = "";
 
 
-    public int errcode = 0;
-    public int msgcode = 0;
+    private int errcode = 0;
+    private int msgcode = 0;
 
     public String getNickName(){
         return nick_name;

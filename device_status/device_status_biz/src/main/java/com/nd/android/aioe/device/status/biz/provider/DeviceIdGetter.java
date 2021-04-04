@@ -1,4 +1,4 @@
-package com.nd.android.aioe.device.status.biz.operator;
+package com.nd.android.aioe.device.status.biz.provider;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,9 +10,9 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.info.util.DeviceIDSPUtils;
-import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.aioe.device.info.util.DeviceInfoManager;
 import com.nd.android.aioe.device.status.biz.api.ActivateConfig;
+import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
 import com.nd.android.aioe.device.status.biz.model.ConfirmDeviceIdModel;
 import com.nd.android.aioe.device.status.biz.util.DeviceStatusParamUtil;

@@ -4,10 +4,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
-import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
-import com.nd.android.aioe.device.activate.biz.api.ISchoolGroupCodeRetriever;
-import com.nd.android.aioe.device.activate.biz.bean.ActivateUserModel;
+import com.nd.android.aioe.device.activate.biz.api.model.DeviceActivateModel;
 import com.nd.android.aioe.device.activate.biz.cache.DeviceActivateCache;
 import com.nd.android.aioe.device.activate.dao.api.IDeviceActivateDao;
 import com.nd.android.aioe.device.activate.dao.api.constant.ActivateChannel;
@@ -16,14 +14,12 @@ import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.aioe.device.info.util.DeviceInfoManager;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
-import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
-
-import java.util.Iterator;
 
 class GroupActivator {
 
+    private static final String TAG = "DeviceActivate";
 
-    public static void activate(@NonNull String pRootCode, @NonNull String pSchoolCode) throws AdhocException {
+    public static DeviceActivateModel activate(@NonNull String pSchoolCode) throws Exception {
 
         String deviceID = DeviceInfoManager.getInstance().getDeviceID();
         String serialNum = DeviceInfoHelper.getSerialNumberThroughControl();
@@ -39,55 +35,17 @@ class GroupActivator {
 
         String orgId = DeviceActivateCache.getOrgId();
 
-        try {
-            ActivateUserModel model =
-                    getDeviceActivateDao().activate(
-                            ActivateUserModel.class,
-                            deviceID,
-                            DeviceType.getValue(),
-                            serialNum,
-                            deviceSerialNumber,
-                            ActivateChannel.AutoLogin,
-                            "",
-                            orgId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    // 回调上层页面去获取 SchoolCode
-    private String getSchoolCode(String pRootCode, boolean isSchoolNotFound) throws Exception {
-        Iterator<ISchoolGroupCodeRetriever> interceptors = AnnotationServiceLoader
-                .load(ISchoolGroupCodeRetriever.class).iterator();
-        if (!interceptors.hasNext()) {
-            Logger.e("yhq", "getSchoolCode, ISchoolGroupCodeRetriever not found");
-            return null;
-        }
-
-        // 把取回的school groupCode放在result中，返回给下一个调用点
-        Logger.i("yhq", "retrieveGroupCode root group code:" + pRootCode);
-        ISchoolGroupCodeRetriever retriever = interceptors.next();
-//        UserLoginConfig loginConfig = DeviceInfoManager.getInstance().getUserLoginConfig();
-
-
-        String realRootCode;
-
-        if (!ActivateConfig.getInstance().checkInited() || TextUtils.isEmpty(ActivateConfig.getInstance().getGroupCode())) {
-            realRootCode = pRootCode;
-        } else {
-            realRootCode = ActivateConfig.getInstance().getGroupCode();
-        }
-
-        String schoolGroupCode;
-        if (isSchoolNotFound) {
-            schoolGroupCode = retriever.onGroupNotFound(realRootCode);
-        } else {
-            schoolGroupCode = retriever.retrieveGroupCode(realRootCode);
-        }
-
-        return schoolGroupCode;
+        return getDeviceActivateDao().activate(
+                DeviceActivateModel.class,
+                deviceID,
+                DeviceType.getValue(),
+                serialNum,
+                pSchoolCode,
+                deviceSerialNumber,
+                ActivateChannel.AutoLogin,
+                "",
+                ActivateConfig.getInstance().getActivateRealType(),
+                orgId);
     }
 
 

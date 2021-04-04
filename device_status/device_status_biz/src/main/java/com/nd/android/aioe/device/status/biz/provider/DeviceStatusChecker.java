@@ -1,13 +1,12 @@
-package com.nd.android.aioe.device.status.biz.operator;
+package com.nd.android.aioe.device.status.biz.provider;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceIDSPUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
+import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
 import com.nd.android.aioe.device.status.biz.model.GetDeviceStatusModel;
 import com.nd.android.aioe.device.status.dao.api.IDeviceStatusDao;
 import com.nd.android.aioe.device.status.dao.impl.DeviceStatusDaoHelper;
@@ -23,7 +22,6 @@ class DeviceStatusChecker {
     private static final ExecutorService sCheckStatusSingleExecutor = Executors.newSingleThreadExecutor();
 
     public static void checkDeviceStatusFromServer(final String pDeviceID) {
-
 
         sCheckStatusSingleExecutor.submit(new Runnable() {
             @Override
@@ -58,26 +56,24 @@ class DeviceStatusChecker {
         });
     }
 
-
-    private void checkDeviceStatus(@NonNull DeviceStatus pServerStatus) {
-//        DeviceStatus localStatus = DeviceInfoManager.getInstance().getCurrentStatus();
-//        if (null == localStatus) {
-//            return;
+//    private void checkDeviceStatus(@NonNull DeviceStatus pServerStatus) {
+////        DeviceStatus localStatus = DeviceInfoManager.getInstance().getCurrentStatus();
+////        if (null == localStatus) {
+////            return;
+////        }
+//
+////        DeviceStatusChangeManager.notifyDeviceStatus(pServerStatus);
+//
+//        // TODO：这个应该放到 激活模块当中去处理
+//        if (pServerStatus.isUnActivated() && !localStatus.isUnActivated()) {
+////                                DeviceIDSPUtils.saveDeviceIDToSp("");
+//            DeviceIDSPUtils.saveDeviceIDToThirdVersionSpSync("");
+//            DeviceInfoSpConfig.clearPushIDSync();
+//            Logger.e(TAG, "differnet status, exit");
+//            // TODO：这里应该走注销流程
+//            System.exit(0);
 //        }
-
-//        DeviceStatusChangeManager.notifyDeviceStatus(pServerStatus);
-
-        // TODO：这个应该放到 激活模块当中去处理
-        if (pServerStatus.isUnActivated() && !localStatus.isUnActivated()) {
-//                                DeviceIDSPUtils.saveDeviceIDToSp("");
-            DeviceIDSPUtils.saveDeviceIDToThirdVersionSpSync("");
-            DeviceInfoSpConfig.clearPushIDSync();
-            Logger.e(TAG, "differnet status, exit");
-            // TODO：这里应该走注销流程
-            System.exit(0);
-        }
-    }
-
+//    }
 
     private static IDeviceStatusDao getDeviceStatusDao() {
         return DeviceStatusDaoHelper.getDeviceStatusDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl());

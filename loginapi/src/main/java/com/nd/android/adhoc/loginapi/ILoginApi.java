@@ -3,8 +3,8 @@ package com.nd.android.adhoc.loginapi;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.router_api.facade.template.IProvider;
+import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
 import rx.Observable;
 

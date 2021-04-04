@@ -1,4 +1,4 @@
-package com.nd.android.aioe.device.status.biz.operator;
+package com.nd.android.aioe.device.status.biz.api.listener;
 
 import android.support.annotation.NonNull;
 
@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-final class DeviceStatusChangeManager {
+public final class DeviceStatusChangeManager {
     private static final String TAG = "DeviceStatusChangeManager";
 
     private static final List<IDeviceStatusListener> sStatusChangeListeners = new CopyOnWriteArrayList<>();

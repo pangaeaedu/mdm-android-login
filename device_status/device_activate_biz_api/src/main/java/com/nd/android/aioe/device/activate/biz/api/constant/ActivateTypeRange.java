@@ -1,4 +1,4 @@
-package com.nd.android.aioe.device.activate.biz.api;
+package com.nd.android.aioe.device.activate.biz.api.constant;
 
 import android.support.annotation.IntDef;
 

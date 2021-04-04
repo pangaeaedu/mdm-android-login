@@ -1,13 +1,15 @@
 package com.nd.android.aioe.device.activate.dao.api.bean;
 
-public class ActivateUserResult {
-    private String result = "";
+public class LoginUcUserResult implements ILoginUserResult {
+
     private String username = "";
     private String nickname = "";
     private String loginToken = "";
 
-    public String getResult() {
-        return result;
+    public LoginUcUserResult(String username, String nickname, String loginToken) {
+        this.username = username;
+        this.nickname = nickname;
+        this.loginToken = loginToken;
     }
 
     public String getUsername() {
@@ -21,16 +23,4 @@ public class ActivateUserResult {
     public String getLoginToken() {
         return loginToken;
     }
-//
-//    public boolean isSuccess(){
-//        if(TextUtils.isEmpty(result)){
-//            return false;
-//        }
-//
-//        if(result.equalsIgnoreCase("success")){
-//            return true;
-//        }
-//
-//        return false;
-//    }
 }

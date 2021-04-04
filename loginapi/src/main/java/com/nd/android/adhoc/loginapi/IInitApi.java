@@ -1,8 +1,8 @@
 package com.nd.android.adhoc.loginapi;
 
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
 import com.nd.android.adhoc.router_api.facade.template.IProvider;
+import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
 import rx.Observable;
 

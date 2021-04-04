@@ -39,13 +39,13 @@ public class AssistantAuthenticSystem {
     }
 
     private IDeviceStatusListener getDeviceStatusListener(){
-        if(mDeviceStatusListener == null){
-            synchronized (this){
-                if(mDeviceStatusListener == null){
-                    mDeviceStatusListener = new DeviceStatusListenerImpl();
-                }
-            }
-        }
+//        if(mDeviceStatusListener == null){
+//            synchronized (this){
+//                if(mDeviceStatusListener == null){
+//                    mDeviceStatusListener = new DeviceStatusListenerImpl();
+//                }
+//            }
+//        }
 
         return mDeviceStatusListener;
     }

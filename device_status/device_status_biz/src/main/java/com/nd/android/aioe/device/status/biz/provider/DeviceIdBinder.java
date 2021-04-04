@@ -1,4 +1,4 @@
-package com.nd.android.aioe.device.status.biz.operator;
+package com.nd.android.aioe.device.status.biz.provider;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;

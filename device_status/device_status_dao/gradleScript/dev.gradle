@@ -5,11 +5,6 @@ dependencies {
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
 
 
-    try {
-        api project(':adhoc_basic:adhoc-router-api')
-    } catch (Exception ignored) {
-        api("com.nd.android.adhoc.basic:adhoc-router-api:$adhoc_basic_version")
-    }
 }
 
 

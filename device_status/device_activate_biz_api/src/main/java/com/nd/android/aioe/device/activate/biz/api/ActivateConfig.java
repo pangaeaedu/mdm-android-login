@@ -1,13 +1,20 @@
 package com.nd.android.aioe.device.activate.biz.api;
 
+import com.nd.android.aioe.device.activate.biz.api.constant.ActivateRealType;
+import com.nd.android.aioe.device.activate.biz.api.constant.ActivateType;
+import com.nd.android.aioe.device.activate.biz.api.constant.ActivateTypeRange;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class ActivateConfig {
 
-    private int mLoginType = 0;
+    private int mLoginType = ActivateType.TYPE_AUTO;
     private int mNeedGroup = 0;
     private String mGroupCode = "";
-    private int mActivateRealType = 0;
+
+    //"realtype":11,  // 11=不需要用户登陆(pc)，12=egypt/saas化，不填使用默认激活方式，非必填
+
+    private ActivateRealType mActivateRealType = ActivateRealType.NORMAL;
 
     private volatile static ActivateConfig sInstance = null;
 
@@ -25,18 +32,18 @@ public final class ActivateConfig {
         return sInstance;
     }
 
-    public void init(@ActivateTypeRange int pLoginType, int pNeedGroup, int pActivateRealType) {
+    public void init(@ActivateTypeRange int pLoginType, int pNeedGroup, ActivateRealType pActivateRealType) {
         init(pLoginType, pNeedGroup, pActivateRealType, "");
     }
 
-    public void init(@ActivateTypeRange int pLoginType, int pNeedGroup, int pActivateRealType, String pGroupCode) {
+    public void init(@ActivateTypeRange int pLoginType, int pNeedGroup, ActivateRealType pActivateRealType, String pGroupCode) {
         if (!mIsInited.compareAndSet(false, true)) {
             return;
         }
 
         mLoginType = pLoginType;
         mNeedGroup = pNeedGroup;
-        mActivateRealType = pActivateRealType;
+        mActivateRealType = pActivateRealType == null ? ActivateRealType.NORMAL : pActivateRealType;
         mGroupCode = pGroupCode;
 
     }
@@ -45,24 +52,16 @@ public final class ActivateConfig {
         return mIsInited.get();
     }
 
-    public int getAutoLogin() {
-        if (mLoginType == ActivateType.TYPE_AUTO) {
-            return 1;
-        }
-
-        return 0;
-    }
-
     public int getLoginType() {
         return mLoginType;
     }
 
     public boolean isAutoLogin() {
-        return checkInited() && getAutoLogin() == 1;
+        return checkInited() && getLoginType() == ActivateType.TYPE_AUTO;
     }
 
     public int getActivateRealType() {
-        return mActivateRealType;
+        return mActivateRealType.getValue();
     }
 
     public int getNeedGroup() {

@@ -157,26 +157,6 @@ class DeviceActivateDaoImpl extends AdhocHttpDao implements IDeviceActivateDao {
     }
 
     @Override
-    public <T> T login(@NonNull Class<T> pClass, @NonNull String pUsername, @NonNull String pPassword) throws Exception {
-        try {
-            Map<String, Object> map = new HashMap<>();
-            map.put("username", pUsername);
-            map.put("passwd", pPassword);
-
-            Gson gson = new GsonBuilder().create();
-            String content = gson.toJson(map);
-
-            return postAction().post("/v1.1/enroll/login/", pClass,
-                    content, null);
-        } catch (Exception pE) {
-            Logger.e(TAG, "DeviceActivateDao, login error: " + pE.getMessage());
-            throw new AdhocException(pE.getMessage());
-        }
-
-    }
-
-
-    @Override
     public <T> T getActivateResult(@NonNull Class<T> pClass,
                                    @NonNull String pDeviceID,
                                    int pDeviceType,

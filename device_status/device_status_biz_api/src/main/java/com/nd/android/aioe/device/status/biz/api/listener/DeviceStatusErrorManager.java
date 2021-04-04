@@ -1,4 +1,4 @@
-package com.nd.android.aioe.device.status.biz.operator;
+package com.nd.android.aioe.device.status.biz.api.listener;
 
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;

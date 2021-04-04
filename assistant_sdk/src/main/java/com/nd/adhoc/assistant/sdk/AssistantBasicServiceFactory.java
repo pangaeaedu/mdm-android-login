@@ -1,14 +1,10 @@
 package com.nd.adhoc.assistant.sdk;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.nd.adhoc.assistant.sdk.config.AssistantSpConfig;
 import com.nd.adhoc.assistant.sdk.eventListener.ILoginEventListener;
 import com.nd.adhoc.assistant.sdk.eventListener.ILogoutEventListener;
-import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;
-import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class AssistantBasicServiceFactory {
     private static final AssistantBasicServiceFactory ourInstance = new AssistantBasicServiceFactory();
 
-    private AssistantSpConfig mSpConfig = null;
+//    private AssistantSpConfig mSpConfig = null;
 
     private List<ILoginEventListener> mLoginListeners = new CopyOnWriteArrayList<>();
     private List<ILogoutEventListener> mLogoutListeners = new CopyOnWriteArrayList<>();
@@ -28,18 +24,18 @@ public class AssistantBasicServiceFactory {
     private AssistantBasicServiceFactory() {
     }
 
-    public AssistantSpConfig getSpConfig(){
-        Context ctx = AdhocBasicConfig.getInstance().getStorageContext();
-        if(mSpConfig == null){
-            synchronized (this){
-                if(mSpConfig == null){
-                    mSpConfig = new AssistantSpConfig(ctx, "assistant_data");
-                }
-            }
-        }
-
-        return DeviceInfoSpConfig.get;
-    }
+//    public AssistantSpConfig getSpConfig(){
+//        Context ctx = AdhocBasicConfig.getInstance().getStorageContext();
+//        if(mSpConfig == null){
+//            synchronized (this){
+//                if(mSpConfig == null){
+//                    mSpConfig = new AssistantSpConfig(ctx, "assistant_data");
+//                }
+//            }
+//        }
+//
+//        return DeviceInfoSpConfig.get;
+//    }
 
     public void addLogoutListener(ILogoutEventListener pListener){
         mLogoutListeners.add(pListener);

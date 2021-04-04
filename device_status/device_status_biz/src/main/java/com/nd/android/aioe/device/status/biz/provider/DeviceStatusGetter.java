@@ -1,6 +1,7 @@
-package com.nd.android.aioe.device.status.biz.operator;
+package com.nd.android.aioe.device.status.biz.provider;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
@@ -15,7 +16,7 @@ class DeviceStatusGetter {
 
     private static final String TAG = "DeviceStatusOperator";
 
-    @NonNull
+    @Nullable
     public static GetDeviceStatusModel queryDeviceStatusFromServer(@NonNull String pDeviceID) throws AdhocException {
         Logger.i(TAG, " start run queryDeviceStatusFromServer");
         String serialNum = DeviceInfoHelper.getSerialNumberThroughControl();
@@ -29,13 +30,9 @@ class DeviceStatusGetter {
 
         //这里增加的orgId非空的判断，是为了AP7设备激活时上报orgId这个逻辑能够正常走下去，并且不跳到选择组织的界面
 
-        while (result == null) {
-
-            try {
-                // TODO： 待确认 orgid 的判断 是空 还是 非空
-
-                // 为什么查询状态还要关心  needgroup、是否自动激活？ 直接查询全部的信息回来就好了？
-                result = getDeviceStatusDao().getDeviceStatus(GetDeviceStatusModel.class, pDeviceID, serialNum, 1);
+        try {
+            // 为什么查询状态还要关心  needgroup、是否自动激活？ 直接查询全部的信息回来就好了？
+            result = getDeviceStatusDao().getDeviceStatus(GetDeviceStatusModel.class, pDeviceID, serialNum, 1);
 
 //                if (ActivateConfig.getInstance().isAutoLogin() && TextUtils.isEmpty(sOrgId)) {
 //                    Logger.i(TAG, " queryDeviceStatusFromServer isAutoLogin 1");
@@ -47,11 +44,8 @@ class DeviceStatusGetter {
 //                    Logger.i(TAG, "queryDeviceStatusFromServer, status: " + result.getStatus() + ", errcode: " + result.getErrcode());
 //                }
 
-            } catch (Exception e) {
-                Logger.e(TAG, "queryDeviceStatus error 2 : " + e);
-            }
-
-            Logger.i(TAG, "queryDeviceStatusFromServer, getDeviceStatus failed, retry");
+        } catch (Exception e) {
+            Logger.e(TAG, "queryDeviceStatus error 2 : " + e);
         }
 
         return result;

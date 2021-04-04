@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.login.processOptimization;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceStatus;
+import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
 public interface IDeviceStatusListener {
     void onDeviceStatusChanged(DeviceStatus pStatus);
