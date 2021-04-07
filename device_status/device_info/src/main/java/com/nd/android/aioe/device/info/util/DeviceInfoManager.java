@@ -24,12 +24,12 @@ public class DeviceInfoManager {
 //    private UserLoginConfig mUserLoginConfig = null;
 
     private String mDeviceID = "";
-    private DeviceStatus mDeviceStatus = null;
-    private int mNeedQueryStatusFromServer = 0;///0：初始化状态　1：需要查询服务端状态　2：已获取服务端状态
+//    private DeviceStatus mDeviceStatus = null;
+//    private int mNeedQueryStatusFromServer = 0;///0：初始化状态　1：需要查询服务端状态　2：已获取服务端状态
 
-    private BehaviorSubject<String> mPushIDSubject = BehaviorSubject.create();
-
-    private BehaviorSubject<String> mConfirmDeviceIDSubject = BehaviorSubject.create();
+//    private BehaviorSubject<String> mPushIDSubject = BehaviorSubject.create();
+//
+//    private BehaviorSubject<String> mConfirmDeviceIDSubject = BehaviorSubject.create();
 
 //    public void setUserLoginConfig(UserLoginConfig pLoginConfig){
 //        mUserLoginConfig = pLoginConfig;
@@ -77,7 +77,7 @@ public class DeviceInfoManager {
 //        return mConfirmDeviceIDSubject;
 //    }
 
-    @Deprecated
+//    @Deprecated
 //    public void notifyDeviceID(String pDeviceID) {
 //        mConfirmDeviceIDSubject.onNext(pDeviceID);
 //    }
@@ -87,10 +87,10 @@ public class DeviceInfoManager {
     public void reset(){
         clearDeviceID();
 
-        mConfirmDeviceIDSubject.onCompleted();
-        mConfirmDeviceIDSubject = BehaviorSubject.create();
+//        mConfirmDeviceIDSubject.onCompleted();
+//        mConfirmDeviceIDSubject = BehaviorSubject.create();
 
-        resetStatusAndPushIDSubject();
+//        resetStatusAndPushIDSubject();
     }
 
     private void clearDeviceID(){
@@ -105,8 +105,8 @@ public class DeviceInfoManager {
 
     public void resetStatusAndPushIDSubject(){
         mDeviceStatus = null;
-        mPushIDSubject.onCompleted();
-        mPushIDSubject = BehaviorSubject.create();
+//        mPushIDSubject.onCompleted();
+//        mPushIDSubject = BehaviorSubject.create();
     }
 
 //    public int getNeedQueryStatusFromServer() {

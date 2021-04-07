@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-final class DeviceStatusErrorManager {
+public final class DeviceStatusErrorManager {
     private static final String TAG = "DeviceStatusErrorManage";
 
     private static final List<IDeviceStatusErrorListener> sErrorListeners = new CopyOnWriteArrayList<>();

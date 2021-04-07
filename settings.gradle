@@ -32,6 +32,8 @@ include ":mdm_runinfo"              // 应用运行信息收集
 
 include ':device_status:device_info'                    // 设备信息 模块
 
+include ':device_status:group_info_dao'                 // 设备信息 模块
+
 include ':device_status:device_status_dao'              // 设备状态 Dao  模块
 include ':device_status:device_activate_dao'            // 设备激活 Dao  模块
 

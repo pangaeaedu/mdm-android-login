@@ -9,7 +9,7 @@ import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
 public interface IDeviceActivateProvider extends IProvider {
 
-    String ROUTE_PATH = "cmp_device_activate_biz/activate_provider";
+    String ROUTE_PATH = "/cmp_device_activate_biz/activate_provider";
 
     DeviceActivateModel activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception;
 

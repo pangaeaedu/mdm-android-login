@@ -27,9 +27,8 @@ class DeviceIdGetter {
 
     private static final String TAG = "DeviceStatus";
 
-    private static String sOrgId;
-
     @NonNull
+    @WorkerThread
     public static String getDeviceId() {
 
         String deviceId = getV3DeviceId();
@@ -50,6 +49,8 @@ class DeviceIdGetter {
         if (TextUtils.isEmpty(deviceId)) {
             deviceId = DeviceIDSPUtils.generateDeviceID();
         }
+
+        assert deviceId != null;
 
         ConfirmDeviceIdModel confirmDeviceIdModel = doConfirmDeviceID(deviceId);
         deviceId = confirmDeviceIdModel.getDeviceID();
@@ -73,7 +74,7 @@ class DeviceIdGetter {
         deviceID = DeviceIDSPUtils.loadDeviceIDFromSp_V3();
         Context context = AdhocBasicConfig.getInstance().getAppContext();
 
-        Logger.d(TAG, "DeviceIdOperator getV3DeviceId, v3 sp device id:" + deviceID);
+        Logger.d(TAG, "DeviceIdGetter getV3DeviceId, v3 sp device id:" + deviceID);
         if (!TextUtils.isEmpty(deviceID)) {
             // TODO：这里有两个疑问，
             //  1：为什么要去 setDeviceId，然后通知出去？？
@@ -105,13 +106,13 @@ class DeviceIdGetter {
 
         // 优先判断第 二 版本的ID，不为空，直接返回
         if (!TextUtils.isEmpty(secondVersionID)) {
-            Logger.i(TAG, "DeviceIdOperator getLocalDeviceId, use second version");
+            Logger.i(TAG, "DeviceIdGetter getLocalDeviceId, use second version");
             return secondVersionID;
         }
 
         // 其次判断第 一 版本的ID，，不为空，直接返回
         if (!TextUtils.isEmpty(firstVersionID)) {
-            Logger.i(TAG, "DeviceIdOperator getLocalDeviceId, use first version ");
+            Logger.i(TAG, "DeviceIdGetter getLocalDeviceId, use first version ");
             return firstVersionID;
         }
 
@@ -140,7 +141,7 @@ class DeviceIdGetter {
                 // 取成功了，就不再循环了
                 break;
             } catch (Exception e) {
-                Logger.e(TAG, "DeviceIdOperator doConfirmDeviceID failed, genHardwareMap error: " + e);
+                Logger.e(TAG, "DeviceIdGetter doConfirmDeviceID failed, genHardwareMap error: " + e);
             }
             // 当 wifi mac 和 lan mac 的关键信息都没有的话，会通过异常走到这里，那么休眠一会再尝试
             // 有必要的话，之后这里可以开一个口，让外部能够判断是否继续循环尝试
@@ -159,7 +160,7 @@ class DeviceIdGetter {
         while (result == null || !result.isSuccess()) {
             count++;
             try {
-                Logger.i(TAG, "DeviceIdOperator doConfirmDeviceID device id round:" + count);
+                Logger.i(TAG, "DeviceIdGetter doConfirmDeviceID device id round:" + count);
 
                 result = getDeviceIdDao().confirmDeviceID(ConfirmDeviceIdModel.class, params, pDeviceID, DeviceType.getValue());
 
@@ -169,16 +170,18 @@ class DeviceIdGetter {
                 }
 
             } catch (Exception e) {
-                Logger.e(TAG, "DeviceIdOperator doConfirmDeviceID error: " + e);
-                // TODO： 这里改成注入的判断
+                Logger.e(TAG, "DeviceIdGetter doConfirmDeviceID error: " + e);
+
                 if (!ActivateConfig.getInstance().isAutoLogin()) {
+                    // TODO： 这里改成注入的判断
+//                    AdhocExitAppManager.exitApp(120 * 1000);
                     throw e;
                 }
             }
         }
 
-        Logger.i(TAG, "DeviceIdOperator doConfirmDeviceID completed");
-        Logger.d(TAG, "DeviceIdOperator doConfirmDeviceID, result deviceId is:" + result.getDeviceID());
+        Logger.i(TAG, "DeviceIdGetter doConfirmDeviceID completed");
+        Logger.d(TAG, "DeviceIdGetter doConfirmDeviceID, result deviceId is:" + result.getDeviceID());
         return result;
     }
 
@@ -187,7 +190,7 @@ class DeviceIdGetter {
             boolean isWifiMacReported = DeviceInfoSpConfig.isWifiMacReported();
             boolean isLanMacReported = DeviceInfoSpConfig.isLanMacReported();
             if (isWifiMacReported && isLanMacReported) {
-                Logger.i(TAG, "DeviceIdOperator lan mac and wifi mac submitted");
+                Logger.i(TAG, "DeviceIdGetter lan mac and wifi mac submitted");
                 return;
             }
 
@@ -199,36 +202,36 @@ class DeviceIdGetter {
             if (!isWifiMacReported) {
                 wifiMac = AdhocDeviceUtil.getWifiMac(context);
                 if (TextUtils.isEmpty(wifiMac)) {
-                    Logger.w(TAG, "DeviceIdOperator wifi mac not found");
+                    Logger.w(TAG, "DeviceIdGetter wifi mac not found");
                 }
             }
 
             if (!isLanMacReported) {
                 lanMac = AdhocDeviceUtil.getEthernetMac();
                 if (TextUtils.isEmpty(lanMac)) {
-                    Logger.w(TAG, "DeviceIdOperator lan mac not found");
+                    Logger.w(TAG, "DeviceIdGetter lan mac not found");
                 }
             }
 
             if (TextUtils.isEmpty(wifiMac) && TextUtils.isEmpty(lanMac)) {
-                Logger.w(TAG, "DeviceIdOperator lan mac and wifi mac not found");
+                Logger.w(TAG, "DeviceIdGetter lan mac and wifi mac not found");
                 return;
             }
 
             boolean result = getDeviceIdDao().submitHardwareInfo(pDeviceId, wifiMac, lanMac);
             if (result) {
                 if (!TextUtils.isEmpty(wifiMac)) {
-                    Logger.w(TAG, "DeviceIdOperator wifi mac reported");
+                    Logger.w(TAG, "DeviceIdGetter wifi mac reported");
                     DeviceInfoSpConfig.setWifiMacReported(true);
                 }
 
                 if (!TextUtils.isEmpty(lanMac)) {
-                    Logger.w(TAG, "DeviceIdOperator lan mac reported");
+                    Logger.w(TAG, "DeviceIdGetter lan mac reported");
                     DeviceInfoSpConfig.setLanMacReported(true);
                 }
             }
         } catch (Exception e) {
-            Logger.e(TAG, "DeviceIdOperator, submitHardwareInfoIfNecessary error: " + e);
+            Logger.e(TAG, "DeviceIdGetter, submitHardwareInfoIfNecessary error: " + e);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.nd.android.aioe.device.status.biz.provider;
 
 import android.content.Context;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -32,7 +33,7 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
         }
 
         try {
-            GetDeviceStatusModel model = getDeviceStatusDao().getDeviceStatus(GetDeviceStatusModel.class, deviceId, serialNum, 1);
+            GetDeviceStatusModel model = DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);;
 
             if (model != null) {
                 DeviceStatus deviceStatus = model.getDevicesStatus();
@@ -44,7 +45,7 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
                     DeviceInfoSpConfig.saveGroupCode(model.getNodecode());
                 }
 
-                DeviceStatusChangeManager.notifyDeviceStatus(deviceStatus);
+//                DeviceStatusChangeManager.notifyDeviceStatus(deviceStatus);
             }
 
         } catch (Exception e) {

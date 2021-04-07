@@ -1,6 +1,7 @@
 package com.nd.android.aioe.device.activate.dao.impl;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 /**
  * getUserInfo
- *
+ * <p>
  * {
  * "serial_no": "08002800A8C5"  //序列号，非必填，查询用户账号
  * "device_token":"08002800A8C5"  //MDM分配给设备的唯一标识，必填
@@ -27,8 +28,9 @@ import java.util.Map;
  * }
  */
 
-//@Route(path = IDeviceUserDao.ROUTE_PATH)
 class DeviceUserDaoImpl extends AdhocHttpDao implements IDeviceUserDao {
+
+    private static final String TAG = "DeviceActivate";
 
     DeviceUserDaoImpl(String pBaseUrl) {
         super(pBaseUrl);
@@ -46,10 +48,34 @@ class DeviceUserDaoImpl extends AdhocHttpDao implements IDeviceUserDao {
 
             return postAction().post("/v1.1/enroll/getUserInfo/", pClass,
                     content, null);
-        } catch (Exception pE) {
-            Logger.e("DeviceStatus", "DeviceUserDaoImpl, getUserInfo error: " + pE.getMessage());
-            throw new AdhocException(pE.getMessage());
+        } catch (Exception e) {
+            Logger.e(TAG, "DeviceUserDao, getUserInfo error: " + e.getMessage());
+            throw AdhocException.newException(e);
         }
 
     }
+
+    @Override
+    public <T> T setAssetCode(@NonNull Class<T> pClass, @NonNull String pDeviceID, int pDeviceType, @NonNull String pAssetCode) throws AdhocException {
+        try {
+//            Map<String, String> header = null;
+//            header = new HashMap<>();
+//            header.put("Accept", "application/json");
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("device_token", pDeviceID);
+            map.put("type", pDeviceType);
+            map.put("assetcode", pAssetCode);
+
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+
+            return postAction().post("/v1.1/enroll/userInfo", pClass, content, null);
+
+        }catch (Exception e){
+            Logger.e(TAG, "DeviceUserDao, setAssetCode error: " + e.getMessage());
+            throw AdhocException.newException(e);
+        }
+    }
+
 }

@@ -8,7 +8,6 @@ import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IAdhocPushConnectListener;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.cache.DeviceStatusCache;
-import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
@@ -73,27 +72,43 @@ class DeviceStatusUpdater {
 
         GetDeviceStatusModel deviceStatusModel = null;
 
-        // TODO： 如果查询上来的结果是空的，待选择处理方案：
-        //   1、根据本地现有的状态来处理
-        //   2、直接当做查询失败，重试
+        int retryCount = 0;
         while (deviceStatusModel == null) {
             try {
                 deviceStatusModel = DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);
             } catch (Exception e) {
                 Logger.e(TAG, "queryDeviceStatusFromServer error: " + e);
             }
+
+
+            // TODO： 这里可能需要确认一下状态通知的机制
+            if (deviceStatusModel == null && retryCount >= 1) {
+
+                if (DeviceStatusRetryJudgerManager.useLocalStatusAfterUpdateRetryFailed()) {
+                    DeviceStatusChangeManager.notifyDeviceStatus(DeviceStatusCache.getDeviceStatus());
+                }
+
+//                DeviceStatus deviceStatus = DeviceStatusCache.getDeviceStatus();
+//
+//                if (deviceStatus != DeviceStatus.Init
+//                        && deviceStatus != DeviceStatus.Unknown) {
+//                    DeviceStatusChangeManager.notifyDeviceStatus(deviceStatus);
+//                }
+            }
+
+            // 第一次获取，不算重试，所以在判断后再 ++
+            retryCount++;
         }
 
-        if (deviceStatusModel == null) {
-            // TODO：查询失败，那么 查看本地状态，如果本地状态 不是 Init，那么就先用，然后再在后台循环去查
-
-            DeviceStatusChangeManager.notifyDeviceStatus(DeviceStatus.Init);
-            return;
+        if (retryCount >= 1) {
+            DeviceStatusRetryJudgerManager.onUpdateRetrySuccess();
         }
 
         DeviceStatusCache.setAllowCheckStatus(true);
         DeviceStatusChangeManager.notifyDeviceStatus(deviceStatusModel.getDevicesStatus());
     }
+
+
 
 
 }

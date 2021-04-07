@@ -50,7 +50,7 @@ class DeviceStatusGetter {
 
         return result;
 
-        // TODO：到这里实际上就已经查询完毕了，剩下后面的逻辑都和查询状态没有什么鸟关系，需要迁移到对应模块
+        // TODO：到这里实际上就已经查询完毕了，剩下后面的逻辑都和查询状态没有什么鸟关系，目前迁移到 激活模块中处理，暂时先放着备用
 //                if (status.isUnActivated()) {
 //                    // 如果服务端状态是未登录的，但是本地还是登录的，那么这里需要清除一下本地的数据
 //                    if (DeviceInfoSpConfig.isActivated()) {

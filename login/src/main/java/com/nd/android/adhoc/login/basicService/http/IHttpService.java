@@ -11,21 +11,19 @@ import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
 import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
 import com.nd.android.adhoc.login.enumConst.ActivateUserType;
 
-import org.json.JSONObject;
-
 import java.util.Map;
 
 public interface IHttpService {
 
-    void requestPolicy(String pDeviceToken, long pTime, JSONObject pData) throws Exception;
+//    void requestPolicy(String pDeviceToken, long pTime, JSONObject pData) throws Exception;
 
-    @Deprecated
-    IBindResult bindDevice( String pDeviceToken, String pPushID,
-                           String pSerialNum) throws Exception;
-
-    @Deprecated
-    IBindResult bindDeviceWithChannelType( String pDeviceToken, String pPushID,
-                            String pSerialNum, int pPushChannelType) throws Exception;
+//    @Deprecated
+//    IBindResult bindDevice( String pDeviceToken, String pPushID,
+//                           String pSerialNum) throws Exception;
+//
+//    @Deprecated
+//    IBindResult bindDeviceWithChannelType( String pDeviceToken, String pPushID,
+//                            String pSerialNum, int pPushChannelType) throws Exception;
 
     BindPushIDResponse bindDeviceIDToPushID(String pDeviceID, String pPushID) throws Exception;
 
@@ -39,8 +37,8 @@ public interface IHttpService {
                                       ActivateUserType pUserType, String pLoginToken,
                                       int pRealType,String pOrgId) throws Exception;
 
-    GetOldTokenResult getOldDeviceToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
-                                        String pBlueToothMac, String pSerialNo, String pDeviceToken) throws Exception;
+//    GetOldTokenResult getOldDeviceToken(String  pBuildSn, String pCpuSn, String pIMEI, String pWifiMac,
+//                                        String pBlueToothMac, String pSerialNo, String pDeviceToken) throws Exception;
 
     LoginUserResponse login(String pEncryptUserName, String pEncryptPassword) throws Exception;
 
@@ -69,5 +67,5 @@ public interface IHttpService {
 
     Boolean reportHardwareInfo(String pDeviceID, Map<String, Object> pInfo) throws Exception;
 
-    EnrollUserInfoResult setAssetCode(String strDeviceToken, String strAssetCode) throws Exception;
+//    EnrollUserInfoResult setAssetCode(String strDeviceToken, String strAssetCode) throws Exception;
 }
