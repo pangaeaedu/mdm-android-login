@@ -243,9 +243,16 @@ public class DeviceInitiator extends BaseAuthenticator implements IDeviceInitiat
                     @Override
                     public Observable<DeviceStatus> call(QueryDeviceStatusResponse pResponse) {
                         //这里增加的orgId非空的判断，是为了AP7设备激活时上报orgId这个逻辑能够正常走下去，并且不跳到选择组织的界面
-                        if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled || !TextUtils.isEmpty(mOrgId)) {
+                        if (pResponse.isAutoLogin() && pResponse.getStatus() == DeviceStatus.Enrolled) {
+                            if (!TextUtils.isEmpty(mOrgId)){
+                                //组织ID非空
+                                return activeUser(ActivateUserType.AutoLogin,
+                                        "",
+                                        pResponse.getRootCode(),
+                                        "");
+                            }
                             return activeUser(ActivateUserType.AutoLogin,
-                                    "",
+                                    pResponse.getSelSchoolGroupCode(),
                                     pResponse.getRootCode(),
                                     "");
                         }
