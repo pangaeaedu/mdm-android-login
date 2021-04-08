@@ -4,9 +4,9 @@ import java.util.List;
 
 public class GroupPathsResult {
     private int errcode;
-    private List<PathResult> result;
+    private List<GroupPathInfo> result;
 
-    public List<PathResult> getResult() {
+    public List<GroupPathInfo> getResult() {
         return result;
     }
 
@@ -14,12 +14,4 @@ public class GroupPathsResult {
         return errcode;
     }
 
-    public static class PathResult{
-        private String groupcode = "";
-        private String name = "";
-
-        public String getName() {
-            return name;
-        }
-    }
 }

@@ -66,6 +66,12 @@ class DeviceIdBinder {
 
 
     private static void doBindId() {
+
+        if (TextUtils.isEmpty(sPushsId) || TextUtils.isEmpty(sDeviceId)) {
+            Logger.w(TAG, "DeviceIdPushIdBinder, doBindId not work, pushid or device is empty");
+            return;
+        }
+
         IDeviceIdDao deviceIdDao = DeviceStatusDaoHelper.getDeviceIdDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl());
 
         try {

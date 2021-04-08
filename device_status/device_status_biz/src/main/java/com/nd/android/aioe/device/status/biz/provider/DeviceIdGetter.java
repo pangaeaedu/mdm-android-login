@@ -6,12 +6,12 @@ import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.info.util.DeviceIDSPUtils;
-import com.nd.android.aioe.device.info.util.DeviceInfoManager;
-import com.nd.android.aioe.device.status.biz.api.ActivateConfig;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
 import com.nd.android.aioe.device.status.biz.model.ConfirmDeviceIdModel;
@@ -29,20 +29,21 @@ class DeviceIdGetter {
 
     @NonNull
     @WorkerThread
-    public static String getDeviceId() {
+    public static String getDeviceId() throws AdhocException {
 
         String deviceId = getV3DeviceId();
 
         if (!TextUtils.isEmpty(deviceId)) {
             Logger.i(TAG, "getV3DeviceId success");
 
+            DeviceIdBinder.setDeviceId(deviceId);
             return deviceId;
         }
 
         Logger.i(TAG, "V3 deviceid is empty, try get v2 v1 ");
         deviceId = getV2V1DeviceId();
 
-        if(TextUtils.isEmpty(deviceId)){
+        if (TextUtils.isEmpty(deviceId)) {
             deviceId = getSdcardDeviceId();
         }
 
@@ -59,6 +60,7 @@ class DeviceIdGetter {
 
         refreshDeviceData(deviceId);
 
+        DeviceIdBinder.setDeviceId(deviceId);
         return deviceId;
     }
 
@@ -66,27 +68,25 @@ class DeviceIdGetter {
      * 第一步，先从 SP 中获取 V3 版本的 DeviceId，如果有，就可以直接用了
      */
     private static String getV3DeviceId() {
-        String deviceID = DeviceInfoSpConfig.getDeviceID();
-        if (!TextUtils.isEmpty(deviceID)) {
-            return deviceID;
-        }
-
-        deviceID = DeviceIDSPUtils.loadDeviceIDFromSp_V3();
-        Context context = AdhocBasicConfig.getInstance().getAppContext();
-
-        Logger.d(TAG, "DeviceIdGetter getV3DeviceId, v3 sp device id:" + deviceID);
-        if (!TextUtils.isEmpty(deviceID)) {
-            // TODO：这里有两个疑问，
-            //  1：为什么要去 setDeviceId，然后通知出去？？
-            //  2、为什么要起新线程去 做 checkDeviceId 的事情？
-            DeviceInfoManager.getInstance().setDeviceID(deviceID);
-
-            //这里是去
-            DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
-            return deviceID;
-        }
-
+        String deviceID = DeviceIdCache.getDeviceId();
+        DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(AdhocBasicConfig.getInstance().getAppContext(), deviceID);
+//        if (!TextUtils.isEmpty(deviceID)) {
         return deviceID;
+//        }
+
+//        deviceID = DeviceIDSPUtils.loadDeviceIDFromSp_V3();
+//        Context context = AdhocBasicConfig.getInstance().getAppContext();
+//
+//        Logger.d(TAG, "DeviceIdGetter getV3DeviceId, v3 sp device id:" + deviceID);
+//        if (!TextUtils.isEmpty(deviceID)) {
+//            DeviceIdCache.setDeviceId(deviceID);
+//
+//            //这里是起异步线程，加密 DeviceId 并存储在 SD 卡上
+//            DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(context, deviceID);
+//            return deviceID;
+//        }
+//
+//        return deviceID;
     }
 
     private static void refreshDeviceData(String deviceId) {
@@ -94,8 +94,8 @@ class DeviceIdGetter {
         DeviceInfoSpConfig.clearData();
 //        DeviceStatusCache.setDeviceStatus(DeviceStatus.Init);
 
+        DeviceIdCache.setDeviceId(deviceId);
         DeviceIDSPUtils.saveDeviceIDToSp(deviceId);
-        DeviceInfoManager.getInstance().setDeviceID(deviceId);
         DeviceIDSPUtils.startNewThreadToCheckDeviceIDIntegrity(AdhocBasicConfig.getInstance().getAppContext(), deviceId);
     }
 
@@ -132,7 +132,7 @@ class DeviceIdGetter {
      */
     @NonNull
     @WorkerThread
-    private static ConfirmDeviceIdModel doConfirmDeviceID(@NonNull String pDeviceID){
+    private static ConfirmDeviceIdModel doConfirmDeviceID(@NonNull String pDeviceID) throws AdhocException {
 
         Map<String, Object> params;
         while (true) {
@@ -157,7 +157,7 @@ class DeviceIdGetter {
         ConfirmDeviceIdModel result = null;
 
         int count = 0;
-        while (result == null || !result.isSuccess()) {
+        while (true) {
             count++;
             try {
                 Logger.i(TAG, "DeviceIdGetter doConfirmDeviceID device id round:" + count);
@@ -167,17 +167,34 @@ class DeviceIdGetter {
                 if (result == null || !result.isSuccess()) {
                     // 没有成功，发送通知出去
                     DeviceStatusErrorManager.notifyError(IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
+
+                    if (count > 1) {
+                        if (DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
+                            continue;
+                        }
+                        throw new AdhocException("confirmDeviceID unsuccessful", IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
+                    }
                 }
 
             } catch (Exception e) {
-                Logger.e(TAG, "DeviceIdGetter doConfirmDeviceID error: " + e);
+                Logger.e(TAG, "DeviceIdGetter, confirmDeviceID error: " + e);
 
-                if (!ActivateConfig.getInstance().isAutoLogin()) {
-                    // TODO： 这里改成注入的判断
-//                    AdhocExitAppManager.exitApp(120 * 1000);
-                    throw e;
+                // 如果是>1，说明是 重试
+                if (count > 1) {
+
+//                if (!ActivateConfig.getInstance().isAutoLogin()) {
+//                    // TODO： 这里改成注入的判断
+////                    AdhocExitAppManager.exitApp(120 * 1000);
+//                }
+
+                    if (DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
+                        continue;
+                    }
+                    throw AdhocException.newException(e);
                 }
+
             }
+            break;
         }
 
         Logger.i(TAG, "DeviceIdGetter doConfirmDeviceID completed");

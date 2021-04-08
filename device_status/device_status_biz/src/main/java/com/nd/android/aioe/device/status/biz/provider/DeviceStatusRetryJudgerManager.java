@@ -1,6 +1,5 @@
 package com.nd.android.aioe.device.status.biz.provider;
 
-import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.aioe.device.status.biz.api.judge.IDeviceStatusUpdateRetryJudger;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
@@ -14,14 +13,14 @@ class DeviceStatusRetryJudgerManager {
     private static List<IDeviceStatusUpdateRetryJudger> sUpdateRetryJudgers;
 
 
-    public static boolean useLocalStatusAfterUpdateRetryFailed() {
+    public static boolean useLocalStatusFirstOnFailed() {
         List<IDeviceStatusUpdateRetryJudger> updateRetryJudgers = getUpdateRetryJudgers();
         if (AdhocDataCheckUtils.isCollectionEmpty(updateRetryJudgers)) {
             return false;
         }
 
         for (IDeviceStatusUpdateRetryJudger updateRetryJudger : updateRetryJudgers) {
-            if (updateRetryJudger.useLocalStatusAfterRetryFailed()) {
+            if (updateRetryJudger.useLocalStatusFirstOnFailed()) {
                 return true;
             }
         }

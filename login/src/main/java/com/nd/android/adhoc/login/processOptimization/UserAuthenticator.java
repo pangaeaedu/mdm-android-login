@@ -80,59 +80,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
         return true;
     }
 
-    private void clearPolicy() {
-        Logger.i("yhq", "clearPolicy");
-//        Observable
-//                .create(new Observable.OnSubscribe<Void>() {
-//                    @Override
-//                    public void call(Subscriber<? super Void> pSubscriber) {
-                        try {
-                            IAdhocPolicyLifeCycleProvider policyLifeCycleProvider =
-                                    (IAdhocPolicyLifeCycleProvider) AdhocFrameFactory.getInstance()
-                                            .getAdhocRouter().build(IAdhocPolicyLifeCycleProvider.ROUTE_PATH).navigation();
-                            if (policyLifeCycleProvider != null) {
-                                Logger.i("yhq", "IAdhocPolicyLifeCycleProvider clearPolicy");
-                                policyLifeCycleProvider.clearPolicy();
-                            } else {
-                                Logger.w("yhq", "IAdhocPolicyLifeCycleProvider not found");
-                            }
-
-                            IAdhocWarningLifeCycleProvider warningLifeCycleProvider =
-                                    (IAdhocWarningLifeCycleProvider) AdhocFrameFactory.getInstance()
-                                            .getAdhocRouter().build(IAdhocWarningLifeCycleProvider.ROUTE_PATH).navigation();
-                            if (warningLifeCycleProvider != null) {
-                                Log.d("yhq", "IAdhocWarningLifeCycleProvider clearWarning");
-                                warningLifeCycleProvider.clearWarning();
-                            } else {
-                                Log.d("yhq", "IAdhocWarningLifeCycleProvider not found");
-                            }
-                        } catch (Exception pE) {
-//                            pSubscriber.onError(pE);
-                            Logger.e("yhq", "UserAuthenticator,  clearPolicy error: " + pE);
-                        }
-
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(new Observer<Void>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onNext(Void pVoid) {
-//
-//                    }
-//                });
-
-    }
-
     private void enterLogoutUI() {
         //TODO 嫩模情人杨亿万：这段代码是为了防止自动登录的情况下，后台注销会跳到账号登录页而存在，为临时策略，麻烦找机会改掉
         if(LoginWayUtils.getIsAutoLogin()){
@@ -159,11 +106,6 @@ public class UserAuthenticator extends BaseAuthenticator implements IUserAuthent
                 });
     }
 
-    @NonNull
-    private IUserLogin getLogin() {
-//        return new UserLoginThroughServer();
-        return new UserLoginThoughUC11();
-    }
 
     public Observable<DeviceStatus> login(@NonNull final String pUserName,
                                           @NonNull final String pPassword,

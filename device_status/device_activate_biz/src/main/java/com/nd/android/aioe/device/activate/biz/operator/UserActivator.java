@@ -11,8 +11,8 @@ import com.nd.android.aioe.device.activate.dao.api.IUserLoginDao;
 import com.nd.android.aioe.device.activate.dao.api.bean.ILoginUserResult;
 import com.nd.android.aioe.device.activate.dao.api.constant.ActivateChannel;
 import com.nd.android.aioe.device.activate.dao.impl.DeviceActivateDaoHelper;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
-import com.nd.android.aioe.device.info.util.DeviceInfoManager;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
@@ -33,7 +33,7 @@ class UserActivator {
             throw new AdhocException("login user failed, loginToken is empty");
         }
 
-        String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+        String deviceID = DeviceIdCache.getDeviceId();
         String serialNum = DeviceInfoHelper.getSerialNumberThroughControl();
         String deviceSerialNumber = DeviceInfoHelper.getDeviceSerialNumberThroughControl();
 
@@ -74,7 +74,7 @@ class UserActivator {
             throw new AdhocException("login user failed, loginToken is empty");
         }
 
-        String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+        String deviceID = DeviceIdCache.getDeviceId();
         String serialNum = DeviceInfoHelper.getSerialNumberThroughControl();
         String deviceSerialNumber = DeviceInfoHelper.getDeviceSerialNumberThroughControl();
 

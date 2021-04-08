@@ -10,8 +10,8 @@ import com.nd.android.aioe.device.activate.biz.cache.DeviceActivateCache;
 import com.nd.android.aioe.device.activate.dao.api.IDeviceActivateDao;
 import com.nd.android.aioe.device.activate.dao.api.constant.ActivateChannel;
 import com.nd.android.aioe.device.activate.dao.impl.DeviceActivateDaoHelper;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
-import com.nd.android.aioe.device.info.util.DeviceInfoManager;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
@@ -19,7 +19,7 @@ class GroupActivator {
 
     public static DeviceActivateModel activate(@NonNull String pSchoolCode) throws Exception {
 
-        String deviceID = DeviceInfoManager.getInstance().getDeviceID();
+        String deviceID = DeviceIdCache.getDeviceId();
         String serialNum = DeviceInfoHelper.getSerialNumberThroughControl();
         String deviceSerialNumber = DeviceInfoHelper.getDeviceSerialNumberThroughControl();
 

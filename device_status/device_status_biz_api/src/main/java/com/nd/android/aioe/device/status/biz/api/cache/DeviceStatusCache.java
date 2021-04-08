@@ -8,8 +8,6 @@ import com.nd.android.adhoc.basic.sp.ISharedPreferenceModel;
 import com.nd.android.adhoc.basic.sp.SharedPreferenceFactory;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class DeviceStatusCache {
 
     private static final String TAG = "DeviceStatusCache";
@@ -23,8 +21,6 @@ public class DeviceStatusCache {
     private static DeviceStatus sCurDeviceStatus;
 
     private static final ISharedPreferenceModel sPreferences;
-
-    private static final AtomicBoolean sAllowCheckStatus = new AtomicBoolean(false);
 
     static {
         sPreferences = SharedPreferenceFactory.getInstance().getModel(AdhocBasicConfig.getInstance().getAppContext(), "assistant_data", Context.MODE_PRIVATE);
@@ -43,7 +39,7 @@ public class DeviceStatusCache {
 
 
     public static void setDeviceStatus(@NonNull DeviceStatus pDeviceStatus) {
-        synchronized (TAG){
+        synchronized (TAG) {
             sCurDeviceStatus = pDeviceStatus;
             saveDeviceStatusToSp(sCurDeviceStatus.getValue());
             saveDeviceIsDeletedToSp(sCurDeviceStatus.isDeleted());
@@ -51,16 +47,8 @@ public class DeviceStatusCache {
         }
     }
 
-    public static long getLastUpdateTime(){
+    public static long getLastUpdateTime() {
         return sPreferences.getLong(KEY_LAST_UPDATE_TIME, 0L);
-    }
-
-    public static void setAllowCheckStatus(boolean isAllowCheckStatus){
-        sAllowCheckStatus.set(isAllowCheckStatus);
-    }
-
-    public static boolean isAllowCheckStatus(){
-        return sAllowCheckStatus.get();
     }
 
     private static void saveDeviceStatusToSp(int pStatusValue) {
@@ -70,6 +58,7 @@ public class DeviceStatusCache {
     private static int getDeviceStatusFromSp() {
         return sPreferences.getInt(KEY_DEVICE_STATUS_VALUE, DeviceStatus.Init.getValue());
     }
+
     private static void saveDeviceIsDeletedToSp(boolean pIsDeleted) {
         sPreferences.putBoolean(KEY_DEVICE_IS_DELETED, pIsDeleted).commit();
     }
@@ -81,7 +70,6 @@ public class DeviceStatusCache {
     private static void refreshDeviceStatusUpdateTime() {
         sPreferences.putLong(KEY_LAST_UPDATE_TIME, System.currentTimeMillis()).commit();
     }
-
 
 
 }

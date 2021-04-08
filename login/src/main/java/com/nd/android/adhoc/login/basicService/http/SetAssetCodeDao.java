@@ -1,15 +1,6 @@
 package com.nd.android.adhoc.login.basicService.http;
 
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
-import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfo;
-import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfoResult;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 // TODO：用 DeviceActivateDaoHelper DeviceUserDao 替换

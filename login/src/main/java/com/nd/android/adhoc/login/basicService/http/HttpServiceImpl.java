@@ -1,27 +1,5 @@
 package com.nd.android.adhoc.login.basicService.http;
 
-import android.text.TextUtils;
-
-import com.nd.android.adhoc.login.basicService.data.http.ActivateUserResponse;
-import com.nd.android.adhoc.login.basicService.data.http.BindPushIDResponse;
-import com.nd.android.adhoc.login.basicService.data.http.ConfirmDeviceIDResponse;
-import com.nd.android.adhoc.login.basicService.data.http.EnrollUserInfoResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetActivateUserResultResponse;
-import com.nd.android.adhoc.login.basicService.data.http.GetOldTokenResult;
-import com.nd.android.adhoc.login.basicService.data.http.GetUserInfoResponse;
-import com.nd.android.adhoc.login.basicService.data.http.LoginUserResponse;
-import com.nd.android.adhoc.login.basicService.data.http.QueryDeviceStatusResponse;
-import com.nd.android.adhoc.login.enumConst.ActivateUserType;
-import com.nd.android.adhoc.login.exception.LoginUserServerException;
-import com.nd.android.adhoc.loginapi.exception.ActivateUserServerException;
-import com.nd.android.adhoc.loginapi.exception.ConfirmIDServerException;
-import com.nd.android.adhoc.loginapi.exception.DeviceTokenNotFoundException;
-import com.nd.android.adhoc.loginapi.exception.QueryDeviceStatusServerException;
-import com.nd.android.mdm.biz.env.IMdmEnvModule;
-import com.nd.android.mdm.biz.env.MdmEvnFactory;
-
-import java.util.Map;
-
 public class HttpServiceImpl {//implements IHttpService {
 //    public HttpServiceImpl() {
 //    }

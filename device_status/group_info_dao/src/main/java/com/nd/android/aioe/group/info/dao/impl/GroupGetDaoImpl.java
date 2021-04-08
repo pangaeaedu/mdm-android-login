@@ -3,14 +3,15 @@ package com.nd.android.aioe.group.info.dao.impl;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
-import com.nd.android.aioe.group.info.dao.api.IGroupSearchDao;
-import com.nd.android.aioe.group.info.dao.api.bean.CheckGroupExitResult;
+import com.nd.android.aioe.group.info.dao.api.IGroupGetDao;
 import com.nd.android.aioe.group.info.dao.api.bean.GroupPathsResult;
 import com.nd.android.aioe.group.info.dao.api.bean.GroupRequestResult;
+import com.nd.android.aioe.group.info.dao.api.bean.IpLocationGroupResult;
 import com.nd.android.aioe.group.info.dao.api.bean.SearchGroupPathResult;
 import com.nd.android.aioe.group.info.dao.api.bean.SearchSubGroupNodeResult;
 
@@ -18,11 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GroupSearchDaoImpl extends AdhocHttpDao implements IGroupSearchDao {
+public class GroupGetDaoImpl extends AdhocHttpDao implements IGroupGetDao {
 
     private static final String TAG = "GroupSearchDaoImpl";
 
-    public GroupSearchDaoImpl(String pBaseUrl) {
+    public GroupGetDaoImpl(String pBaseUrl) {
         super(pBaseUrl);
     }
 
@@ -64,20 +65,6 @@ public class GroupSearchDaoImpl extends AdhocHttpDao implements IGroupSearchDao 
         }
     }
 
-    //通过GroupCode查找学校
-    public CheckGroupExitResult checkGroupExit(String pGroupcode) throws AdhocException {
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("groupcode", pGroupcode);
-
-//            StringBuilder sb = new StringBuilder("/v2/group/exist?groupcode=").append(groupcode);
-            return getAction().get("/v2/group/exist", CheckGroupExitResult.class, params, null);
-        } catch (Exception e) {
-            Logger.e(TAG, "checkGroupExit error: " + e.getMessage());
-            throw AdhocException.newException(e);
-        }
-    }
-
     @Override
     public GroupPathsResult getAllGroupPaths(@NonNull String pDeviceId) throws AdhocException {
 
@@ -92,4 +79,45 @@ public class GroupSearchDaoImpl extends AdhocHttpDao implements IGroupSearchDao 
             throw AdhocException.newException(e);
         }
     }
+
+
+    @Override
+    public IpLocationGroupResult getSchoolCodeByIp(@NonNull String pRootCode, @NonNull String pIp) throws AdhocException {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("ip", pIp);
+            map.put("groupcode", pRootCode);
+
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+            return postAction().post("/v2/group/ipinfo/", IpLocationGroupResult.class,
+                    content, null);
+        } catch (Exception e) {
+            Logger.e(TAG, "getSchoolCodeByIp error: " + e.getMessage());
+            throw AdhocException.newException(e);
+        }
+    }
+
+    @Override
+    public IpLocationGroupResult getSchoolCodeByLocation(@NonNull String pRootCode, @NonNull String pLat, @NonNull String pLgn, int pMapType,
+                                                         int pScope) throws AdhocException {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("lat", pLat);
+            map.put("lgn", pLgn);
+            map.put("scope", pScope);
+            map.put("maptype", pMapType);
+
+            map.put("groupcode", pRootCode);
+
+            Gson gson = new GsonBuilder().create();
+            String content = gson.toJson(map);
+            return postAction().post("/v2/group/geoinfo/", IpLocationGroupResult.class,
+                    content, null);
+        } catch (Exception e) {
+            Logger.e(TAG, "getSchoolCodeByLocation error: " + e.getMessage());
+            throw AdhocException.newException(e);
+        }
+    }
+
 }
