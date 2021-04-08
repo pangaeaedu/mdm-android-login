@@ -16,7 +16,7 @@ class DeviceStatusRetryJudgerManager {
     public static boolean useLocalStatusFirstOnFailed() {
         List<IDeviceStatusUpdateRetryJudger> updateRetryJudgers = getUpdateRetryJudgers();
         if (AdhocDataCheckUtils.isCollectionEmpty(updateRetryJudgers)) {
-            return false;
+            return true;
         }
 
         for (IDeviceStatusUpdateRetryJudger updateRetryJudger : updateRetryJudgers) {

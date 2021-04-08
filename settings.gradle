@@ -1,5 +1,5 @@
-include ':login'
-include ':loginapi'
+//include ':login'
+//include ':loginapi'
 include ':assistant_sdk'            // 登录 SDK、API
 
 include ':mdm_biz_common'           // MDM 业务公共模块

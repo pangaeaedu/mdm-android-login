@@ -17,18 +17,14 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+ * @author SongDeQiang <mail.song.de.qiang@gmail.com>
  * @packge com.nd.im.album.util
  * @class AuthorityUtils
- * @author SongDeQiang <mail.song.de.qiang@gmail.com>
- *
  */
-public class AuthorityUtils
-{
+public class AuthorityUtils {
 
 
-
-    public static String macAuth(String url, HttpMethod method, String macKey, String accessToken)
-    {
+    public static String macAuth(String url, HttpMethod method, String macKey, String accessToken) {
 
         String path = url.replaceAll("^http.*?//[^/]*?/", "/");
         String host = url.replaceAll("^http.*?//", "").replaceAll("/.*$", "");
@@ -58,8 +54,7 @@ public class AuthorityUtils
      * @param macKey
      * @return
      */
-    public static String mac(String url, HttpMethod method, String accessToken, String macKey)
-    {
+    public static String mac(String url, HttpMethod method, String accessToken, String macKey) {
         String path = url.replaceAll("^http.*?//[^/]*?/", "/");
         String host = url.replaceAll("^http.*?//", "").replaceAll("/.*$", "");
 
@@ -83,24 +78,18 @@ public class AuthorityUtils
     }
 
 
-
     /**
      * @param url
      * @return
      */
-    public static String encode(String url)
-    {
+    public static String encode(String url) {
         Matcher matcher = Pattern.compile("[\\u4e00-\\u9fa5]").matcher(url);
 
-        while (matcher.find())
-        {
+        while (matcher.find()) {
             String tmp = matcher.group();
-            try
-            {
+            try {
                 url = url.replaceAll(tmp, URLEncoder.encode(tmp, "UTF-8"));
-            }
-            catch (UnsupportedEncodingException e)
-            {
+            } catch (UnsupportedEncodingException e) {
                 //
             }
         }
@@ -114,12 +103,10 @@ public class AuthorityUtils
      * @return
      * @throws Exception
      */
-    public static String hMac256(String content, String key)
-    {
+    public static String hMac256(String content, String key) {
         String resultString = "";
 
-        try
-        {
+        try {
             // 还原密钥
             SecretKey secretKey = new SecretKeySpec(key.getBytes(), "HmacSHA256");
             // 实例化Mac
@@ -130,17 +117,15 @@ public class AuthorityUtils
             byte[] digest = mac.doFinal(content.getBytes());
 
             resultString = new String(Base64.encodeBase64(digest));
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //
         }
 
         return resultString;
     }
 
-    public static void main(String[] args){
-        mac("http://192.168.254.23:8090/v1.1/enroll/activate", HttpMethod.POST,"","");
+    public static void main(String[] args) {
+        mac("http://192.168.254.23:8090/v1.1/enroll/activate", HttpMethod.POST, "", "");
     }
 
 
