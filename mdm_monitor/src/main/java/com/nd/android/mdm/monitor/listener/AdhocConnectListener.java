@@ -2,7 +2,6 @@ package com.nd.android.mdm.monitor.listener;
 
 import android.content.Context;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.toast.AdhocToastModule;
 import com.nd.android.adhoc.basic.log.Logger;
@@ -10,6 +9,7 @@ import com.nd.android.adhoc.basic.util.net.AdhocNetworkIpUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocMainLooper;
 import com.nd.android.adhoc.communicate.connect.listener.IAdhocConnectListener;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.mdm.monitor.MonitorModule;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
 import com.nd.android.mdm.monitor.message.BatteryChangeMessage;
@@ -36,7 +36,7 @@ public class AdhocConnectListener implements IAdhocConnectListener {
         }
 
         MdmTransferFactory.getCommunicationModule()
-                .sendLoginInfo(DeviceHelper.getDeviceToken(), deviceInfo);
+                .sendLoginInfo(DeviceIdCache.getDeviceId(), deviceInfo);
 
         AdhocMainLooper.runOnUiThread(new Runnable() {
             @Override

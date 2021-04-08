@@ -12,7 +12,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
@@ -26,6 +25,7 @@ import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.control.define.IControl_AppUsage;
 import com.nd.android.adhoc.reportAppRunInfoByDb.RunInfoReportResult;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
@@ -347,7 +347,7 @@ public class AdhocAppUsageFactory {
         JSONObject resp = new JSONObject();
         try {
             resp.put("cmd", "appruninfo");
-            resp.put("device_token", DeviceHelper.getDeviceToken());
+            resp.put("device_token", DeviceIdCache.getDeviceId());
             resp.put("sessionid", java.util.UUID.randomUUID().toString());
             resp.put("timestamp", String.valueOf(System.currentTimeMillis()));
 

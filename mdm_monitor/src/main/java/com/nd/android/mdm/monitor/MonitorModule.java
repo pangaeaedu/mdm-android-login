@@ -12,8 +12,6 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
@@ -32,6 +30,8 @@ import com.nd.android.adhoc.control.define.IControl_CpuUsageRate;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
 import com.nd.android.adhoc.control.define.IControl_IMEI;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
+import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
@@ -159,7 +159,7 @@ public class MonitorModule implements IMonitor {
                         }
 
                         //会出现wifi connect事件到达的时候，deviceID还没有确认的情况，这种情况下，不要上报DevInfo
-                        String deviceToken = DeviceInfoManager.getInstance().getDeviceID();
+                        String deviceToken = DeviceIdCache.getDeviceId();
                         if(TextUtils.isEmpty(deviceToken)){
                             return;
                         }
@@ -562,7 +562,7 @@ public class MonitorModule implements IMonitor {
         putJsonData(data,"cpu_rate", (int) MonitorUtil.getCpuInfo()[8]);
 
 //        data.put("serialnum", DeviceHelper.getSerialNumberThroughControl());
-        putJsonData(data,"serialnum", DeviceHelper.getSerialNumberThroughControl());
+        putJsonData(data,"serialnum", DeviceInfoHelper.getSerialNumberThroughControl());
 
 //        data.put("terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
         putJsonData(data,"terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
@@ -593,7 +593,7 @@ public class MonitorModule implements IMonitor {
         putJsonData(data,"isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
 
 //        data.put("panelId", DeviceHelper.getSerialNumberThroughControl());
-        putJsonData(data,"panelId", DeviceHelper.getSerialNumberThroughControl());
+        putJsonData(data,"panelId", DeviceInfoHelper.getSerialNumberThroughControl());
 
         IControl_DeviceRomName control_deviceRomName = ControlFactory.getInstance().getControl(IControl_DeviceRomName.class);
         if (control_deviceRomName != null) {

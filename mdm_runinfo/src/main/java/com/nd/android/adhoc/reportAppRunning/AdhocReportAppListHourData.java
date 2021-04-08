@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
@@ -18,6 +17,7 @@ import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.reportAppRunInfoByDb.RunInfoReportResult;
 import com.nd.android.adhoc.utils.AppRunInfoReportConstant;
 import com.nd.android.adhoc.utils.AppRunInfoReportUtils;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONArray;
@@ -213,7 +213,7 @@ public class AdhocReportAppListHourData {
         JSONObject resp = new JSONObject();
         try {
             resp.put("cmd", "appruninfo");
-            resp.put("device_token", DeviceHelper.getDeviceToken());
+            resp.put("device_token", DeviceIdCache.getDeviceId());
             resp.put("sessionid", java.util.UUID.randomUUID().toString());
             resp.put("timestamp", String.valueOf(System.currentTimeMillis()));
 

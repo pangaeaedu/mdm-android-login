@@ -6,7 +6,7 @@ import com.nd.adhoc.push.core.IPushRecvData;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.utils.PushDataUtils;
-import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,10 +53,10 @@ public class PushFakeResponseManager {
             String fakeMsg = "";
             if(pErrorCode == 0){
                 fakeMsg = PushDataUtils.generateResponse(200, pMsgID, 1, 0,
-                        DeviceInfoSpConfig.getDeviceID());
+                        DeviceIdCache.getDeviceId());
             } else {
                 fakeMsg = PushDataUtils.generateResponse(505, pMsgID, 1, pErrorCode,
-                        DeviceInfoSpConfig.getDeviceID());
+                        DeviceIdCache.getDeviceId());
             }
 
             Logger.d(TAG, "fake msg:"+fakeMsg);

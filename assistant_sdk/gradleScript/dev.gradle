@@ -35,6 +35,8 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'login'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'loginapi'
 }
 
 configurations.all {

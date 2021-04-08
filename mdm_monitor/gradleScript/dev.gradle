@@ -11,14 +11,21 @@ dependencies {
 
     api("com.nd.sdp.adhoc:screen-capture:$screen_capture_version") {
         exclude group: 'com.nd.sdp.adhoc', module: 'adhoc-sdk'
+        exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+        exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
     }
 
-    api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
+    api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version"){
+        exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+        exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+    }
 
     try{
         api project(':adhoc_wifi:wifi_sdk')
     }catch (Exception ignored){
-        api ("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version")
+        api ("com.nd.android.mdm.biz:wifi_sdk:$mdm_biz_version"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+        }
     }
 
     try {
@@ -27,10 +34,14 @@ dependencies {
         api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version") {
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
     }
 
-    api("com.nd.android.adhoc:mdm_biz_sdk_impl:$mdm_biz_sdk_version")
+    api("com.nd.android.adhoc:mdm_biz_sdk_impl:$mdm_biz_sdk_version") {
+        exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+        exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+    }
 
     try {
         api project(':assistant_sdk')
@@ -39,7 +50,10 @@ dependencies {
         }
     }
 
-    api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version")
+    api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version"){
+        exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+        exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+    }
 
     api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
         exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
@@ -52,7 +66,10 @@ dependencies {
     try{
         api project(':location_api')
     }catch (Exception ignored){
-        api("com.nd.android.adhoc:location_api:$location_verison")
+        api("com.nd.android.adhoc:location_api:$location_verison"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+        }
     }
 
 
@@ -73,7 +90,10 @@ dependencies {
     try {
         api project(':device_control')
     } catch (Exception ignored) {
-        api("com.nd.android.adhoc:device_control:$device_control_version")
+        api("com.nd.android.adhoc:device_control:$device_control_version"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+        }
     }
 
     try {
@@ -109,6 +129,8 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'login'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'loginapi'
 //    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_util_app'
 //    all*.exclude group: 'com.nd.android.adhoc', module: 'device_control'
 //    all*.exclude group: 'com.nd.android.adhoc', module: 'device_control_normal'

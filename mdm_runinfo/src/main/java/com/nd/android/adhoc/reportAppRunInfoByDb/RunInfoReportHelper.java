@@ -2,7 +2,6 @@ package com.nd.android.adhoc.reportAppRunInfoByDb;
 
 import android.text.TextUtils;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
@@ -10,6 +9,7 @@ import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
 import com.nd.android.adhoc.db.entity.intfc.IMdmRunInfoEntity;
 import com.nd.android.adhoc.db.operator.MdmRunInfoDbOperatorFactory;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import org.json.JSONArray;
@@ -46,7 +46,7 @@ public class RunInfoReportHelper {
         JSONObject resp = new JSONObject();
         try {
             resp.put("cmd", "appruninfo");
-            resp.put("device_token", DeviceHelper.getDeviceToken());
+            resp.put("device_token", DeviceIdCache.getDeviceId());
             resp.put("sessionid", java.util.UUID.randomUUID().toString());
             resp.put("timestamp", String.valueOf(System.currentTimeMillis()));
 

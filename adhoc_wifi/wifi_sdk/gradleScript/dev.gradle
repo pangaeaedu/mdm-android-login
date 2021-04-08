@@ -30,6 +30,7 @@ dependencies {
         api("com.nd.sdp.android:adhoc-firewall:$adhoc_firewall_version"){
             exclude group: 'com.nd.android.adhoc', module: 'adhoc_basic_control'
             exclude group: 'com.nd.android.adhoc', module: 'device_control'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
 
     }
@@ -44,6 +45,8 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'login'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'loginapi'
 }
 
 configurations.all {

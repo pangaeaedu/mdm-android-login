@@ -1,9 +1,9 @@
 package com.nd.android.mdm.runinfo.business.operator;
 
-import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
+import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.mdm.runinfo.business.bean.AppRunPackageInfoBean;
 import com.nd.android.mdm.runinfo.sdk.db.entity.IAppRunInfoEntity;
 import com.nd.android.mdm.runinfo.sdk.db.operator.AppRunInfoDbOperatorFactory;
@@ -107,7 +107,7 @@ class AppRunInfoBizOperator implements IAppRunInfoBizOperator {
         Logger.d(TAG, "postAppRunInfo, info json: " + infojson);
         try {
             new AppRunInfoDao()
-                    .postAppRunInfo(infojson.toString(), DeviceHelper.getDeviceToken());
+                    .postAppRunInfo(infojson.toString(), DeviceIdCache.getDeviceId());
 
             Logger.d(TAG, "postAppRunInfo success");
             return true;

@@ -12,6 +12,7 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version"){
             exclude group: 'com.nd.android.adhoc', module: 'device_control_normal_aidl'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
     }
 
@@ -34,6 +35,7 @@ dependencies {
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_env'
             exclude group: 'com.nd.android.mdm.biz', module: 'mdm_monitor'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
     }
 
@@ -49,6 +51,7 @@ dependencies {
         api project(":mdm_env")
     }catch (Exception ignore){
         api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version") {
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
     }
 
@@ -57,6 +60,7 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.android.adhoc:adhoc_policy_api:$policy_version"){
             exclude group: 'com.nd.android.adhoc', module: 'mdm_biz_sdk_impl'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
     }
 
@@ -68,6 +72,8 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'login'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'loginapi'
 }
 
 configurations.all {

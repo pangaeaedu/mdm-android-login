@@ -10,7 +10,9 @@ dependencies {
 
 
 //    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
-    api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version")
+    api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version"){
+        exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+    }
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")
@@ -29,13 +31,17 @@ dependencies {
     try {
         api project(':mdm_env')
     } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version")
+        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+        }
     }
 
     try {
         api project(':mdm_biz_common')
     } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_biz_common:$mdm_biz_version")
+        api("com.nd.android.mdm.biz:mdm_biz_common:$mdm_biz_version"){
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+        }
     }
 
 
@@ -75,6 +81,7 @@ dependencies {
         api("com.nd.sdp.android:adhocpush:$adhoc_push_util_version"){
             exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
             exclude group:'com.nd.android.mdm.biz' ,module:'mdm_biz_common'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
     }
 
@@ -83,6 +90,7 @@ dependencies {
     } catch (Exception ignored) {
         api("com.nd.android.adhoc:adhoc_policy_api:$policy_version"){
             exclude group: 'com.nd.android.adhoc', module: 'mdm_biz_sdk_impl'
+            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
         }
     }
 
@@ -99,6 +107,8 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'login'
+    all*.exclude group: 'com.nd.android.mdm.biz', module: 'loginapi'
 }
 
 configurations.all {
