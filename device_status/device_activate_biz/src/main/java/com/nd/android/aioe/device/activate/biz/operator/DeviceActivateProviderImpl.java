@@ -4,21 +4,27 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
+import com.nd.android.aioe.device.activate.biz.api.model.CheckActivateModel;
 import com.nd.android.aioe.device.activate.biz.api.model.DeviceActivateModel;
 import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceActivateProvider;
+import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
 @Route(path = IDeviceActivateProvider.ROUTE_PATH)
 public class DeviceActivateProviderImpl implements IDeviceActivateProvider {
 
     @Override
-    public DeviceActivateModel activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception {
-        return UserActivator.activateByUc(pUsername, pPassword, pValidationCode);
+    public DeviceStatus activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception {
+        DeviceActivateModel activateModel = UserActivator.activateByUc(pUsername, pPassword, pValidationCode);
+        CheckActivateModel checkActivateModel = ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
+        return checkActivateModel.getDeviceStatus();
     }
 
     @Override
-    public DeviceActivateModel activateByGroup(@NonNull String pSchoolCode) throws Exception {
-        return GroupActivator.activate(pSchoolCode);
+    public DeviceStatus activateByGroup(@NonNull String pSchoolCode) throws Exception {
+        DeviceActivateModel activateModel =  GroupActivator.activate(pSchoolCode);
+        CheckActivateModel checkActivateModel = ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
+        return checkActivateModel.getDeviceStatus();
     }
 
     @Override

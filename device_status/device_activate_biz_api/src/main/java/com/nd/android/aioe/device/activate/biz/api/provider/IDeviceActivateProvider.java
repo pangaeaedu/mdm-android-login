@@ -11,9 +11,9 @@ public interface IDeviceActivateProvider extends IProvider {
 
     String ROUTE_PATH = "/cmp_device_activate_biz/activate_provider";
 
-    DeviceActivateModel activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception;
+    DeviceStatus activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception;
 
-    DeviceActivateModel activateByGroup(@NonNull String pSchoolCode) throws Exception;
+    DeviceStatus activateByGroup(@NonNull String pSchoolCode) throws Exception;
 
     DeviceStatus autoActivateByGroup(@NonNull String pRootCode, @NonNull String pSchoolCode) throws Exception;
 }

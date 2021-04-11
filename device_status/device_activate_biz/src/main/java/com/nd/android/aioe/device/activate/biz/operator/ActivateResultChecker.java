@@ -1,5 +1,7 @@
 package com.nd.android.aioe.device.activate.biz.operator;
 
+import android.support.annotation.IntRange;
+
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
@@ -14,7 +16,7 @@ class ActivateResultChecker {
     private static final String TAG = "DeviceActivate";
 
 
-    public static CheckActivateModel checkActivateResult(int pTimes, String pDeviceID, String pRequestID) throws Exception {
+    public static CheckActivateModel checkActivateResult(@IntRange(from = 1) int pTimes, String pDeviceID, String pRequestID) throws Exception {
         Logger.i(TAG, "ActivateResultChecker, checkActivateResult");
 
         for (int i = 0; i < pTimes; i++) {
