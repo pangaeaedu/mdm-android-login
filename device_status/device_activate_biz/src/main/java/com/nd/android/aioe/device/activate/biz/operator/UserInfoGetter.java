@@ -14,9 +14,13 @@ import com.nd.android.mdm.biz.env.MdmEvnFactory;
 class UserInfoGetter {
 
     public static GetUserInfoModel getUserInfo(String pDeviceId, int pDeviceType) throws AdhocException {
-        return getDeviceUserDao().getUserInfo(GetUserInfoModel.class, pDeviceId, pDeviceType);
-    }
+        GetUserInfoModel userInfoModel = getDeviceUserDao().getUserInfo(GetUserInfoModel.class, pDeviceId, pDeviceType);
 
+        if (userInfoModel.isSuccess()) {
+            saveUserInfoToSp(userInfoModel);
+        }
+        return userInfoModel;
+    }
 
     public static String getUserId() throws AdhocException {
         String userId = DeviceInfoSpConfig.getUserID();
@@ -25,15 +29,21 @@ class UserInfoGetter {
         }
 
         String deviceId = DeviceIdCache.getDeviceId();
-        GetUserInfoModel userInfo = getUserInfo(deviceId, DeviceType.getValue());
+        GetUserInfoModel userInfoModel = getUserInfo(deviceId, DeviceType.getValue());
 
-        if (userInfo.isSuccess()) {
-            return userInfo.getUser_id();
+        if (userInfoModel.isSuccess()) {
+            return userInfoModel.getUser_id();
         }
 
-        throw new AdhocException("get user info from server unsuccessful" + userInfo.getMsgcode());
+        throw new AdhocException("get user id from server unsuccessful" + userInfoModel.getMsgcode());
     }
 
+    private static void saveUserInfoToSp(GetUserInfoModel pUserInfoModel) {
+        DeviceInfoSpConfig.saveNickname(pUserInfoModel.getNickName());
+        DeviceInfoSpConfig.saveUserID(pUserInfoModel.getUser_id());
+        DeviceInfoSpConfig.saveDeviceCode(pUserInfoModel.getDevice_code());
+        DeviceInfoSpConfig.saveGroupCode(pUserInfoModel.getGroupcode());
+    }
 
     private static IDeviceUserDao getDeviceUserDao() {
         return DeviceActivateDaoHelper.getDeviceUserDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl());

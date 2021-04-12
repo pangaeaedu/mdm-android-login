@@ -11,4 +11,6 @@ public interface IDeviceUserProvider extends IProvider {
     String ROUTE_PATH = "/cmp_device_activate_biz/user_provider";
 
     GetUserInfoModel getUserInfo(@NonNull String pDeviceID, int pDeviceType) throws AdhocException;
+
+    String getUserId() throws AdhocException;
 }

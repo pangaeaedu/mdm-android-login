@@ -17,6 +17,11 @@ public class DeviceUserProviderImpl implements IDeviceUserProvider{
     }
 
     @Override
+    public String getUserId() throws AdhocException {
+        return UserInfoGetter.getUserId();
+    }
+
+    @Override
     public void init(@NonNull Context pContext) {
 
     }
