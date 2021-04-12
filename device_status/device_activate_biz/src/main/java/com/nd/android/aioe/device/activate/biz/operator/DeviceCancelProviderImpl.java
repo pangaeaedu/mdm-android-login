@@ -16,7 +16,7 @@ public class DeviceCancelProviderImpl implements IDeviceCancelProvider{
     private static final String TAG = "DeviceActivate";
 
     @Override
-    public void onDeviceCancel() throws Exception {
+    public void onDeviceCancel() {
 
         DeviceCancelOperator.cancelDevice();
     }
