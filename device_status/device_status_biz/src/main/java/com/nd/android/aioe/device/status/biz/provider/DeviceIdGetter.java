@@ -14,7 +14,7 @@ import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.info.util.DeviceIDSPUtils;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
-import com.nd.android.aioe.device.status.biz.model.ConfirmDeviceIdModel;
+import com.nd.android.aioe.device.status.biz.api.model.ConfirmDeviceIdModel;
 import com.nd.android.aioe.device.status.biz.util.DeviceStatusParamUtil;
 import com.nd.android.aioe.device.status.dao.api.IDeviceIdDao;
 import com.nd.android.aioe.device.status.dao.impl.DeviceStatusDaoHelper;

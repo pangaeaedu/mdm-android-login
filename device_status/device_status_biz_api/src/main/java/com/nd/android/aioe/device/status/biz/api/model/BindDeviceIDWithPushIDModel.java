@@ -1,4 +1,4 @@
-package com.nd.android.aioe.device.status.biz.model;
+package com.nd.android.aioe.device.status.biz.api.model;
 
 import com.nd.android.aioe.device.status.dao.api.bean.BindDeviceIDWithPushIDResult;
 

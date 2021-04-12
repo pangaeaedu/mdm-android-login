@@ -2,9 +2,7 @@ dependencies {
     api("com.android.support:support-annotations:$androidSupportSdkVersion")
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
 
-
     api project(':device_status:device_status_dao')
-
 
     try {
         api project(':adhoc_basic:adhoc-router-api')

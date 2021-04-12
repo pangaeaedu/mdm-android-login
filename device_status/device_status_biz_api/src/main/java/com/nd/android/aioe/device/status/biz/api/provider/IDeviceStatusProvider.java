@@ -4,15 +4,14 @@ import android.support.annotation.WorkerThread;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.router_api.facade.template.IProvider;
-import com.nd.android.aioe.device.status.dao.api.bean.GetDeviceStatusResult;
+import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;
 
 public interface IDeviceStatusProvider extends IProvider {
 
     String ROUTE_PATH = "/cmp_device_status_biz/status_provider";
 
     @WorkerThread
-    GetDeviceStatusResult getDeviceStatusFromServer() throws AdhocException;
-
+    GetDeviceStatusModel getDeviceStatusFromServer() throws AdhocException;
 
     @WorkerThread
     void updateDeviceStatus() throws AdhocException;

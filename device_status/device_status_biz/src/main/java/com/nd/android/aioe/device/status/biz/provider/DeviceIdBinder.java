@@ -8,7 +8,7 @@ import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.policy.api.provider.IAdhocPolicyLifeCycleProvider;
 import com.nd.android.adhoc.warning.api.provider.IAdhocWarningLifeCycleProvider;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
-import com.nd.android.aioe.device.status.biz.model.BindDeviceIDWithPushIDModel;
+import com.nd.android.aioe.device.status.biz.api.model.BindDeviceIDWithPushIDModel;
 import com.nd.android.aioe.device.status.dao.api.IDeviceIdDao;
 import com.nd.android.aioe.device.status.dao.impl.DeviceStatusDaoHelper;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;

@@ -11,7 +11,7 @@ import com.nd.android.aioe.device.status.biz.api.cache.DeviceStatusCache;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
-import com.nd.android.aioe.device.status.biz.model.GetDeviceStatusModel;
+import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;
 
 class DeviceStatusUpdater {
 

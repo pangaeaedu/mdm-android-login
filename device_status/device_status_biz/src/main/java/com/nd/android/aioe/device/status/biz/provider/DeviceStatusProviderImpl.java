@@ -1,7 +1,6 @@
 package com.nd.android.aioe.device.status.biz.provider;
 
 import android.content.Context;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -11,10 +10,8 @@ import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
-import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
+import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;
 import com.nd.android.aioe.device.status.biz.api.provider.IDeviceStatusProvider;
-import com.nd.android.aioe.device.status.biz.model.GetDeviceStatusModel;
-import com.nd.android.aioe.device.status.dao.api.bean.GetDeviceStatusResult;
 
 @Route(path = IDeviceStatusProvider.ROUTE_PATH)
 public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
@@ -22,7 +19,7 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
     private static final String TAG = "DeviceStatusProviderImpl";
 
     @Override
-    public GetDeviceStatusResult getDeviceStatusFromServer() throws AdhocException {
+    public GetDeviceStatusModel getDeviceStatusFromServer() throws AdhocException {
 
         String deviceId = DeviceIdGetter.getDeviceId();
 
@@ -33,7 +30,7 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
         }
 
         try {
-            GetDeviceStatusModel model = DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);;
+            GetDeviceStatusModel model = DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);
 
             if (model != null) {
                 DeviceStatus deviceStatus = model.getDevicesStatus();

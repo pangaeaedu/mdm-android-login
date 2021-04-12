@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
-import com.nd.android.aioe.device.status.biz.model.GetDeviceStatusModel;
+import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;
 import com.nd.android.aioe.device.status.dao.api.IDeviceStatusDao;
 import com.nd.android.aioe.device.status.dao.impl.DeviceStatusDaoHelper;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
