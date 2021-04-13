@@ -3,12 +3,14 @@ package com.nd.android.aioe.device.activate.biz.api.provider;
 import android.support.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.log.Logger;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
+import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
 
 public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRetriever {
 
-    private static final String TAG = "GroupCodeRetriever";
+    private static final String TAG = "DeviceActivate";
     private final CountDownLatch mCountDownLatch = new CountDownLatch(1);
     private String mGroupCode = null;
 
@@ -16,6 +18,18 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
     @NonNull
     @Override
     public String retrieveGroupCode(String pRootCode) throws Exception {
+
+        Iterator<IGroupCodeRetrieverChecker> interceptors = AnnotationServiceLoader
+                .load(IGroupCodeRetrieverChecker.class).iterator();
+        while (interceptors.hasNext()) {
+            IGroupCodeRetrieverChecker checker = interceptors.next();
+
+            // 有一个条件不允许就不行，直接返回空
+            if (!checker.checlAllow()) {
+                Logger.w(TAG, "SchoolGroupCodeRetriever [" + checker.getClass().getCanonicalName() + "] checkAllow return false");
+                return "";
+            }
+        }
 
         // TODO： 上层自行去限制
 //        boolean isXiaomi = AdhocRomFactory.getInstance().getRomStrategy() instanceof AdhocRomStrategy_Xiaomi;
