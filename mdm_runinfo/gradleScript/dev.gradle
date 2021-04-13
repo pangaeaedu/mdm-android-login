@@ -69,7 +69,6 @@ dependencies {
     annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 }
 
-
 configurations {
     all*.exclude group: 'android.support'
     all*.exclude group: 'com.nd.android.mdm.biz', module: 'login'
