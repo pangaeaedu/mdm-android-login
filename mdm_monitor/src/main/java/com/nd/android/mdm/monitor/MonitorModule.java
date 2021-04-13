@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.hardware.Camera;
 import android.hardware.usb.UsbManager;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceHelper;
 import com.nd.adhoc.assistant.sdk.deviceInfo.DeviceInfoManager;
+import com.nd.adhoc.utils.Tools;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
@@ -23,15 +25,19 @@ import com.nd.android.adhoc.basic.util.net.speed.NetSpeedBean;
 import com.nd.android.adhoc.basic.util.net.speed.NetSpeedUtil;
 import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
+import com.nd.android.adhoc.basic.util.system.rom.AdhocRomFactory;
+import com.nd.android.adhoc.basic.util.system.rom.IAdhocRomStrategy;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
+import com.nd.android.adhoc.control.ap7.rom.AdhocRomStrategy_Ap7;
 import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_CpuUsageRate;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
 import com.nd.android.adhoc.control.define.IControl_IMEI;
+import com.nd.android.adhoc.control.ops.rom.AdhocRomStrategy_Ops;
 import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
@@ -87,6 +93,8 @@ public class MonitorModule implements IMonitor {
 //    private Map<String, Long> mExecuteTime;
 //    private long lastUpdate = 0;
 //    private long lastHour = 0;
+    private boolean mHasFrontCamera = true;
+    private boolean mHasBackCamera = true;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -158,13 +166,6 @@ public class MonitorModule implements IMonitor {
                         if(MdmWifiStatus.CONNECTED != pStatus){
                             return;
                         }
-
-                        //会出现wifi connect事件到达的时候，deviceID还没有确认的情况，这种情况下，不要上报DevInfo
-                        String deviceToken = DeviceInfoManager.getInstance().getDeviceID();
-                        if(TextUtils.isEmpty(deviceToken)){
-                            return;
-                        }
-
                         responseDevInfo();
                     }
                 }
@@ -172,6 +173,12 @@ public class MonitorModule implements IMonitor {
     }
 
     private void responseDevInfo() {
+        //会出现wifi connect事件到达的时候，deviceID还没有确认的情况，这种情况下，不要上报DevInfo
+
+        String deviceToken = DeviceInfoManager.getInstance().getDeviceID();
+        if(TextUtils.isEmpty(deviceToken)){
+            return;
+        }
         AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
@@ -229,6 +236,9 @@ public class MonitorModule implements IMonitor {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 //        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         mContext.registerReceiver(mBroadcastReceiver, filter);
+        //初始化的时候先去检测一下摄像头的状态
+        isCameraFacingChanged();
+        Logger.w(TAG, "init:has front camera:" + mHasFrontCamera + ",has back camera:" + mHasBackCamera );
     }
 
 
@@ -328,11 +338,19 @@ public class MonitorModule implements IMonitor {
     private void usbAttached() {
         Logger.d(TAG,"usb attached:" + AdhocTimeUtil.getTimeStamp());
         new UsbAttachMessage(true).send();
+        if (isCameraFacingChanged()) {
+            Logger.w(TAG, "usbAttached:CameraFacingChanged：has front camera:" + mHasFrontCamera + ",has back camera:" + mHasBackCamera );
+            responseDevInfo();
+        }
     }
 
     private void usbDetached() {
         Logger.d(TAG,"usb detached:" + AdhocTimeUtil.getTimeStamp());
         new UsbAttachMessage(false).send();
+        if (isCameraFacingChanged()) {
+            Logger.w(TAG, "usbDetached:CameraFacingChanged：has front camera:" + mHasFrontCamera + ",has back camera:" + mHasBackCamera );
+            responseDevInfo();
+        }
     }
 
     private void updateBattery(Intent intent) {
@@ -647,6 +665,10 @@ public class MonitorModule implements IMonitor {
 
 //        data.put("AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
         putJsonData(data,"AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
+
+        putJsonData(data,"front_camera",mHasFrontCamera);
+        putJsonData(data,"back_camera",mHasBackCamera);
+
         return data;
     }
 
@@ -788,4 +810,22 @@ public class MonitorModule implements IMonitor {
 //
 //        }
 //    };
+
+    private boolean isCameraFacingChanged(){
+        IAdhocRomStrategy romStrategy = AdhocRomFactory.getInstance().getRomStrategy();
+        if (romStrategy instanceof AdhocRomStrategy_Ops || romStrategy instanceof AdhocRomStrategy_Ap7){
+            boolean cameraChanged = false;
+            boolean hasBackCamera = Tools.checkCameraFacing(Camera.CameraInfo.CAMERA_FACING_BACK) == 0;
+            if (hasBackCamera != mHasBackCamera){
+                cameraChanged = true;
+                mHasBackCamera = hasBackCamera;
+            }
+            if (mHasFrontCamera){
+                mHasFrontCamera = false;
+                cameraChanged = true;
+            }
+            return cameraChanged;
+        }
+        return false;
+    }
 }

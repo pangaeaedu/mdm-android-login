@@ -40,6 +40,7 @@ dependencies {
     }
 
     api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version")
+    api("com.nd.android.adhoc:device_control_ap7:$device_control_version")
 
     api("com.nd.android.adhoc:device_command_basic:$device_command_version") {
         exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
