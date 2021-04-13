@@ -38,6 +38,21 @@ class UserInfoGetter {
         throw new AdhocException("get user id from server unsuccessful" + userInfoModel.getMsgcode());
     }
 
+    public static String getNickName() throws AdhocException {
+        String nickname = DeviceInfoSpConfig.getNickname();
+        if (!TextUtils.isEmpty(nickname)) {
+            return nickname;
+        }
+
+        String deviceId = DeviceIdCache.getDeviceId();
+        GetUserInfoModel userInfoModel = getUserInfo(deviceId, DeviceType.getValue());
+        if (userInfoModel.isSuccess()) {
+            return userInfoModel.getUser_id();
+        }
+
+        throw new AdhocException("get nickname from server unsuccessful" + userInfoModel.getMsgcode());
+    }
+
     private static void saveUserInfoToSp(GetUserInfoModel pUserInfoModel) {
         DeviceInfoSpConfig.saveNickname(pUserInfoModel.getNickName());
         DeviceInfoSpConfig.saveUserID(pUserInfoModel.getUser_id());

@@ -22,6 +22,11 @@ public class DeviceUserProviderImpl implements IDeviceUserProvider{
     }
 
     @Override
+    public String getNickName() throws AdhocException {
+        return UserInfoGetter.getNickName();
+    }
+
+    @Override
     public void init(@NonNull Context pContext) {
 
     }

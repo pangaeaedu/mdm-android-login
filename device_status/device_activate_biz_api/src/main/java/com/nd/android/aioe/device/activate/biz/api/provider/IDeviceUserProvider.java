@@ -13,4 +13,6 @@ public interface IDeviceUserProvider extends IProvider {
     GetUserInfoModel getUserInfo(@NonNull String pDeviceID, int pDeviceType) throws AdhocException;
 
     String getUserId() throws AdhocException;
+
+    String getNickName() throws AdhocException;
 }
