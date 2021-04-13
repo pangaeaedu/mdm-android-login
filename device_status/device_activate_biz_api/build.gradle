@@ -14,6 +14,11 @@ android {
         minSdkVersion "$androidMinSdkVersion".toInteger()
         targetSdkVersion "$androidTargetSdkVersion".toInteger()
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ComponentId: "activate_biz_api"]
+            }
+        }
     }
 
     // 路由能力 在 编译期需要根据这个变量去根据模块创建类文件，实现分模块懒加载
