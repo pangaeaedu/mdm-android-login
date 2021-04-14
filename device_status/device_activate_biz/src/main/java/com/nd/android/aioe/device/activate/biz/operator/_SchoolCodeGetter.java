@@ -5,12 +5,12 @@ import android.text.TextUtils;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
-import com.nd.android.aioe.device.activate.biz.api.provider.ISchoolGroupCodeRetriever;
+import com.nd.android.aioe.device.activate.biz.api.injection.ISchoolGroupCodeRetriever;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
 import java.util.Iterator;
 
-class SchoolCodeGetter {
+class _SchoolCodeGetter {
 
     private static final String TAG = "DeviceActivate";
 

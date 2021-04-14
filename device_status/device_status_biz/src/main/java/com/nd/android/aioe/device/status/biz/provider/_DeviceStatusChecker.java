@@ -15,7 +15,7 @@ import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-class DeviceStatusChecker {
+class _DeviceStatusChecker {
 
     private static final String TAG = "DeviceStatusChecker";
 

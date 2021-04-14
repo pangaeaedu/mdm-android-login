@@ -18,7 +18,7 @@ import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
 
-class DeviceCancelOperator {
+class _DeviceCancelOperator {
 
     private static final String TAG = "DeviceActivate";
 
@@ -80,8 +80,6 @@ class DeviceCancelOperator {
         // TODO： 这个是原先的旧逻辑，如果自动激活的情况下就完全不跳转注销后的页面，会有问题
         //  但是如果都跳转，那么也会有问题，比如程序这时候是后台静默启动的，被注销后就会打开一个页面
         //  是否应该判断当前是否有页面在前台，如果有，则跳转，如果没有，就直接自杀应用
-
-
 
         if (ActivateConfig.getInstance().isAutoLogin()
                 && AdhocDataCheckUtils.isCollectionEmpty(ActivityStackManager.INSTANCE.getActivityStack())) {

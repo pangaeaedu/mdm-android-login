@@ -13,7 +13,7 @@ import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManag
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
 import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;
 
-class DeviceStatusUpdater {
+class _DeviceStatusUpdater {
 
     private static final String TAG = "DeviceStatusBusiness";
 
@@ -30,7 +30,7 @@ class DeviceStatusUpdater {
         public void onConnected() {
 
             // 绑定 PushId
-            DeviceIdBinder.setPushId(MdmTransferFactory.getPushModel().getDeviceId());
+            _DeviceIdBinder.setPushId(MdmTransferFactory.getPushModel().getDeviceId());
 
             long lastUpdateTime = DeviceStatusCache.getLastUpdateTime();
 
@@ -38,7 +38,7 @@ class DeviceStatusUpdater {
             if (Math.abs(System.currentTimeMillis() - lastUpdateTime) >= 24 * 60 * 60 * 1000) {
                 Logger.e(TAG, "The current time is one day away from the last update time, recheck device status");
 
-                DeviceStatusChecker.checkDeviceStatusFromServer(DeviceInfoSpConfig.getDeviceID());
+                _DeviceStatusChecker.checkDeviceStatusFromServer(DeviceInfoSpConfig.getDeviceID());
             }
 
         }
@@ -61,7 +61,7 @@ class DeviceStatusUpdater {
     public static void updateDeviceStatus() throws AdhocException {
         String deviceId;
         try {
-            deviceId = DeviceIdGetter.getDeviceId();
+            deviceId = _DeviceIdGetter.getDeviceId();
         } catch (Exception e) {
             DeviceStatusErrorManager.notifyError(IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
             throw AdhocException.newException(e);
@@ -72,7 +72,7 @@ class DeviceStatusUpdater {
         int retryCount = 0;
         while (deviceStatusModel == null) {
             try {
-                deviceStatusModel = DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);
+                deviceStatusModel = _DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);
             } catch (Exception e) {
                 Logger.e(TAG, "queryDeviceStatusFromServer error: " + e);
             }
@@ -82,7 +82,7 @@ class DeviceStatusUpdater {
             if ((deviceStatusModel == null || !deviceStatusModel.isSuccess()) && retryCount >= 1) {
 
                 // 如果允许在失败的时候，先通知出去本地的状态
-                if (DeviceStatusRetryJudgerManager.useLocalStatusFirstOnFailed()) {
+                if (_DeviceStatusRetryJudgerManager.useLocalStatusFirstOnFailed()) {
                     DeviceStatusChangeManager.notifyDeviceStatus(DeviceStatusCache.getDeviceStatus());
                 }
 
@@ -100,7 +100,7 @@ class DeviceStatusUpdater {
 
         // 如果重试成功的，这里才去通知重试判断者
         if (retryCount >= 1) {
-            DeviceStatusRetryJudgerManager.onUpdateRetrySuccess();
+            _DeviceStatusRetryJudgerManager.onUpdateRetrySuccess();
         }
 
         DeviceStatusChangeManager.notifyDeviceStatus(deviceStatusModel.getDevicesStatus());

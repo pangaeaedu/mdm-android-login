@@ -12,7 +12,7 @@ import com.nd.android.aioe.device.status.dao.api.IDeviceStatusDao;
 import com.nd.android.aioe.device.status.dao.impl.DeviceStatusDaoHelper;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
-class DeviceStatusGetter {
+class _DeviceStatusGetter {
 
     private static final String TAG = "DeviceStatusOperator";
 

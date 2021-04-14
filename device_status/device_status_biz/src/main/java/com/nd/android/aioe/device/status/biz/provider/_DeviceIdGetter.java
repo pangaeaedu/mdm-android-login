@@ -23,7 +23,7 @@ import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
 import java.util.Map;
 
-class DeviceIdGetter {
+class _DeviceIdGetter {
 
     private static final String TAG = "DeviceStatus";
 
@@ -36,7 +36,7 @@ class DeviceIdGetter {
         if (!TextUtils.isEmpty(deviceId)) {
             Logger.i(TAG, "getV3DeviceId success");
 
-            DeviceIdBinder.setDeviceId(deviceId);
+            _DeviceIdBinder.setDeviceId(deviceId);
             return deviceId;
         }
 
@@ -60,7 +60,7 @@ class DeviceIdGetter {
 
         refreshDeviceData(deviceId);
 
-        DeviceIdBinder.setDeviceId(deviceId);
+        _DeviceIdBinder.setDeviceId(deviceId);
         return deviceId;
     }
 
@@ -169,7 +169,7 @@ class DeviceIdGetter {
                     DeviceStatusErrorManager.notifyError(IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
 
                     if (count > 1) {
-                        if (DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
+                        if (_DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
                             continue;
                         }
                         throw new AdhocException("confirmDeviceID unsuccessful", IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
@@ -187,7 +187,7 @@ class DeviceIdGetter {
 ////                    AdhocExitAppManager.exitApp(120 * 1000);
 //                }
 
-                    if (DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
+                    if (_DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
                         continue;
                     }
                     throw AdhocException.newException(e);

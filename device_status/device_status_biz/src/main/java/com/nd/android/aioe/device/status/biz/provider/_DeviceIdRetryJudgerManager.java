@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-class DeviceIdRetryJudgerManager {
+class _DeviceIdRetryJudgerManager {
 
     private static List<IDeviceIdConfirmRetryJudger> sConfirmRetryJudgers;
 

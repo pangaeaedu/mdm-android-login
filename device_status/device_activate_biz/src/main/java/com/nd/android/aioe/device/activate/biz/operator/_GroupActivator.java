@@ -15,7 +15,7 @@ import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
-class GroupActivator {
+class _GroupActivator {
 
     public static DeviceActivateModel activate(@NonNull String pSchoolCode) throws Exception {
 

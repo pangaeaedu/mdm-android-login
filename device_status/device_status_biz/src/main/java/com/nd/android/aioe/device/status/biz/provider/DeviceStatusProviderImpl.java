@@ -21,7 +21,7 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
     @Override
     public GetDeviceStatusModel getDeviceStatusFromServer() throws AdhocException {
 
-        String deviceId = DeviceIdGetter.getDeviceId();
+        String deviceId = _DeviceIdGetter.getDeviceId();
 
         String serialNum = DeviceInfoHelper.getSerialNumberThroughControl();
 
@@ -30,7 +30,7 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
         }
 
         try {
-            GetDeviceStatusModel model = DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);
+            GetDeviceStatusModel model = _DeviceStatusGetter.queryDeviceStatusFromServer(deviceId);
 
             if (model != null) {
                 DeviceStatus deviceStatus = model.getDevicesStatus();
@@ -54,7 +54,7 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
 
     @Override
     public void updateDeviceStatus() throws AdhocException {
-        DeviceStatusUpdater.updateDeviceStatus();
+        _DeviceStatusUpdater.updateDeviceStatus();
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.nd.android.aioe.device.activate.biz.api.model.CheckActivateModel;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
 
-class ActivateResultOperator {
+class _ActivateResultOperator {
 
     private static final String TAG = "DeviceActivateResultOperator";
 

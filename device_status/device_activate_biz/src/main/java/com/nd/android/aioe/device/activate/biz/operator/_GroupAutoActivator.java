@@ -13,7 +13,7 @@ import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 
 import java.util.Random;
 
-class AutoActivateByGroup {
+class _GroupAutoActivator {
 
     private static final String TAG = "DeviceActivateBusiness";
 
@@ -27,12 +27,12 @@ class AutoActivateByGroup {
 
         // 如果学校是空的，那么这里要去选学校，要传 false 去取
         if (TextUtils.isEmpty(schoolCode)) {
-            schoolCode = SchoolCodeGetter.getSchoolCode(pRootCode, false);
+            schoolCode = _SchoolCodeGetter.getSchoolCode(pRootCode, false);
         }
 
         while (true) {
             try {
-                activateModel = GroupActivator.activate(schoolCode);
+                activateModel = _GroupActivator.activate(schoolCode);
             } catch (Exception e) {
                 Logger.e(TAG, "groupActivate, do activate error: " + e);
             }
@@ -51,7 +51,7 @@ class AutoActivateByGroup {
             }
 
             try {
-                checkActivateModel = ActivateResultChecker.checkActivateResult(3, DeviceInfoSpConfig.getDeviceID(), activateModel.getRequestid());
+                checkActivateModel = _ActivateResultChecker.checkActivateResult(3, DeviceInfoSpConfig.getDeviceID(), activateModel.getRequestid());
             } catch (Exception e) {
                 Logger.e(TAG, "checkActivateResult error: " + e);
                 continue;
@@ -59,7 +59,7 @@ class AutoActivateByGroup {
 
             // 返回 null 表示  学校不存在，要重新去获取一下
             if (checkActivateModel == null) {
-                schoolCode = SchoolCodeGetter.getSchoolCode(pRootCode, true);
+                schoolCode = _SchoolCodeGetter.getSchoolCode(pRootCode, true);
                 continue;
             }
 
@@ -70,7 +70,7 @@ class AutoActivateByGroup {
             }
             break;
         }
-        ActivateResultOperator.operateActivateResult(checkActivateModel);
+        _ActivateResultOperator.operateActivateResult(checkActivateModel);
 
         return checkActivateModel.getDeviceStatus();
     }

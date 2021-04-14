@@ -11,7 +11,7 @@ import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
-class UserInfoGetter {
+class _UserInfoGetter {
 
     public static GetUserInfoModel getUserInfo(String pDeviceId, int pDeviceType) throws AdhocException {
         GetUserInfoModel userInfoModel = getDeviceUserDao().getUserInfo(GetUserInfoModel.class, pDeviceId, pDeviceType);

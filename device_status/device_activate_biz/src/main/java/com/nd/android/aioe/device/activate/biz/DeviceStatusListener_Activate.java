@@ -1,13 +1,16 @@
 package com.nd.android.aioe.device.activate.biz;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
+import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
+import com.nd.android.aioe.device.activate.biz.api.listener.DeviceActivateResultManager;
+import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceActivateProvider;
+import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceCancelProvider;
 import com.nd.android.aioe.device.activate.biz.cache.DeviceActivateCache;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
-import com.nd.android.aioe.device.info.util.DeviceIDSPUtils;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusListener;
 import com.nd.sdp.android.serviceloader.annotation.Service;
@@ -36,18 +39,53 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
 
             // TODO：如果是 deleted 的 或者 非自动激活的，这里应该走注销流程
             if (pNewStatus.isDeleted() || !ActivateConfig.getInstance().isAutoLogin()) {
-
+                doCancelDevice();
                 return;
             }
 
             // TODO：这里直接重新走 自动激活的流程
-
+            doAutoActivate();
             return;
         }
 
         // TODO：如果新的是已激活，就直接发送激活成功的通知出去
+        DeviceActivateResultManager.notifyActivateResult(true);
+    }
 
+    private void doCancelDevice() {
+        IDeviceCancelProvider cancelProvider = (IDeviceCancelProvider) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(IDeviceCancelProvider.ROUTE_PATH).navigation();
+        if (cancelProvider == null) {
+            // provider 如果都为空，表示遇到了 极端异常情况，尝试自杀
+            Logger.e(TAG, "IDeviceCancelProvider implement not found");
+            AdhocExitAppManager.exitApp(0);
+            return;
+        }
+        cancelProvider.onDeviceCancel();
+    }
 
+    private void doAutoActivate() {
+        IDeviceActivateProvider activateProvider = (IDeviceActivateProvider) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(IDeviceActivateProvider.ROUTE_PATH).navigation();
+        if (activateProvider == null) {
+            // provider 如果都为空，表示遇到了 极端异常情况，尝试自杀
+            Logger.e(TAG, "IDeviceActivateProvider implement not found");
+            AdhocExitAppManager.exitApp(0);
+            return;
+        }
+
+        try {
+            DeviceStatus deviceStatus = activateProvider.autoActivateByGroup(ActivateConfig.getInstance().getGroupCode(), "");
+            if (deviceStatus.isUnActivated()) {
+                doCancelDevice();
+            } else {
+                DeviceActivateResultManager.notifyActivateResult(true);
+            }
+        } catch (Exception e) {
+            Logger.e(TAG, "autoActivateByGroup error: " + e);
+            // TODO： 这里搞出异常了的话，怎么处理？ 继续重试？自杀应用？
+
+        }
     }
 
 }

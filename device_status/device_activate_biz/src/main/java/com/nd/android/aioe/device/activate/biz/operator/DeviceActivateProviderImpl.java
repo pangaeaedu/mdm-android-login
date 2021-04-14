@@ -15,21 +15,21 @@ public class DeviceActivateProviderImpl implements IDeviceActivateProvider {
 
     @Override
     public DeviceStatus activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception {
-        DeviceActivateModel activateModel = UserActivator.activateByUc(pUsername, pPassword, pValidationCode);
-        CheckActivateModel checkActivateModel = ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
+        DeviceActivateModel activateModel = _UserActivator.activateByUc(pUsername, pPassword, pValidationCode);
+        CheckActivateModel checkActivateModel = _ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
         return checkActivateModel.getDeviceStatus();
     }
 
     @Override
     public DeviceStatus activateByGroup(@NonNull String pSchoolCode) throws Exception {
-        DeviceActivateModel activateModel =  GroupActivator.activate(pSchoolCode);
-        CheckActivateModel checkActivateModel = ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
+        DeviceActivateModel activateModel =  _GroupActivator.activate(pSchoolCode);
+        CheckActivateModel checkActivateModel = _ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
         return checkActivateModel.getDeviceStatus();
     }
 
     @Override
     public DeviceStatus autoActivateByGroup(@NonNull String pRootCode, @NonNull String pSchoolCode) throws Exception {
-        return AutoActivateByGroup.autoActivateByGroupCode(pRootCode, pSchoolCode);
+        return _GroupAutoActivator.autoActivateByGroupCode(pRootCode, pSchoolCode);
     }
 
     @Override

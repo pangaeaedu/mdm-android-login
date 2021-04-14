@@ -13,17 +13,17 @@ public class DeviceUserProviderImpl implements IDeviceUserProvider{
 
     @Override
     public GetUserInfoModel getUserInfo(@NonNull String pDeviceID, int pDeviceType) throws AdhocException {
-        return UserInfoGetter.getUserInfo(pDeviceID, pDeviceType);
+        return _UserInfoGetter.getUserInfo(pDeviceID, pDeviceType);
     }
 
     @Override
     public String getUserId() throws AdhocException {
-        return UserInfoGetter.getUserId();
+        return _UserInfoGetter.getUserId();
     }
 
     @Override
     public String getNickName() throws AdhocException {
-        return UserInfoGetter.getNickName();
+        return _UserInfoGetter.getNickName();
     }
 
     @Override

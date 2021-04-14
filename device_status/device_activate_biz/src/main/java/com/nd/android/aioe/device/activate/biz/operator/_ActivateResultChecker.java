@@ -11,7 +11,7 @@ import com.nd.android.aioe.device.activate.dao.impl.DeviceActivateDaoHelper;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
-class ActivateResultChecker {
+class _ActivateResultChecker {
 
     private static final String TAG = "DeviceActivate";
 

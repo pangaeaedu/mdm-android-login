@@ -16,7 +16,7 @@ import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.aioe.device.status.dao.impl.constant.DeviceType;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 
-class UserActivator {
+class _UserActivator {
 
     private static final String TAG = "UserActivator";
 
