@@ -75,12 +75,15 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
         }
 
         try {
+            // 如果已激活，内部会发出通知
             DeviceStatus deviceStatus = activateProvider.autoActivateByGroup(ActivateConfig.getInstance().getGroupCode(), "");
             if (deviceStatus.isUnActivated()) {
                 doCancelDevice();
-            } else {
-                DeviceActivateResultManager.notifyActivateResult(true);
             }
+//            else {
+//                DeviceActivateResultManager.notifyActivateResult(true);
+//                DeviceStatusChangeManager.notifyDeviceStatus(deviceStatus);
+//            }
         } catch (Exception e) {
             Logger.e(TAG, "autoActivateByGroup error: " + e);
             // TODO： 这里搞出异常了的话，怎么处理？ 继续重试？自杀应用？

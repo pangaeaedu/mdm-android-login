@@ -29,10 +29,8 @@ class _ActivateResultOperator {
         // 反正现在统一都发，OMO 那边如果没注册 也不会收到，所以没有影响，否则 可能发出去以后，
 //            DeviceActivateBroadcastUtils.sendActivateSuccessBroadcast();
 
-        DeviceActivateResultManager.notifyActivateResult(true);
-
+//        DeviceActivateResultManager.notifyActivateResult(true);
         DeviceStatusChangeManager.notifyDeviceStatus(pModel.getDeviceStatus());
-
     }
 
 
