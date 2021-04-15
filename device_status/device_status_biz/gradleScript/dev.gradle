@@ -6,6 +6,11 @@ dependencies {
     annotationProcessor("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
 
 
+    api("com.nd.android.adhoc.basic:adhoc-router-api:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc-router-annotation:$adhoc_basic_version")
+    annotationProcessor("com.nd.android.adhoc.basic:adhoc-router-compiler:$adhoc_basic_version")
+
+
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_system:$adhoc_basic_version")
 
