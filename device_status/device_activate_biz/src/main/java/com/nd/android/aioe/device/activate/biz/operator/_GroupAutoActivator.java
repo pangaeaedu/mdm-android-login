@@ -57,7 +57,7 @@ class _GroupAutoActivator {
                 continue;
             }
 
-            // 返回 null 表示  学校不存在，要重新去获取一下
+            // 自动激活情况下 返回 null 表示  学校不存在，要重新去获取一下
             if (checkActivateModel == null) {
                 schoolCode = _SchoolCodeGetter.getSchoolCode(pRootCode, true);
                 continue;

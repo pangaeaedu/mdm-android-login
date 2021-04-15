@@ -16,14 +16,22 @@ public class DeviceActivateProviderImpl implements IDeviceActivateProvider {
     @Override
     public DeviceStatus activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception {
         DeviceActivateModel activateModel = _UserActivator.activateByUc(pUsername, pPassword, pValidationCode);
-        CheckActivateModel checkActivateModel = _ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
+        CheckActivateModel checkActivateModel = _ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(), activateModel.getRequestid());
+        if (checkActivateModel == null) {
+            return null;
+        }
+        _ActivateResultOperator.operateActivateResult(checkActivateModel);
         return checkActivateModel.getDeviceStatus();
     }
 
     @Override
     public DeviceStatus activateByGroup(@NonNull String pSchoolCode) throws Exception {
-        DeviceActivateModel activateModel =  _GroupActivator.activate(pSchoolCode);
-        CheckActivateModel checkActivateModel = _ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(),activateModel.getRequestid());
+        DeviceActivateModel activateModel = _GroupActivator.activate(pSchoolCode);
+        CheckActivateModel checkActivateModel = _ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(), activateModel.getRequestid());
+        if (checkActivateModel == null) {
+            return null;
+        }
+        _ActivateResultOperator.operateActivateResult(checkActivateModel);
         return checkActivateModel.getDeviceStatus();
     }
 

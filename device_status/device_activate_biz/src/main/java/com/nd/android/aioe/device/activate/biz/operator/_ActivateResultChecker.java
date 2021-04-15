@@ -54,7 +54,7 @@ class _ActivateResultChecker {
                     continue;
                 }
 
-                // TODO： 这里为什么要抛异常
+                // 异常表示 是一个失败的结果
                 throw new AdhocException("activate result check failed, msgcode: " + model.getMsgcode());
             }
 
@@ -62,7 +62,7 @@ class _ActivateResultChecker {
         }
 
         // 试了三次还是失败的话，就抛异常
-        Logger.i(TAG, "checkActivateResult times reached");
+        Logger.i(TAG, "checkActivateResult retry times reached");
         throw new AdhocException("checkActivateResult retry times reached");
 
 //        if (isAutoLogin()) {

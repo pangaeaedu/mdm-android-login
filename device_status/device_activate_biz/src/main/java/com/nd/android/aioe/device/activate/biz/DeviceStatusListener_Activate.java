@@ -6,7 +6,6 @@ import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
-import com.nd.android.aioe.device.activate.biz.api.listener.DeviceActivateResultManager;
 import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceActivateProvider;
 import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceCancelProvider;
 import com.nd.android.aioe.device.activate.biz.cache.DeviceActivateCache;
@@ -45,11 +44,9 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
 
             // TODO：这里直接重新走 自动激活的流程
             doAutoActivate();
-            return;
         }
 
-        // TODO：如果新的是已激活，就直接发送激活成功的通知出去
-        DeviceActivateResultManager.notifyActivateResult(true);
+        // TODO：如果新的是已激活状态，就不再做任何处理
     }
 
     private void doCancelDevice() {

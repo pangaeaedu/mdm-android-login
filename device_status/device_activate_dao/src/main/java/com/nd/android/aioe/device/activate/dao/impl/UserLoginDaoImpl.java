@@ -53,7 +53,7 @@ class UserLoginDaoImpl extends AdhocHttpDao implements IUserLoginDao {
 
 
     @Override
-    public ILoginUserResult loginUC(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode, @NonNull String pUcOrgCode) throws Exception {
+    public ILoginUserResult loginUC(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode, @NonNull String pUcOrgCode) throws NdUcSdkException {
 
         String orgCode = "";
         String userName = pUsername;
@@ -70,24 +70,20 @@ class UserLoginDaoImpl extends AdhocHttpDao implements IUserLoginDao {
                 .withOrgCode(orgCode)
                 .withLoginNameType(IAuthenticationManager.LOGIN_NAME_TYPE_ORG_USER_CODE)
                 .build();
-        try {
-            NdUc.getIAuthenticationManager().login(userName, pPassword, pValidationCode, map);
+        NdUc.getIAuthenticationManager().login(userName, pPassword, pValidationCode, map);
 
-            ICurrentUser user = NdUc.getIAuthenticationManager().getCurrentUser();
-            if (user == null) {
-                throw new AdhocException("uc current user is null, login failed");
-            }
-
-            String accessToken = user.getMacToken().getAccessToken();
-            String macKey = user.getMacToken().getMacKey();
-            String url = mBaseUrl + "/v1.1/enroll/activate/";
-            String loginToken = AuthorityUtils.mac(url, HttpMethod.POST, accessToken, macKey);
-
-            return new LoginUcUserResult(pUsername,
-                    user.getCurrentUserInfo(OtherParamsBuilder.create().withForceNet(true).
-                            withAllowDegrade(true).build()).getNickName(), loginToken);
-        } catch (NdUcSdkException e) {
-            throw AdhocException.newException(e);
+        ICurrentUser user = NdUc.getIAuthenticationManager().getCurrentUser();
+        if (user == null) {
+            throw new NdUcSdkException("uc current user is null, login failed");
         }
+
+        String accessToken = user.getMacToken().getAccessToken();
+        String macKey = user.getMacToken().getMacKey();
+        String url = mBaseUrl + "/v1.1/enroll/activate/";
+        String loginToken = AuthorityUtils.mac(url, HttpMethod.POST, accessToken, macKey);
+
+        return new LoginUcUserResult(pUsername,
+                user.getCurrentUserInfo(OtherParamsBuilder.create().withForceNet(true).
+                        withAllowDegrade(true).build()).getNickName(), loginToken);
     }
 }
