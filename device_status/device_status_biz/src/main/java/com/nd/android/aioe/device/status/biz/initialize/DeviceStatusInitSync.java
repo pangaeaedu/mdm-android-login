@@ -7,6 +7,7 @@ import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitPriority;
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocAppInitSyncAbs;
 import com.nd.android.adhoc.basic.frame.api.initialization.IAdhocInitCallback;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.status.biz.api.provider.IDeviceStatusProvider;
 import com.nd.sdp.android.serviceloader.annotation.Service;
 
@@ -16,6 +17,8 @@ import rx.schedulers.Schedulers;
 
 @Service(AdhocAppInitSyncAbs.class)
 public class DeviceStatusInitSync extends AdhocAppInitSyncAbs {
+
+    private static final String TAG = "DeviceStatusInitSync";
 
     @Override
     public AdhocAppInitPriority getInitPriority() {
@@ -38,8 +41,11 @@ public class DeviceStatusInitSync extends AdhocAppInitSyncAbs {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     deviceStatusProvider.updateDeviceStatus();
+                    subscriber.onNext(null);
+                    subscriber.onCompleted();
                 } catch (AdhocException e) {
-                    e.printStackTrace();
+                    Logger.e(TAG, "updateDeviceStatus error: " + e);
+                    subscriber.onError(e);
                 }
             }
         }).subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
