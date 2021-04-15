@@ -38,6 +38,11 @@ dependencies {
     }
 
     api project(':adhoc_communicate')
+
+
+
+    api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
+    api("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
 }
 
 
