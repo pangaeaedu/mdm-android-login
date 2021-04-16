@@ -12,14 +12,21 @@ class _DeviceStatusRetryJudgerManager {
 
     private static List<IDeviceStatusUpdateRetryJudger> sUpdateRetryJudgers;
 
+    static {
+        sUpdateRetryJudgers = new CopyOnWriteArrayList<>();
+        Iterator<IDeviceStatusUpdateRetryJudger> interceptors = AnnotationServiceLoader
+                .load(IDeviceStatusUpdateRetryJudger.class).iterator();
+        while (interceptors.hasNext()) {
+            sUpdateRetryJudgers.add(interceptors.next());
+        }
+    }
 
     public static boolean useLocalStatusFirstOnFailed() {
-        List<IDeviceStatusUpdateRetryJudger> updateRetryJudgers = getUpdateRetryJudgers();
-        if (AdhocDataCheckUtils.isCollectionEmpty(updateRetryJudgers)) {
+        if (AdhocDataCheckUtils.isCollectionEmpty(sUpdateRetryJudgers)) {
             return true;
         }
 
-        for (IDeviceStatusUpdateRetryJudger updateRetryJudger : updateRetryJudgers) {
+        for (IDeviceStatusUpdateRetryJudger updateRetryJudger : sUpdateRetryJudgers) {
             if (updateRetryJudger.useLocalStatusFirstOnFailed()) {
                 return true;
             }
@@ -29,27 +36,13 @@ class _DeviceStatusRetryJudgerManager {
     }
 
     public static void onUpdateRetrySuccess() {
-        List<IDeviceStatusUpdateRetryJudger> updateRetryJudgers = getUpdateRetryJudgers();
-        if (AdhocDataCheckUtils.isCollectionEmpty(updateRetryJudgers)) {
+        if (AdhocDataCheckUtils.isCollectionEmpty(sUpdateRetryJudgers)) {
             return;
         }
 
-        for (IDeviceStatusUpdateRetryJudger updateRetryJudger : updateRetryJudgers) {
+        for (IDeviceStatusUpdateRetryJudger updateRetryJudger : sUpdateRetryJudgers) {
             updateRetryJudger.onSuccess();
         }
     }
 
-
-    private static List<IDeviceStatusUpdateRetryJudger> getUpdateRetryJudgers() {
-        if (sUpdateRetryJudgers == null) {
-            sUpdateRetryJudgers = new CopyOnWriteArrayList<>();
-        }
-
-        Iterator<IDeviceStatusUpdateRetryJudger> interceptors = AnnotationServiceLoader
-                .load(IDeviceStatusUpdateRetryJudger.class).iterator();
-        while (interceptors.hasNext()) {
-            sUpdateRetryJudgers.add(interceptors.next());
-        }
-        return sUpdateRetryJudgers;
-    }
 }

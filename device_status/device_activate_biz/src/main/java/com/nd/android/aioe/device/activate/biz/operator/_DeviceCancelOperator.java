@@ -56,9 +56,6 @@ class _DeviceCancelOperator {
 
         api.onLogout();
 
-        // TODO：清除策略的操作，应该放在 策略模块中，通过注册 注销监听，自行完成
-//        clearPolicy();
-
         DeviceInfoSpConfig.clearData();
 
 //        //登出的时候，不要清掉DeviceID。DeviceID只有在切换环境的时候才会被清理

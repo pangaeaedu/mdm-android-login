@@ -44,16 +44,19 @@ class _GroupAutoActivator {
             }
 
             if (!activateModel.isSuccess()) {
-                int delayTime = getRetrySleepSec(activateModel.getDelayTime()) * 1000;
-                Logger.i(TAG, "activate failed, wait to retry :" + delayTime);
-                Thread.sleep(delayTime);
+//                int delayTime = getRetrySleepSec(activateModel.getDelayTime()) * 1000;
+//                Thread.sleep(delayTime);
+
+                Logger.i(TAG, "activate failed, wait to retry");
+                sleep(activateModel.getDelayTime());
                 continue;
             }
 
             try {
                 checkActivateModel = _ActivateResultChecker.checkActivateResult(3, DeviceInfoSpConfig.getDeviceID(), activateModel.getRequestid());
             } catch (Exception e) {
-                Logger.e(TAG, "checkActivateResult error: " + e);
+                Logger.e(TAG, "checkActivateResult error, wait to retry: " + e);
+                sleep(activateModel.getDelayTime());
                 continue;
             }
 
@@ -65,7 +68,8 @@ class _GroupAutoActivator {
 
             // 自动激活的情况下，如果不成功，重试
             if (ActivateConfig.getInstance().isAutoLogin() && checkActivateModel.getDeviceStatus().isUnActivated()) {
-                Logger.e(TAG, "checkActivateResult retusn success, but device status is unActivated");
+                Logger.e(TAG, "checkActivateResult return success, but device status is unActivated, wait to retry");
+                sleep(activateModel.getDelayTime());
                 continue;
             }
             break;
@@ -79,6 +83,16 @@ class _GroupAutoActivator {
     private static int getRetrySleepSec(int limit) {
         Random r = new Random();
         return r.nextInt(limit) + 20;
+    }
+
+    private static void sleep(int delayTime){
+        int sleepTime = getRetrySleepSec(delayTime) * 1000;
+        Logger.i(TAG, "sleep :" + delayTime);
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
