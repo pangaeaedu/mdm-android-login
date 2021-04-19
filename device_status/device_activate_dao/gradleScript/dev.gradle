@@ -1,6 +1,5 @@
 dependencies {
     api("com.android.support:support-annotations:$androidSupportSdkVersion")
-    api("com.nd.android.adhoc.basic:adhoc-router-annotation:$adhoc_basic_version")
 
     api("com.nd.android.adhoc.basic:adhoc_basic_net:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_basic_log:$adhoc_basic_version")

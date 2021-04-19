@@ -9,20 +9,28 @@ dependencies {
 //    api("com.nd.android.adhoc:adhoc_basic_control:$device_control_version")
     api("com.nd.android.adhoc:device_control:$device_control_version")
 
+    try {
+        api project(':device_status:device_status_dao')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:device_status_dao:$mdm_biz_version")
+    }
 
-    api project(':device_status:device_status_dao')
+    try {
+        api project(':device_status:device_status_biz_api')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:device_status_biz_api:$mdm_biz_version")
+    }
 
-    api project(':device_status:device_status_biz_api')
-
-    api project(':device_status:device_info')
-
+    try {
+        api project(':device_status:device_info')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:device_info:$mdm_biz_version")
+    }
 
     try {
         api project(':mdm_env')
     } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version") {
-//            exclude group:'com.nd.android.mdm.biz' ,module:'loginapi'
-        }
+        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version")
     }
 
     try {
@@ -38,7 +46,12 @@ dependencies {
         }
     }
 
-    api project(':adhoc_communicate')
+    try {
+        api project(':adhoc_communicate')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:adhoc_communicate:$mdm_biz_version")
+    }
+
 
 
     api("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")

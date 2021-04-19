@@ -14,6 +14,12 @@ android {
     defaultConfig {
         minSdkVersion "$androidMinSdkVersion".toInteger()
         targetSdkVersion "$androidTargetSdkVersion".toInteger()
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ComponentId: "cmp_device_status_biz_api"]
+            }
+        }
     }
 
     useLibrary 'org.apache.http.legacy'
