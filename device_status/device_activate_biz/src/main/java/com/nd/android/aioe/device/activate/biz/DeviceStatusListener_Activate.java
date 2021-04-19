@@ -36,17 +36,17 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
                 DeviceInfoSpConfig.clearPushIDSync();
             }
 
-            // TODO：如果是 deleted 的 或者 非自动激活的，这里应该走注销流程
+            // 如果是 deleted 的 或者 非自动激活的，这里应该走注销流程
             if (pNewStatus.isDeleted() || !ActivateConfig.getInstance().isAutoLogin()) {
                 doCancelDevice();
                 return;
             }
 
-            // TODO：这里直接重新走 自动激活的流程
+            // 这里直接重新走 自动激活的流程
             doAutoActivate();
         }
 
-        // TODO：如果新的是已激活状态，就不再做任何处理
+        // 如果新的是已激活状态，就不再做任何处理
     }
 
     private void doCancelDevice() {

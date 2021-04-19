@@ -31,7 +31,7 @@ public abstract class BaseSchoolGroupCodeRetriever implements ISchoolGroupCodeRe
             }
         }
 
-        // TODO： 上层自行去限制
+        // 改为 小米control， 或者 上层业务自行去限制
 //        boolean isXiaomi = AdhocRomFactory.getInstance().getRomStrategy() instanceof AdhocRomStrategy_Xiaomi;
 //
 //        Logger.d(TAG, "Settings.Global.DEVICE_PROVISIONED value = " + Settings.Global.getInt(AdhocBasicConfig.getInstance().getAppContext().getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 0));

@@ -56,25 +56,6 @@ class _DeviceStatusChecker {
         });
     }
 
-//    private void checkDeviceStatus(@NonNull DeviceStatus pServerStatus) {
-////        DeviceStatus localStatus = DeviceInfoManager.getInstance().getCurrentStatus();
-////        if (null == localStatus) {
-////            return;
-////        }
-//
-////        DeviceStatusChangeManager.notifyDeviceStatus(pServerStatus);
-//
-//        // TODO：这个应该放到 激活模块当中去处理
-//        if (pServerStatus.isUnActivated() && !localStatus.isUnActivated()) {
-////                                DeviceIDSPUtils.saveDeviceIDToSp("");
-//            DeviceIDSPUtils.saveDeviceIDToThirdVersionSpSync("");
-//            DeviceInfoSpConfig.clearPushIDSync();
-//            Logger.e(TAG, "differnet status, exit");
-//            // TODO：这里应该走注销流程
-//            System.exit(0);
-//        }
-//    }
-
     private static IDeviceStatusDao getDeviceStatusDao() {
         return DeviceStatusDaoHelper.getDeviceStatusDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl());
     }

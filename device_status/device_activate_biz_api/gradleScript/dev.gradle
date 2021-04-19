@@ -1,13 +1,12 @@
 dependencies {
     api("com.android.support:support-annotations:$androidSupportSdkVersion")
-    api("com.nd.android.adhoc.basic:adhoc-router-api:$adhoc_basic_version")
-    api("com.nd.android.adhoc.basic:adhoc-router-annotation:$adhoc_basic_version")
-
 
 
     api project(':device_status:device_status_biz_api')
     api project(':device_status:device_activate_dao')
 
+    api("com.nd.android.adhoc.basic:adhoc-router-api:$adhoc_basic_version")
+    api("com.nd.android.adhoc.basic:adhoc-router-annotation:$adhoc_basic_version")
 }
 
 

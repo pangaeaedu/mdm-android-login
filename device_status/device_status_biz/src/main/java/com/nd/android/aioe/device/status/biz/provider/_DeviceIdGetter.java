@@ -183,7 +183,7 @@ class _DeviceIdGetter {
                 if (count > 1) {
 
 //                if (!ActivateConfig.getInstance().isAutoLogin()) {
-//                    // TODO： 这里改成注入的判断
+//                    // 这里改成注入的判断
 ////                    AdhocExitAppManager.exitApp(120 * 1000);
 //                }
 
