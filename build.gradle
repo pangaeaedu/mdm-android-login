@@ -4,23 +4,23 @@ buildscript {
     ext {
         adhoc_basic_version = '2.1.638.a617770'
 
-        mdm_biz_version = '1.16.780.44edc28'
+        mdm_biz_version = '2.0.813.67f9640.hykloginopt'
 
-        device_control_version = '1.16.635.23ca841'
-        device_command_version = '2.7.516.8a57b07'
+        device_control_version = '1.17.642.b652f18.hykloginopt'
+        device_command_version = '2.8.526.713210f.hykloginopt'
 
-        location_verison = '1.7.105.8d65b0b'
+        location_verison = '1.12.144.a3c325a.hykloginopt'
         file_transfer_version = '1.1.34.3cff954'
 
-        mdm_biz_sdk_version = '0.8.42.3463b3e'
+        mdm_biz_sdk_version = '1.0.43.a8d19ac.hykloginopt'
 
         // 下面这三个后续也需要发布为正式版本
         adhoc_sdk_version = '1.2.21.2089-develop-SNAPSHOT'
         screen_capture_version = '1.8.371.80f53f5'
         adhoc_push_util_version = '0.5.38.135.e9d53b4'
 
-        policy_version = '2.7.239.8bc907e'
-        deliver_version = '2.3.160.4670ee0-features-lsj0.8.xhighschool-SNAPSHOT'
+        policy_version = '2.8.242.15cfa2e.hykloginopt'
+        deliver_version = '2.5.246.d06c14c.hykloginopt'
 
         adhoc_firewall_version = '1.0.70.66e3c98'
 
