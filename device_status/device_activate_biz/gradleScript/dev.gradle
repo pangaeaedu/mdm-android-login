@@ -2,15 +2,29 @@ dependencies {
     api("com.android.support:support-annotations:$androidSupportSdkVersion")
 
 
-    api project(':device_status:device_info')
+    try {
+        api project(':device_status:device_info')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:device_info:$mdm_biz_version")
+    }
 
-    api project(':device_status:device_activate_dao')
+    try {
+        api project(':device_status:device_activate_dao')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:device_activate_dao:$mdm_biz_version")
+    }
 
-    api project(':device_status:device_activate_biz_api')
+    try {
+        api project(':device_status:device_activate_biz_api')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:device_activate_biz_api:$mdm_biz_version")
+    }
 
-    api project(':device_status:device_status_biz_api')
-
-
+    try {
+        api project(':device_status:device_status_biz_api')
+    } catch (Exception ignored) {
+        api("com.nd.android.mdm.biz:device_status_biz_api:$mdm_biz_version")
+    }
 
     try {
         api project(':mdm_env')
