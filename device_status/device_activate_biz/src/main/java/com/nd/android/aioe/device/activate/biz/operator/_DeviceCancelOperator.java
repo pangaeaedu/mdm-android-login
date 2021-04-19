@@ -26,9 +26,7 @@ class _DeviceCancelOperator {
     public static void cancelDevice(){
         notifyLogout();
 
-        if (!clearData()) {
-            return;
-        }
+        clearData();
 
         enterLogoutUI();
     }
@@ -45,17 +43,8 @@ class _DeviceCancelOperator {
         api.onLogout();
     }
 
-    private static boolean clearData(){
+    private static void clearData(){
         Logger.i(TAG, "DeviceCancelOperator, clearData");
-
-        IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
-                .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
-        if (api == null) {
-            Logger.w(TAG, "DeviceCancelOperator, clearData failed, IAdhocLoginStatusNotifier not found");
-            return false;
-        }
-
-        api.onLogout();
 
         DeviceInfoSpConfig.clearData();
 
@@ -70,7 +59,6 @@ class _DeviceCancelOperator {
         if (DeviceStatusCache.getDeviceStatus() != DeviceStatus.Init) {
             DeviceStatusChangeManager.notifyDeviceStatus(status);
         }
-        return true;
     }
 
 
