@@ -28,6 +28,8 @@ public final class DeviceStatusChangeManager {
     public static void notifyDeviceStatus(@NonNull DeviceStatus pStatus) {
 
         DeviceStatus curStatus = DeviceStatusCache.getDeviceStatus();
+        // 先取出旧的，然后更新缓存
+        DeviceStatusCache.setDeviceStatus(pStatus);
 
         for (IDeviceStatusListener listener : sStatusChangeListeners) {
             try {
@@ -37,8 +39,6 @@ public final class DeviceStatusChangeManager {
             }
         }
 
-        // 都处理完了，更新缓存
-        DeviceStatusCache.setDeviceStatus(pStatus);
     }
 
 
