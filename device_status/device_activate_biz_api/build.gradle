@@ -16,7 +16,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ComponentId: "activate_biz_api"]
+                arguments = [ComponentId: "cmd_activate_biz_api"]
             }
         }
     }
