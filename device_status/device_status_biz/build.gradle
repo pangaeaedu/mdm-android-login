@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.nd.android.adhoc.router'
 apply from: file('gradleScript/dev.gradle')
 //apply from: file('gradleScript/unittest4sdk.gradle')
 
