@@ -29,7 +29,7 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
         // 如果 新的 是未激活，本地的是已激活
         if (pNewStatus.isUnActivated()) {
 
-            // 如果本地原先是已激活，这里要清楚一些数据 TODO ??? 不明白为什么要清空 DeviceId 和 PushId ？
+            // 如果本地原先是已激活，这里要清楚一些数据 ，是由于当时 lsj 和 碧总 对接的 ，服务端迁移导致 没数据的
             if (!pOldStatus.isUnActivated()) {
                 Logger.e(TAG, "checkDeviceStatus, the local state is different from the server state");
                 DeviceInfoSpConfig.saveDeviceIDSync("");
@@ -38,7 +38,7 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
 
             // 如果是 deleted 的 或者 非自动激活的，这里应该走注销流程
             if (pNewStatus.isDeleted() || !ActivateConfig.getInstance().isAutoLogin()) {
-//                doCancelDevice();
+                doCancelDevice();
                 return;
             }
 
