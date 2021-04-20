@@ -46,6 +46,8 @@ dependencies {
 
 configurations {
     all*.exclude group: 'android.support'
+//    all*.exclude group: 'com.nd.android.mdm.biz', module: 'device_activate_biz_api'
+//    all*.exclude group: 'com.nd.android.mdm.biz', module: 'device_status_biz_api'
 }
 
 configurations.all {

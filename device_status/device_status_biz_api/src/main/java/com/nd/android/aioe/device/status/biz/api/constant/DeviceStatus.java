@@ -45,10 +45,4 @@ public enum DeviceStatus {
         return Init;
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
-
-    }
-
 }

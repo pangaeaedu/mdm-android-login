@@ -8,7 +8,6 @@ import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IAdhocPushConnectListener;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.cache.DeviceStatusCache;
-import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
 import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;

@@ -15,9 +15,6 @@ import com.nd.android.adhoc.router_api.facade.Postcard;
 import com.nd.android.adhoc.router_api.facade.callback.NavCallback;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
-import com.nd.android.aioe.device.status.biz.api.cache.DeviceStatusCache;
-import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
-import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
 
 class _DeviceCancelOperator {
 
@@ -51,14 +48,13 @@ class _DeviceCancelOperator {
 //        //登出的时候，不要清掉DeviceID。DeviceID只有在切换环境的时候才会被清理
 //        DeviceInfoManager.getInstance().resetStatusAndPushIDSubject();
 
-
-        DeviceStatus status = DeviceStatus.Init;
-        status.setIsDeleted(true);
-
         // 如果是注销的，那么这里要把 isDeleted 带上通知出去，便于外部使用
-        if (DeviceStatusCache.getDeviceStatus() != DeviceStatus.Init) {
-            DeviceStatusChangeManager.notifyDeviceStatus(status);
-        }
+//        if (DeviceStatusCache.getDeviceStatus() != DeviceStatus.Init) {
+//
+//            DeviceStatus status = DeviceStatus.Init;
+//            status.setIsDeleted(true);
+//            DeviceStatusChangeManager.notifyDeviceStatus(status);
+//        }
     }
 
 

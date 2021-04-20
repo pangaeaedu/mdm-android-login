@@ -11,7 +11,7 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.frame.util.AdhocMapDecorator;
 import com.nd.android.aioe.device.activate.biz.api.model.CheckActivateModel;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
-import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusChangeManager;
+import com.nd.android.aioe.device.status.biz.api.provider.IDeviceStatusNotifier;
 
 class _ActivateResultOperator {
 
@@ -28,7 +28,11 @@ class _ActivateResultOperator {
         // 反正现在统一都发，OMO 那边如果没注册 也不会收到，所以没有影响，否则 可能发出去以后，
 //            DeviceActivateBroadcastUtils.sendActivateSuccessBroadcast();
 
-        DeviceStatusChangeManager.notifyDeviceStatus(pModel.getDeviceStatus());
+        IDeviceStatusNotifier statusNotifier = (IDeviceStatusNotifier) AdhocFrameFactory.getInstance()
+                .getAdhocRouter().build(IDeviceStatusNotifier.ROUTE_PATH).navigation();
+        if (statusNotifier != null) {
+            statusNotifier.notifyDeviceStatus(pModel.getDeviceStatus());
+        }
     }
 
 

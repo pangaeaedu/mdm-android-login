@@ -38,7 +38,7 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
 
             // 如果是 deleted 的 或者 非自动激活的，这里应该走注销流程
             if (pNewStatus.isDeleted() || !ActivateConfig.getInstance().isAutoLogin()) {
-                doCancelDevice();
+//                doCancelDevice();
                 return;
             }
 
