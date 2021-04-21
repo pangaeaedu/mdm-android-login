@@ -25,7 +25,9 @@ public class GetDeviceStatusModel extends GetDeviceStatusResult {
     }
 
     public DeviceStatus getDevicesStatus() {
-        return DeviceStatus.fromValue(getStatus());
+        DeviceStatus deviceStatus = DeviceStatus.fromValue(getStatus());
+        deviceStatus.setIsDeleted(isDelete_status());
+        return deviceStatus;
     }
 
     public boolean isAutoLogin() {

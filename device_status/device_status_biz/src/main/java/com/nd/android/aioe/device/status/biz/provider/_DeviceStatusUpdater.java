@@ -6,11 +6,15 @@ import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.communicate.impl.MdmTransferFactory;
 import com.nd.android.adhoc.communicate.push.listener.IAdhocPushConnectListener;
+import com.nd.android.aioe.device.activate.biz.api.IUserLoginWayConfirmRetrieve;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.cache.DeviceStatusCache;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
 import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
+
+import java.util.Iterator;
 
 class _DeviceStatusUpdater {
 
@@ -100,6 +104,18 @@ class _DeviceStatusUpdater {
         // 如果重试成功的，这里才去通知重试判断者
         if (retryCount >= 1) {
             _DeviceStatusRetryJudgerManager.onUpdateRetrySuccess();
+        }
+
+        // 如果获取回来的状态是 已删除的
+        if (deviceStatusModel.getDevicesStatus().isDeleted()) {
+
+            Iterator<IUserLoginWayConfirmRetrieve> interceptors = AnnotationServiceLoader
+                    .load(IUserLoginWayConfirmRetrieve.class, IUserLoginWayConfirmRetrieve.class.getClassLoader()).iterator();
+            if (interceptors.hasNext()) {
+                interceptors.next().pauseAutoLogin();
+            } else {
+                Logger.e(TAG, "IUserLoginWayConfirmRetrieve impl not found, which means go on");
+            }
         }
 
         DeviceStatusChangeManager.notifyDeviceStatus(deviceStatusModel.getDevicesStatus());

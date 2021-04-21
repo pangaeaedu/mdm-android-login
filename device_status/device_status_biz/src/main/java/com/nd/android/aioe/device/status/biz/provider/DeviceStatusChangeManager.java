@@ -26,6 +26,12 @@ final class DeviceStatusChangeManager {
     }
 
     public static void notifyDeviceStatus(@NonNull DeviceStatus pStatus) {
+        Logger.i(TAG, "notifyDeviceStatus: " + pStatus);
+
+        StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
+        if (stackTraceElements != null && stackTraceElements.length > 3) {
+            Logger.d(TAG, "notifyDeviceStatus called stack trace: " + Logger.getExtInfo(stackTraceElements[3]));
+        }
 
         DeviceStatus curStatus = DeviceStatusCache.getDeviceStatus();
         // 先取出旧的，然后更新缓存
