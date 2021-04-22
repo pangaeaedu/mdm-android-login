@@ -20,46 +20,6 @@ class _DeviceStatusUpdater {
 
     private static final String TAG = "DeviceStatusBusiness";
 
-    private static final IAdhocPushConnectListener sPushConnectListener = new IAdhocPushConnectListener() {
-        @Override
-        public void onPushDeviceToken(String deviceToken) {
-            Logger.i(TAG, "PushOperator, onPushDeviceToken: ");
-            Logger.d(TAG, "PushOperator, onPushDeviceToken: " + deviceToken);
-
-            onConnected();
-        }
-
-        @Override
-        public void onConnected() {
-
-            // 绑定 PushId
-            _DeviceIdBinder.setPushId(MdmTransferFactory.getPushModel().getDeviceId());
-
-            long lastUpdateTime = DeviceStatusCache.getLastUpdateTime();
-
-            // 如果距离最后一次检测成功的时间 >= 24小时，就检测一遍状态
-            if (Math.abs(System.currentTimeMillis() - lastUpdateTime) >= 24 * 60 * 60 * 1000) {
-                Logger.e(TAG, "The current time is one day away from the last update time, recheck device status");
-
-                _DeviceStatusChecker.checkDeviceStatusFromServer(DeviceInfoSpConfig.getDeviceID());
-            }
-
-        }
-
-        @Override
-        public void onDisconnected() {
-
-        }
-    };
-
-    static {
-        MdmTransferFactory.getPushModel().addConnectListener(sPushConnectListener);
-
-        if (MdmTransferFactory.getPushModel().isConnected()) {
-            sPushConnectListener.onConnected();
-        }
-    }
-
     @WorkerThread
     public static void updateDeviceStatus() throws AdhocException {
         String deviceId;

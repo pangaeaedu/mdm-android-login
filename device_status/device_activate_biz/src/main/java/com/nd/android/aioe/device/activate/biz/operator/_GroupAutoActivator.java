@@ -15,7 +15,7 @@ import java.util.Random;
 
 class _GroupAutoActivator {
 
-    private static final String TAG = "DeviceActivateBusiness";
+    private static final String TAG = "_GroupAutoActivator";
 
     @WorkerThread
     public static DeviceStatus autoActivateByGroupCode(@NonNull String pRootCode, String pSchoolCode) throws Exception {

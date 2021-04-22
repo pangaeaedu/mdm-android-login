@@ -281,6 +281,9 @@ public class DeviceInfoSpConfig {
 
         saveNodeCode("");
         saveNodeName("");
+
+        saveDeviceIDSync("");
+        clearPushIDSync();
     }
 
 

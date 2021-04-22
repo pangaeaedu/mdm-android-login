@@ -34,6 +34,7 @@ final class DeviceStatusChangeManager {
         }
 
         DeviceStatus curStatus = DeviceStatusCache.getDeviceStatus();
+
         // 先取出旧的，然后更新缓存
         DeviceStatusCache.setDeviceStatus(pStatus);
 

@@ -16,6 +16,10 @@ public class DeviceStatusNotifierImpl implements IDeviceStatusNotifier {
     @Override
     public void notifyDeviceStatus(@NonNull DeviceStatus pNewStatus) {
         Logger.i(TAG,"notifyDeviceStatus: " + pNewStatus);
+        if (pNewStatus == DeviceStatus.Init) {
+            pNewStatus = DeviceStatus.Enrolled;
+            pNewStatus.setIsDeleted(true);
+        }
         DeviceStatusChangeManager.notifyDeviceStatus(pNewStatus);
     }
 
