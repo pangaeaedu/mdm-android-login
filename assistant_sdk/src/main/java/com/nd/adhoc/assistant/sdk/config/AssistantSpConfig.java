@@ -19,6 +19,7 @@ public class AssistantSpConfig extends BaseSpConfig {
     private static final String KEY_DEVICE_TOKEN = "device_token";
     private static final String KEY_PUSH_ID = "push_id";
     private static final String KEY_SERIAL_NUM = "serial_num";
+    private static final String KEY_DEVICE_UNI_ID = "KEY_DEVICE_UNI_ID";
 
     private static final String KEY_AUTO_LOGIN = "auto_login";
     private static final String KEY_NICKNAME = "nick_name";
@@ -139,6 +140,14 @@ public class AssistantSpConfig extends BaseSpConfig {
 
     public void saveSerialNum(String pSerialNum) {
         saveString(KEY_SERIAL_NUM, pSerialNum);
+    }
+
+    public String getDeviceUniId() {
+        return getString(KEY_DEVICE_UNI_ID);
+    }
+
+    public void setDeviceUniId(String strValue) {
+        saveString(KEY_DEVICE_UNI_ID, strValue);
     }
 
     public void saveAutoLogin(boolean pAutoLogin) {
