@@ -10,8 +10,10 @@ dependencies {
 
 
 //    api "com.nd.sdp.android:adhoc-push-util:$adhoc_push_util_version"
-    api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version"){
+    api("com.nd.sdp.adhoc:adhoc-sdk:$adhoc_sdk_version") {
+        exclude group: 'com.nd.android.mdm.biz', module: 'device_status_biz_api'
         exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+        exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
     }
 
     api("com.nd.android.adhoc.basic:adhoc_basic_common:$adhoc_basic_version")
@@ -28,28 +30,26 @@ dependencies {
     api("com.nd.android.adhoc.basic:adhoc_util_storage:$adhoc_basic_version")
     api("com.nd.android.adhoc.basic:adhoc_util_app:$adhoc_basic_version")
 
-    try {
+//    try {
         api project(':mdm_env')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version"){
-            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
-        }
-    }
+//    } catch (Exception ignored) {
+//        api("com.nd.android.mdm.biz:mdm_env:$mdm_biz_version")
+//    }
 
-    try {
+//    try {
         api project(':mdm_biz_common')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:mdm_biz_common:$mdm_biz_version"){
-            exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
-        }
-    }
+//    } catch (Exception ignored) {
+//        api("com.nd.android.mdm.biz:mdm_biz_common:$mdm_biz_version")
+//    }
 
 
-    try {
+//    try {
         api project(':assistant_sdk')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version")
-    }
+//    } catch (Exception ignored) {
+//        api("com.nd.android.mdm.biz:assistant_sdk:$mdm_biz_version"){
+//            exclude group: 'com.nd.android.mdm.biz', module: 'device_status_biz_api'
+//        }
+//    }
 
 //    try {
 //        api project(':mdm_util_cmd')
@@ -82,6 +82,8 @@ dependencies {
             exclude group:'com.nd.android.mdm.biz' ,module:'mdm_env'
             exclude group:'com.nd.android.mdm.biz' ,module:'mdm_biz_common'
             exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+            exclude group: 'com.nd.android.mdm.biz', module: 'device_status_biz_api'
         }
     }
 
@@ -91,9 +93,16 @@ dependencies {
         api("com.nd.android.adhoc:adhoc_policy_api:$policy_version"){
             exclude group: 'com.nd.android.adhoc', module: 'mdm_biz_sdk_impl'
             exclude group: 'com.nd.android.mdm.biz', module: 'assistant_sdk'
+            exclude group: 'com.nd.android.mdm.biz', module: 'adhoc_communicate'
+            exclude group: 'com.nd.android.mdm.biz', module: 'device_status_biz_api'
         }
     }
 
+//    try {
+        api project(':device_status:device_status_biz_api')
+//    } catch (Exception ignored) {
+//        api("com.nd.android.mdm.biz:device_status_biz_api:$mdm_biz_version")
+//    }
 
 //    api project(':device_status:device_status_biz_api')
 //    api project (":awspushchannel")

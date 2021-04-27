@@ -163,7 +163,7 @@ public class DeviceInfoSpConfig {
         return sPreferences.getString(KEY_NICKNAME);
     }
 
-    public String getAccountNum() {
+    public static String getAccountNum() {
         return sPreferences.getString(KEY_ACCOUNT_NUM);
     }
 

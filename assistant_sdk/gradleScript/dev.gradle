@@ -25,14 +25,24 @@ dependencies {
         api("com.nd.android.adhoc.basic:adhoc_util_statistic:$adhoc_basic_version")
     }
 
-    api ("com.nd.android.adhoc:device_control:$device_control_version"){
+    api("com.nd.android.adhoc:device_control:$device_control_version") {
+        exclude group: 'com.nd.android.mdm.biz', module: 'device_status_biz_api'
     }
 
-    try {
+//    try {
         api project(':device_status:device_info')
-    } catch (Exception ignored) {
-        api("com.nd.android.mdm.biz:device_info:$mdm_biz_version")
-    }
+//    } catch (Exception ignored) {
+//        api("com.nd.android.mdm.biz:device_info:$mdm_biz_version") {
+//            exclude group: 'com.nd.android.mdm.biz', module: 'device_status_biz_api'
+//        }
+//    }
+
+//    try {
+        api project(':device_status:device_status_biz_api')
+//    } catch (Exception ignored) {
+//        api("com.nd.android.mdm.biz:device_status_biz_api:$mdm_biz_version")
+//    }
+
 
 //    api ("com.alibaba:druid:1.0.12")
 }

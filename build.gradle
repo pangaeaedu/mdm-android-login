@@ -2,9 +2,9 @@ buildscript {
     apply from: 'http://git.sdp.nd/adhoc-android/adhoc-android-doc/raw/master/build_config.gradle'
 
     ext {
-        adhoc_basic_version = '2.1.638.a617770'
+        adhoc_basic_version = '2.2.643.f2f84f1.hykgradle6.5'
 
-        mdm_biz_version = '2.0.813.67f9640.hykloginopt'
+        mdm_biz_version = '2.0.822.b33b074.hykloginopt'
 
         device_control_version = '1.17.642.b652f18.hykloginopt'
         device_command_version = '2.8.526.713210f.hykloginopt'
@@ -19,17 +19,19 @@ buildscript {
         screen_capture_version = '1.8.371.80f53f5'
         adhoc_push_util_version = '0.5.38.135.e9d53b4'
 
-        policy_version = '2.8.242.15cfa2e.hykloginopt'
+        policy_version = '2.8.243.6cefcdf.hykloginopt'
         deliver_version = '2.5.246.d06c14c.hykloginopt'
 
         adhoc_firewall_version = '1.0.70.66e3c98'
 
-        androidBuildToolsVersion = '28.0.3'
-        androidMinSdkVersion = 18
-        androidTargetSdkVersion = 28
-        androidCompileSdkVersion = 28
+        androidBuildToolsVersion = '29.0.2'
+        androidMinSdkVersion = 19
+        androidTargetSdkVersion = 29
+        androidCompileSdkVersion = 29
         androidSupportSdkVersion = '28.0.0'
         service_loader_version = '1.2.2'
+
+        gradlePluginVersion = '4.1.2'
     }
 
     repositories {
@@ -39,7 +41,10 @@ buildscript {
 //                url 'http://172.24.140.41/repository/maven-public/'
 //            }
 //        } else {
-            maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
+            maven {
+                allowInsecureProtocol = true
+                url 'http://nexus.sdp.nd/nexus/content/groups/android-public/'
+            }
 //        }
 
         mavenCentral()
@@ -62,7 +67,10 @@ allprojects {
 //                url 'http://172.24.140.41/repository/maven-public/'
 //            }
 //        } else {
-            maven { url 'http://nexus.sdp.nd/nexus/content/groups/android-public/' }
+            maven {
+                allowInsecureProtocol = true
+                url 'http://nexus.sdp.nd/nexus/content/groups/android-public/'
+            }
 //        }
 
         mavenCentral()

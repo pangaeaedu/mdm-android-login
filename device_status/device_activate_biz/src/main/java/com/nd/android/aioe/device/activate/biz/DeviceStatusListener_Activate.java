@@ -1,9 +1,15 @@
 package com.nd.android.aioe.device.activate.biz;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
+import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;
+import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
+import com.nd.android.adhoc.basic.frame.api.user.IAdhocUserInfo;
+import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
+import com.nd.android.adhoc.basic.frame.util.AdhocMapDecorator;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
 import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceActivateProvider;
@@ -35,12 +41,8 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
 
                 doCancelDevice();
                 return;
-
             }
 
-            // TODO 这两个方法可以归到 clearData 里面去一起做
-//                DeviceInfoSpConfig.saveDeviceIDSync("");
-//                DeviceInfoSpConfig.clearPushIDSync();
             DeviceInfoSpConfig.clearData();
 
 //            // 如果是 deleted 的 或者 非自动激活的，这里应该走注销流程
@@ -54,9 +56,51 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
             }
             // 这里直接重新走 自动激活的流程
             doAutoActivate();
+            return;
         }
 
         // 如果新的是已激活状态，就不再做任何处理
+        notifyLogin();
+    }
+
+
+    private static void notifyLogin() {
+        IAdhocLoginStatusNotifier api = (IAdhocLoginStatusNotifier) AdhocFrameFactory.getInstance().getAdhocRouter()
+                .build(AdhocRouteConstant.PATH_LOGIN_STATUS_NOTIFIER).navigation();
+        if (api == null) {
+            return;
+        }
+
+        final String account = DeviceInfoSpConfig.getAccountNum();
+        final String nickname = DeviceInfoSpConfig.getNickname();
+
+        final IAdhocUserInfo userInfo = new IAdhocUserInfo() {
+            @NonNull
+            @Override
+            public String getUserId() {
+                return account;
+            }
+
+            @NonNull
+            @Override
+            public String getUserName() {
+                return nickname;
+            }
+        };
+        IAdhocLoginInfo loginInfo = new IAdhocLoginInfo() {
+            @NonNull
+            @Override
+            public IAdhocUserInfo getUserInfo() {
+                return userInfo;
+            }
+
+            @Nullable
+            @Override
+            public AdhocMapDecorator getExtInfo() {
+                return null;
+            }
+        };
+        api.onLogin(loginInfo);
     }
 
     private void doCancelDevice() {
