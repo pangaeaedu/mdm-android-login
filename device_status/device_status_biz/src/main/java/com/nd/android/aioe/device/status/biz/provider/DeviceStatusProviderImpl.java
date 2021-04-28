@@ -58,6 +58,12 @@ public class DeviceStatusProviderImpl implements IDeviceStatusProvider {
     }
 
     @Override
+    public String getDeviceId() throws AdhocException {
+        return _DeviceIdGetter.getDeviceId();
+    }
+
+
+    @Override
     public void init(@NonNull Context pContext) {
 
     }

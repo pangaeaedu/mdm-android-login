@@ -16,4 +16,7 @@ public interface IDeviceStatusProvider extends IProvider {
     @WorkerThread
     void updateDeviceStatus() throws AdhocException;
 
+    @WorkerThread
+    String getDeviceId() throws AdhocException;
+
 }
