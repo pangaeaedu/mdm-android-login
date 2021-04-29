@@ -13,7 +13,6 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.nd.adhoc.utils.Tools;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
@@ -23,21 +22,18 @@ import com.nd.android.adhoc.basic.util.net.speed.NetSpeedBean;
 import com.nd.android.adhoc.basic.util.net.speed.NetSpeedUtil;
 import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
-import com.nd.android.adhoc.basic.util.system.rom.AdhocRomFactory;
-import com.nd.android.adhoc.basic.util.system.rom.IAdhocRomStrategy;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
 import com.nd.android.adhoc.command.basic.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
-import com.nd.android.adhoc.control.ap7.rom.AdhocRomStrategy_Ap7;
 import com.nd.android.adhoc.control.define.IControl_AppList;
+import com.nd.android.adhoc.control.define.IControl_CameraFacing;
 import com.nd.android.adhoc.control.define.IControl_CpuUsageRate;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
 import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
 import com.nd.android.adhoc.control.define.IControl_IMEI;
 import com.nd.android.aioe.device.info.cache.DeviceIdCache;
 import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
-import com.nd.android.adhoc.control.ops.rom.AdhocRomStrategy_Ops;
 import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
@@ -61,6 +57,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import rx.Observable;
@@ -93,8 +90,8 @@ public class MonitorModule implements IMonitor {
 //    private Map<String, Long> mExecuteTime;
 //    private long lastUpdate = 0;
 //    private long lastHour = 0;
-    private boolean mHasFrontCamera = true;
-    private boolean mHasBackCamera = true;
+    private Boolean mHasFrontCamera = true;
+    private Boolean mHasBackCamera = true;
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -666,8 +663,8 @@ public class MonitorModule implements IMonitor {
 //        data.put("AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
         putJsonData(data,"AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
 
-        putJsonData(data,"front_camera",mHasFrontCamera);
-        putJsonData(data,"back_camera",mHasBackCamera);
+        putJsonData(data,"front_camera",mHasFrontCamera == null ? false : mHasFrontCamera);
+        putJsonData(data,"back_camera",mHasBackCamera == null ? false : mHasBackCamera);
 
         return data;
     }
@@ -812,17 +809,22 @@ public class MonitorModule implements IMonitor {
 //    };
 
     private boolean isCameraFacingChanged(){
-        IAdhocRomStrategy romStrategy = AdhocRomFactory.getInstance().getRomStrategy();
-        if (romStrategy instanceof AdhocRomStrategy_Ops || romStrategy instanceof AdhocRomStrategy_Ap7){
+        IControl_CameraFacing cameraFacing = ControlFactory.getInstance().getControl(IControl_CameraFacing.class);
+        if (cameraFacing != null) {
             boolean cameraChanged = false;
-            boolean hasBackCamera = Tools.checkCameraFacing(Camera.CameraInfo.CAMERA_FACING_BACK) == 0;
+            Map<Integer, Boolean> facing = cameraFacing.getCameraFacing();
+            if (facing == null) {
+                return false;
+            }
+            Boolean hasBackCamera = facing.get(Camera.CameraInfo.CAMERA_FACING_BACK);
             if (hasBackCamera != mHasBackCamera){
                 cameraChanged = true;
                 mHasBackCamera = hasBackCamera;
             }
-            if (mHasFrontCamera){
-                mHasFrontCamera = false;
+            Boolean hasFrontCamera = facing.get(Camera.CameraInfo.CAMERA_FACING_FRONT);
+            if (hasFrontCamera != mHasFrontCamera){
                 cameraChanged = true;
+                mHasFrontCamera = hasFrontCamera;
             }
             return cameraChanged;
         }
