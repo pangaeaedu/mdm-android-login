@@ -2,7 +2,9 @@ package com.nd.android.aioe.device.activate.biz.operator;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
 import com.nd.android.aioe.device.activate.biz.api.model.CheckActivateModel;
 import com.nd.android.aioe.device.activate.biz.api.model.DeviceActivateModel;
@@ -16,6 +18,14 @@ public class DeviceActivateProviderImpl implements IDeviceActivateProvider {
     @Override
     public DeviceStatus activateByUser(@NonNull String pUsername, @NonNull String pPassword, String pValidationCode) throws Exception {
         DeviceActivateModel activateModel = _UserActivator.activateByUc(pUsername, pPassword, pValidationCode);
+        if (!activateModel.isSuccess()) {
+            if (TextUtils.isEmpty(activateModel.getMessage())) {
+                throw new AdhocException(activateModel.getMessage());
+            } else {
+                throw new AdhocException("activate user error");
+            }
+        }
+
         CheckActivateModel checkActivateModel = _ActivateResultChecker.checkActivateResult(1, DeviceInfoSpConfig.getDeviceID(), activateModel.getRequestid());
         if (checkActivateModel == null) {
             return null;
