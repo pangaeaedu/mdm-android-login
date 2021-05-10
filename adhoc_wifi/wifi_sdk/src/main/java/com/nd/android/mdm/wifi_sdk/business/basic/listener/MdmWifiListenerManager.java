@@ -59,7 +59,7 @@ public class MdmWifiListenerManager {
         }
 
         mInfoUpdateListeners.add(pListener);
-        MdmWifiInfoManager.getInstance().starStateTimer();
+//        MdmWifiInfoManager.getInstance().starStateTimer();
     }
 
     public void removeInfoUpdateListener(IMdmWifiInfoUpdateListener pListener) {

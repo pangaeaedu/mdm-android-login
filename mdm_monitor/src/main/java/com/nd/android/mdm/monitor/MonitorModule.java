@@ -16,11 +16,9 @@ import android.text.TextUtils;
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
-import com.nd.android.adhoc.basic.util.app.AdhocPackageUtil;
 import com.nd.android.adhoc.basic.util.net.AdhocNetworkUtil;
 import com.nd.android.adhoc.basic.util.net.speed.NetSpeedBean;
 import com.nd.android.adhoc.basic.util.net.speed.NetSpeedUtil;
-import com.nd.android.adhoc.basic.util.root.AdhocNewRootUtils;
 import com.nd.android.adhoc.basic.util.system.AdhocDeviceUtil;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;
 import com.nd.android.adhoc.basic.util.time.AdhocTimeUtil;
@@ -28,12 +26,7 @@ import com.nd.android.adhoc.command.basic.constant.AdhocCmdFromTo;
 import com.nd.android.adhoc.command.basic.response.ResponseBase;
 import com.nd.android.adhoc.control.define.IControl_AppList;
 import com.nd.android.adhoc.control.define.IControl_CameraFacing;
-import com.nd.android.adhoc.control.define.IControl_CpuUsageRate;
-import com.nd.android.adhoc.control.define.IControl_DeviceRomName;
-import com.nd.android.adhoc.control.define.IControl_DeviceRomVersion;
-import com.nd.android.adhoc.control.define.IControl_IMEI;
 import com.nd.android.aioe.device.info.cache.DeviceIdCache;
-import com.nd.android.aioe.device.info.util.DeviceInfoHelper;
 import com.nd.android.mdm.basic.ControlFactory;
 import com.nd.android.mdm.biz.env.MdmEvnFactory;
 import com.nd.android.mdm.monitor.info.AdhocBatteryInfo;
@@ -41,14 +34,18 @@ import com.nd.android.mdm.monitor.info.AdhocCpuInfo;
 import com.nd.android.mdm.monitor.info.AdhocMemoryInfo;
 import com.nd.android.mdm.monitor.info.AdhocNetworkInfo;
 import com.nd.android.mdm.monitor.info.AdhocSDCardInfo;
-import com.nd.android.mdm.monitor.message.BatteryChangeMessage;
-import com.nd.android.mdm.monitor.message.UsbAttachMessage;
+import com.nd.android.mdm.monitor.monitormodule.BatteryInfoProvider;
+import com.nd.android.mdm.monitor.monitormodule.CpuInfoProvider;
+import com.nd.android.mdm.monitor.monitormodule.DeviceInfoProvider;
+import com.nd.android.mdm.monitor.monitormodule.MdmAppInfoProvider;
+import com.nd.android.mdm.monitor.monitormodule.MemoryInfoProvider;
+import com.nd.android.mdm.monitor.monitormodule.NetWorkInfoProvider;
+import com.nd.android.mdm.monitor.monitormodule.SdCardInfoProvider;
 import com.nd.android.mdm.wifi_sdk.business.MdmWifiInfoManager;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiStatus;
 import com.nd.android.mdm.wifi_sdk.business.basic.listener.IMdmWifiStatusChangeListener;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiInfo;
 import com.nd.android.mdm.wifi_sdk.business.bean.MdmWifiVendor;
-import com.nd.eci.sdk.utils.MonitorUtil;
 import com.nd.screen.Screenshot;
 
 import org.json.JSONException;
@@ -77,22 +74,20 @@ public class MonitorModule implements IMonitor {
     public static final int TYPE_RUNNING_APP = 2;
     private static final int UPDATE_MESSAGE_DELAY = 5000;
     private static MonitorModule instance;
-//    private static final String[] VR_EQUIP = {"Gear VR"};
-//    private static final int MESSAGE_CHECK_VR = 2;
 
-    //    private UsbManager mUsbManager;
     private Context mContext;
-    private boolean batteryIsCharging;
-    private int batteryLevel;
-//    private HandlerThread mBackgroundThread;
-//    private Handler mBackgroundHandler;
-//    private boolean vrWear = false;
-//    private Map<String, Long> mExecuteTime;
-//    private long lastUpdate = 0;
-//    private long lastHour = 0;
+
+    private BatteryInfoProvider mBatteryInfoProvider = new BatteryInfoProvider();
+    private MemoryInfoProvider mMemoryInfoProvider = new MemoryInfoProvider();
+    private CpuInfoProvider mCpuInfoProvider = new CpuInfoProvider();
+    private SdCardInfoProvider mSdCardInfoProvider = new SdCardInfoProvider();
+    private NetWorkInfoProvider mNetWorkInfoProvider = new NetWorkInfoProvider();
+    private DeviceInfoProvider mDeviceInfoProvider = new DeviceInfoProvider();
+    private MdmAppInfoProvider mMdmAppInfoProvider = new MdmAppInfoProvider();
+    
     private Boolean mHasFrontCamera = true;
     private Boolean mHasBackCamera = true;
-
+    
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -101,38 +96,20 @@ public class MonitorModule implements IMonitor {
                 return;
             }
             switch (action) {
-                case Intent.ACTION_BATTERY_CHANGED:
-                    updateBattery(intent);
+                case BatteryManager.ACTION_CHARGING:
+                    mBatteryInfoProvider.setIsCharging(true);
+                    break;
+                case BatteryManager.ACTION_DISCHARGING:
+                    mBatteryInfoProvider.setIsCharging(false);
                     break;
                 case UsbManager.ACTION_USB_DEVICE_ATTACHED:
+                    mBatteryInfoProvider.setNeedUpdateInfo();
                     usbAttached();
                     break;
                 case UsbManager.ACTION_USB_DEVICE_DETACHED:
+                    mBatteryInfoProvider.setNeedUpdateInfo();
                     usbDetached();
                     break;
-//                case ConnectivityManager.CONNECTIVITY_ACTION:
-//                    ConnectivityManager manager =
-//                            (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-//                    NetworkInfo info = manager == null ? null : manager.getActiveNetworkInfo();
-//                    if (info == null) {
-//                        break;
-//                    }
-////                    mDeviceInfoEvent.notifyDeviceInfo(UUID.randomUUID().toString(), AdhocCmdFromTo.MDM_CMD_DRM.getValue());
-//                    try {
-//                        IResponse_MDM response =
-//                                MdmResponseHelper.createResponseBase(
-//                                        "postdeviceinfo",
-//                                        "",
-//                                        UUID.randomUUID().toString(),
-//                                        AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-//                                        System.currentTimeMillis());
-//
-//                        response.setJsonData(getDevInfoJson());
-//                        response.post();
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                    break;
             }
         }
     };
@@ -140,20 +117,6 @@ public class MonitorModule implements IMonitor {
 
     private MonitorModule() {
         mContext = AdhocBasicConfig.getInstance().getAppContext();
-//        ILocationNavigation locationNavigation =
-//                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
-//        if (locationNavigation != null) {
-//            locationNavigation.addLocationListener(mLocationChangeListener);
-//        }
-
-//        MdmWifiInfoManager.getInstance().getWifiListenerManager().addInfoUpdateListener(
-//                new IMdmWifiInfoUpdateListener() {
-//                    @Override
-//                    public void onInfoUpdated(MdmWifiInfo pWifiInfo) {
-//                        responseDevInfo();
-//                    }
-//                }
-//        );
 
         MdmWifiInfoManager.getInstance().getWifiListenerManager().addStatusChangeListener(
                 new IMdmWifiStatusChangeListener() {
@@ -162,6 +125,7 @@ public class MonitorModule implements IMonitor {
                         if(MdmWifiStatus.CONNECTED != pStatus){
                             return;
                         }
+                        mNetWorkInfoProvider.setNeedUpdateInfo();
                         responseDevInfo();
                     }
                 }
@@ -185,8 +149,6 @@ public class MonitorModule implements IMonitor {
                             "",
                             System.currentTimeMillis());
                     responseBase.setJsonData(getDevInfoJson());
-//                    responseBase.postAsync();
-//                    HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/deviceinfo", responseBase.toString());
                     new AdhocHttpDao(MdmEvnFactory.getInstance().getCurEnvironment().getUrl())
                             .postAction()
                             .post("/v1/device/deviceinfo", String.class, responseBase.toString());
@@ -207,28 +169,11 @@ public class MonitorModule implements IMonitor {
     }
 
     public void init(Context pContext) {
-//        MdmTransferFactory.getCommunicationModule().setDeviceInfoEvent(mDeviceInfoEvent);
-//        MdmTransferFactory.getCommunicationModule().setConnectListener(mAdhocConnectListener);
-
-//        mExecuteTime = new HashMap<>();
-//        mBackgroundThread = new HandlerThread("monitorthread");
-//        mBackgroundThread.start();
-//        mBackgroundHandler = new Handler(mBackgroundThread.getLooper()) {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                switch (msg.what) {
-//                    case MESSAGE_CHECK_VR:
-//                        checkVR();
-//                        break;
-//                    default:
-//                        Logger.w(TAG, "Monitor Module background handle message not defined:" + msg.what);
-//                        break;
-//                }
-//            }
-//        };
-//        mUsbManager = ((UsbManager) mContext.getSystemService(Context.USB_SERVICE));
         IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            filter.addAction(BatteryManager.ACTION_CHARGING);
+            filter.addAction(BatteryManager.ACTION_DISCHARGING);
+        }
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
 //        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -240,101 +185,18 @@ public class MonitorModule implements IMonitor {
 
 
     public void release() {
-//        mBackgroundHandler.removeCallbacks(null);
-//        mBackgroundThread.quit();
-//        ILocationNavigation locationNavigation =
-//                (ILocationNavigation) AdhocFrameFactory.getInstance().getAdhocRouter().build(ILocationNavigation.PATH).navigation();
-//        if (locationNavigation != null) {
-//            locationNavigation.removeLocationListener(mLocationChangeListener);
-//        }
         mContext.unregisterReceiver(mBroadcastReceiver);
     }
 
-
-//    private void repeatPost(final String content, final int msg) {
-//        mBackgroundHandler.removeMessages(msg);
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    String resString = HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/cmdresult/", content);
-//                    if (AdhocTextUtil.isBlank(resString)) {
-//                        return;
-//                    }
-//                    JSONObject res = new JSONObject(resString);
-//                    int delay = res.isNull("timeRate") ? 0 : res.getInt("timeRate");
-//                    if (!res.isNull("nextstep") && res.getString("nextstep").equals("true") && delay > 0) {
-//                        mBackgroundHandler.sendMessageDelayed(mBackgroundHandler.obtainMessage(msg, delay, 0), delay);
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-//    }
-
-//    private void checkVR() {
-//        mBackgroundHandler.removeMessages(MESSAGE_CHECK_VR);
-//        boolean wear = SystemProps.getHmtMounted();
-//        if (vrWear != wear) {
-//            new VRWearMessage().send();
-//        }
-//        vrWear = wear;
-//        mBackgroundHandler.sendEmptyMessageDelayed(MESSAGE_CHECK_VR, 5000);
-//    }
 
     private void writeToDB(int now) {
         Logger.d(TAG, "MonitorModule write openinfo to db");
     }
 
-    // 可以只指定一个time 参数,但是这样每次都要多计算时间转化,不如统一一次计算了,再传进来使用
-
-
-//    private void getTopActivity() {
-//        Intent intent = new Intent();
-//        String compName = null;
-//        try {
-//            ISystemControl control = SystemControFactory.getInstance().getSystemControl();
-//            if (control != null) {
-//                compName = control.invokeMethod("getRunnApps", intent);
-//            }
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
-//        if (compName != null) {
-//            Logger.d(TAG,"top activity:" + compName);
-//        } else {
-//            Logger.d(TAG,"top activity not exist");
-//        }
-////        ActivityManager activityManager = (ActivityManager) mContext.getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-////        List<ActivityManager.RunningTaskInfo> forGroundActivity = activityManager.getRunningTasks(1);
-////        ActivityManager.RunningTaskInfo currentActivity;
-////        currentActivity = forGroundActivity.get(0);
-////        String activityName = currentActivity.topActivity.getClassName();
-////        Logger.d(TAG,activityName);
-//    }
-
-    // 方法没有地方使用，暂时注释
-//    private String getLocalIpAddress() {
-//        try {
-//            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-//                NetworkInterface intf = en.nextElement();
-//                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-//                    InetAddress inetAddress = enumIpAddr.nextElement();
-////这里需要注意：这里增加了一个限定条件( inetAddress instanceof Inet4Address ),主要是在Android4.0高版本中可能优先得到的是IPv6的地址。参考：http://blog.csdn.net/stormwy/article/details/8832164
-//                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-//                        return inetAddress.getHostAddress().toString();
-//                    }
-//                }
-//            }
-//        } catch (SocketException ex) {
-//        }
-//        return null;
-//    }
 
     private void usbAttached() {
         Logger.d(TAG,"usb attached:" + AdhocTimeUtil.getTimeStamp());
-        new UsbAttachMessage(true).send();
+//        new UsbAttachMessage(true).send();
         if (isCameraFacingChanged()) {
             Logger.w(TAG, "usbAttached:CameraFacingChanged：has front camera:" + mHasFrontCamera + ",has back camera:" + mHasBackCamera );
             responseDevInfo();
@@ -343,50 +205,12 @@ public class MonitorModule implements IMonitor {
 
     private void usbDetached() {
         Logger.d(TAG,"usb detached:" + AdhocTimeUtil.getTimeStamp());
-        new UsbAttachMessage(false).send();
+//        new UsbAttachMessage(false).send();
         if (isCameraFacingChanged()) {
             Logger.w(TAG, "usbDetached:CameraFacingChanged：has front camera:" + mHasFrontCamera + ",has back camera:" + mHasBackCamera );
             responseDevInfo();
         }
     }
-
-    private void updateBattery(Intent intent) {
-        updateBattery(intent, false);
-    }
-
-    private void updateBattery(Intent intent, boolean forceUpdate) {
-        int curLevel = intent.getIntExtra("level", -1);
-//        boolean curCharging = intent.getIntExtra("status", -1) == BatteryManager.BATTERY_STATUS_CHARGING;
-        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-        boolean curCharging = plugged != -1 && plugged != 0;
-
-        if (!((curLevel == batteryLevel) && (curCharging == batteryIsCharging)) || forceUpdate) {
-            new BatteryChangeMessage(curLevel, curCharging, "").send();
-        }
-        batteryLevel = curLevel;
-        batteryIsCharging = curCharging;
-    }
-
-//    private boolean isUsbAttached() {
-//        if (mUsbManager != null) {
-//            HashMap<String, UsbDevice> devices = mUsbManager.getDeviceList();
-//            boolean attached = false;
-//            for (String key : devices.keySet()) {
-//                UsbDevice device = devices.get(key);
-//                String c = "usb:" + device.toString();
-//                // 添加vr设备需要添加这个list
-//                for (int i = 0; i < VR_EQUIP.length; i++) {
-//                    if (c.contains(VR_EQUIP[i])) {
-//                        attached = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            return attached;
-//        } else {
-//            return false;
-//        }
-//    }
 
     @Override
     public List<PackageInfo> getApplications(int type) {
@@ -407,7 +231,8 @@ public class MonitorModule implements IMonitor {
 
     @Override
     public AdhocBatteryInfo getBatteryInfo() {
-        return new AdhocBatteryInfo(batteryLevel, batteryIsCharging);
+        return new AdhocBatteryInfo(mBatteryInfoProvider.getBatteryLevel(false),
+                mBatteryInfoProvider.getIsCharging());
     }
 
     @Override
@@ -439,9 +264,9 @@ public class MonitorModule implements IMonitor {
             case IMonitor.SSID:
                 return getNetworkInfo().ssid;
             case IMonitor.BATTERY:
-                return getBatteryInfo().level;
+                return mBatteryInfoProvider.getBatteryLevel(false);
             case IMonitor.CHARGE:
-                return getBatteryInfo().isCharging;
+                return mBatteryInfoProvider.getIsCharging();
             case IMonitor.USED_MEMORY_RATE:
                 long usedMemory = getMemoryInfo().usedMemory;
                 long totalMemory = getMemoryInfo().totalMemory;
@@ -465,45 +290,22 @@ public class MonitorModule implements IMonitor {
 
     @Override
     public AdhocCpuInfo getCpuInfo() {
-        IControl_CpuUsageRate control_cpuUsageRate = ControlFactory.getInstance().getControl(IControl_CpuUsageRate.class);
-        if (control_cpuUsageRate != null) {
-            return new AdhocCpuInfo((int)control_cpuUsageRate.getUsageRate());
-        }else {
-            return new AdhocCpuInfo(0);
-        }
+        return mCpuInfoProvider.getCpuInfo(false);
     }
 
     @Override
     public AdhocMemoryInfo getMemoryInfo() {
-        return new AdhocMemoryInfo(MonitorUtil.getMemoryInfo());
+        return mMemoryInfoProvider.getMemoryInfo(false);
     }
 
     @Override
     public AdhocNetworkInfo getNetworkInfo() {
-        MdmWifiInfo wifiInfo = MdmWifiInfoManager.getInstance().getWifiInfo();
-        AdhocNetworkInfo networkInfo = new AdhocNetworkInfo();
-        networkInfo.ip = wifiInfo.getIp();
-        networkInfo.ssid = wifiInfo.getSsid();
-        networkInfo.rssi = wifiInfo.getRssi();
-        networkInfo.linkSpeed = wifiInfo.getSpeed();
-        networkInfo.BSSID = wifiInfo.getApMac();
-        networkInfo.apMac = wifiInfo.getApMac();
-        networkInfo.mac = wifiInfo.getMac().replace(":", "");
-//            networkInfo.apFactory = WifiUtils.getVendorNameByMac(mContext, networkInfo.BSSID);
-
-        // HYK Modified on 2018-04-12
-        MdmWifiVendor vendor = wifiInfo.getVendor();
-        networkInfo.apFactory = vendor == null ? "" : vendor.getVendorName();
-
-        long[] traficBytes = MonitorUtil.getTraficByte();
-        networkInfo.downloadSpeed = traficBytes[3];
-        networkInfo.uploadSpeed = traficBytes[2];
-        return networkInfo;
+        return mNetWorkInfoProvider.getNetworkInfo(false);
     }
 
     @Override
     public AdhocSDCardInfo getSDCardInfo() {
-        return new AdhocSDCardInfo(MonitorUtil.getSdcardInfo());
+        return mSdCardInfoProvider.getSDCardInfo(false);
     }
 
     public JSONObject getDevInfoJson() throws JSONException {
@@ -534,8 +336,6 @@ public class MonitorModule implements IMonitor {
 //        data.put("link_speed", wifiInfo.getSpeed());
         putJsonData(data,"link_speed",wifiInfo.getSpeed());
 
-
-
 //        data.put("ap_mac", wifiInfo.getApMac());
         putJsonData(data,"ap_mac",wifiInfo.getApMac());
 
@@ -546,7 +346,7 @@ public class MonitorModule implements IMonitor {
 
         //网络类型
 //        data.put("netType", AdhocNetworkUtil.getNetWorkStateString());
-        putJsonData(data,"netType",  AdhocNetworkUtil.getNetWorkStateString());
+        putJsonData(data,"netType",  mNetWorkInfoProvider.getNetWorkType());
 
         //SIM卡信息
         String strTemp = AdhocNetworkUtil.getNetworkOperatorName();
@@ -568,33 +368,35 @@ public class MonitorModule implements IMonitor {
         putJsonData(data,"model", Build.MODEL);
 
 //        data.put("battery", batteryLevel);
-        putJsonData(data,"battery", batteryLevel);
+        putJsonData(data,"battery", mBatteryInfoProvider.getBatteryLevel(false));
 
 //        data.put("charge", batteryIsCharging);
-        putJsonData(data,"charge", batteryIsCharging);
+        putJsonData(data,"charge", mBatteryInfoProvider.getIsCharging());
 
 //        data.put("cpu_rate", (int) MonitorUtil.getCpuInfo()[8]);
-        putJsonData(data,"cpu_rate", (int) MonitorUtil.getCpuInfo()[8]);
+        putJsonData(data,"cpu_rate", getCpuInfo().cpuRate);
 
 //        data.put("serialnum", DeviceHelper.getSerialNumberThroughControl());
-        putJsonData(data,"serialnum", DeviceInfoHelper.getSerialNumberThroughControl());
+        putJsonData(data,"serialnum", mDeviceInfoProvider.getSerialNumber() );
 
 //        data.put("terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
         putJsonData(data,"terminaltype", AdhocDeviceUtil.isTabletDevice(mContext) ? 2 : 1);
 
 //        data.put("resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
-        putJsonData(data,"resolution", AdhocDeviceUtil.getRealScreenWidth() + "*" + AdhocDeviceUtil.getRealScreenHeight());
+        putJsonData(data,"resolution", mDeviceInfoProvider.getResolution());
 
-        putJsonData(data,"device_size_inch", AdhocDeviceUtil.getScreenSizeInch());
+        putJsonData(data,"device_size_inch", mDeviceInfoProvider.getScreenInch());
 
 //        data.put("bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
-        putJsonData(data,"bluetoothmac", AdhocDeviceUtil.retrieveThenCacheBluetoothMacAddressViaReflection());
+        putJsonData(data,"bluetoothmac", mDeviceInfoProvider.getBlueToothMac());
 
-        IControl_IMEI control_imei = ControlFactory.getInstance().getControl(IControl_IMEI.class);
-        if (control_imei != null) {
-//            data.put("imei", ((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
-            putJsonData(data, "imei", control_imei.getIMEI(0));
-            putJsonData(data, "imei2", control_imei.getIMEI(1));
+        String strImei1 = mDeviceInfoProvider.getImei1();
+        String strImei2 = mDeviceInfoProvider.getImei2();
+        if(!TextUtils.isEmpty(strImei1)){
+            putJsonData(data, "imei", strImei1);
+        }
+        if(!TextUtils.isEmpty(strImei2)){
+            putJsonData(data, "imei2", strImei2);
         }
 
         //系统、软件信息
@@ -605,44 +407,38 @@ public class MonitorModule implements IMonitor {
         putJsonData(data,"language", Locale.getDefault().getDisplayLanguage());
 
 //        data.put("isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
-        putJsonData(data,"isRooted", AdhocNewRootUtils.retrieveRootStatusViaExecuteSuCommand() ? 1 : 0);
+        putJsonData(data,"isRooted", mDeviceInfoProvider.getIsRoot() ? 1 : 0);
 
 //        data.put("panelId", DeviceHelper.getSerialNumberThroughControl());
-        putJsonData(data,"panelId", DeviceInfoHelper.getSerialNumberThroughControl());
+        putJsonData(data,"panelId", mDeviceInfoProvider.getSerialNumber());
 
-        IControl_DeviceRomName control_deviceRomName = ControlFactory.getInstance().getControl(IControl_DeviceRomName.class);
-        if (control_deviceRomName != null) {
-//            data.put("romName", control_deviceRomName.getRomName());
-            putJsonData(data,"romName", control_deviceRomName.getRomName());
-
+        String strRomeName = mDeviceInfoProvider.getRomName();
+        String strRomVersion = mDeviceInfoProvider.getDeviceRomVersion();
+        if (!TextUtils.isEmpty(strRomeName)) {
+            putJsonData(data,"romName", strRomeName);
         }
-        IControl_DeviceRomVersion control_deviceRomVersion = ControlFactory.getInstance().getControl(IControl_DeviceRomVersion.class);
-        if (control_deviceRomVersion != null) {
-//            data.put("romVersion", control_deviceRomVersion.getRomVersion());
-            putJsonData(data,"romVersion", control_deviceRomVersion.getRomVersion());
-
+        if (!TextUtils.isEmpty(strRomVersion)) {
+            putJsonData(data,"romVersion", strRomVersion);
         }
 
         //硬件信息
-        long[] memInfo = MonitorUtil.getMemoryInfo();
 //        data.put("memory_total", memInfo[0]);
-        putJsonData(data,"memory_total", memInfo[0]);
+        putJsonData(data,"memory_total", getMemoryInfo().totalMemory);
 
 //        data.put("memory_free", memInfo[0] - memInfo[4]);
-        putJsonData(data,"memory_free", memInfo[0] - memInfo[4]);
+        putJsonData(data,"memory_free", getMemoryInfo().freeMemory);
 
-        long[] sdcardInfo = MonitorUtil.getSdcardInfo();
 //        data.put("system_space_total", sdcardInfo[0]);
-        putJsonData(data,"system_space_total", sdcardInfo[0]);
+        putJsonData(data,"system_space_total", getSDCardInfo().totalSystemSpace);
 
 //        data.put("system_space_free", sdcardInfo[1]);
-        putJsonData(data,"system_space_free", sdcardInfo[1]);
+        putJsonData(data,"system_space_free", getSDCardInfo().freeSystemSpace);
 
 //        data.put("sd_total", sdcardInfo[2]);
-        putJsonData(data,"sd_total", sdcardInfo[2]);
+        putJsonData(data,"sd_total", getSDCardInfo().totalExternalSpace);
 
 //        data.put("sd_free", sdcardInfo[3]);
-        putJsonData(data,"sd_free", sdcardInfo[3]);
+        putJsonData(data,"sd_free", getSDCardInfo().freeExternalSpace);
 
         NetSpeedBean speedBean = NetSpeedUtil.getNetSpeed(mContext.getApplicationInfo().uid);
         long rxBytes = speedBean.getRxSpeed();
@@ -654,14 +450,14 @@ public class MonitorModule implements IMonitor {
         putJsonData(data,"download", rxBytes);
 
 //        data.put("AppVerCode", AdhocDeviceUtil.getPackageVerCode(mContext));
-        putJsonData(data,"AppVerCode", AdhocDeviceUtil.getPackageVerCode(mContext));
+        putJsonData(data,"AppVerCode", mMdmAppInfoProvider.getAppVersionCode(mContext));
 
-        PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(mContext);
+
 //        data.put("AppVerName", packageInfo == null ? "" : packageInfo.versionName);
-        putJsonData(data,"AppVerName", packageInfo == null ? "" : packageInfo.versionName);
+        putJsonData(data,"AppVerName", mMdmAppInfoProvider.getAppVersionName(mContext));
 
 //        data.put("AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
-        putJsonData(data,"AppSignedSys", AdhocDeviceUtil.getAppSignedSys());
+        putJsonData(data,"AppSignedSys", mMdmAppInfoProvider.getAppSignedSys());
 
         putJsonData(data,"front_camera",mHasFrontCamera == null ? false : mHasFrontCamera);
         putJsonData(data,"back_camera",mHasBackCamera == null ? false : mHasBackCamera);
@@ -680,133 +476,6 @@ public class MonitorModule implements IMonitor {
 
         jsonObject.put(key, data);
     }
-
-//    private IDeviceInfoEvent mDeviceInfoEvent = new IDeviceInfoEvent() {
-//        @Override
-//        public void notifyDeviceInfo(String pSessionId, int pFrom) {
-//
-//        }
-//    };
-
-
-//    private void initDeviceInfo(JSONObject pDeviceInfo) {
-//        pDeviceInfo.battery = batteryLevel;
-//        pDeviceInfo.isCharging = batteryIsCharging;
-//        pDeviceInfo.cpu = (int) MonitorUtil.getCpuInfo()[8];
-//        long[] memInfo = MonitorUtil.getMemoryInfo();
-//        pDeviceInfo.totalMemory = memInfo[0];
-//        pDeviceInfo.usedMemory = memInfo[4];
-//        pDeviceInfo.androidVersion = Build.VERSION.RELEASE;
-//        pDeviceInfo.model = Build.MODEL;
-//        long[] sdcardInfo = MonitorUtil.getSdcardInfo();
-//        pDeviceInfo.totalSystemSpace = sdcardInfo[0];
-//        pDeviceInfo.freeSystemSpace = sdcardInfo[1];
-//        pDeviceInfo.totalExternalSdcard = sdcardInfo[2];
-//        pDeviceInfo.freeExternalSdcard = sdcardInfo[3];
-//        long[] traficBytes = MonitorUtil.getTraficByte();
-//        pDeviceInfo.upload = traficBytes[2];
-//        pDeviceInfo.download = traficBytes[3];
-//        pDeviceInfo.AppVerCode = AdhocDeviceUtil.getPackageVerCode(mContext);
-//
-//        PackageInfo packageInfo = AdhocPackageUtil.getPackageInfo(mContext);
-//        pDeviceInfo.AppVerName = packageInfo == null ? "" : packageInfo.versionName;
-
-//        pDeviceInfo.AppSignedSys = AdhocDeviceUtil.getAppSignedSys();
-
-
-//        IControl_DeviceInfo deviceInfo = MdmControlFactory.getInstance().getControl(IControl_DeviceInfo.class);
-//        if (null != deviceInfo) {
-//            pDeviceInfo.strRmoName = deviceInfo.getRomName();
-//            pDeviceInfo.RomVer = deviceInfo.getRomVersion();
-//            pDeviceInfo.strPannelId = deviceInfo.getSerialNumber();
-//        } else {
-//            pDeviceInfo.RomVer = AdhocDeviceUtil.getND3RomVersion();
-//        }
-//
-//        MdmWifiInfo wifiInfo = MdmWifiInfoManager.getInstance().getWifiInfo();
-//        if (wifiInfo != null) {
-//            pDeviceInfo.ip = wifiInfo.getIp();
-//            pDeviceInfo.ssid = wifiInfo.getSsid();
-//            pDeviceInfo.apMac = wifiInfo.getApMac();
-//            pDeviceInfo.rssi = wifiInfo.getRssi();
-//            pDeviceInfo.mac = wifiInfo.getMac().replace(":", "");
-//            pDeviceInfo.linkSpeed = wifiInfo.getSpeed();
-//            MdmWifiVendor vendor = wifiInfo.getVendor();
-//            pDeviceInfo.apFactory = vendor == null ? "" : vendor.getVendorName();
-//        }
-//    }
-
-//    private String getVendorNameByMac(String pBssid) {
-//        IMdmWifiVendorEntity vendorEntity = MdmWifiDataServiceFactory.getInstance().getMdmWifiVendorDbService().getMdmWifiVendorEntity(pBssid);
-//        return vendorEntity == null ? "" : vendorEntity.getVendorName();
-//    }
-
-//    private IAdhocConnectListener mAdhocConnectListener = new IAdhocConnectListener() {
-//        @Override
-//        public void onConnectionAvaialble() {
-//            MdmTransferFactory.getCommunicationModule().sendLoginInfo(DeviceHelper.getDeviceToken());
-//
-//            AdhocMainLooper.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    AdhocToastModule.getInstance().showToast("adhoc on Connection Avaialble.");
-//                }
-//            });
-//
-//            String mac = AdhocNetworkIpUtil.getLocalMacAddressFromIp(mContext, AdhocNetworkIpUtil.getCurrentIp(mContext));
-//            // 发送电量改变消息
-//            new BatteryChangeMessage(batteryLevel, batteryIsCharging, mac).send();
-////            // 发送手机型号
-//            new ModelMessage(mac).send();
-////            // 发送穿戴信息
-////            new VRWearMessage(mac).send();
-////            // 发送usb接入状况
-////            new UsbAttachMessage(mac, isUsbAttached()).send();
-////            // 发送是否支持辅助功能
-////            new AccessibilityMessage(mac, isAccessibilitySettingsOn()).send();
-//        }
-//    };
-
-//    private ILocationChangeListener mLocationChangeListener = new ILocationChangeListener() {
-//        @Override
-//        public void onLocationChange(final ILocation location) {
-//            AdhocRxJavaUtil.safeSubscribe(Observable.create(new Observable.OnSubscribe<Void>() {
-//                @Override
-//                public void call(Subscriber<? super Void> subscriber) {
-//                    try {
-//                        IResponse_MDM response_mdm = MdmResponseHelper.createResponseBase(
-//                                "location",
-//                                "",
-//                                "",
-//                                AdhocCmdFromTo.MDM_CMD_DRM.getValue(),
-//                                System.currentTimeMillis());
-//                        JSONObject data = new JSONObject();
-//                        try {
-//                            data.put("net_envrm", location.getNetEnv());
-//                            data.put("maptype", location.getMapType());
-//                            data.put("lat", location.getLat());
-//                            data.put("lon", location.getLon());
-//                            data.put("address", location.getAddress());
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                        response_mdm.setJsonData(data).post();
-//
-//                        HttpUtil.post(MdmEvnFactory.getInstance().getCurEnvironment().getUrl() + "/v1/device/location", response_mdm.toString());
-//                    } catch (Exception e) {
-//                        Logger.e(TAG, "responseLocation, do response error: " + e.getMessage());
-//                    }
-//                    subscriber.onCompleted();
-//                }
-//            }).subscribeOn(Schedulers.io()));
-//        }
-//
-//        @Override
-//        public void onException(int errCode, String errStr) {
-//
-//        }
-//    };
 
     private boolean isCameraFacingChanged(){
         IControl_CameraFacing cameraFacing = ControlFactory.getInstance().getControl(IControl_CameraFacing.class);

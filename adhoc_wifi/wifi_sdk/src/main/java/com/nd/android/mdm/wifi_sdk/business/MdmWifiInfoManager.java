@@ -9,7 +9,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;
@@ -249,7 +250,7 @@ public final class MdmWifiInfoManager {
                                     return;
                                 }
                                 mWifiInfo.setChannel(MdmWifiUtils.getChannelByFrequency(scanResult.frequency));
-                                starStateTimer();
+//                                starStateTimer();
                             }
                         });
     }
@@ -286,7 +287,7 @@ public final class MdmWifiInfoManager {
                                 updateConnectedInfo();
 
 //                                updateVendorInfo();
-                                starStateTimer();
+//                                starStateTimer();
                                 mWifiListenerManager.noticeWifiStatusChange(MdmWifiStatus.CONNECTED);
                                 break;
                             default:
@@ -515,6 +516,7 @@ public final class MdmWifiInfoManager {
         }
     }
 
+    @Deprecated
     public void starStateTimer() {
         if(MdmWifiInfoManager.getInstance().getWifiListenerManager().isInfoListenerEmpty()){
             //没有Listener,不用开启定时器了
@@ -551,7 +553,7 @@ public final class MdmWifiInfoManager {
                     public void onError(Throwable e) {
                         Logger.e(TAG, "Run StateTimer error: " + e);
                         AdhocRxJavaUtil.doUnsubscribe(mStateTimerSub);
-                        starStateTimer();
+//                        starStateTimer();
                     }
 
                     @Override

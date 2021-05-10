@@ -21,8 +21,9 @@ import org.json.JSONObject;
 
 /**
  * Created by HuangYK on 2018/12/17.
+ * 组网使用的类，先不要管这个类
  */
-@Service(IAdhocConnectListener.class)
+//@Service(IAdhocConnectListener.class)
 public class AdhocConnectListener implements IAdhocConnectListener {
     private static final String TAG = "AdhocConnectListener";
 
