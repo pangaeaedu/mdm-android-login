@@ -47,7 +47,7 @@ class _UserInfoGetter {
         String deviceId = DeviceIdCache.getDeviceId();
         GetUserInfoModel userInfoModel = getUserInfo(deviceId, DeviceType.getValue());
         if (userInfoModel.isSuccess()) {
-            return userInfoModel.getUser_id();
+            return userInfoModel.getNickName();
         }
 
         throw new AdhocException("get nickname from server unsuccessful" + userInfoModel.getMsgcode());
