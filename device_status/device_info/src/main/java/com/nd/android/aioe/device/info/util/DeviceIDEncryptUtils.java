@@ -1,6 +1,7 @@
 package com.nd.android.aioe.device.info.util;
 
 import com.nd.android.adhoc.basic.util.string.robust.CipherUtil;
+import com.nd.android.adhoc.basic.util.string.robust.ValueConfig;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,8 +33,10 @@ public class DeviceIDEncryptUtils {
 
     public static String decrypt(String pEncrypted){
         try {
-            return CipherUtil.getDecryptResult(pEncrypted, MDM_KEY);
-//            return DesUtils.decrypt(pEncrypted, MDM_KEY);
+            if (pEncrypted.startsWith(ValueConfig.FLAG_VALUE)) {
+                return CipherUtil.getDecryptResult(pEncrypted, MDM_KEY);
+            }
+            return DesUtils.decrypt(pEncrypted, MDM_KEY);
         } catch (Exception pE) {
             pE.printStackTrace();
         }
