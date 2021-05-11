@@ -1,4 +1,4 @@
-package com.nd.adhoc.assistant.sdk.utils;
+package com.nd.android.aioe.device.info.util;
 
 import android.util.Base64;
 
