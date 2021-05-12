@@ -382,8 +382,15 @@ public final class MdmWifiInfoManager {
         }
     }
 
-    private boolean updateWifiInfo() {
+    private long mlLastUpdateTimeMs;
 
+    public boolean updateWifiInfo() {
+        long lCucMs = System.currentTimeMillis();
+        if(lCucMs - mlLastUpdateTimeMs < 9000){
+            Logger.i(TAG, "update time span less than 9s");
+            return true;
+        }
+        mlLastUpdateTimeMs = lCucMs;
         WifiInfo wifiInfo = mWifiManager.getConnectionInfo();
         if (wifiInfo == null) {
             return false;
