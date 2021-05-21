@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.communicate.request.interceptor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;

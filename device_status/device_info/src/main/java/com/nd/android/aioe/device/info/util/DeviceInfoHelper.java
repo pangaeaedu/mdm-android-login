@@ -1,13 +1,12 @@
 package com.nd.android.aioe.device.info.util;
 
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.string.AdhocMD5Util;
 import com.nd.android.adhoc.control.define.IControl_DeviceSerial;
-import com.nd.android.adhoc.control.define.IControl_OrgId;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.mdm.basic.ControlFactory;
 

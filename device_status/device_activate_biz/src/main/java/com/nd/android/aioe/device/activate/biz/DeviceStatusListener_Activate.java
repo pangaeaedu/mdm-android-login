@@ -1,7 +1,7 @@
 package com.nd.android.aioe.device.activate.biz;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;

@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.db.operator;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.j256.ormlite.android.AndroidDatabaseConnection;
 import com.j256.ormlite.dao.Dao;

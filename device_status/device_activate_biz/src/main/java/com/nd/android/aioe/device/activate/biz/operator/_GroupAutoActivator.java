@@ -1,7 +1,7 @@
 package com.nd.android.aioe.device.activate.biz.operator;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.log.Logger;

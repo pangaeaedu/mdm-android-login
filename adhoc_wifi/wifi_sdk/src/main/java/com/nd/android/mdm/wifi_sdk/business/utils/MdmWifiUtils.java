@@ -6,8 +6,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
+import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.mdm.wifi_sdk.business.basic.constant.MdmWifiBand;

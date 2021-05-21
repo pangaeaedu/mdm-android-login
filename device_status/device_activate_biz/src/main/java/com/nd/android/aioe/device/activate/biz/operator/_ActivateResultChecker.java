@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.activate.biz.operator;
 
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;

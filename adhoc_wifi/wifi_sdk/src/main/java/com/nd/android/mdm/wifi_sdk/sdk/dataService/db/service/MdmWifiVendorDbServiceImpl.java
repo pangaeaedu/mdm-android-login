@@ -1,6 +1,6 @@
 package com.nd.android.mdm.wifi_sdk.sdk.dataService.db.service;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.j256.ormlite.dao.Dao;

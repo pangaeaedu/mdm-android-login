@@ -5,8 +5,8 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.v4.graphics.drawable.DrawableCompat;
+import androidx.annotation.DrawableRes;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.widget.EditText;
 
 /**

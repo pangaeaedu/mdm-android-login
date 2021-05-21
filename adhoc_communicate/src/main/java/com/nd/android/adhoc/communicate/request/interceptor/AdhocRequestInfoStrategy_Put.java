@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.communicate.request.interceptor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.log.Logger;
 

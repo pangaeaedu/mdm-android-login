@@ -2,7 +2,7 @@ package com.nd.android.mdm.wifi_sdk.business.basic.broadcast;
 
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by HuangYK on 2018/3/17.

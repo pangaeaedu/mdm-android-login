@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.activate.biz.api.injection;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface ISchoolGroupCodeRetriever {
 

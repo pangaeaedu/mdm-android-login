@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.login;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.nd.android.adhoc.router_api.facade.service.PathReplaceServiceBase;
 import com.nd.sdp.android.serviceloader.annotation.Service;

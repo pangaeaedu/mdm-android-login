@@ -1,6 +1,6 @@
 package com.nd.adhoc.assistant.sdk;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginListener;

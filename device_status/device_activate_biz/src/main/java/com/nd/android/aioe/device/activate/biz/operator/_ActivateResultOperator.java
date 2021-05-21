@@ -1,14 +1,9 @@
 package com.nd.android.aioe.device.activate.biz.operator;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;
-import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginStatusNotifier;
-import com.nd.android.adhoc.basic.frame.api.user.IAdhocUserInfo;
-import com.nd.android.adhoc.basic.frame.constant.AdhocRouteConstant;
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
-import com.nd.android.adhoc.basic.frame.util.AdhocMapDecorator;
 import com.nd.android.aioe.device.activate.biz.api.model.CheckActivateModel;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.provider.IDeviceStatusNotifier;

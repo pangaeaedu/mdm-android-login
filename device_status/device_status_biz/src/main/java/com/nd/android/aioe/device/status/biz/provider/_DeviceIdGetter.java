@@ -1,8 +1,8 @@
 package com.nd.android.aioe.device.status.biz.provider;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;

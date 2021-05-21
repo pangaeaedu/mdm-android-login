@@ -2,7 +2,7 @@ package com.nd.android.mdm.wifi_sdk.business.service;
 
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.mdm.wifi_sdk.business.MdmWifiInfoManager;

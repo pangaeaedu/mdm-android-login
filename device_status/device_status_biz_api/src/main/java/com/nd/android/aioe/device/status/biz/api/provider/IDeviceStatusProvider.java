@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.status.biz.api.provider;
 
-import android.support.annotation.WorkerThread;
+import androidx.annotation.WorkerThread;
 
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.router_api.facade.template.IProvider;

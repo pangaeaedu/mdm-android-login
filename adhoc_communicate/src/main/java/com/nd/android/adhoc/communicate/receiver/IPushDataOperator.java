@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.communicate.receiver;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by HuangYK on 2019/6/17.

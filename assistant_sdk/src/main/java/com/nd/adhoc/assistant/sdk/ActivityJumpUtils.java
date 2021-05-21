@@ -1,7 +1,7 @@
 package com.nd.adhoc.assistant.sdk;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.router_api.facade.Postcard;

@@ -1,7 +1,7 @@
 package com.nd.android.adhoc.login.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.nd.android.adhoc.basic.ui.activity.AdhocBaseActivity;
 

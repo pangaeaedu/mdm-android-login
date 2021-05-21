@@ -2,7 +2,7 @@ package com.nd.android.adhoc.login.ui.widget.edit;
 
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 import android.widget.EditText;
 
 import com.nd.android.adhoc.login.ui.widget.edit.strategy.style.BaseStyle;

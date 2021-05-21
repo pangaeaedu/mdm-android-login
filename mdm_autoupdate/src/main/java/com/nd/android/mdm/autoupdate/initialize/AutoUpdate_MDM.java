@@ -1,7 +1,7 @@
 package com.nd.android.mdm.autoupdate.initialize;
 
 import android.content.Context;
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 import com.nd.android.adhoc.basic.update.IAutoUpdatePackages;
 import com.nd.android.adhoc.basic.update.UpdateConfiguration;

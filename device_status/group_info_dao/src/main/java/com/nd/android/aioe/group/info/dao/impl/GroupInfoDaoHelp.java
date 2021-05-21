@@ -1,6 +1,6 @@
 package com.nd.android.aioe.group.info.dao.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.aioe.group.info.dao.api.IGroupCheckDao;
 import com.nd.android.aioe.group.info.dao.api.IGroupNodeDao;

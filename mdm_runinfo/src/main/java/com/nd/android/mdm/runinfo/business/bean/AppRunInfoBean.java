@@ -1,6 +1,6 @@
 package com.nd.android.mdm.runinfo.business.bean;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.mdm.runinfo.sdk.db.entity.IAppRunInfoEntity;
 

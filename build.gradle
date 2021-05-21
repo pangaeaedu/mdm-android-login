@@ -4,7 +4,7 @@ buildscript {
     ext {
         adhoc_basic_version = '2.2.643.f2f84f1.hykgradle6.5'
 
-        mdm_biz_version = '2.0.822.b33b074.hykloginopt'
+        mdm_biz_version = '2.0.839.5e9554a.hykloginopt'
 
         device_control_version = '1.17.642.b652f18.hykloginopt'
         device_command_version = '2.8.526.713210f.hykloginopt'
@@ -49,6 +49,7 @@ buildscript {
 
         mavenCentral()
         jcenter()
+        google()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$gradlePluginVersion"
@@ -79,6 +80,7 @@ allprojects {
         flatDir {
             dirs 'libs'
         }
+        google()
     }
     if (project != rootProject) {
         project.group = POM_GROUP_ID
