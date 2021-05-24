@@ -25,7 +25,8 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
     public void doInitSync(@NonNull IAdhocInitCallback pCallback) {
         try {
             Logger.i("yhq", "init Transfer lib");
-            MdmTransferFactory.getPushModel().start();
+            // 这个初始化，放在 application 里面去了，这里就不需要了
+//            MdmTransferFactory.getPushModel().start();
 
             Context context = AdhocBasicConfig.getInstance().getAppContext();
             try {
