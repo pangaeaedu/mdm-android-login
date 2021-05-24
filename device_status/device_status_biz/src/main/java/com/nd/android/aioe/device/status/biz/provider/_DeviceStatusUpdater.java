@@ -1,13 +1,13 @@
 package com.nd.android.aioe.device.status.biz.provider;
 
-import androidx.annotation.WorkerThread;
-
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.status.biz.api.cache.DeviceStatusCache;
 import com.nd.android.aioe.device.status.biz.api.listener.DeviceStatusErrorManager;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusErrorListener;
 import com.nd.android.aioe.device.status.biz.api.model.GetDeviceStatusModel;
+
+import androidx.annotation.WorkerThread;
 
 class _DeviceStatusUpdater {
 
