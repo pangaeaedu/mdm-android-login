@@ -7,6 +7,9 @@
     <string name="exception_activate_user_050">该用户已经被用</string>
     <string name="exception_activate_user_060">组不存在</string>
 
+
+    <string name="exception_uc_invalid_timestamp">设备时间与系统时间差异超过5分钟</string>
+
     <string name="check_activate_result_error">激活结果校验失败</string>
 
 </resources>

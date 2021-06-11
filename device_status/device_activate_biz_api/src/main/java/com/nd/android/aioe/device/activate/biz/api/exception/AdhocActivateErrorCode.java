@@ -20,6 +20,10 @@ public class AdhocActivateErrorCode {
     public static final int ERROR_CHECK_RESULT_GROUP_NOT_FOUND = 40008;
 
 
+    public static final int ERROR_UC_INVALID_TIMESTAMP = 40009;
+
+    public static final String UC_AUTH_INVALID_TIMESTAMP = "UC/AUTH_INVALID_TIMESTAMP";
+
     @StringRes
     public static int transformCheckResultMsg(String pMsgCode) {
         if (TextUtils.isEmpty(pMsgCode)) {
@@ -47,6 +51,8 @@ public class AdhocActivateErrorCode {
                 return R.string.exception_activate_user_050;
             case "060":
                 return R.string.exception_activate_user_060;
+            case UC_AUTH_INVALID_TIMESTAMP:
+                return R.string.exception_uc_invalid_timestamp;
             default:
                 return R.string.check_activate_result_error;
         }
@@ -79,6 +85,8 @@ public class AdhocActivateErrorCode {
                 return ERROR_CHECK_RESULT_USER_ACTIVATED;
             case "060":
                 return ERROR_CHECK_RESULT_GROUP_NOT_FOUND;
+            case UC_AUTH_INVALID_TIMESTAMP:
+                return ERROR_UC_INVALID_TIMESTAMP;
             default:
                 return ERROR_CHECK_RESULT_FAILED_DEFAULT;
         }

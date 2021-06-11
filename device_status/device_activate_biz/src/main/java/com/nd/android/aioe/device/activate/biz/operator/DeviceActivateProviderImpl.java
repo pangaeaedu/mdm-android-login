@@ -1,16 +1,19 @@
 package com.nd.android.aioe.device.activate.biz.operator;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.nd.android.adhoc.basic.common.exception.AdhocException;
+import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.router_api.facade.annotation.Route;
+import com.nd.android.aioe.device.activate.biz.api.exception.AdhocActivateErrorCode;
+import com.nd.android.aioe.device.activate.biz.api.exception.AdhocActivateException;
 import com.nd.android.aioe.device.activate.biz.api.model.CheckActivateModel;
 import com.nd.android.aioe.device.activate.biz.api.model.DeviceActivateModel;
 import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceActivateProvider;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
+
+import androidx.annotation.NonNull;
 
 @Route(path = IDeviceActivateProvider.ROUTE_PATH)
 public class DeviceActivateProviderImpl implements IDeviceActivateProvider {
@@ -20,9 +23,20 @@ public class DeviceActivateProviderImpl implements IDeviceActivateProvider {
         DeviceActivateModel activateModel = _UserActivator.activateByUc(pUsername, pPassword, pValidationCode);
         if (!activateModel.isSuccess()) {
             if (TextUtils.isEmpty(activateModel.getMessage())) {
-                throw new AdhocException(activateModel.getMessage());
+                throw new AdhocActivateException("activate user error", AdhocActivateErrorCode.ERROR_CHECK_RESULT_FAILED_DEFAULT);
             } else {
-                throw new AdhocException("activate user error");
+
+                String msgCode = null;
+
+                if (activateModel.getMessage().contains(AdhocActivateErrorCode.UC_AUTH_INVALID_TIMESTAMP)) {
+                    msgCode = AdhocActivateErrorCode.UC_AUTH_INVALID_TIMESTAMP;
+                }
+
+                String msg = AdhocBasicConfig.getInstance().getAppContext()
+                        .getString(AdhocActivateErrorCode.transformCheckResultMsg(msgCode));
+                int code = AdhocActivateErrorCode.transformCheckResultCode(msgCode);
+
+                throw new AdhocActivateException(msg, code);
             }
         }
 
