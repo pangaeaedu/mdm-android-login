@@ -3,7 +3,7 @@ package com.nd.android.adhoc.communicate.initialize;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.common.exception.AdhocException;
@@ -25,7 +25,8 @@ public class MdmTransferInitSyncTask extends AdhocAppInitSyncAbs {
     public void doInitSync(@NonNull IAdhocInitCallback pCallback) {
         try {
             Logger.i("yhq", "init Transfer lib");
-            MdmTransferFactory.getPushModel().start();
+            // 这个初始化，放在 application 里面去了，这里就不需要了
+//            MdmTransferFactory.getPushModel().start();
 
             Context context = AdhocBasicConfig.getInstance().getAppContext();
             try {

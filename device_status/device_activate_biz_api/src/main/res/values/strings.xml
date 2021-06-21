@@ -1,0 +1,14 @@
+<resources>
+
+
+    <string name="exception_activate_user_010">Still processing</string>
+    <string name="exception_activate_user_020">MDM Server Exception</string>
+    <string name="exception_activate_user_030">Auto activate invalid</string>
+    <string name="exception_activate_user_040">Device has been used</string>
+    <string name="exception_activate_user_050">User has been used</string>
+    <string name="exception_activate_user_060">Group not exist</string>
+
+    <string name="exception_uc_invalid_timestamp">The device time differs from the system time by more than 5 minutes</string>
+
+    <string name="check_activate_result_error">Activation result verification failed</string>
+</resources>

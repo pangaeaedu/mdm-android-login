@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.activate.dao.api.bean;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
   "errcode":0   ////激活成功，-1=激活失败

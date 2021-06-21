@@ -1,8 +1,8 @@
 package com.nd.android.aioe.device.status.biz.provider;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
@@ -168,33 +168,30 @@ class _DeviceIdGetter {
                     // 没有成功，发送通知出去
                     DeviceStatusErrorManager.notifyError(IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
 
-                    if (count > 1) {
-                        if (_DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
-                            continue;
-                        }
-                        throw new AdhocException("confirmDeviceID unsuccessful", IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
+                    if (_DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
+                        continue;
                     }
+                    throw new AdhocException("confirmDeviceID unsuccessful", IDeviceStatusErrorListener.ERROR_CODE_CONFIRM_DEVICE_ID_ERROR);
                 }
+
+                _DeviceIdRetryJudgerManager.onConfirmRetrySuccess();
+                break;
 
             } catch (Exception e) {
                 Logger.e(TAG, "DeviceIdGetter, confirmDeviceID error: " + e);
 
                 // 如果是>1，说明是 重试
-                if (count > 1) {
 
 //                if (!ActivateConfig.getInstance().isAutoLogin()) {
 //                    // 这里改成注入的判断
 ////                    AdhocExitAppManager.exitApp(120 * 1000);
 //                }
 
-                    if (_DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
-                        continue;
-                    }
-                    throw AdhocException.newException(e);
+                if (_DeviceIdRetryJudgerManager.isContinueRetryOnFailed()) {
+                    continue;
                 }
-
+                throw AdhocException.newException(e);
             }
-            break;
         }
 
         Logger.i(TAG, "DeviceIdGetter doConfirmDeviceID completed");

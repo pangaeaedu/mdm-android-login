@@ -1,7 +1,7 @@
 package com.nd.android.adhoc.login.ui.widget;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by richsjeson on 2018/2/10.

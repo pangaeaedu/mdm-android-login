@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.status.biz.api.listener;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 

@@ -1,7 +1,7 @@
 package com.nd.adhoc.assistant.sdk.eventListener;
 
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;
 

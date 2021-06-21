@@ -6,6 +6,7 @@ import com.nd.android.adhoc.basic.common.exception.AdhocException;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
 import com.nd.android.aioe.device.activate.biz.api.injection.ISchoolGroupCodeRetriever;
+import com.nd.android.aioe.device.activate.biz.cache.DeviceActivateCache;
 import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 
 import java.util.Iterator;
@@ -16,6 +17,10 @@ class _SchoolCodeGetter {
 
     // 这里回调上层去拿 SchoolCode
     public static String getSchoolCode(String pRootCode, boolean isSchoolNotFound) throws Exception {
+        if (!TextUtils.isEmpty(DeviceActivateCache.getOrgId())) {
+            return "";
+        }
+
         Iterator<ISchoolGroupCodeRetriever> interceptors = AnnotationServiceLoader
                 .load(ISchoolGroupCodeRetriever.class).iterator();
         if (!interceptors.hasNext()) {

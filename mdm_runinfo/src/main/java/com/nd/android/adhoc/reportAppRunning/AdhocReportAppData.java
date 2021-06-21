@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.reportAppRunning;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Pair;
 
 import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;

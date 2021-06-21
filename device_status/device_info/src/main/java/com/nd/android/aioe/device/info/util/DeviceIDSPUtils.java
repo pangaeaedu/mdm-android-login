@@ -2,7 +2,7 @@ package com.nd.android.aioe.device.info.util;
 
 import android.Manifest;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
 import com.nd.android.adhoc.basic.log.Logger;

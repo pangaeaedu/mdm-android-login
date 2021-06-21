@@ -2,7 +2,7 @@ package com.nd.android.mdm.wifi_sdk.business.basic.broadcast;
 
 import android.net.NetworkInfo;
 import android.net.wifi.SupplicantState;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.util.thread.AdhocRxJavaUtil;

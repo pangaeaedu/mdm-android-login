@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.status.dao.api.bean;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * {

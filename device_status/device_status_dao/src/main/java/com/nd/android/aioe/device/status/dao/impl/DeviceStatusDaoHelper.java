@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.status.dao.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.aioe.device.status.dao.api.IDeviceIdDao;
 import com.nd.android.aioe.device.status.dao.api.IDeviceStatusDao;

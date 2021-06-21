@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.communicate.connect.callback;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by HuangYK on 2019/6/17.

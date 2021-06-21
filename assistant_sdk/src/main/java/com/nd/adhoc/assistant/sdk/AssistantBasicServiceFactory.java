@@ -1,6 +1,6 @@
 package com.nd.adhoc.assistant.sdk;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.adhoc.assistant.sdk.eventListener.ILoginEventListener;
 import com.nd.adhoc.assistant.sdk.eventListener.ILogoutEventListener;

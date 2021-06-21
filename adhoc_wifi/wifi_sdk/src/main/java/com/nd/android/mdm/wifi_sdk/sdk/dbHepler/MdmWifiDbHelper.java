@@ -1,7 +1,7 @@
 package com.nd.android.mdm.wifi_sdk.sdk.dbHepler;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;

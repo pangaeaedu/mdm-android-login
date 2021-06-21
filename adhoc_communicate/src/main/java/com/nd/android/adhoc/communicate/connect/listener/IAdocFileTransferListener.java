@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.communicate.connect.listener;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * 文件传输监听

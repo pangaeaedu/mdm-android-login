@@ -1,6 +1,6 @@
 package com.nd.android.aioe.device.activate.dao.api;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.aioe.device.activate.dao.api.constant.ActivateChannel;
 

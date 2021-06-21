@@ -1,7 +1,7 @@
 package com.nd.android.aioe.device.activate.biz;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.nd.android.adhoc.basic.frame.api.initialization.AdhocExitAppManager;
 import com.nd.android.adhoc.basic.frame.api.user.IAdhocLoginInfo;
@@ -12,13 +12,17 @@ import com.nd.android.adhoc.basic.frame.factory.AdhocFrameFactory;
 import com.nd.android.adhoc.basic.frame.util.AdhocMapDecorator;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.aioe.device.activate.biz.api.ActivateConfig;
+import com.nd.android.aioe.device.activate.biz.api.IUserLoginWayConfirmRetrieve;
 import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceActivateProvider;
 import com.nd.android.aioe.device.activate.biz.api.provider.IDeviceCancelProvider;
 import com.nd.android.aioe.device.activate.biz.cache.DeviceActivateCache;
 import com.nd.android.aioe.device.info.config.DeviceInfoSpConfig;
 import com.nd.android.aioe.device.status.biz.api.constant.DeviceStatus;
 import com.nd.android.aioe.device.status.biz.api.listener.IDeviceStatusListener;
+import com.nd.sdp.android.serviceloader.AnnotationServiceLoader;
 import com.nd.sdp.android.serviceloader.annotation.Service;
+
+import java.util.Iterator;
 
 @Service(IDeviceStatusListener.class)
 public class DeviceStatusListener_Activate implements IDeviceStatusListener {
@@ -54,7 +58,18 @@ public class DeviceStatusListener_Activate implements IDeviceStatusListener {
             if(!ActivateConfig.getInstance().isAutoLogin()){
                 return;
             }
+
             // 这里直接重新走 自动激活的流程
+            if (pNewStatus.isDeleted()) {
+
+                Iterator<IUserLoginWayConfirmRetrieve> interceptors = AnnotationServiceLoader
+                        .load(IUserLoginWayConfirmRetrieve.class, IUserLoginWayConfirmRetrieve.class.getClassLoader()).iterator();
+                if (interceptors.hasNext()) {
+                    interceptors.next().pauseAutoLogin();
+                } else {
+                    Logger.e(TAG, "IUserLoginWayConfirmRetrieve impl not found, which means go on");
+                }
+            }
             doAutoActivate();
             return;
         }

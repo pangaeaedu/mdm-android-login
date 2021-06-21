@@ -1,6 +1,6 @@
 package com.nd.adhoc.assistant.sdk.eventListener;
 
-import android.support.annotation.MainThread;
+import androidx.annotation.MainThread;
 
 public interface ILogoutEventListener {
     @MainThread

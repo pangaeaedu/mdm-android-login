@@ -1,6 +1,6 @@
 package com.nd.android.adhoc.communicate.request.interceptor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.nd.android.adhoc.basic.net.dao.interceptor.IAdhocRequestInterceptor;
 import com.nd.sdp.android.serviceloader.annotation.Service;

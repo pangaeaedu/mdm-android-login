@@ -1,6 +1,6 @@
 package com.nd.android.mdm.runinfo.sdk.db.operator;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
