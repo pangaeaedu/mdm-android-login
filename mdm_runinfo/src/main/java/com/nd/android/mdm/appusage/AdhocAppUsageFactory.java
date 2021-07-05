@@ -9,10 +9,15 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.os.Build;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.nd.android.adhoc.basic.common.AdhocBasicConfig;
+import com.nd.android.adhoc.basic.common.util.AdhocDataCheckUtils;
+import com.nd.android.adhoc.basic.frame.api.permission.AdhocPermissionManager;
+import com.nd.android.adhoc.basic.frame.api.permission.AdhocPermissionRequestAbs;
+import com.nd.android.adhoc.basic.frame.api.permission.IPermissionSilentCallback;
 import com.nd.android.adhoc.basic.log.Logger;
 import com.nd.android.adhoc.basic.net.dao.AdhocHttpDao;
 import com.nd.android.adhoc.basic.net.exception.AdhocHttpException;
@@ -62,6 +67,33 @@ public class AdhocAppUsageFactory {
     private static long sReportEndTime;
 
     public static void start() {
+        List<AdhocPermissionRequestAbs> listPermissionRequest = new ArrayList<>();
+        listPermissionRequest.add(AdhocPermissionManager.getInstance().getPermissionRequest(
+                "android.settings.USAGE_ACCESS_SETTINGS"));
+        AdhocPermissionManager.getInstance().checkSpecialPermissionThenSilentRequest(listPermissionRequest, new IPermissionSilentCallback() {
+            @Override
+            public void onResult(List<AdhocPermissionRequestAbs> permissions) {
+                if (AdhocDataCheckUtils.isCollectionEmpty(permissions)) {
+                    Logger.i(TAG, "all allowed");
+                    dealStart();
+                }else {
+                    Logger.i(TAG, "must go to request");
+                    permissions.get(0).doPermissionRequest(new AdhocPermissionRequestAbs.IAdhocPermissionRequestCallback() {
+                        @Override
+                        public void onResult(boolean pGranted) {
+                            if (pGranted) {
+                                dealStart();
+                            }else {
+                                Logger.w(TAG, "request permission failed");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private static void dealStart(){
         sLastResponseTime = getLastResponseTime();
 
         // 如果从来都没有上报过，就把当前时间设置为最后上报时间，方便下次进行比对

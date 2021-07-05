@@ -57,6 +57,7 @@ def map = [:]
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_thread"] = ":adhoc_util_thread"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_system"] = ":adhoc_util_system"
 //map["adhoc-androidframework/adhoc_basic/adhoc_util_net"] = ":adhoc_util_net"
+//map["adhoc-androidframework/adhoc_basic/adhoc_basic_permission"] = ":adhoc_basic_permission"
 
 //map["adhoc-device-control/adhoc_basic_control"] = ":adhoc_basic_control"
 //map["adhoc-device-control/device_system_control"] = ":device_system_control"

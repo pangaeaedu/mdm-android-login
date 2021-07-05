@@ -64,6 +64,12 @@ dependencies {
         }
     }
 
+    try {
+        api project(':adhoc_basic:adhoc_basic_permission')
+    } catch (Exception ignored) {
+        api("com.nd.android.adhoc.basic:adhoc_basic_permission:$adhoc_basic_version")
+    }
+
     api ("com.nd.sdp.android.serviceloader:service-loader:$service_loader_version")
     api ("com.nd.sdp.android.serviceloader:service-loader-annotation:$service_loader_version")
     annotationProcessor ("com.nd.sdp.android.serviceloader:service-loader-compiler:$service_loader_version")
@@ -73,6 +79,7 @@ configurations {
     all*.exclude group: 'android.support'
     all*.exclude group: 'com.nd.android.mdm.biz', module: 'login'
     all*.exclude group: 'com.nd.android.mdm.biz', module: 'loginapi'
+//    all*.exclude group: 'com.nd.android.adhoc.basic', module: 'adhoc_basic_permission'
 }
 
 configurations.all {
