@@ -79,7 +79,10 @@ class UserLoginDaoImpl extends AdhocHttpDao implements IUserLoginDao {
 
         String accessToken = user.getMacToken().getAccessToken();
         String macKey = user.getMacToken().getMacKey();
-        String url = mBaseUrl + "/v1.1/enroll/activate/";
+        //用于UC那边校验时候的host地址，这里郭大爷说他那边就是写死下面这个地址，而非我们在assets里面配置的服务端地址
+        //并且他说跟实际用新host还是旧host没有关系，就是说两端协商用以下这个地址。
+        final String strHostForUcCheck = "https://mdm.ndmdm.site";
+        String url = strHostForUcCheck + "/v1.1/enroll/activate/";
         String loginToken = AuthorityUtils.mac(url, HttpMethod.POST, accessToken, macKey);
 
         return new LoginUcUserResult(pUsername,
